@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:medwatch:blueprint:symptom-record:v1",
+  "title": "Confirmed fictional daily symptom record",
+  "description": "One current daily record. Field semantics, date identity, provenance-value consistency and source spans also need domain validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "datasetId",
+    "dateLocal",
+    "timezone",
+    "reporterRole",
+    "isDemoData",
+    "rawStory",
+    "answers",
+    "answerProvenance",
+    "confirmationMethod",
+    "confirmedAt",
+    "createdAt",
+    "updatedAt",
+    "recordRevision"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": {
+      "type": "string",
+      "pattern": "^day-[A-Za-z0-9-]+$",
+      "maxLength": 128
+    },
+    "datasetId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "dateLocal": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "timezone": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "reporterRole": { "const": "patient" },
+    "isDemoData": { "const": true },
+    "rawStory": { "type": "string", "maxLength": 2000 },
+    "answers": { "$ref": "#/$defs/answers" },
+    "answerProvenance": { "$ref": "#/$defs/provenanceMap" },
+    "confirmationMethod": {
+      "enum": ["manual_form", "ai_review", "seed_fixture"]
+    },
+    "confirmedAt": { "type": "string", "format": "date-time" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "recordRevision": { "type": "integer", "minimum": 1 }
+  },
+  "$defs": {
+    "answers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "energy",
+        "dizziness",
+        "dizzinessSeverity",
+        "confusion",
+        "appetite",
+        "sleep",
+        "fallsOrNearFalls"
+      ],
+      "properties": {
+        "energy": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "dizziness": { "type": ["boolean", "null"] },
+        "dizzinessSeverity": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 3
+        },
+        "confusion": { "type": ["boolean", "null"] },
+        "appetite": { "enum": ["better", "same", "worse", null] },
+        "sleep": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "fallsOrNearFalls": { "type": ["boolean", "null"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "dizziness": { "enum": [false, null] } } },
+          "then": { "properties": { "dizzinessSeverity": { "type": "null" } } }
+        }
+      ]
+    },
+    "sourceSpan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "quote"],
+      "properties": {
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 1 },
+        "quote": { "type": "string", "minLength": 1, "maxLength": 1000 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "sourceSpans"],
+      "properties": {
+        "origin": {
+          "enum": ["manual", "ai_suggested", "user_skipped", "seed_fixture"]
+        },
+        "sourceSpans": {
+          "type": "array",
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/sourceSpan" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "origin": { "const": "ai_suggested" } } },
+          "then": { "properties": { "sourceSpans": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "origin": { "const": "user_skipped" } } },
+          "then": { "properties": { "sourceSpans": { "maxItems": 0 } } }
+        }
+      ]
+    },
+    "provenanceMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "energy",
+        "dizziness",
+        "dizzinessSeverity",
+        "confusion",
+        "appetite",
+        "sleep",
+        "fallsOrNearFalls"
+      ],
+      "properties": {
+        "energy": { "$ref": "#/$defs/provenance" },
+        "dizziness": { "$ref": "#/$defs/provenance" },
+        "dizzinessSeverity": { "$ref": "#/$defs/provenance" },
+        "confusion": { "$ref": "#/$defs/provenance" },
+        "appetite": { "$ref": "#/$defs/provenance" },
+        "sleep": { "$ref": "#/$defs/provenance" },
+        "fallsOrNearFalls": { "$ref": "#/$defs/provenance" }
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "policyVersion": "3.0.0",
+  "status": "specification_not_implemented",
+  "releaseProfile": "fictional_data_competition_prototype",
+  "realPatientUseEnabled": false,
+  "intendedUse": "User-confirmed symptom documentation, descriptive record review, general source explanation and clinician-visit communication preparation.",
+  "allowedAiOperations": ["capture", "clarify", "record_summary", "record_qa", "education", "visit_brief"],
+  "minimumDemoOperations": ["capture", "record_summary", "visit_brief"],
+  "disabledFunctions": [
+    "diagnosis", "differential_diagnosis", "disease_prediction", "medication_causation",
+    "personalized_drug_interaction_risk", "polypharmacy_risk_score", "clinical_urgency_assignment",
+    "treatment_recommendations", "dosing_changes", "deprescribing_plan", "clinical_reassurance",
+    "continuous_monitoring", "wearable_sync", "ehr_writeback", "automated_clinician_messages",
+    "remote_model_inference", "online_speech_recognition", "openfda_lookup", "analytics_telemetry"
+  ],
+  "roles": {
+    "patient": {
+      "sourceWrites": ["confirmed_symptom_day", "own_concern"],
+      "aiOperations": ["capture", "clarify", "record_summary", "record_qa", "education"],
+      "medicationAccess": "read_only"
+    },
+    "caregiver": {
+      "sourceWrites": ["medication", "medication_event", "observer_note", "own_concern"],
+      "aiOperations": ["record_summary", "record_qa", "education", "visit_brief"],
+      "medicationAccess": "read_write"
+    }
+  },
+  "aiControls": {
+    "modelToolsEnabled": false,
+    "automaticSourceWrites": false,
+    "captureRequiresPatientConfirmation": true,
+    "reportRequiresNarrativeReview": true,
+    "validateResponseSchema": true,
+    "validateEvidenceSupport": true,
+    "validationProvesMedicalSafety": false,
+    "discardStaleResponses": true,
+    "streamUnvalidatedTextToUser": false,
+    "maxConcurrentRequests": 1,
+    "maxFormattingRetries": 1,
+    "generationTimeoutSeconds": 40,
+    "maxRawStoryCharacters": 2000,
+    "maxOptionalClarificationQuestions": 2
+  },
+  "network": {
+    "inference": "local_browser",
+    "runtimeAssets": "same_origin_local_static_assets",
+    "backgroundThirdPartyRequestsAllowed": false,
+    "userInitiatedReferenceNavigation": "fixed_manifest_urls_without_record_data_or_referrer"
+  },
+  "help": {
+    "alwaysAvailable": true,
+    "dependsOnModel": false,
+    "automatedSymptomTriage": false,
+    "clinicianNotification": false
+  },
+  "data": {
+    "profileCount": 1,
+    "sourceStorage": "versioned_localStorage_document",
+    "modelAssetStorage": "separate_browser_runtime_cache",
+    "unknownValue": null,
+    "patientAnswersAndObserverNotesSeparate": true,
+    "hardcodedLoginIsSecurityBoundary": false,
+    "entryDeletionCascadesToDerivedArtifacts": true,
+    "exportedFilesCanBeRecalled": false
+  },
+  "releaseAssessment": {
+    "fdaClassification": "not_determined",
+    "hipaaApplicability": "not_determined",
+    "ftcAndStatePrivacyApplicability": "not_determined",
+    "clinicalValidation": "not_performed",
+    "legalComplianceCertification": "none"
+  }
+}

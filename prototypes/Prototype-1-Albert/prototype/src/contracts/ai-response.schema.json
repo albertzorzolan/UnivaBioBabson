@@ -1,0 +1,340 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:medwatch:blueprint:ai-response:v1",
+  "title": "MedWatch bounded AI response",
+  "description": "Structural contract only. Evidence support, scope adherence, source spans, permission and freshness require host checks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requestId",
+    "operation",
+    "sourceRevision",
+    "evidenceHash",
+    "status",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "requestId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "operation": {
+      "enum": [
+        "capture",
+        "clarify",
+        "record_summary",
+        "record_qa",
+        "education",
+        "visit_brief"
+      ]
+    },
+    "sourceRevision": { "type": "integer", "minimum": 0 },
+    "evidenceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "status": { "enum": ["ok", "insufficient_evidence", "outside_scope"] },
+    "payload": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "ok" } } },
+      "then": {
+        "oneOf": [
+          {
+            "properties": {
+              "operation": { "const": "capture" },
+              "payload": { "$ref": "#/$defs/capture" }
+            }
+          },
+          {
+            "properties": {
+              "operation": { "const": "clarify" },
+              "payload": { "$ref": "#/$defs/clarify" }
+            }
+          },
+          {
+            "properties": {
+              "operation": { "const": "record_summary" },
+              "payload": { "$ref": "#/$defs/narrative" }
+            }
+          },
+          {
+            "properties": {
+              "operation": { "const": "record_qa" },
+              "payload": { "$ref": "#/$defs/narrative" }
+            }
+          },
+          {
+            "properties": {
+              "operation": { "const": "education" },
+              "payload": { "$ref": "#/$defs/narrative" }
+            }
+          },
+          {
+            "properties": {
+              "operation": { "const": "visit_brief" },
+              "payload": { "$ref": "#/$defs/visitBrief" }
+            }
+          }
+        ]
+      },
+      "else": { "properties": { "payload": { "$ref": "#/$defs/nonAnswer" } } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "outside_scope" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "properties": {
+              "reasonCode": {
+                "enum": [
+                  "clinical_advice_request",
+                  "unsupported_operation",
+                  "untrusted_instruction"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "insufficient_evidence" } }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "properties": {
+              "reasonCode": {
+                "enum": [
+                  "no_matching_records",
+                  "insufficient_history",
+                  "ambiguous_input",
+                  "source_scope_limited"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sourceSpan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "quote"],
+      "properties": {
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 1 },
+        "quote": { "type": "string", "minLength": 1, "maxLength": 1000 }
+      }
+    },
+    "questionId": {
+      "enum": [
+        "energy_rating",
+        "dizziness_present",
+        "dizziness_severity",
+        "confusion_present",
+        "appetite_change",
+        "sleep_rating",
+        "falls_present",
+        "experience_time",
+        "activity_impact"
+      ]
+    },
+    "proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "value", "certainty", "sourceSpans"],
+      "properties": {
+        "field": {
+          "enum": [
+            "energy",
+            "dizziness",
+            "dizzinessSeverity",
+            "confusion",
+            "appetite",
+            "sleep",
+            "fallsOrNearFalls"
+          ]
+        },
+        "value": {},
+        "certainty": { "enum": ["explicit", "ambiguous"] },
+        "sourceSpans": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/sourceSpan" }
+        }
+      },
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "field": { "enum": ["energy", "sleep"] },
+                "value": {
+                  "type": ["integer", "null"],
+                  "minimum": 1,
+                  "maximum": 5
+                }
+              }
+            },
+            {
+              "properties": {
+                "field": {
+                  "enum": ["dizziness", "confusion", "fallsOrNearFalls"]
+                },
+                "value": { "type": ["boolean", "null"] }
+              }
+            },
+            {
+              "properties": {
+                "field": { "const": "dizzinessSeverity" },
+                "value": {
+                  "type": ["integer", "null"],
+                  "minimum": 1,
+                  "maximum": 3
+                }
+              }
+            },
+            {
+              "properties": {
+                "field": { "const": "appetite" },
+                "value": { "enum": ["better", "same", "worse", null] }
+              }
+            }
+          ]
+        },
+        {
+          "if": { "properties": { "certainty": { "const": "ambiguous" } } },
+          "then": { "properties": { "value": { "type": "null" } } }
+        }
+      ]
+    },
+    "capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proposals", "unmappedNotes", "clarificationQuestionIds"],
+      "properties": {
+        "proposals": {
+          "type": "array",
+          "maxItems": 7,
+          "items": { "$ref": "#/$defs/proposal" }
+        },
+        "unmappedNotes": {
+          "type": "array",
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/sourceSpan" }
+        },
+        "clarificationQuestionIds": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/questionId" }
+        }
+      }
+    },
+    "clarify": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["questionIds"],
+      "properties": {
+        "questionIds": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/questionId" }
+        }
+      }
+    },
+    "supportedItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "evidenceIds"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(fact|entry|source|concern|note):[A-Za-z0-9._:-]+$",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "insufficient_history",
+          "missing_answers",
+          "observer_context",
+          "overlapping_events",
+          "documentation_only",
+          "no_matching_records",
+          "source_scope_limited"
+        ]
+      }
+    },
+    "narrative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "limitationCodes"],
+      "properties": {
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/supportedItem" }
+        },
+        "limitationCodes": { "$ref": "#/$defs/limitations" }
+      }
+    },
+    "visitBrief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observations", "questions", "limitationCodes"],
+      "properties": {
+        "observations": {
+          "type": "array",
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/supportedItem" }
+        },
+        "questions": {
+          "type": "array",
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/supportedItem" }
+        },
+        "limitationCodes": { "$ref": "#/$defs/limitations" }
+      },
+      "anyOf": [
+        { "properties": { "observations": { "minItems": 1 } } },
+        { "properties": { "questions": { "minItems": 1 } } }
+      ]
+    },
+    "nonAnswer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reasonCode"],
+      "properties": {
+        "reasonCode": {
+          "enum": [
+            "no_matching_records",
+            "insufficient_history",
+            "ambiguous_input",
+            "source_scope_limited",
+            "clinical_advice_request",
+            "unsupported_operation",
+            "untrusted_instruction"
+          ]
+        }
+      }
+    }
+  }
+}

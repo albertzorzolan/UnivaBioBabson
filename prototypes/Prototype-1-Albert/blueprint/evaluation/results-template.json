@@ -1,0 +1,40 @@
+{
+  "status": "not_run",
+  "suiteVersion": "3.0.0",
+  "runId": null,
+  "appRevision": null,
+  "policyVersion": "3.0.0",
+  "runtimeVersion": null,
+  "modelId": null,
+  "modelAssetVersion": null,
+  "promptVersions": {},
+  "samplingConfiguration": null,
+  "environment": {"machine": null, "operatingSystem": null, "browser": null, "webGpu": null},
+  "dataClassification": "synthetic_only",
+  "caseRuns": [],
+  "caseRunFields": [
+    "caseId", "repeatIndex", "runType", "inputFixtureHash", "requestFingerprint", "startedAt",
+    "elapsedMs", "actualResponse", "structuralValidation", "semanticValidation",
+    "humanEvidenceSupportRating", "unsupportedClaimCount", "criticalFailures",
+    "acceptedFieldCount", "correctSupportedFieldCount", "eligibleExplicitFieldCount",
+    "mode", "retries", "fallbackReason", "passed", "reviewer", "notes"
+  ],
+  "aggregateMetrics": {
+    "attemptedInferences": null,
+    "acceptedAiDrafts": null,
+    "rejectedDrafts": null,
+    "fallbacks": null,
+    "cancellations": null,
+    "supportedFieldPrecision": null,
+    "captureCoverage": null,
+    "unsupportedMedicalClaims": null,
+    "warmLatencyMedianMs": null,
+    "warmLatencyRangeMs": null,
+    "coldLoadMs": null
+  },
+  "usabilitySessions": [],
+  "clinicalReview": {"status": "not_reviewed", "reviewerRole": null, "scope": null, "findings": []},
+  "regulatoryAssessment": {"status": "not_assessed", "scope": null, "findings": []},
+  "limitations": ["No evaluations have been run.", "Synthetic cases do not establish clinical benefit or regulatory compliance."],
+  "knownIssues": []
+}

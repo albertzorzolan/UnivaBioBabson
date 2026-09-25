@@ -1,0 +1,7 @@
+node_modules/
+dist/
+public/models/
+test-results/
+tmp/
+*.tsbuildinfo
+.DS_Store

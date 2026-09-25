@@ -1,0 +1,7 @@
+*.pdf binary
+*.png binary
+*.ttf binary
+*.mp4 binary
+*.webm binary
+*.zip binary
+prototype/public/fonts/OFL.txt whitespace=cr-at-eol

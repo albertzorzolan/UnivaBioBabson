@@ -1,0 +1,106 @@
+{
+  "registerVersion": "1.0.0",
+  "lastSourceLookupDate": "2026-09-25",
+  "status": "reference_metadata_only_not_a_reviewed_clinical_library",
+  "clinicalReviewer": null,
+  "educationReleaseRule": "Only reviewed general-information excerpts may be supplied to the education operation. Metadata or an official publisher alone is not an approval of a patient-specific use.",
+  "sources": [
+    {
+      "id": "source:fda-medication-list",
+      "title": "5 Medication Safety Tips for Older Adults",
+      "publisher": "U.S. Food and Drug Administration",
+      "url": "https://www.fda.gov/consumers/consumer-updates/5-medication-safety-tips-older-adults",
+      "intendedUse": "Candidate general explanation of maintaining a medication list and preparing questions.",
+      "sourceType": "education_candidate",
+      "reviewStatus": "needs_qualified_content_review",
+      "approvedExcerpt": null,
+      "contentHash": null,
+      "contentVersion": null,
+      "permissionOrLicenseNote": "Review reproduction terms and keep excerpts minimal and attributed.",
+      "reviewer": null,
+      "reviewedAt": null,
+      "recheckBy": null
+    },
+    {
+      "id": "source:911-help",
+      "title": "Calling 911",
+      "publisher": "National 911 Program",
+      "url": "https://www.911.gov/calling-911/",
+      "intendedUse": "Source for static user-initiated U.S. emergency help; no automated symptom classification.",
+      "sourceType": "help_copy_reference",
+      "reviewStatus": "proposed_copy_needs_review",
+      "approvedExcerpt": null,
+      "contentHash": null,
+      "contentVersion": null,
+      "permissionOrLicenseNote": "Use concise attributed guidance; verify displayed help copy.",
+      "reviewer": null,
+      "reviewedAt": null,
+      "recheckBy": null
+    },
+    {
+      "id": "source:fda-cds-2026",
+      "title": "Clinical Decision Support Software",
+      "publisher": "U.S. Food and Drug Administration",
+      "url": "https://www.fda.gov/media/109618/download",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "documentDate": "2026-01-29",
+      "reviewStatus": "public_source_read_no_legal_determination"
+    },
+    {
+      "id": "source:fda-cds-faq",
+      "title": "Clinical Decision Support Software FAQs",
+      "publisher": "U.S. Food and Drug Administration",
+      "url": "https://www.fda.gov/medical-devices/software-medical-device-samd/clinical-decision-support-software-frequently-asked-questions-faqs",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "reviewStatus": "public_source_read_no_legal_determination"
+    },
+    {
+      "id": "source:fda-software-functions",
+      "title": "Device Software Functions Including Mobile Medical Applications",
+      "publisher": "U.S. Food and Drug Administration",
+      "url": "https://www.fda.gov/medical-devices/digital-health-center-excellence/device-software-functions-including-mobile-medical-applications",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "reviewStatus": "public_source_read_no_legal_determination"
+    },
+    {
+      "id": "source:fda-general-wellness",
+      "title": "General Wellness: Policy for Low Risk Devices",
+      "publisher": "U.S. Food and Drug Administration",
+      "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-wellness-policy-low-risk-devices",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "reviewStatus": "public_source_read_no_legal_determination"
+    },
+    {
+      "id": "source:hhs-app-relationships",
+      "title": "HIPAA business-associate relationships for individual-designated apps",
+      "publisher": "U.S. Department of Health and Human Services",
+      "url": "https://www.hhs.gov/hipaa/for-professionals/faq/does-hipaa-require-a-covered-entity-to-enter-into-a-business-associate-agreement.html",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "reviewStatus": "public_source_read_no_legal_determination"
+    },
+    {
+      "id": "source:ftc-hbnr",
+      "title": "Complying with FTC's Health Breach Notification Rule",
+      "publisher": "Federal Trade Commission",
+      "url": "https://www.ftc.gov/business-guidance/resources/complying-ftcs-health-breach-notification-rule-0",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "reviewStatus": "public_source_read_no_legal_determination"
+    },
+    {
+      "id": "source:ftc-health-claims",
+      "title": "Health Products Compliance Guidance",
+      "publisher": "Federal Trade Commission",
+      "url": "https://www.ftc.gov/business-guidance/resources/health-products-compliance-guidance",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "reviewStatus": "public_source_read_no_legal_determination"
+    },
+    {
+      "id": "source:wa-privacy",
+      "title": "Data Privacy Hub",
+      "publisher": "Washington State Office of the Attorney General",
+      "url": "https://www.atg.wa.gov/data-privacy",
+      "sourceType": "regulatory_reference_not_patient_context",
+      "reviewStatus": "public_source_lookup_no_state_law_determination"
+    }
+  ]
+}

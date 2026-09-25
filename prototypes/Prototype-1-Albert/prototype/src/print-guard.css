@@ -1,0 +1,12 @@
+@media print {
+  .report-unreviewed > * {
+    display: none !important;
+  }
+  .report-unreviewed::before {
+    content: "Please review this visit brief in MedWatch before printing.";
+    display: block;
+    color: #303b34;
+    font-size: 14pt;
+    line-height: 1.6;
+  }
+}

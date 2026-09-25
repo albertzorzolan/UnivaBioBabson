@@ -1,0 +1,20 @@
+{
+  "testedAt": "2026-09-25T20:09:30.795669+00:00",
+  "checks": [
+    {
+      "file": "MedWatch-Project-Description.pdf",
+      "pages": 1,
+      "charactersOutsideSafeMargins": []
+    },
+    {
+      "file": "MedWatch-Sample-Visit-Brief.pdf",
+      "pages": 1,
+      "charactersOutsideSafeMargins": []
+    },
+    {
+      "file": "MedWatch-Source-Code.pdf",
+      "pages": 193,
+      "charactersOutsideSafeMargins": []
+    }
+  ]
+}

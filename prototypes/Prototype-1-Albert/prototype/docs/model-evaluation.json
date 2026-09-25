@@ -1,0 +1,627 @@
+{
+  "testedAt": "2026-09-25T19:50:59.627Z",
+  "hardware": "Apple M1 Pro, 16 GB RAM; Chrome headless with WebGPU/Metal",
+  "repeats": 1,
+  "scope": "Nine selected synthetic development scenarios, not an unseen benchmark or clinical validation",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "promptVersion": "medwatch-local-1.6.0",
+  "loadMs": 6142.17499999702,
+  "results": [
+    {
+      "id": "C01",
+      "operation": "capture",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "cc90888c-f8ea-41e7-b14d-49fc5065a53e",
+        "operation": "capture",
+        "sourceRevision": 1,
+        "evidenceHash": "673c403883cccba172397c0249b25deb1cf4cc3330b1506f29e536bb3ceac9a8",
+        "status": "ok",
+        "payload": {
+          "proposals": [
+            {
+              "field": "energy",
+              "value": 2,
+              "certainty": "explicit",
+              "sourceSpans": [
+                {
+                  "start": 0,
+                  "end": 25,
+                  "quote": "My energy was 2 out of 5."
+                }
+              ]
+            },
+            {
+              "field": "fallsOrNearFalls",
+              "value": false,
+              "certainty": "explicit",
+              "sourceSpans": [
+                {
+                  "start": 26,
+                  "end": 61,
+                  "quote": "I had no falls or near-falls today."
+                }
+              ]
+            }
+          ],
+          "unmappedNotes": [],
+          "clarificationQuestionIds": [
+            "confusion_present"
+          ]
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 19210,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"patient\",\"from\":\"2026-09-25\",\"to\":\"2026-09-25\",\"operation\":\"capture\",\"evidenceHash\":\"673c403883cccba172397c0249b25deb1cf4cc3330b1506f29e536bb3ceac9a8\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "cc90888c-f8ea-41e7-b14d-49fc5065a53e",
+          "operation": "capture",
+          "sourceRevision": 1,
+          "evidenceHash": "673c403883cccba172397c0249b25deb1cf4cc3330b1506f29e536bb3ceac9a8",
+          "status": "ok",
+          "payload": {
+            "proposals": [
+              {
+                "field": "energy",
+                "value": 2,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 0,
+                    "end": 25,
+                    "quote": "My energy was 2 out of 5."
+                  }
+                ]
+              },
+              {
+                "field": "fallsOrNearFalls",
+                "value": false,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 26,
+                    "end": 61,
+                    "quote": "I had no falls or near-falls today."
+                  }
+                ]
+              }
+            ],
+            "unmappedNotes": [],
+            "clarificationQuestionIds": [
+              "energy_rating",
+              "confusion_present"
+            ]
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "C02",
+      "operation": "capture",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "1e6c4604-ff32-4803-8d6b-f786c223d008",
+        "operation": "capture",
+        "sourceRevision": 1,
+        "evidenceHash": "c8c5d0d3d36610e82f2ca76dac34ae1af970cd700db92723860bff0027815b2a",
+        "status": "ok",
+        "payload": {
+          "proposals": [
+            {
+              "field": "dizziness",
+              "value": false,
+              "certainty": "explicit",
+              "sourceSpans": [
+                {
+                  "start": 0,
+                  "end": 67,
+                  "quote": "I was not dizzy today and did not have any memory fog or confusion."
+                }
+              ]
+            },
+            {
+              "field": "confusion",
+              "value": false,
+              "certainty": "explicit",
+              "sourceSpans": [
+                {
+                  "start": 0,
+                  "end": 67,
+                  "quote": "I was not dizzy today and did not have any memory fog or confusion."
+                }
+              ]
+            }
+          ],
+          "unmappedNotes": [],
+          "clarificationQuestionIds": [
+            "energy_rating",
+            "falls_present"
+          ]
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 18568,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"patient\",\"from\":\"2026-09-25\",\"to\":\"2026-09-25\",\"operation\":\"capture\",\"evidenceHash\":\"c8c5d0d3d36610e82f2ca76dac34ae1af970cd700db92723860bff0027815b2a\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "1e6c4604-ff32-4803-8d6b-f786c223d008",
+          "operation": "capture",
+          "sourceRevision": 1,
+          "evidenceHash": "c8c5d0d3d36610e82f2ca76dac34ae1af970cd700db92723860bff0027815b2a",
+          "status": "ok",
+          "payload": {
+            "proposals": [
+              {
+                "field": "dizziness",
+                "value": false,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 0,
+                    "end": 67,
+                    "quote": "I was not dizzy today and did not have any memory fog or confusion."
+                  }
+                ]
+              },
+              {
+                "field": "confusion",
+                "value": false,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 0,
+                    "end": 67,
+                    "quote": "I was not dizzy today and did not have any memory fog or confusion."
+                  }
+                ]
+              }
+            ],
+            "unmappedNotes": [],
+            "clarificationQuestionIds": [
+              "energy_rating",
+              "falls_present"
+            ]
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "C06",
+      "operation": "capture",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "b1792f55-740c-4d20-af62-c8cccf63614c",
+        "operation": "capture",
+        "sourceRevision": 1,
+        "evidenceHash": "638ec028583254a879cdb15be5a293c6013bd7b8187f3e6ece538031d94a7284",
+        "status": "ok",
+        "payload": {
+          "proposals": [],
+          "unmappedNotes": [],
+          "clarificationQuestionIds": []
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 15230,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"patient\",\"from\":\"2026-09-25\",\"to\":\"2026-09-25\",\"operation\":\"capture\",\"evidenceHash\":\"638ec028583254a879cdb15be5a293c6013bd7b8187f3e6ece538031d94a7284\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "b1792f55-740c-4d20-af62-c8cccf63614c",
+          "operation": "capture",
+          "sourceRevision": 1,
+          "evidenceHash": "638ec028583254a879cdb15be5a293c6013bd7b8187f3e6ece538031d94a7284",
+          "status": "ok",
+          "payload": {
+            "proposals": [],
+            "unmappedNotes": [],
+            "clarificationQuestionIds": []
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "C07",
+      "operation": "capture",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "1c244dea-4201-412f-9de1-d854ab66a33f",
+        "operation": "capture",
+        "sourceRevision": 1,
+        "evidenceHash": "c73e03e2202881a43afcd1fd9e126096b14abcf6e5f9b731257e03fa504aa0a5",
+        "status": "ok",
+        "payload": {
+          "proposals": [],
+          "unmappedNotes": [],
+          "clarificationQuestionIds": [
+            "energy_rating",
+            "dizziness_present"
+          ]
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 15880,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"patient\",\"from\":\"2026-09-25\",\"to\":\"2026-09-25\",\"operation\":\"capture\",\"evidenceHash\":\"c73e03e2202881a43afcd1fd9e126096b14abcf6e5f9b731257e03fa504aa0a5\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "1c244dea-4201-412f-9de1-d854ab66a33f",
+          "operation": "capture",
+          "sourceRevision": 1,
+          "evidenceHash": "c73e03e2202881a43afcd1fd9e126096b14abcf6e5f9b731257e03fa504aa0a5",
+          "status": "ok",
+          "payload": {
+            "proposals": [
+              {
+                "field": "fallsOrNearFalls",
+                "value": false,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 0,
+                    "end": 21,
+                    "quote": "I did not fall today."
+                  }
+                ]
+              },
+              {
+                "field": "fallsOrNearFalls",
+                "value": false,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 0,
+                    "end": 21,
+                    "quote": "I did not fall today."
+                  }
+                ]
+              }
+            ],
+            "unmappedNotes": [],
+            "clarificationQuestionIds": [
+              "energy_rating",
+              "dizziness_present"
+            ]
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "C10",
+      "operation": "capture",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "de5dc986-d88b-4960-b5f9-a52b6ddfdec2",
+        "operation": "capture",
+        "sourceRevision": 1,
+        "evidenceHash": "9cbe7df7adbe22d302c265bba71b7109185d3994dc2dff98318555286be130d7",
+        "status": "ok",
+        "payload": {
+          "proposals": [
+            {
+              "field": "energy",
+              "value": 2,
+              "certainty": "explicit",
+              "sourceSpans": [
+                {
+                  "start": 12,
+                  "end": 36,
+                  "quote": "My energy is 2 out of 5."
+                }
+              ]
+            }
+          ],
+          "unmappedNotes": [],
+          "clarificationQuestionIds": [
+            "falls_present"
+          ]
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 16155,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"patient\",\"from\":\"2026-09-25\",\"to\":\"2026-09-25\",\"operation\":\"capture\",\"evidenceHash\":\"9cbe7df7adbe22d302c265bba71b7109185d3994dc2dff98318555286be130d7\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "de5dc986-d88b-4960-b5f9-a52b6ddfdec2",
+          "operation": "capture",
+          "sourceRevision": 1,
+          "evidenceHash": "9cbe7df7adbe22d302c265bba71b7109185d3994dc2dff98318555286be130d7",
+          "status": "ok",
+          "payload": {
+            "proposals": [
+              {
+                "field": "energy",
+                "value": 2,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 12,
+                    "end": 36,
+                    "quote": "My energy is 2 out of 5."
+                  }
+                ]
+              },
+              {
+                "field": "energy",
+                "value": 3,
+                "certainty": "explicit",
+                "sourceSpans": [
+                  {
+                    "start": 12,
+                    "end": 36,
+                    "quote": "My energy is 2 out of 5."
+                  }
+                ]
+              }
+            ],
+            "unmappedNotes": [],
+            "clarificationQuestionIds": [
+              "energy_rating",
+              "falls_present"
+            ]
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "C11",
+      "operation": "clarify",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "aae01d30-614e-4088-9ffd-bdebf566d43d",
+        "operation": "clarify",
+        "sourceRevision": 1,
+        "evidenceHash": "d532cb539a9be6fbd6dae3efadf8ba0cc71129761007d8762f5bc17e21132a12",
+        "status": "ok",
+        "payload": {
+          "questionIds": [
+            "dizziness_severity"
+          ]
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 5490,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"patient\",\"from\":\"2026-09-12\",\"to\":\"2026-09-25\",\"operation\":\"clarify\",\"evidenceHash\":\"d532cb539a9be6fbd6dae3efadf8ba0cc71129761007d8762f5bc17e21132a12\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "aae01d30-614e-4088-9ffd-bdebf566d43d",
+          "operation": "clarify",
+          "sourceRevision": 1,
+          "evidenceHash": "d532cb539a9be6fbd6dae3efadf8ba0cc71129761007d8762f5bc17e21132a12",
+          "status": "ok",
+          "payload": {
+            "questionIds": [
+              "dizziness_severity"
+            ]
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "summary-demo",
+      "operation": "record_summary",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "2a0fa1a3-6425-429e-ab18-2c705b9f9d92",
+        "operation": "record_summary",
+        "sourceRevision": 1,
+        "evidenceHash": "3c6a3e34e704f4798528b020c8d9d143e76c21bac1e9960c1e37fca8d99011f3",
+        "status": "ok",
+        "payload": {
+          "items": [
+            {
+              "text": "11 of 14 calendar days have a confirmed patient entry.",
+              "evidenceIds": [
+                "fact:coverage"
+              ]
+            },
+            {
+              "text": "Dizziness was recorded on 4 of 11 days with an answer.",
+              "evidenceIds": [
+                "fact:dizziness"
+              ]
+            },
+            {
+              "text": "Average self-reported energy was 2.9 out of 5 across 11 answered days.",
+              "evidenceIds": [
+                "fact:energy"
+              ]
+            }
+          ],
+          "limitationCodes": []
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 19767,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"caregiver\",\"from\":\"2026-09-12\",\"to\":\"2026-09-25\",\"operation\":\"record_summary\",\"evidenceHash\":\"3c6a3e34e704f4798528b020c8d9d143e76c21bac1e9960c1e37fca8d99011f3\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "2a0fa1a3-6425-429e-ab18-2c705b9f9d92",
+          "operation": "record_summary",
+          "sourceRevision": 1,
+          "evidenceHash": "3c6a3e34e704f4798528b020c8d9d143e76c21bac1e9960c1e37fca8d99011f3",
+          "status": "ok",
+          "payload": {
+            "items": [
+              {
+                "text": "11 of 14 calendar days have a confirmed patient entry.",
+                "evidenceIds": [
+                  "fact:coverage"
+                ]
+              },
+              {
+                "text": "Dizziness was recorded on 4 of 11 days with an answer.",
+                "evidenceIds": [
+                  "fact:dizziness"
+                ]
+              },
+              {
+                "text": "Average self-reported energy was 2.9 out of 5 across 11 answered days.",
+                "evidenceIds": [
+                  "fact:energy"
+                ]
+              }
+            ],
+            "limitationCodes": []
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "qa-demo",
+      "operation": "record_qa",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "201efd2c-6bda-41e8-9fba-bfb07e762516",
+        "operation": "record_qa",
+        "sourceRevision": 1,
+        "evidenceHash": "2d867397174fdc61304933e333aaf5e8f3c961b5de2d0105f208ffe084b23be6",
+        "status": "ok",
+        "payload": {
+          "items": [
+            {
+              "text": "Average self-reported energy was 2.9 out of 5 across 11 answered days.",
+              "evidenceIds": [
+                "fact:energy"
+              ]
+            }
+          ],
+          "limitationCodes": []
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 13740,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"caregiver\",\"from\":\"2026-09-12\",\"to\":\"2026-09-25\",\"operation\":\"record_qa\",\"evidenceHash\":\"2d867397174fdc61304933e333aaf5e8f3c961b5de2d0105f208ffe084b23be6\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "201efd2c-6bda-41e8-9fba-bfb07e762516",
+          "operation": "record_qa",
+          "sourceRevision": 1,
+          "evidenceHash": "2d867397174fdc61304933e333aaf5e8f3c961b5de2d0105f208ffe084b23be6",
+          "status": "ok",
+          "payload": {
+            "items": [
+              {
+                "text": "Average self-reported energy was 2.9 out of 5 across 11 answered days.",
+                "evidenceIds": [
+                  "fact:energy"
+                ]
+              }
+            ],
+            "limitationCodes": []
+          }
+        },
+        "errors": null
+      }
+    },
+    {
+      "id": "visit-demo",
+      "operation": "visit_brief",
+      "passed": true,
+      "result": {
+        "schemaVersion": "1.0",
+        "requestId": "147051b3-5071-4a21-bd14-29e991ef30cb",
+        "operation": "visit_brief",
+        "sourceRevision": 1,
+        "evidenceHash": "f3a47bfad2c3ce03103ebe7865f27e2896b7366db9a80d2cbc5874688b80bbad",
+        "status": "ok",
+        "payload": {
+          "observations": [
+            {
+              "text": "Dizziness was recorded on 4 of 11 days with an answer.",
+              "evidenceIds": [
+                "fact:dizziness"
+              ]
+            },
+            {
+              "text": "Average self-reported energy was 2.9 out of 5 across 11 answered days.",
+              "evidenceIds": [
+                "fact:energy"
+              ]
+            }
+          ],
+          "questions": [
+            {
+              "text": "What other details would be useful to record?",
+              "evidenceIds": [
+                "concern:note-demo-1"
+              ]
+            }
+          ],
+          "limitationCodes": []
+        },
+        "mode": "ai",
+        "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "durationMs": 21708,
+        "fingerprint": "{\"dataset\":\"ff63450f-968a-4ba4-a280-4626c7ebe16c\",\"revision\":1,\"role\":\"caregiver\",\"from\":\"2026-09-12\",\"to\":\"2026-09-25\",\"operation\":\"visit_brief\",\"evidenceHash\":\"f3a47bfad2c3ce03103ebe7865f27e2896b7366db9a80d2cbc5874688b80bbad\",\"model\":\"Qwen2.5-1.5B-Instruct-q4f16_1-MLC\",\"prompt\":\"medwatch-local-1.6.0\",\"policy\":\"3.0.0\"}"
+      },
+      "trace": {
+        "candidate": {
+          "schemaVersion": "1.0",
+          "requestId": "147051b3-5071-4a21-bd14-29e991ef30cb",
+          "operation": "visit_brief",
+          "sourceRevision": 1,
+          "evidenceHash": "f3a47bfad2c3ce03103ebe7865f27e2896b7366db9a80d2cbc5874688b80bbad",
+          "status": "ok",
+          "payload": {
+            "observations": [
+              {
+                "text": "Dizziness was recorded on 4 of 11 days with an answer.",
+                "evidenceIds": [
+                  "fact:dizziness"
+                ]
+              },
+              {
+                "text": "Average self-reported energy was 2.9 out of 5 across 11 answered days.",
+                "evidenceIds": [
+                  "fact:energy"
+                ]
+              }
+            ],
+            "questions": [
+              {
+                "text": "What other details would be useful to record?",
+                "evidenceIds": [
+                  "concern:note-demo-1"
+                ]
+              }
+            ],
+            "limitationCodes": []
+          }
+        },
+        "errors": null
+      }
+    }
+  ],
+  "externalRequests": []
+}

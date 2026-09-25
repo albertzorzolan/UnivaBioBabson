@@ -1,0 +1,63 @@
+{
+  "recordedAt": "2026-09-25T19:54:34.326Z",
+  "timings": [
+    {
+      "seconds": 0.158,
+      "title": "MedWatch · A clearer story between care visits",
+      "text": "A fictional-data prototype for older adults and caregivers. Capture the details, then bring a better record to a visit."
+    },
+    {
+      "seconds": 5.827,
+      "title": "Start with the patient’s own words",
+      "text": "The full manual check-in always works. AI can suggest answers, but the patient chooses what to keep."
+    },
+    {
+      "seconds": 16.267,
+      "title": "Real AI, running on this device",
+      "text": "Qwen2.5 runs in a WebGPU worker. These fresh prompts and records do not go to a cloud AI service."
+    },
+    {
+      "seconds": 36.257,
+      "title": "Every suggestion comes with its evidence",
+      "text": "The host checks the response and source quotes. Nothing has been saved yet."
+    },
+    {
+      "seconds": 42.907,
+      "title": "The patient confirms the final record",
+      "text": "Unanswered fields stay unknown. A correction preserves the earlier version instead of creating a duplicate day."
+    },
+    {
+      "seconds": 49.673,
+      "title": "A shared picture for the caregiver",
+      "text": "Descriptive counts and charts come from confirmed answers. Missing days remain visible as gaps."
+    },
+    {
+      "seconds": 59.888,
+      "title": "Follow a finding back to the original record",
+      "text": "Answered days form the denominator. Caregiver notes are kept separate from patient answers."
+    },
+    {
+      "seconds": 80.071,
+      "title": "Ask what the record actually shows",
+      "text": "AI wording includes source links. Diagnosis, medication decisions and care timing are outside this tool’s scope."
+    },
+    {
+      "seconds": 109.087,
+      "title": "Prepare a conversation, with review built in",
+      "text": "AI drafts discussion wording. Code renders the medication list and numerical facts. Pinned concerns stay in the author’s own words."
+    },
+    {
+      "seconds": 116.169,
+      "title": "Reviewed and ready to print",
+      "text": "The user can save a PDF locally. Nothing is sent to a clinician and no one is monitoring the app."
+    },
+    {
+      "seconds": 122.222,
+      "title": "Working prototype. Honest boundaries.",
+      "text": "Local AI and records are working. Source explanations await qualified review; real-patient use and clinical validation are not part of this demo."
+    }
+  ],
+  "errors": [],
+  "captioned": true,
+  "audio": false
+}

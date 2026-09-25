@@ -1,0 +1,26 @@
+[
+  {
+    "view": "login",
+    "violations": []
+  },
+  {
+    "view": "overview",
+    "violations": []
+  },
+  {
+    "view": "Daily records",
+    "violations": []
+  },
+  {
+    "view": "Medication list",
+    "violations": []
+  },
+  {
+    "view": "Visit brief",
+    "violations": []
+  },
+  {
+    "view": "patient",
+    "violations": []
+  }
+]

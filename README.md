@@ -1,5 +1,9 @@
 # MedWatch
 
+## Prototype #1 - Albert
+
+The [complete local-AI prototype](prototypes/Prototype-1-Albert/README.md) includes the runnable app, implementation blueprints, development validation, submission PDFs, and a captioned demo. Run it from `prototypes/Prototype-1-Albert/prototype/` using the setup instructions there. This version has its own documentation and is kept alongside the existing team app below.
+
 Medication safety, symptom monitoring and deprescribing-awareness for older adults and their caregivers.
 Hackathon prototype for UnivaBio "AI for Human Health".
 

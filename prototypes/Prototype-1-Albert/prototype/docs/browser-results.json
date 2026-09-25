@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-09-25T19:48:33.513Z",
+  "checks": [
+    "Invalid credentials show an inline error",
+    "Patient can review and confirm a partial check-in; unknown answers stay null",
+    "Confirmed check-in survives a reload",
+    "Corrections preserve one current day and the previous version",
+    "Patient medication view has no edit controls",
+    "A second tab is read-only while the writer tab is active",
+    "Medication creation and correction persist with separate event types",
+    "Deleting a medication also removes its date markers",
+    "Pinned caregiver notes do not change patient answers or denominators",
+    "Fact evidence drawer opens for the selected date range",
+    "Visit brief preserves pinned concerns and requires fresh review after an edit",
+    "Mobile layout fits the viewport and emergency help remains available",
+    "Intentional empty state survives reload without reseeding",
+    "Reset restores a fresh fictional dataset",
+    "Corrupt source triggers recovery without overwriting the saved value",
+    "No page errors or third-party runtime requests during tested flows"
+  ],
+  "errors": [],
+  "external": []
+}
