@@ -1,0 +1,541 @@
+/* Caregiver symptom timeline chart (src/views/shared/caregiver-TimelineChart.tsx). Prefix: cg-tlc. */
+
+.cg-tlc {
+  container: cg-tlc / inline-size;
+  --tlc-label-w: 9.75rem;
+  --tlc-row-h: 1.625rem;
+  --tlc-lane-h: 1.375rem;
+  --tlc-marker-h: calc(var(--tlc-lanes) * var(--tlc-lane-h) + 0.5rem);
+  --tlc-axis-h: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.cg-tlc--full {
+  --tlc-row-h: 1.875rem;
+}
+
+/* ---- Toolbar: legend + table toggle ---- */
+.cg-tlc__toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  flex-wrap: wrap;
+}
+.cg-tlc__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+  flex: 1 1 28rem;
+}
+.cg-tlc__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.cg-tlc__legend-key {
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--line);
+}
+.cg-tlc__legend-key + .cg-tlc__legend-key {
+  padding-left: 0;
+  border-left: 0;
+}
+.cg-tlc__key-no {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  opacity: 0.6;
+}
+.cg-tlc__key-missing {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(135deg, var(--chart-missing) 0 2px, transparent 2px 5px);
+  border: 1px solid var(--line);
+}
+
+/* ---- Figure ---- */
+.cg-tlc__scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  /* Room for focus rings on the day buttons. */
+  padding: 2px;
+  margin: -2px;
+}
+.cg-tlc__figure {
+  margin: 0;
+  min-width: 0;
+}
+.cg-tlc__grid {
+  display: grid;
+  grid-template-columns: var(--tlc-label-w) minmax(var(--tlc-plot-min), 1fr);
+  /* As wide as its tracks (so the sticky label column can travel the full scroll), at least the card width. */
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Labels column (heights mirror the plot column) */
+.cg-tlc__labels {
+  /* Row labels stay visible while a long period scrolls sideways. */
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+  padding-right: var(--space-3);
+}
+.cg-tlc__label-markers {
+  height: var(--tlc-marker-h);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.2rem;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+}
+.cg-tlc__label-row {
+  height: var(--tlc-row-h);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cg-tlc__label-shapes {
+  display: inline-flex;
+  gap: 2px;
+}
+.cg-tlc__label-lines {
+  position: relative;
+  height: var(--tlc-lines-h);
+  margin-top: var(--space-2);
+}
+.cg-tlc__label-lines-title {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+}
+.cg-tlc__label-tick {
+  position: absolute;
+  right: var(--space-1);
+  font-size: 0.6875rem;
+  line-height: 1;
+}
+.cg-tlc__label-tick--top {
+  top: 5px;
+}
+.cg-tlc__label-tick--bottom {
+  bottom: 5px;
+}
+.cg-tlc__label-axis {
+  height: var(--tlc-axis-h);
+}
+
+/* Plot column */
+.cg-tlc__plot {
+  position: relative;
+  min-width: 0;
+}
+.cg-tlc__bg {
+  position: absolute;
+  inset: var(--tlc-marker-h) 0 var(--tlc-axis-h) 0;
+  pointer-events: none;
+}
+.cg-tlc__missing {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(135deg, var(--chart-missing) 0 2px, transparent 2px 6px);
+  opacity: 0.85;
+}
+.cg-tlc__crosshair {
+  position: absolute;
+  top: calc(-1 * var(--tlc-marker-h));
+  bottom: calc(-1 * var(--tlc-axis-h) + 0.25rem);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border-radius: 4px;
+}
+.cg-tlc__band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+}
+.cg-tlc__band--before {
+  background: color-mix(in srgb, var(--info) 7%, transparent);
+  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--info) 45%, transparent);
+}
+.cg-tlc__band--after {
+  background: color-mix(in srgb, var(--caution) 9%, transparent);
+  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--caution) 60%, transparent);
+}
+.cg-tlc__band-label {
+  position: absolute;
+  bottom: 0.4rem;
+  left: 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* Medication marker labels (lanes) + lines */
+.cg-tlc__markers {
+  position: relative;
+  height: var(--tlc-marker-h);
+}
+.cg-tlc__marker-label {
+  position: absolute;
+  top: calc(var(--lane) * var(--tlc-lane-h));
+  height: calc(var(--tlc-lane-h) - 0.2rem);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-size: 0.71875rem;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  /* Above the sticky row labels, so a label stays readable while the plot scrolls under them. */
+  z-index: 6;
+}
+.cg-tlc__marker-label.is-start {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+.cg-tlc__marker-label.is-free {
+  border-radius: var(--radius-pill);
+}
+.cg-tlc__marker-label.is-end {
+  transform: translateX(-100%);
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+.cg-tlc__marker-label--stopped,
+.cg-tlc__marker-label--dose_changed {
+  background: var(--surface-raised);
+  color: var(--ink);
+  border: 1.5px solid var(--chart-med-line);
+}
+.cg-tlc__marker-label.is-quiet {
+  opacity: 0.55;
+}
+.cg-tlc__marker-date {
+  font-weight: var(--fw-regular);
+  opacity: 0.85;
+}
+.cg-tlc__marker-lines {
+  position: absolute;
+  inset: 0 0 var(--tlc-axis-h) 0;
+  pointer-events: none;
+}
+.cg-tlc__marker-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px solid var(--chart-med-line);
+  transform: translateX(-1px);
+  z-index: 1;
+}
+.cg-tlc__marker-line--stopped {
+  border-left-style: dashed;
+}
+.cg-tlc__marker-line--dose_changed {
+  border-left-style: dotted;
+}
+.cg-tlc__marker-line.is-quiet {
+  opacity: 0.4;
+}
+
+/* Strip rows */
+.cg-tlc__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--tlc-days), minmax(0, 1fr));
+  height: var(--tlc-row-h);
+  border-bottom: 1px solid var(--chart-grid);
+}
+.cg-tlc__row:first-of-type {
+  border-top: 1px solid var(--chart-grid);
+}
+.cg-tlc__cell {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+.cg-tlc__cell.is-no::after {
+  content: "";
+  width: var(--tlc-no-dot);
+  height: var(--tlc-no-dot);
+  border-radius: 50%;
+  background: var(--line-strong);
+  opacity: 0.5;
+}
+.cg-tlc__mark {
+  --dot-size: var(--tlc-dot);
+}
+
+/* Rating lines */
+.cg-tlc__lines {
+  position: relative;
+  height: var(--tlc-lines-h);
+  margin-top: var(--space-2);
+}
+.cg-tlc__lines .recharts-wrapper,
+.cg-tlc__lines svg {
+  overflow: visible;
+}
+.cg-tlc__no-ratings {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+
+/* Axis */
+.cg-tlc__axis {
+  position: relative;
+  height: var(--tlc-axis-h);
+  border-top: 1px solid var(--chart-grid);
+}
+.cg-tlc__tick {
+  position: absolute;
+  top: 0.35rem;
+  transform: translateX(-50%);
+  font-size: var(--fs-xs);
+  color: var(--chart-axis);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.cg-tlc__tick.is-last {
+  transform: translateX(-100%);
+  font-weight: var(--fw-semibold);
+}
+.cg-tlc__tick::before {
+  content: "";
+  position: absolute;
+  top: -0.35rem;
+  left: 50%;
+  height: 0.25rem;
+  border-left: 1px solid var(--chart-grid);
+}
+.cg-tlc__tick.is-last::before {
+  left: auto;
+  right: 0;
+}
+/* Edge ticks next to the sticky row labels: aligned so the date is never cut in half. */
+.cg-tlc__tick.is-start {
+  transform: none;
+}
+.cg-tlc__tick.is-start::before {
+  left: 0;
+}
+.cg-tlc__tick.is-end {
+  transform: translateX(-100%);
+}
+.cg-tlc__tick.is-end::before {
+  left: auto;
+  right: 0;
+}
+
+/* Interactive day columns */
+.cg-tlc__hits {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+.cg-tlc__hit {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.cg-tlc__hit:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -1px;
+}
+
+/* Tooltip */
+.cg-tlc__tip {
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  pointer-events: none;
+  margin-left: 10px;
+}
+.cg-tlc__tip.is-end {
+  transform: translateX(-100%);
+  margin-left: -10px;
+}
+.cg-tlc__tip-card {
+  width: 15.5rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-3);
+  font-size: var(--fs-xs);
+  color: var(--ink);
+}
+.cg-tlc__tip-date {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+.cg-tlc__tip-med {
+  margin-top: var(--space-1);
+  font-weight: var(--fw-semibold);
+  color: var(--primary-text);
+}
+.cg-tlc__tip-empty {
+  margin-top: var(--space-1);
+  color: var(--ink-muted);
+}
+.cg-tlc__tip-list {
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.2rem;
+}
+.cg-tlc__tip-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--ink-muted);
+}
+.cg-tlc__tip-list li.is-yes {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+.cg-tlc__tip-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.cg-tlc__tip-blank {
+  width: 9px;
+  height: 9px;
+}
+.cg-tlc__tip-rest {
+  margin-top: var(--space-1);
+  color: var(--ink-muted);
+}
+.cg-tlc__tip-story {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--ink);
+}
+.cg-tlc__tip-hint {
+  margin-top: var(--space-2);
+  color: var(--primary-text);
+  font-weight: var(--fw-semibold);
+}
+
+/* Table view */
+.cg-tlc__table-wrap {
+  max-height: 32rem;
+  overflow: auto;
+}
+.cg-tlc__table th[scope="row"] {
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  text-align: left;
+  vertical-align: top;
+}
+.cg-tlc__table td {
+  white-space: nowrap;
+  color: var(--ink-muted);
+}
+.cg-tlc__table td.is-yes {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+/* Days without a check-in say "No check-in" in words; the muted ink keeps AA contrast on the tinted row. */
+.cg-tlc__table tr.is-missing th,
+.cg-tlc__table-none {
+  color: var(--ink-muted);
+}
+.cg-tlc__table-day {
+  color: var(--primary-text);
+  font-weight: var(--fw-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.cg-tlc__table-med {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--primary-text);
+}
+
+.cg-tlc__label-short {
+  display: none;
+}
+@container cg-tlc (max-width: 36rem) {
+  .cg-tlc__grid {
+    grid-template-columns: 5.25rem minmax(var(--tlc-plot-min), 1fr);
+  }
+  .cg-tlc__labels {
+    padding-right: var(--space-2);
+  }
+  .cg-tlc__label-full {
+    display: none;
+  }
+  .cg-tlc__label-short {
+    display: inline;
+  }
+  .cg-tlc__label-row {
+    font-size: 0.75rem;
+  }
+  .cg-tlc__label-lines-title {
+    white-space: normal;
+    line-height: 1.2;
+    max-width: 3.5rem;
+  }
+  .cg-tlc__legend {
+    gap: var(--space-1) var(--space-3);
+  }
+  .cg-tlc__row {
+    height: 1.5rem;
+  }
+  .cg-tlc__label-row {
+    height: 1.5rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .cg-tlc__marker-line {
+    border-left-color: CanvasText;
+  }
+  .cg-tlc__marker-label {
+    border: 1px solid CanvasText;
+  }
+}

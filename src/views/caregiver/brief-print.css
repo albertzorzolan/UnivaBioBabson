@@ -1,0 +1,306 @@
+/* Visit brief › print (SPEC §6.6). Only the print root (a portal next to the app root) is printed, on US Letter.
+ * Scoped with :has() so this stylesheet — which stays loaded after leaving the screen — never affects printing
+ * other pages. The brief is sized to fit one page for the seed record; longer content flows to page 2 rather
+ * than being cut. */
+
+@page cg-vb-letter {
+  size: letter;
+  margin: 0.33in 0.4in;
+}
+
+@media print {
+  body:has(> .cg-vb-print-root) > *:not(.cg-vb-print-root) {
+    display: none !important;
+  }
+  body:has(> .cg-vb-print-root) {
+    min-height: 0;
+    background: #fff;
+  }
+  .cg-vb-print-root {
+    display: block;
+    page: cg-vb-letter;
+    color: var(--ink);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .cg-vb-print-root .ui-no-print {
+    display: none !important;
+  }
+
+  /* ---- Document on paper ---- */
+  .cg-vb-print-root .cg-vb-doc {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 7.5pt;
+    line-height: 1.2;
+    container-type: normal;
+  }
+  .cg-vb-print-root .cg-vb-doc__head {
+    padding-bottom: 6pt;
+    border-bottom-width: 1.5pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__band {
+    padding-bottom: 4pt;
+    margin-bottom: 5pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__kind {
+    font-size: 7.5pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__status {
+    font-size: 7.5pt;
+    padding: 1pt 6pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__name {
+    font-size: 15pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__demo,
+  .cg-vb-print-root .cg-vb-doc__meta dd,
+  .cg-vb-print-root .cg-vb-doc__conditions {
+    font-size: 8.5pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__meta {
+    grid-template-columns: repeat(3, auto);
+    gap: 1pt 16pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__meta dt {
+    font-size: 6.5pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__conditions {
+    margin-top: 3pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__id {
+    gap: 2pt 16pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__tagline {
+    order: 0;
+    flex: 1 1 auto;
+    font-size: 7pt;
+    text-align: right;
+  }
+  .cg-vb-print-root .cg-vb-sec {
+    padding-top: 3pt;
+    margin-top: 3.5pt;
+    break-inside: avoid-page;
+  }
+  .cg-vb-print-root .cg-vb-sec--meds {
+    break-inside: auto;
+  }
+  /* Review prompts + questions flow in two balanced columns (the biggest space saver on one page). */
+  .cg-vb-print-root .cg-vb-pair {
+    columns: 2;
+    column-gap: 16pt;
+    column-rule: 0.5pt solid var(--line);
+    margin-top: 4pt;
+    padding-top: 4pt;
+    border-top: 1px solid var(--line);
+  }
+  .cg-vb-print-root .cg-vb-pair .cg-vb-sec {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+    break-inside: auto;
+  }
+  .cg-vb-print-root .cg-vb-pair .cg-vb-sec + .cg-vb-sec {
+    margin-top: 6pt;
+  }
+  .cg-vb-print-root .cg-vb-pair .cg-vb-list__item {
+    break-inside: avoid;
+  }
+  .cg-vb-print-root .cg-vb-sec__title {
+    margin-bottom: 2pt;
+    font-size: 8pt;
+    break-after: avoid;
+  }
+  .cg-vb-print-root .cg-vb-sec__num {
+    width: 12pt;
+    height: 12pt;
+    font-size: 7pt;
+  }
+  .cg-vb-print-root .cg-vb-list {
+    gap: 1.5pt;
+  }
+  .cg-vb-print-root .cg-vb-list__item {
+    padding-left: 9pt;
+  }
+  .cg-vb-print-root .cg-vb-list__item::before {
+    width: 3pt;
+    height: 3pt;
+    left: 1pt;
+    top: 0.55em;
+  }
+  .cg-vb-print-root .cg-vb-list--numbered .cg-vb-list__item {
+    padding-left: 12pt;
+  }
+  .cg-vb-print-root .cg-vb-list--numbered .cg-vb-list__item::before {
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+  }
+  .cg-vb-print-root .cg-vb-sec--reason .cg-vb-list__item {
+    padding-left: 0;
+  }
+  .cg-vb-print-root .cg-vb-sec--reason .cg-vb-sent__text {
+    font-size: 8.6pt;
+  }
+  /* The chart floats right so the sentences use the full width once they pass it. */
+  .cg-vb-print-root .cg-vb-noticed {
+    display: flow-root;
+  }
+  .cg-vb-print-root .cg-vb-noticed .cg-vb-list {
+    display: block;
+  }
+  .cg-vb-print-root .cg-vb-noticed .cg-vb-list__item + .cg-vb-list__item {
+    margin-top: 1.5pt;
+  }
+  .cg-vb-print-root .cg-vb-noticed__chart {
+    float: right;
+    width: 44%;
+    margin: 0 0 4pt 12pt;
+    padding: 5pt 6pt;
+    border-radius: 3pt;
+    gap: 2pt;
+  }
+  .cg-vb-print-root .cg-vb-strip__legend {
+    font-size: 6.5pt;
+    gap: 1pt 6pt;
+  }
+  .cg-vb-print-root .cg-vb-source {
+    font-size: 7pt;
+    white-space: normal;
+  }
+  .cg-vb-print-root .cg-vb-table {
+    table-layout: fixed;
+    font-size: 7.4pt;
+    line-height: 1.22;
+  }
+  .cg-vb-print-root .cg-vb-doc .cg-vb-table col.cg-vb-col-med {
+    width: 33%;
+  }
+  .cg-vb-print-root .cg-vb-doc .cg-vb-table col.cg-vb-col-for {
+    width: 11%;
+  }
+  .cg-vb-print-root .cg-vb-doc .cg-vb-table col.cg-vb-col-pres {
+    width: 16%;
+  }
+  .cg-vb-print-root .cg-vb-doc .cg-vb-table col.cg-vb-col-start {
+    width: 9%;
+  }
+  .cg-vb-print-root .cg-vb-doc .cg-vb-table col.cg-vb-col-flags {
+    width: 31%;
+  }
+  .cg-vb-print-root .cg-vb-med,
+  .cg-vb-print-root .cg-vb-how {
+    display: inline;
+  }
+  .cg-vb-print-root .cg-vb-how::before {
+    content: " · ";
+  }
+  .cg-vb-print-root .cg-vb-table th,
+  .cg-vb-print-root .cg-vb-table td {
+    padding: 1.4pt 3pt;
+  }
+  .cg-vb-print-root .cg-vb-table thead th {
+    font-size: 6.5pt;
+  }
+  .cg-vb-print-root .cg-vb-table tbody th {
+    min-width: 0;
+  }
+  .cg-vb-print-root .cg-vb-table tr {
+    break-inside: avoid;
+  }
+  .cg-vb-print-root .cg-vb-flags {
+    display: block;
+  }
+  .cg-vb-print-root .cg-vb-flag {
+    display: inline;
+    padding: 0;
+    border: 0;
+    font-size: 7pt;
+    line-height: 1.22;
+    white-space: nowrap;
+  }
+  .cg-vb-print-root .cg-vb-flag + .cg-vb-flag::before {
+    content: " · ";
+    color: var(--ink-subtle);
+    font-weight: 400;
+  }
+  .cg-vb-print-root .cg-vb-new {
+    font-size: 5.5pt;
+  }
+  .cg-vb-print-root .cg-vb-table-note {
+    margin-top: 2pt;
+    font-size: 6.5pt;
+  }
+  .cg-vb-print-root .cg-vb-limits {
+    columns: 2;
+    column-gap: 18pt;
+    padding-left: 9pt;
+    font-size: 6.9pt;
+    line-height: 1.24;
+  }
+  .cg-vb-print-root .cg-vb-limits li {
+    break-inside: avoid;
+  }
+  .cg-vb-print-root .cg-vb-limits li + li {
+    margin-top: 1.5pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__foot {
+    margin-top: 4pt;
+    padding-top: 3pt;
+    border-top-width: 1.5pt;
+    break-inside: avoid;
+  }
+  .cg-vb-print-root .cg-vb-doc__safety {
+    font-size: 8pt;
+  }
+  .cg-vb-print-root .cg-vb-doc__prov {
+    font-size: 6.5pt;
+  }
+
+  /* ---- Not reviewed yet notice ---- */
+  .cg-vb-unreviewed {
+    max-width: 5.5in;
+    margin: 1.5in auto 0;
+    padding: 24pt;
+    border: 1.5pt dashed var(--caution);
+    border-radius: 8pt;
+    color: var(--ink);
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+  .cg-vb-unreviewed__kind {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .cg-vb-unreviewed__title {
+    margin: 6pt 0 10pt;
+    font-family: var(--font-serif);
+    font-size: 18pt;
+  }
+  .cg-vb-unreviewed__safety {
+    margin-top: 14pt;
+    font-size: 9pt;
+    font-weight: 600;
+  }
+
+  /* ---- Personal Medication List on paper ---- */
+  .cg-vb-print-root .cg-vb-pml {
+    padding: 0;
+    font-size: 9.5pt;
+  }
+  .cg-vb-print-root .cg-vb-pml .cg-vb-table {
+    font-size: 9pt;
+  }
+  .cg-vb-print-root .cg-vb-pml .cg-vb-table th,
+  .cg-vb-print-root .cg-vb-pml .cg-vb-table td {
+    padding: 4pt 5pt;
+  }
+}

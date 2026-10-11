@@ -1,0 +1,2940 @@
+{
+"abilify mycite": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"acticlate": {
+"ids": [
+"1543946"
+],
+"ings": [
+"doxycycline",
+"doxycycline hyclate"
+],
+"tty": [
+"BN"
+]
+},
+"actonel": {
+"ids": [
+"753143"
+],
+"ings": [
+"risedronate",
+"risedronate sodium"
+],
+"tty": [
+"BN"
+]
+},
+"adcirca": {
+"ids": [
+"849863"
+],
+"ings": [
+"tadalafil"
+],
+"tty": [
+"BN"
+]
+},
+"alkindi sprinkle": {
+"ids": [
+"2481170"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"allegra": {
+"ids": [
+"324026"
+],
+"ings": [
+"fexofenadine",
+"fexofenadine hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"allegra allergy": {
+"ids": [
+"1095513"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"aloprim": {
+"ids": [
+"261446"
+],
+"ings": [
+"allopurinol",
+"allopurinol sodium"
+],
+"tty": [
+"BN"
+]
+},
+"altoprev": {
+"ids": [
+"541841"
+],
+"ings": [
+"lovastatin"
+],
+"tty": [
+"BN"
+]
+},
+"alyq": {
+"ids": [
+"2110450"
+],
+"ings": [
+"tadalafil"
+],
+"tty": [
+"BN"
+]
+},
+"amoxil": {
+"ids": [
+"203169"
+],
+"ings": [
+"amoxicillin"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"anaprox ds": {
+"ids": [
+"579641"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"android": {
+"ids": [
+"731594"
+],
+"ings": [
+"methyltestosterone"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"armonair": {
+"ids": [
+"1941532"
+],
+"ings": [
+"fluticasone",
+"fluticasone propionate"
+],
+"tty": [
+"BN"
+]
+},
+"arnuity ellipta": {
+"ids": [
+"2722665"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"atelvia": {
+"ids": [
+"1086104"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"atropen": {
+"ids": [
+"404863"
+],
+"ings": [
+"atropine",
+"atropine sulfate"
+],
+"tty": [
+"BN"
+]
+},
+"atrovent": {
+"ids": [
+"151390"
+],
+"ings": [
+"ipratropium",
+"ipratropium bromide"
+],
+"tty": [
+"BN"
+]
+},
+"atrovent hfa": {
+"ids": [
+"606539"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"avodart": {
+"ids": [
+"352453"
+],
+"ings": [
+"dutasteride"
+],
+"tty": [
+"BN"
+]
+},
+"azilect": {
+"ids": [
+"635985"
+],
+"ings": [
+"rasagiline",
+"rasagiline mesylate"
+],
+"tty": [
+"BN"
+]
+},
+"betapace": {
+"ids": [
+"224909"
+],
+"ings": [
+"sotalol",
+"sotalol hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"betapace af": {
+"ids": [
+"261464"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"binosto": {
+"ids": [
+"1248078"
+],
+"ings": [
+"alendronate",
+"alendronic acid"
+],
+"tty": [
+"BN"
+]
+},
+"boniva": {
+"ids": [
+"541684"
+],
+"ings": [
+"ibandronate",
+"ibandronic acid"
+],
+"tty": [
+"BN"
+]
+},
+"buspar": {
+"ids": [
+"154990"
+],
+"ings": [
+"buspirone",
+"buspirone hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"bystolic": {
+"ids": [
+"751613"
+],
+"ings": [
+"nebivolol"
+],
+"tty": [
+"BN"
+]
+},
+"calan sr": {
+"ids": [
+"215816"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"caltrate": {
+"ids": [
+"215850"
+],
+"ings": [
+"calcium carbonate"
+],
+"tty": [
+"BN"
+]
+},
+"carafate": {
+"ids": [
+"227743"
+],
+"ings": [
+"sucralfate"
+],
+"tty": [
+"BN"
+]
+},
+"cardene": {
+"ids": [
+"151490"
+],
+"ings": [
+"nicardipine",
+"nicardipine hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"cardizem cd": {
+"ids": [
+"215895"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"cardizem la": {
+"ids": [
+"404921"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"cartia xt": {
+"ids": [
+"261471"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"cialis": {
+"ids": [
+"303263"
+],
+"ings": [
+"tadalafil"
+],
+"tty": [
+"BN"
+]
+},
+"citracal": {
+"ids": [
+"2262283"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"colace": {
+"ids": [
+"82000"
+],
+"ings": [
+"docusate",
+"docusate sodium"
+],
+"tty": [
+"BN"
+]
+},
+"coreg cr": {
+"ids": [
+"669036"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"corgard": {
+"ids": [
+"151549"
+],
+"ings": [
+"nadolol"
+],
+"tty": [
+"BN"
+]
+},
+"crestor": {
+"ids": [
+"320864"
+],
+"ings": [
+"rosuvastatin",
+"rosuvastatin calcium"
+],
+"tty": [
+"BN"
+]
+},
+"cytotec": {
+"ids": [
+"151578"
+],
+"ings": [
+"misoprostol"
+],
+"tty": [
+"BN"
+]
+},
+"decadron": {
+"ids": [
+"227682"
+],
+"ings": [
+"dexamethasone",
+"dexamethasone sodium phosphate"
+],
+"tty": [
+"BN"
+]
+},
+"delsym": {
+"ids": [
+"3146"
+],
+"ings": [
+"dextromethorphan",
+"dextromethorphan polistirex"
+],
+"tty": [
+"BN"
+]
+},
+"depakote er": {
+"ids": [
+"284710"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"dexpak": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"diflucan": {
+"ids": [
+"202813"
+],
+"ings": [
+"fluconazole"
+],
+"tty": [
+"BN"
+]
+},
+"digitek": {
+"ids": [
+"261504"
+],
+"ings": [
+"digoxin"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"diuril": {
+"ids": [
+"216677"
+],
+"ings": [
+"chlorothiazide",
+"chlorothiazide sodium"
+],
+"tty": [
+"BN"
+]
+},
+"doan's": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"doryx": {
+"ids": [
+"216727"
+],
+"ings": [
+"doxycycline",
+"doxycycline hyclate"
+],
+"tty": [
+"BN"
+]
+},
+"dramamine all day less drowsy": {
+"ids": [
+"2572254"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"dramamine original": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"drisdol": {
+"ids": [
+"92515"
+],
+"ings": [
+"ergocalciferol"
+],
+"tty": [
+"BN"
+]
+},
+"drizalma sprinkle": {
+"ids": [
+"2263895"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"dulcolax": {
+"ids": [
+"151672"
+],
+"ings": [
+"bisacodyl"
+],
+"tty": [
+"BN"
+]
+},
+"ec-naprosyn": {
+"ids": [
+"152093"
+],
+"ings": [
+"naproxen"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"elepsia xr": {
+"ids": [
+"2552910"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"enulose": {
+"ids": [
+"216928"
+],
+"ings": [
+"lactulose"
+],
+"tty": [
+"BN"
+]
+},
+"euthyrox": {
+"ids": [
+"217006"
+],
+"ings": [
+"levothyroxine",
+"levothyroxine sodium"
+],
+"tty": [
+"BN"
+]
+},
+"evista": {
+"ids": [
+"217010"
+],
+"ings": [
+"raloxifene",
+"raloxifene hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"ex-lax": {
+"ids": [
+"217011"
+],
+"ings": [
+"phenolphthalein"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"exalgo": {
+"ids": [
+"902730"
+],
+"ings": [
+"hydromorphone"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"ezallor": {
+"ids": [
+"2167558"
+],
+"ings": [
+"rosuvastatin",
+"rosuvastatin calcium"
+],
+"tty": [
+"BN"
+]
+},
+"fenoglide": {
+"ids": [
+"763247"
+],
+"ings": [
+"fenofibrate"
+],
+"tty": [
+"BN"
+]
+},
+"feosol": {
+"ids": [
+"217091"
+],
+"ings": [
+"ferrous sulfate"
+],
+"tty": [
+"BN"
+]
+},
+"fer-in-sol": {
+"ids": [
+"217093"
+],
+"ings": [
+"ferrous sulfate"
+],
+"tty": [
+"BN"
+]
+},
+"flagyl": {
+"ids": [
+"202866"
+],
+"ings": [
+"metronidazole",
+"metronidazole hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"flector": {
+"ids": [
+"135123"
+],
+"ings": [
+"diclofenac",
+"diclofenac epolamine"
+],
+"tty": [
+"BN"
+]
+},
+"flolipid": {
+"ids": [
+"1944257"
+],
+"ings": [
+"simvastatin"
+],
+"tty": [
+"BN"
+]
+},
+"flonase": {
+"ids": [
+"83373"
+],
+"ings": [
+"fluticasone",
+"fluticasone propionate",
+"fluticasone furoate"
+],
+"tty": [
+"BN"
+]
+},
+"flovent diskus": {
+"ids": [
+"723628"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"flovent hfa": {
+"ids": [
+"352650"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"forfivo xl": {
+"ids": [
+"1406529"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"fortamet": {
+"ids": [
+"541766"
+],
+"ings": [
+"metformin"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"fosamax": {
+"ids": [
+"114265"
+],
+"ings": [
+"alendronate",
+"alendronate sodium",
+"alendronic acid"
+],
+"tty": [
+"BN"
+]
+},
+"gavilax": {
+"ids": [
+"876188"
+],
+"ings": [
+"polyethylene glycol 3350"
+],
+"tty": [
+"BN"
+]
+},
+"glucophage": {
+"ids": [
+"151827"
+],
+"ings": [
+"metformin",
+"metformin hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"glucotrol xl": {
+"ids": [
+"217360"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"glumetza": {
+"ids": [
+"645109"
+],
+"ings": [
+"metformin",
+"metformin hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"glycolax": {
+"ids": [
+"542087"
+],
+"ings": [
+"polyethylene glycol 3350"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"hemangeol": {
+"ids": [
+"1495059"
+],
+"ings": [
+"propranolol",
+"propranolol hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"hygroton": {
+"ids": [
+"151877"
+],
+"ings": [
+"chlorthalidone"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"imdur": {
+"ids": [
+"151162"
+],
+"ings": [
+"isosorbide"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"inbrija": {
+"ids": [
+"2107617"
+],
+"ings": [
+"levodopa"
+],
+"tty": [
+"BN"
+]
+},
+"incruse ellipta": {
+"ids": [
+"1593891"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"inderal la": {
+"ids": [
+"151892"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"inderal xl": {
+"ids": [
+"1535973"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"innopran xl": {
+"ids": [
+"398505"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"invega hafyera": {
+"ids": [
+"2587331"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"invega trinza": {
+"ids": [
+"1660415"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"isordil titradose": {
+"ids": [
+"217816"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"januvia": {
+"ids": [
+"638596"
+],
+"ings": [
+"sitagliptin",
+"sitagliptin phosphate"
+],
+"tty": [
+"BN"
+]
+},
+"jylamvo": {
+"ids": [
+"2671457"
+],
+"ings": [
+"methotrexate"
+],
+"tty": [
+"BN"
+]
+},
+"k-dur": {
+"ids": [
+"93017"
+],
+"ings": [
+"potassium chloride"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"k-tab": {
+"ids": [
+"93028"
+],
+"ings": [
+"potassium chloride"
+],
+"tty": [
+"BN"
+]
+},
+"kaopectate": {
+"ids": [
+"659118"
+],
+"ings": [
+"bismuth subsalicylate"
+],
+"tty": [
+"BN"
+]
+},
+"kapspargo sprinkle": {
+"ids": [
+"2055386"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"katerzia": {
+"ids": [
+"2184121"
+],
+"ings": [
+"amlodipine",
+"amlodipine benzoate"
+],
+"tty": [
+"BN"
+]
+},
+"keflex": {
+"ids": [
+"203167"
+],
+"ings": [
+"cephalexin",
+"cephalexin anhydrous",
+"cephalexin monohydrate",
+"cephalexin hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"keppra xr": {
+"ids": [
+"827207"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"klor-con": {
+"ids": [
+"217905"
+],
+"ings": [
+"potassium chloride"
+],
+"tty": [
+"BN"
+]
+},
+"konsyl": {
+"ids": [
+"151944"
+],
+"ings": [
+"psyllium"
+],
+"tty": [
+"BN"
+]
+},
+"kristalose": {
+"ids": [
+"217928"
+],
+"ings": [
+"lactulose"
+],
+"tty": [
+"BN"
+]
+},
+"lamictal odt": {
+"ids": [
+"855648"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"lamictal xr": {
+"ids": [
+"855652"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"levaquin": {
+"ids": [
+"217992"
+],
+"ings": [
+"levofloxacin",
+"levofloxacin anhydrous"
+],
+"tty": [
+"BN"
+]
+},
+"levo-t": {
+"ids": [
+"217996"
+],
+"ings": [
+"levothyroxine",
+"levothyroxine sodium"
+],
+"tty": [
+"BN"
+]
+},
+"levoxyl": {
+"ids": [
+"218002"
+],
+"ings": [
+"levothyroxine",
+"levothyroxine sodium"
+],
+"tty": [
+"BN"
+]
+},
+"levsin sl": {
+"ids": [
+"93123"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"lipitor": {
+"ids": [
+"153165"
+],
+"ings": [
+"atorvastatin",
+"atorvastatin calcium trihydrate",
+"atorvastatin calcium"
+],
+"tty": [
+"BN"
+]
+},
+"lipofen": {
+"ids": [
+"615906"
+],
+"ings": [
+"fenofibrate"
+],
+"tty": [
+"BN"
+]
+},
+"liqrev": {
+"ids": [
+"2637051"
+],
+"ings": [
+"sildenafil",
+"sildenafil citrate"
+],
+"tty": [
+"BN"
+]
+},
+"livalo": {
+"ids": [
+"861612"
+],
+"ings": [
+"pitavastatin",
+"pitavastatin calcium"
+],
+"tty": [
+"BN"
+]
+},
+"lodosyn": {
+"ids": [
+"203437"
+],
+"ings": [
+"carbidopa"
+],
+"tty": [
+"BN"
+]
+},
+"loniten": {
+"ids": [
+"202706"
+],
+"ings": [
+"minoxidil"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"loreev xr": {
+"ids": [
+"2585212"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"lovaza": {
+"ids": [
+"278346"
+],
+"ings": [
+"omega-3 acid ethyl esters (usp)"
+],
+"tty": [
+"BN"
+]
+},
+"lyrica cr": {
+"ids": [
+"2000945"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"mag-ox": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"mapap": {
+"ids": [
+"218205"
+],
+"ings": [
+"acetaminophen"
+],
+"tty": [
+"BN"
+]
+},
+"matzim la": {
+"ids": [
+"1091620"
+],
+"ings": [
+"diltiazem",
+"diltiazem hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"metamucil": {
+"ids": [
+"6802"
+],
+"ings": [
+"psyllium"
+],
+"tty": [
+"BN"
+]
+},
+"metaxall": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"micro-k": {
+"ids": [
+"218365"
+],
+"ings": [
+"potassium chloride"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"midol ib": {
+"ids": [
+"218371"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"minitran": {
+"ids": [
+"151174"
+],
+"ings": [
+"nitroglycerin"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"miralax": {
+"ids": [
+"261575"
+],
+"ings": [
+"polyethylene glycol 3350"
+],
+"tty": [
+"BN"
+]
+},
+"mirapex": {
+"ids": [
+"218402"
+],
+"ings": [
+"pramipexole",
+"pramipexole dihydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"mirapex er": {
+"ids": [
+"968013"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"motpoly xr": {
+"ids": [
+"2668908"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"motrin ib": {
+"ids": [
+"202488"
+],
+"ings": [
+"ibuprofen"
+],
+"tty": [
+"BN"
+]
+},
+"mounjaro": {
+"ids": [
+"2601734"
+],
+"ings": [
+"tirzepatide"
+],
+"tty": [
+"BN"
+]
+},
+"mucinex": {
+"ids": [
+"352777"
+],
+"ings": [
+"guaifenesin"
+],
+"tty": [
+"BN"
+]
+},
+"namenda": {
+"ids": [
+"405206"
+],
+"ings": [
+"memantine",
+"memantine hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"namenda xr": {
+"ids": [
+"405206"
+],
+"ings": [
+"memantine",
+"memantine hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"narcan": {
+"ids": [
+"197117"
+],
+"ings": [
+"naloxone",
+"naloxone hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"nascobal": {
+"ids": [
+"262128"
+],
+"ings": [
+"vitamin b12"
+],
+"tty": [
+"BN"
+]
+},
+"nesina": {
+"ids": [
+"1368007"
+],
+"ings": [
+"alogliptin",
+"alogliptin benzoate"
+],
+"tty": [
+"BN"
+]
+},
+"neupro": {
+"ids": [
+"707892"
+],
+"ings": [
+"rotigotine"
+],
+"tty": [
+"BN"
+]
+},
+"nexium 24hr": {
+"ids": [
+"1944723"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"nitrolingual": {
+"ids": [
+"151177"
+],
+"ings": [
+"nitroglycerin"
+],
+"tty": [
+"BN"
+]
+},
+"nitromist": {
+"ids": [
+"705130"
+],
+"ings": [
+"nitroglycerin"
+],
+"tty": [
+"BN"
+]
+},
+"norliqva": {
+"ids": [
+"2599174"
+],
+"ings": [
+"amlodipine"
+],
+"tty": [
+"BN"
+]
+},
+"nucynta er": {
+"ids": [
+"1189288"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"nutropin aq": {
+"ids": [
+"218823"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"ofirmev": {
+"ids": [
+"1041527"
+],
+"ings": [
+"acetaminophen"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"onglyza": {
+"ids": [
+"858037"
+],
+"ings": [
+"saxagliptin"
+],
+"tty": [
+"BN"
+]
+},
+"onyda xr": {
+"ids": [
+"2694602"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"oracea": {
+"ids": [
+"643822"
+],
+"ings": [
+"doxycycline",
+"doxycycline anhydrous"
+],
+"tty": [
+"BN"
+]
+},
+"os-cal": {
+"ids": [
+"605420"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"otrexup": {
+"ids": [
+"1441403"
+],
+"ings": [
+"methotrexate",
+"methotrexate sodium"
+],
+"tty": [
+"BN"
+]
+},
+"ozempic": {
+"ids": [
+"1991307"
+],
+"ings": [
+"semaglutide"
+],
+"tty": [
+"BN"
+]
+},
+"parafon forte dsc": {
+"ids": [
+"219108"
+],
+"ings": [
+"chlorzoxazone"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"pediapred": {
+"ids": [
+"219136"
+],
+"ings": [
+"prednisolone"
+],
+"tty": [
+"BN"
+]
+},
+"pepcid ac": {
+"ids": [
+"152211"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"pepto-bismol": {
+"ids": [
+"54536"
+],
+"ings": [
+"bismuth subsalicylate"
+],
+"tty": [
+"BN"
+]
+},
+"perforomist": {
+"ids": [
+"723732"
+],
+"ings": [
+"formoterol",
+"formoterol fumarate",
+"formoterol fumarate dihydrate"
+],
+"tty": [
+"BN"
+]
+},
+"phillips milk of magnesia": {
+"ids": [
+"219233"
+],
+"ings": [
+"magnesium hydroxide"
+],
+"tty": [
+"BN"
+]
+},
+"plaquenil": {
+"ids": [
+"202462"
+],
+"ings": [
+"hydroxychloroquine",
+"hydroxychloroquine sulfate"
+],
+"tty": [
+"BN"
+]
+},
+"plendil": {
+"ids": [
+"203016"
+],
+"ings": [
+"felodipine"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"pravachol": {
+"ids": [
+"203333"
+],
+"ings": [
+"pravastatin",
+"pravastatin sodium"
+],
+"tty": [
+"BN"
+]
+},
+"prevacid 24hr": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"prevacid solutab": {
+"ids": [
+"352915"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"prilosec otc": {
+"ids": [
+"405277"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"proair hfa": {
+"ids": [
+"647295"
+],
+"ings": [
+"albuterol",
+"albuterol sulfate"
+],
+"tty": [
+"BN"
+]
+},
+"proair respiclick": {
+"ids": [
+"1650169"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"propecia": {
+"ids": [
+"219462"
+],
+"ings": [
+"finasteride"
+],
+"tty": [
+"BN"
+]
+},
+"proscar": {
+"ids": [
+"196476"
+],
+"ings": [
+"finasteride"
+],
+"tty": [
+"BN"
+]
+},
+"proventil hfa": {
+"ids": [
+"219483"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"pulmicort": {
+"ids": [
+"196487"
+],
+"ings": [
+"budesonide"
+],
+"tty": [
+"BN"
+]
+},
+"pulmicort flexhaler": {
+"ids": [
+"704746"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"qmiiz odt": {
+"ids": [
+"2167964"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"qudexy xr": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"rasuvo": {
+"ids": [
+"1544379"
+],
+"ings": [
+"methotrexate",
+"methotrexate sodium"
+],
+"tty": [
+"BN"
+]
+},
+"razadyne er": {
+"ids": [
+"607137"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"remeronsoltab": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"requip": {
+"ids": [
+"152951"
+],
+"ings": [
+"ropinirole"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"requip xl": {
+"ids": [
+"802664"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"revatio": {
+"ids": [
+"581642"
+],
+"ings": [
+"sildenafil",
+"sildenafil citrate"
+],
+"tty": [
+"BN"
+]
+},
+"rhinocort": {
+"ids": [
+"196488"
+],
+"ings": [
+"budesonide"
+],
+"tty": [
+"BN"
+]
+},
+"riomet": {
+"ids": [
+"405304"
+],
+"ings": [
+"metformin",
+"metformin hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"rivive": {
+"ids": [
+"2678211"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"robafen cough": {
+"ids": [
+"807855"
+],
+"ings": [
+"dextromethorphan",
+"dextromethorphan hydrobromide"
+],
+"tty": [
+"BN"
+]
+},
+"robitussin chest congestion": {
+"ids": [
+"2375550"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"rybelsus": {
+"ids": [
+"2200645"
+],
+"ings": [
+"semaglutide"
+],
+"tty": [
+"BN"
+]
+},
+"sal-tropine": {
+"ids": [
+"219778"
+],
+"ings": [
+"atropine"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"saxenda": {
+"ids": [
+"1598264"
+],
+"ings": [
+"liraglutide"
+],
+"tty": [
+"BN"
+]
+},
+"senokot": {
+"ids": [
+"202961"
+],
+"ings": [
+"sennosides, usp"
+],
+"tty": [
+"BN"
+]
+},
+"serevent": {
+"ids": [
+"203159"
+],
+"ings": [
+"salmeterol",
+"salmeterol xinafoate"
+],
+"tty": [
+"BN"
+]
+},
+"singulair": {
+"ids": [
+"153889"
+],
+"ings": [
+"montelukast",
+"montelukast sodium"
+],
+"tty": [
+"BN"
+]
+},
+"slow fe": {
+"ids": [
+"152364"
+],
+"ings": [
+"ferrous sulfate"
+],
+"tty": [
+"BN"
+]
+},
+"sotylize": {
+"ids": [
+"1593726"
+],
+"ings": [
+"sotalol",
+"sotalol hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"sovuna": {
+"ids": [
+"2665276"
+],
+"ings": [
+"hydroxychloroquine",
+"hydroxychloroquine sulfate"
+],
+"tty": [
+"BN"
+]
+},
+"spiriva": {
+"ids": [
+"274535"
+],
+"ings": [
+"tiotropium",
+"tiotropium bromide monohydrate",
+"tiotropium bromide mono",
+"tiotropium bromide"
+],
+"tty": [
+"BN"
+]
+},
+"spiriva handihaler": {
+"ids": [
+"2178173"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"spiriva respimat": {
+"ids": [
+"1721035"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"subutex": {
+"ids": [
+"1818"
+],
+"ings": [
+"buprenorphine"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"sudafed": {
+"ids": [
+"203302"
+],
+"ings": [
+"pseudoephedrine",
+"pseudoephedrine hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"sudafed 12 hour": {
+"ids": [
+"220067"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"sudafed pe": {
+"ids": [
+"603256"
+],
+"ings": [
+"phenylephrine",
+"phenylephrine hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"surfak": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"synthroid": {
+"ids": [
+"224920"
+],
+"ings": [
+"levothyroxine",
+"levothyroxine sodium"
+],
+"tty": [
+"BN"
+]
+},
+"tadliq": {
+"ids": [
+"2613564"
+],
+"ings": [
+"tadalafil"
+],
+"tty": [
+"BN"
+]
+},
+"taztia xt": {
+"ids": [
+"605849"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"tessalon": {
+"ids": [
+"227783"
+],
+"ings": [
+"benzonatate"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"tessalon perles": {
+"ids": [
+"220224"
+],
+"ings": [
+"benzonatate"
+],
+"tty": [
+"BN"
+]
+},
+"theochron": {
+"ids": [
+"203401"
+],
+"ings": [
+"theophylline"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"tirosint": {
+"ids": [
+"728656"
+],
+"ings": [
+"levothyroxine",
+"levothyroxine sodium"
+],
+"tty": [
+"BN"
+]
+},
+"tradjenta": {
+"ids": [
+"1100703"
+],
+"ings": [
+"linagliptin"
+],
+"tty": [
+"BN"
+]
+},
+"trandate": {
+"ids": [
+"152440"
+],
+"ings": [
+"labetalol",
+"labetalol hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"trexall": {
+"ids": [
+"284900"
+],
+"ings": [
+"methotrexate"
+],
+"tty": [
+"BN"
+]
+},
+"tricor": {
+"ids": [
+"220456"
+],
+"ings": [
+"fenofibrate"
+],
+"tty": [
+"BN"
+]
+},
+"triglide": {
+"ids": [
+"583093"
+],
+"ings": [
+"fenofibrate"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"trintellix": {
+"ids": [
+"1790881"
+],
+"ings": [
+"vortioxetine"
+],
+"tty": [
+"BN"
+]
+},
+"trokendi xr": {
+"ids": [
+"1440255"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"trulicity": {
+"ids": [
+"1551296"
+],
+"ings": [
+"dulaglutide"
+],
+"tty": [
+"BN"
+]
+},
+"tums": {
+"ids": [
+"220508"
+],
+"ings": [
+"calcium carbonate"
+],
+"tty": [
+"BN"
+]
+},
+"tylenol": {
+"ids": [
+"202433"
+],
+"ings": [
+"acetaminophen"
+],
+"tty": [
+"BN"
+]
+},
+"tylenol 8 hr arthritis pain": {
+"ids": [
+"1672983"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"tylenol extra strength": {
+"ids": [
+"220573"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"uloric": {
+"ids": [
+"834236"
+],
+"ings": [
+"febuxostat"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Active"
+]
+},
+"unithroid": {
+"ids": [
+"284910"
+],
+"ings": [
+"levothyroxine",
+"levothyroxine sodium"
+],
+"tty": [
+"BN"
+]
+},
+"ventolin hfa": {
+"ids": [
+"353534"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"verelan pm": {
+"ids": [
+"261692"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"viactiv": {
+"ids": [],
+"ings": [],
+"tty": [],
+"status": []
+},
+"viagra": {
+"ids": [
+"190465"
+],
+"ings": [
+"sildenafil",
+"sildenafil citrate"
+],
+"tty": [
+"BN"
+]
+},
+"vibramycin": {
+"ids": [
+"202975"
+],
+"ings": [
+"doxycycline",
+"doxycycline anhydrous",
+"doxycycline monohydrate",
+"doxycycline hyclate",
+"doxycycline hydrochloride",
+"doxycycline calcium"
+],
+"tty": [
+"BN"
+]
+},
+"victoza": {
+"ids": [
+"897123"
+],
+"ings": [
+"liraglutide"
+],
+"tty": [
+"BN"
+]
+},
+"viibryd": {
+"ids": [
+"1086773"
+],
+"ings": [
+"vilazodone",
+"vilazodone hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"vivelle-dot": {
+"ids": [
+"261701"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"wal-som": {
+"ids": [
+"1437719"
+],
+"ings": [
+"diphenhydramine",
+"diphenhydramine hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"wegovy": {
+"ids": [
+"2553502"
+],
+"ings": [
+"semaglutide"
+],
+"tty": [
+"BN"
+]
+},
+"xatmep": {
+"ids": [
+"1921593"
+],
+"ings": [
+"methotrexate",
+"methotrexate sodium"
+],
+"tty": [
+"BN"
+]
+},
+"xtampza er": {
+"ids": [
+"1796938"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"z-pak": {
+"ids": [
+"750149"
+],
+"ings": [
+"azithromycin"
+],
+"tty": [
+"BPCK"
+]
+},
+"zantac 360": {
+"ids": [
+"2562260"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+},
+"zebeta": {
+"ids": [
+"221002"
+],
+"ings": [
+"bisoprolol"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"zepbound": {
+"ids": [
+"2669702"
+],
+"ings": [
+"tirzepatide"
+],
+"tty": [
+"BN"
+]
+},
+"zetia": {
+"ids": [
+"353099"
+],
+"ings": [
+"ezetimibe"
+],
+"tty": [
+"BN"
+]
+},
+"zimhi": {
+"ids": [
+"2589614"
+],
+"ings": [
+"naloxone",
+"naloxone hydrochloride"
+],
+"tty": [
+"BN"
+]
+},
+"zituvio": {
+"ids": [
+"2670442"
+],
+"ings": [
+"sitagliptin"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Active"
+]
+},
+"zmax": {
+"ids": [
+"598022"
+],
+"ings": [
+"azithromycin"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"zocor": {
+"ids": [
+"196503"
+],
+"ings": [
+"simvastatin"
+],
+"tty": [
+"BN"
+]
+},
+"zofran": {
+"ids": [
+"66981"
+],
+"ings": [
+"ondansetron"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"zofran odt": {
+"ids": [
+"221035"
+],
+"ings": [],
+"tty": [
+"BN"
+],
+"status": [
+"NotCurrent"
+]
+},
+"zohydro er": {
+"ids": [
+"1442523"
+],
+"ings": [
+"hydrocodone"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Active"
+]
+},
+"zolpimist": {
+"ids": [
+"828693"
+],
+"ings": [
+"zolpidem"
+],
+"tty": [
+"BN"
+],
+"status": [
+"Obsolete"
+]
+},
+"zyloprim": {
+"ids": [
+"203600"
+],
+"ings": [
+"allopurinol",
+"allopurinol sodium"
+],
+"tty": [
+"BN"
+]
+},
+"zypitamag": {
+"ids": [
+"2001255"
+],
+"ings": [
+"pitavastatin",
+"pitavastatin magnesium"
+],
+"tty": [
+"BN"
+]
+},
+"zyprexa relprevv": {
+"ids": [
+"899928"
+],
+"ings": [],
+"tty": [
+""
+],
+"status": [
+"NotCurrent"
+]
+}
+}

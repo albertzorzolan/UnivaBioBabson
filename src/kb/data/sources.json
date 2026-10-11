@@ -1,0 +1,200 @@
+[
+ {
+  "id": "beers2023",
+  "short": "AGS Beers Criteria® 2023",
+  "citation": "By the 2023 American Geriatrics Society Beers Criteria® Update Expert Panel. American Geriatrics Society 2023 updated AGS Beers Criteria® for potentially inappropriate medication use in older adults. J Am Geriatr Soc. 2023;71(7):2052-2081.",
+  "url": "https://doi.org/10.1111/jgs.18372",
+  "doi": "10.1111/jgs.18372",
+  "year": 2023,
+  "usedFor": "Medicines to avoid or use with caution in older adults: Tables 2-7 (most older adults, drug-disease, caution, drug-drug, kidney function, strong anticholinergics)."
+ },
+ {
+  "id": "acb2012",
+  "short": "ACB scale, 2012 update",
+  "citation": "Aging Brain Care, Regenstrief Institute / Indiana University. Anticholinergic Cognitive Burden Scale, 2012 update. Boustani M, Campbell N, Munger S, Maidment I, Fox C. Impact of anticholinergics on the aging brain. Aging Health. 2008;4(3):311-320.",
+  "url": "https://www.hii.iu.edu/resources/anticholinergic-cognitive-burden-scale.pdf",
+  "doi": "10.2217/1745509X.4.3.311",
+  "year": 2012,
+  "usedFor": "Anticholinergic burden score (ACB) of each medicine and the review threshold of 3."
+ },
+ {
+  "id": "steadi",
+  "short": "CDC STEADI-Rx",
+  "citation": "Centers for Disease Control and Prevention. STEADI: Medications Linked to Falls (fact sheet), 2017; STEADI-Rx Community Pharmacy Fall Risk Checklist, 2019.",
+  "url": "https://www.cdc.gov/steadi/media/pdfs/STEADI-FactSheet-MedsLinkedtoFalls-508.pdf",
+  "doi": null,
+  "year": 2019,
+  "usedFor": "Fall-risk-increasing medicine classes."
+ },
+ {
+  "id": "stoppfall",
+  "short": "STOPPFall 2021",
+  "citation": "Seppala LJ, Petrovic M, Ryg J, et al. STOPPFall (Screening Tool of Older Persons Prescriptions in older adults with high fall risk): a Delphi study by the EuGMS Task and Finish Group on Fall-Risk-Increasing Drugs. Age Ageing. 2021;50(4):1189-1199.",
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8244563/",
+  "doi": "10.1093/ageing/afaa249",
+  "year": 2021,
+  "usedFor": "Fall-risk-increasing medicine classes (European expert consensus)."
+ },
+ {
+  "id": "devries2018",
+  "short": "de Vries 2018",
+  "citation": "de Vries M, Seppala LJ, Daams JG, et al. Fall-risk-increasing drugs: a systematic review and meta-analysis: I. Cardiovascular drugs. J Am Med Dir Assoc. 2018;19(4):371.e1-371.e9.",
+  "url": "https://doi.org/10.1016/j.jamda.2017.12.013",
+  "doi": "10.1016/j.jamda.2017.12.013",
+  "year": 2018,
+  "usedFor": "Why beta-blockers are not counted as fall-risk medicines."
+ },
+ {
+  "id": "stopp_start_v3",
+  "short": "STOPP/START v3",
+  "citation": "O'Mahony D, Cherubini A, Guiteras AR, et al. STOPP/START criteria for potentially inappropriate prescribing in older people: version 3. Eur Geriatr Med. 2023;14(4):625-632.",
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10447584/",
+  "doi": "10.1007/s41999-023-00777-y",
+  "year": 2023,
+  "usedFor": "Two medicines of the same kind (duplicate drug class)."
+ },
+ {
+  "id": "thinkcascades",
+  "short": "ThinkCascades 2022",
+  "citation": "McCarthy LM, Savage R, Dalton K, et al. ThinkCascades: a tool for identifying clinically important prescribing cascades affecting older people. Drugs Aging. 2022;39(10):829-840.",
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9477172/",
+  "doi": "10.1007/s40266-022-00964-9",
+  "year": 2022,
+  "usedFor": "Clinically important prescribing cascades in older adults."
+ },
+ {
+  "id": "pipc2025",
+  "short": "PIPC list 2025",
+  "citation": "Rochon PA, O'Mahony D, Cherubini A, et al. International expert panel's potentially inappropriate prescribing cascades (PIPC) list. Eur Geriatr Med. 2025;16(5):1573-1584.",
+  "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12712104/",
+  "doi": "10.1007/s41999-025-01215-x",
+  "year": 2025,
+  "usedFor": "Potentially inappropriate prescribing cascades (international Delphi list)."
+ },
+ {
+  "id": "savage2020",
+  "short": "Savage 2020",
+  "citation": "Savage RD, Visentin JD, Bronskill SE, et al. Evaluation of a common prescribing cascade of calcium channel blockers and diuretics in older adults with hypertension. JAMA Intern Med. 2020;180(5):643-651.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/32091538/",
+  "doi": "10.1001/jamainternmed.2019.7087",
+  "year": 2020,
+  "usedFor": "Calcium channel blocker → ankle swelling → loop diuretic cascade."
+ },
+ {
+  "id": "read2021",
+  "short": "Read 2021",
+  "citation": "Read SH, Giannakeas V, Pop P, et al. Evidence of a gabapentinoid and diuretic prescribing cascade among older adults with lower back pain. J Am Geriatr Soc. 2021;69(10):2842-2850.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/34118076/",
+  "doi": "10.1111/jgs.17312",
+  "year": 2021,
+  "usedFor": "Gabapentinoid → swelling → diuretic cascade."
+ },
+ {
+  "id": "gill2005",
+  "short": "Gill 2005",
+  "citation": "Gill SS, Mamdani M, Naglie G, et al. A prescribing cascade involving cholinesterase inhibitors and anticholinergic drugs. Arch Intern Med. 2005;165(7):808-813.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/15824303/",
+  "doi": "10.1001/archinte.165.7.808",
+  "year": 2005,
+  "usedFor": "Cholinesterase inhibitor → bladder leakage → bladder antimuscarinic cascade."
+ },
+ {
+  "id": "avorn1995jama",
+  "short": "Avorn 1995, JAMA",
+  "citation": "Avorn J, Gurwitz JH, Bohn RL, et al. Increased incidence of levodopa therapy following metoclopramide use. JAMA. 1995;274(22):1780-1782.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/7500509/",
+  "doi": "10.1001/jama.1995.03530220046031",
+  "year": 1995,
+  "usedFor": "Metoclopramide → parkinsonism → levodopa cascade."
+ },
+ {
+  "id": "avorn1995ajm",
+  "short": "Avorn 1995, Am J Med",
+  "citation": "Avorn J, Bohn RL, Mogun H, et al. Neuroleptic drug exposure and treatment of parkinsonism in the elderly: a case-control study. Am J Med. 1995;99(1):48-54.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/7598142/",
+  "doi": "10.1016/s0002-9343(99)80104-1",
+  "year": 1995,
+  "usedFor": "Antipsychotic → movement symptoms → antiparkinsonian medicine cascade."
+ },
+ {
+  "id": "gurwitz1997",
+  "short": "Gurwitz 1997",
+  "citation": "Gurwitz JH, Kalish SC, Bohn RL, et al. Thiazide diuretics and the initiation of anti-gout therapy. J Clin Epidemiol. 1997;50(8):953-959.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/9291881/",
+  "doi": "10.1016/s0895-4356(97)00101-7",
+  "year": 1997,
+  "usedFor": "Diuretic → gout → anti-gout medicine cascade."
+ },
+ {
+  "id": "gurwitz1994",
+  "short": "Gurwitz 1994",
+  "citation": "Gurwitz JH, Avorn J, Bohn RL, et al. Initiation of antihypertensive treatment during nonsteroidal anti-inflammatory drug therapy. JAMA. 1994;272(10):781-786.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/8078142/",
+  "doi": "10.1001/jama.1994.03520100043031",
+  "year": 1994,
+  "usedFor": "NSAID → raised blood pressure → antihypertensive cascade."
+ },
+ {
+  "id": "vegter2010",
+  "short": "Vegter 2010",
+  "citation": "Vegter S, de Jong-van den Berg LT. Misdiagnosis and mistreatment of a common side-effect: angiotensin-converting enzyme inhibitor-induced cough. Br J Clin Pharmacol. 2010;69(2):200-203.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/20233184/",
+  "doi": "10.1111/j.1365-2125.2009.03571.x",
+  "year": 2010,
+  "usedFor": "ACE inhibitor → cough → cough medicine cascade."
+ },
+ {
+  "id": "budnitz2011",
+  "short": "Budnitz 2011",
+  "citation": "Budnitz DS, Lovegrove MC, Shehab N, Richards CL. Emergency hospitalizations for adverse drug events in older Americans. N Engl J Med. 2011;365(21):2002-2012.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/22111719/",
+  "doi": "10.1056/NEJMsa1103053",
+  "year": 2011,
+  "usedFor": "Which medicines are most often behind emergency hospitalizations for medication harm (what to watch for)."
+ },
+ {
+  "id": "budnitz2021",
+  "short": "Budnitz 2021",
+  "citation": "Budnitz DS, Shehab N, Lovegrove MC, et al. US emergency department visits attributed to medication harms, 2017-2019. JAMA. 2021;326(13):1299-1309.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/34609453/",
+  "doi": "10.1001/jama.2021.13844",
+  "year": 2021,
+  "usedFor": "Which medicines are most often behind emergency visits for medication harm (what to watch for)."
+ },
+ {
+  "id": "shehab2016",
+  "short": "Shehab 2016",
+  "citation": "Shehab N, Lovegrove MC, Geller AI, et al. US emergency department visits for outpatient adverse drug events, 2013-2014. JAMA. 2016;316(20):2115-2125.",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/27893129/",
+  "doi": "10.1001/jama.2016.16201",
+  "year": 2016,
+  "usedFor": "Drug classes behind emergency visits for adverse drug events (context for monitoring prompts)."
+ },
+ {
+  "id": "fda_labels",
+  "short": "FDA drug labels (DailyMed)",
+  "citation": "U.S. Food and Drug Administration Structured Product Labeling, retrieved through the openFDA drug label API and NLM DailyMed (adverse reactions, warnings and precautions, geriatric use), 2026-10-10.",
+  "url": "https://dailymed.nlm.nih.gov/dailymed/",
+  "doi": null,
+  "year": 2026,
+  "usedFor": "Diary-related known effects of medicines (dizziness, drowsiness, confusion, swelling, sleep, energy, appetite)."
+ },
+ {
+  "id": "medlineplus",
+  "short": "MedlinePlus",
+  "citation": "National Library of Medicine. MedlinePlus drug information, via MedlinePlus Connect, 2026-10-10.",
+  "url": "https://medlineplus.gov/druginformation.html",
+  "doi": null,
+  "year": 2026,
+  "usedFor": "Plain-language uses and effects for supplements and OTC products without an FDA prescription label."
+ },
+ {
+  "id": "rxnorm",
+  "short": "RxNorm",
+  "citation": "National Library of Medicine. RxNorm and the RxNav REST API (ingredient RxCUIs and brand-to-ingredient relations), queried 2026-10-10.",
+  "url": "https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html",
+  "doi": null,
+  "year": 2026,
+  "usedFor": "Ingredient codes (RxCUI) and checks that each brand name maps to its ingredient."
+ }
+]

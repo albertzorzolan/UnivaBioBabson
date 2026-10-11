@@ -1,0 +1,3804 @@
+{
+ "id": "frids",
+ "title": "Fall-risk-increasing drugs (FRIDs): CDC STEADI / STEADI-Rx, EuGMS STOPPFall and AGS Beers 2023 crosswalk",
+ "compiled": "2026-10-10",
+ "compiledBy": "MedWatch research (UnivaBio hackathon); class lists transcribed from primary sources, deprescribing guidance paraphrased (not verbatim), brands verified via RxNorm/openFDA.",
+ "sources": [
+  {
+   "id": "cdcMedsLinkedToFalls",
+   "citation": "CDC STEADI. Medications Linked to Falls (fact sheet), 2017.",
+   "url": "https://www.cdc.gov/steadi/media/pdfs/STEADI-FactSheet-MedsLinkedtoFalls-508.pdf",
+   "alsoAt": "https://www.cdc.gov/steadi/pdf/STEADI-FactSheet-MedsLinkedtoFalls-508.pdf",
+   "accessed": "2026-10-10",
+   "content": {
+    "psychoactive": [
+     "Anticonvulsants",
+     "Antidepressants (TCAs and SSRIs)",
+     "Antipsychotics",
+     "Benzodiazepines",
+     "Opioids",
+     "Sedative-hypnotics (eszopiclone, zaleplon, zolpidem)"
+    ],
+    "otherCausingDizzinessSedationConfusionBlurredVisionOrOrthostaticHypotension": [
+     "Anticholinergics",
+     "Antihistamines",
+     "Medications affecting blood pressure",
+     "Muscle relaxants"
+    ],
+    "actions": [
+     "STOP medications when possible",
+     "SWITCH to safer alternatives",
+     "REDUCE to the lowest effective dose",
+     "Develop a monitoring plan and use non-drug strategies"
+    ],
+    "scope": "Review prescription, OTC and herbal products for all patients 65+"
+   }
+  },
+  {
+   "id": "cdcSAFE",
+   "citation": "CDC STEADI. SAFE Medication Review Framework (fact sheet), 2017.",
+   "url": "https://www.cdc.gov/steadi/media/pdfs/STEADI-FactSheet-SAFEMedReview-508.pdf",
+   "content": {
+    "steps": [
+     "Screen for medications that may increase fall risk",
+     "Assess the patient to manage health conditions (goals, side effects, preferences, barriers)",
+     "Formulate a medication action plan (stop, switch, reduce, simplify, monitor)",
+     "Educate patient and caregiver"
+    ]
+   }
+  },
+  {
+   "id": "steadiRxPage",
+   "citation": "CDC. Pharmacy Care (STEADI-Rx). Page updated Aug 3, 2025.",
+   "url": "https://www.cdc.gov/steadi/hcp/clinical-resources/pharmacy-care.html"
+  },
+  {
+   "id": "steadiRxChecklist",
+   "citation": "STEADI-Rx Community Pharmacy Fall Risk Checklist (UNC Eshelman School of Pharmacy / CDC), 2019.",
+   "url": "https://www.cdc.gov/steadi/pdf/provider/steadi-rx/STEADIRx_pharmacy_fallrisk_checklist-508.pdf",
+   "content": {
+    "medicationClassesWithFallRisk": [
+     "Anticonvulsants",
+     "Antidepressants",
+     "Antihypertensives",
+     "Antipsychotics",
+     "Antispasmodics",
+     "Benzodiazepines",
+     "Opioids",
+     "Sedative hypnotics",
+     "Tricyclic antidepressants",
+     "Other (e.g., OTC agents)"
+    ],
+    "screeningQuestions": [
+     "Any falls in the past year?",
+     "Worries about falling?",
+     "Feels unsteady when standing or walking?",
+     "Lightheadedness or dizziness from lying to standing?"
+    ]
+   }
+  },
+  {
+   "id": "steadiRxGuide",
+   "citation": "STEADI-Rx: Older Adult Fall Prevention Guide for Community Pharmacists (CDC/UNC), 2020, 32 pp.",
+   "url": "https://www.cdc.gov/steadi/pdf/Steadi-Implementation-Plan-508.pdf",
+   "content": {
+    "classesNamedInIntroduction": [
+     "anticonvulsants",
+     "antidepressants",
+     "antihistamines",
+     "antihypertensives",
+     "antipsychotics",
+     "benzodiazepines",
+     "muscle relaxants",
+     "opioids",
+     "sedative hypnotics"
+    ],
+    "screenWho": "Adults >=65 taking >=4 chronic medications or >=1 high-risk medication, or presenting with an acute fall; screen yearly.",
+    "threeKeyQuestions": [
+     "Fallen in the past year?",
+     "Unsteady when standing or walking?",
+     "Worried about falling?"
+    ],
+    "orthostaticCheck": "Lie down 5 minutes and measure BP; stand and re-measure at 1 and 3 minutes.",
+    "claimedEffect": "The guide states that reducing medications whose risks outweigh benefits may reduce falls by 39-66% (citing Gillespie 2012 Cochrane and Pit 2007); this is CDC's summary, not independently re-checked here (UNVERIFIED)."
+   }
+  },
+  {
+   "id": "steadiRxConsultForm",
+   "citation": "STEADI-Rx Provider Consult - Medication form, 2019.",
+   "url": "https://www.cdc.gov/steadi/pdf/provider/steadi-rx/STEADIRx_provider_consult_medication_form-508.pdf",
+   "note": "Template for pharmacist-to-prescriber communication: fall risk factors (falls in past year, worry, unsteadiness, orthostatic symptoms, >=4 chronic meds, >=1 high-risk med) + 'Medication Therapy Problem / Recommendation / Accept-Decline-Discuss'. Useful model for the MedWatch clinician brief."
+  },
+  {
+   "id": "stoppfall2021",
+   "citation": "Seppala LJ, Petrovic M, Ryg J, et al. STOPPFall (Screening Tool of Older Persons Prescriptions in older adults with high fall risk): a Delphi study by the EuGMS Task and Finish Group on Fall-Risk-Increasing Drugs. Age Ageing. 2021;50(4):1189-1199.",
+   "pmid": "33349863",
+   "doi": "10.1093/ageing/afaa249",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8244563/",
+   "license": "CC BY-NC-ND 4.0 (per PMC record) - content here is paraphrased.",
+   "content": {
+    "method": "3 Delphi rounds, 24 panellists from 13 European countries (2019-2020), 70% agreement threshold.",
+    "classesIncluded": 14,
+    "classesNoConsensus": 17,
+    "onlineDecisionTrees": "https://kik.amc.nl/falls/decision-tree/",
+    "decisionTreesAppendix": "Appendix IV-V of the article supplement (Europe PMC supplementary files)"
+   }
+  },
+  {
+   "id": "beers2023",
+   "citation": "2023 American Geriatrics Society Beers Criteria Update Expert Panel. J Am Geriatr Soc. 2023;71(7):2052-2081.",
+   "pmid": "37139824",
+   "doi": "10.1111/jgs.18372",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12478568/",
+   "content": {
+    "criterion": "Drug-disease interaction: history of falls or fractures",
+    "drugs": [
+     "Anticholinergics (Table 7)",
+     "Antidepressants: SNRIs, SSRIs, TCAs",
+     "Antiepileptics",
+     "Antipsychotics",
+     "Benzodiazepines",
+     "Z-drugs (eszopiclone, zaleplon, zolpidem)",
+     "Opioids"
+    ],
+    "recommendation": "Avoid unless safer alternatives are not available; antiepileptics: avoid except for seizure and mood disorders; opioids: avoid except for pain management in severe acute pain. If one must be used, reduce other CNS-active drugs and use other fall-prevention strategies.",
+    "qualityOfEvidence": "Antidepressants and opioids: moderate; all others: high",
+    "strength": "Strong"
+   }
+  },
+  {
+   "id": "seppala2018meta",
+   "citation": "de Vries M, Seppala LJ, et al. JAMDA 2018;19:371.e1-9 (cardiovascular); Seppala LJ, et al. JAMDA 2018;19:371.e11-17 (psychotropics); Seppala LJ, et al. JAMDA 2018;19:372.e1-8 (others).",
+   "note": "The three meta-analyses that informed STOPPFall (cited as refs 2-4 in the STOPPFall paper); not re-read in this session."
+  },
+  {
+   "id": "rxnav",
+   "citation": "NLM RxNav (RxNorm) REST API, queried 2026-10-10 for ingredient RxCUIs and brand -> ingredient verification.",
+   "url": "https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html"
+  },
+  {
+   "id": "openfda",
+   "citation": "openFDA drug label API, queried 2026-10-10.",
+   "url": "https://open.fda.gov/apis/drug/label/"
+  }
+ ],
+ "stoppFallNoConsensusClasses": [
+  "Antiparkinson medication",
+  "Beta-blockers",
+  "Cardiac glycosides",
+  "Oral hypoglycaemics",
+  "Calcium channel blockers",
+  "Beta-blocker eye drops",
+  "Chemotherapeutic drugs",
+  "Bolus high-dose vitamin D",
+  "ACE inhibitors",
+  "Laxatives",
+  "Corticosteroids",
+  "Antiarrhythmics",
+  "Acetylcholinesterase inhibitors",
+  "Fluoroquinolones",
+  "Proton pump inhibitors",
+  "Nootropics",
+  "Nonsteroidal anti-inflammatory drugs"
+ ],
+ "stoppFallGeneralDeprescribing": {
+  "considerWithdrawalIf": [
+   "no current indication",
+   "a safer alternative exists"
+  ],
+  "monitor": [
+   "fall incidents",
+   "symptom change such as orthostatic hypotension, blurred vision, dizziness"
+  ],
+  "followUp": "individualised"
+ },
+ "labelFacts": {
+  "tamsulosin_alpha1A": {
+   "generic": "tamsulosin",
+   "splSetId": "0e3206ba-db3e-40b3-b46b-c7ae4703fdea",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0e3206ba-db3e-40b3-b46b-c7ae4703fdea",
+   "splEffective": "20260825",
+   "genericName": "TAMSULOSIN HYDROCHLORIDE",
+   "brandName": "Tamsulosin Hydrochloride",
+   "manufacturer": "Cardinal Health 107, LLC",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "clinical_pharmacology",
+     "term": "alpha 1A",
+     "snippet": "man prostate. At least three discrete alpha 1 adrenoceptor subtypes have been identified: alpha 1A , alpha 1B , and alpha 1D ; their distribution differs between human organs and tissue. A"
+    },
+    {
+     "section": "mechanism_of_action",
+     "term": "alpha 1A",
+     "snippet": "man prostate. At least three discrete alpha 1 adrenoceptor subtypes have been identified: alpha 1A , alpha 1B , and alpha 1D ; their distribution differs between human organs and tissue. A"
+    }
+   ]
+  },
+  "silodosin_alpha1A": {
+   "generic": "silodosin",
+   "splSetId": "43f83422-680f-411e-bbc3-2b092e64a017",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=43f83422-680f-411e-bbc3-2b092e64a017",
+   "splEffective": "20260507",
+   "genericName": "SILODOSIN",
+   "brandName": "SILODOSIN",
+   "manufacturer": "Creekwood Pharmaceuticals LLC",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "clinical_pharmacology",
+     "term": "selective",
+     "snippet": "12 CLINICAL PHARMACOLOGY 12.1 Mechanism of Action Silodosin is a selective antagonist of post-synaptic alpha‑1 adrenoreceptors, which are located in the human prost"
+    }
+   ]
+  },
+  "clonidine_withdrawal": {
+   "generic": "clonidine",
+   "splSetId": "00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
+   "splEffective": "20260908",
+   "genericName": "CLONIDINE HYDROCHLORIDE",
+   "brandName": "Clonidine Hydrochloride",
+   "manufacturer": "REMEDYREPACK INC.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "warnings",
+     "term": "Withdrawal",
+     "snippet": "WARNINGS Withdrawal Patients should be instructed not to discontinue therapy without consulting their physici"
+    },
+    {
+     "section": "precautions",
+     "term": "Withdrawal",
+     "snippet": "patients have not been established in adequate and well-controlled trials (see WARNINGS, Withdrawal )."
+    }
+   ]
+  },
+  "quetiapine_falls": {
+   "generic": "quetiapine",
+   "splSetId": "02b19885-2987-4c46-8d2a-5e59656f72e8",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=02b19885-2987-4c46-8d2a-5e59656f72e8",
+   "splEffective": "20260716",
+   "genericName": "QUETIAPINE FUMARATE",
+   "brandName": "Quetiapine fumarate",
+   "manufacturer": "REMEDYREPACK INC.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "warnings_and_cautions",
+     "term": "falls",
+     "snippet": "527) on active control drugs. Orthostatic hypotension, dizziness, and syncope may lead to falls. Quetiapine should be used with particular caution in patients with known cardiovascular"
+    },
+    {
+     "section": "adverse_reactions",
+     "term": "Falls",
+     "snippet": "[see WARNINGS AND PRECAUTIONS ( 5.6 )] Hypotension [see WARNINGS AND PRECAUTIONS ( 5.7 )] Falls [see WARNINGS AND PRECAUTIONS ( 5.8 )] Increases in blood pressure (children and adolesce"
+    }
+   ]
+  },
+  "gabapentin_falls": {
+   "generic": "gabapentin",
+   "splSetId": "03031adf-d36b-45ec-944e-dfce5a5de91a",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03031adf-d36b-45ec-944e-dfce5a5de91a",
+   "splEffective": "20260528",
+   "genericName": "GABAPENTIN",
+   "brandName": "Gabapentin",
+   "manufacturer": "A-S Medication Solutions",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "adverse_reactions",
+     "term": "Accidental injury",
+     "snippet": "c Neuralgia Gabapentin N=336 Placebo N=227 % % Body as a Whole Asthenia 6 5 Infection 5 4 Accidental injury 3 1 Digestive System Diarrhea 6 3 Dry mouth 5 1 Constipation 4 2 Nausea 4 3 Vomiting 3 2"
+    }
+   ]
+  },
+  "sertraline_falls": {
+   "generic": "sertraline",
+   "splSetId": "03e1f274-fa9a-4461-b7c9-31ba6428c107",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03e1f274-fa9a-4461-b7c9-31ba6428c107",
+   "splEffective": "20260330",
+   "genericName": "SERTRALINE",
+   "brandName": "Sertraline",
+   "manufacturer": "Bryant Ranch Prepack",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "warnings_and_cautions",
+     "term": "falls",
+     "snippet": "oncentrating, memory impairment, confusion, weakness, and unsteadiness, which may lead to falls. Signs and symptoms associated with more severe or acute cases have included hallucinatio"
+    }
+   ]
+  }
+ },
+ "engineGuidance": {
+  "flagRule": "Flag a medication as a FRID if it belongs to any class below; show which sources name the class (sourceCount) so the brief can say e.g. 'named by CDC STEADI and STOPPFall'.",
+  "priorityHint": "Classes named by >=3 sources (benzodiazepines, Z-drugs, antipsychotics, opioids, antidepressants, antiepileptics) are the core psychoactive FRIDs; >=2 FRIDs or any FRID plus a reported fall/near-fall/dizziness is the strongest discussion prompt (MedWatch heuristic, not a validated score).",
+  "steadiRxScreenTrigger": "Per STEADI-Rx, screen when age >=65 and (>=4 chronic medications or >=1 high-risk medication) or an acute fall.",
+  "noCausalClaims": "FRID status is a population-level association; MedWatch must describe timing and counts only."
+ },
+ "classes": [
+  {
+   "id": "benzodiazepines",
+   "name": "Benzodiazepines",
+   "stoppFall": {
+    "class": "Benzodiazepines",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Benzodiazepines",
+    "steadiRxChecklist2019": "Benzodiazepines",
+    "steadiRxGuide2020": "benzodiazepines"
+   },
+   "beers2023HistoryOfFalls": "Benzodiazepines",
+   "subclassRiskNotes": [],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "daytime sedation, cognitive or psychomotor impairment",
+     "prescribed for sleep or anxiety"
+    ],
+    "stepwise": "generally needed",
+    "monitor": [
+     "anxiety",
+     "insomnia",
+     "agitation"
+    ],
+    "considerMonitoring": [
+     "delirium",
+     "seizures",
+     "confusion"
+    ],
+    "taperExample": "Roughly 25% dose reduction every two weeks, with smaller (about 12.5%) steps near the end."
+   },
+   "diarySignalsToWatch": [
+    "sleepiness",
+    "confusion",
+    "dizziness",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "alprazolam",
+     "rxnorm": {
+      "rxcui": "596",
+      "rxnormName": "alprazolam",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Xanax",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202363",
+        "name": "Xanax",
+        "tty": "BN",
+        "ingredients": [
+         "alprazolam"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "3450f9b0-2f7f-73ff-e054-00144ff88e88",
+        "splEffective": "20160602",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3450f9b0-2f7f-73ff-e054-00144ff88e88"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "lorazepam",
+     "rxnorm": {
+      "rxcui": "6470",
+      "rxnormName": "lorazepam",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Ativan",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202479",
+        "name": "Ativan",
+        "tty": "BN",
+        "ingredients": [
+         "lorazepam"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "07cae057-a593-4e4d-a478-2d7fc9f06857",
+        "splEffective": "20140224",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=07cae057-a593-4e4d-a478-2d7fc9f06857"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "diazepam",
+     "rxnorm": {
+      "rxcui": "3322",
+      "rxnormName": "diazepam",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Valium",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202472",
+        "name": "Valium",
+        "tty": "BN",
+        "ingredients": [
+         "diazepam"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "14d5d1d9-b569-4382-805c-dcc173811106",
+        "splEffective": "20180417",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=14d5d1d9-b569-4382-805c-dcc173811106"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "clonazepam",
+     "rxnorm": {
+      "rxcui": "2598",
+      "rxnormName": "clonazepam",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Klonopin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202585",
+        "name": "Klonopin",
+        "tty": "BN",
+        "ingredients": [
+         "clonazepam"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "542f22e8-dad2-47a8-93b6-30936715d73b",
+        "splEffective": "20231128",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=542f22e8-dad2-47a8-93b6-30936715d73b"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "temazepam",
+     "rxnorm": {
+      "rxcui": "10355",
+      "rxnormName": "temazepam",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Restoril",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "219641",
+        "name": "Restoril",
+        "tty": "BN",
+        "ingredients": [
+         "temazepam"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "3eeba86a-cd08-4669-9332-371b4b70f2b7",
+        "splEffective": "20110711",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3eeba86a-cd08-4669-9332-371b4b70f2b7"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "chlordiazepoxide",
+     "rxnorm": {
+      "rxcui": "2356",
+      "rxnormName": "chlordiazepoxide",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Librium",
+       "splEvidence": {
+        "splSetId": "a243ce25-2aa0-4879-86ec-455db3a63c5e",
+        "splEffective": "20131126",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a243ce25-2aa0-4879-86ec-455db3a63c5e"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "oxazepam",
+     "rxnorm": {
+      "rxcui": "7781",
+      "rxnormName": "oxazepam",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "clorazepate",
+     "rxnorm": {
+      "rxcui": "2353",
+      "rxnormName": "clorazepate",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Tranxene",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202966",
+        "name": "Tranxene",
+        "tty": "BN",
+        "ingredients": [
+         "clorazepate"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "9c7ab45c-7461-6e4e-ee6d-f0ebe3eb4a28",
+        "splEffective": "20221212",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9c7ab45c-7461-6e4e-ee6d-f0ebe3eb4a28"
+       }
+      }
+     ]
+    }
+   ],
+   "sourceCount": 5
+  },
+  {
+   "id": "z-drugs",
+   "name": "Benzodiazepine-related hypnotics ('Z-drugs')",
+   "stoppFall": {
+    "class": "Benzodiazepine-related drugs",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Sedatives-hypnotics (eszopiclone, zaleplon, zolpidem)",
+    "steadiRxChecklist2019": "Sedative hypnotics",
+    "steadiRxGuide2020": "sedative hypnotics"
+   },
+   "beers2023HistoryOfFalls": "Nonbenzodiazepine benzodiazepine receptor agonist hypnotics (Z-drugs)",
+   "subclassRiskNotes": [],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "daytime sedation, cognitive or psychomotor impairment",
+     "prescribed for sleep or anxiety"
+    ],
+    "stepwise": "generally needed",
+    "monitor": [
+     "anxiety",
+     "insomnia",
+     "agitation"
+    ],
+    "considerMonitoring": [
+     "delirium",
+     "seizures",
+     "confusion"
+    ],
+    "taperExample": "STOPPFall groups Z-drugs with benzodiazepines (same decision tree): roughly 25% every two weeks, smaller steps near the end."
+   },
+   "diarySignalsToWatch": [
+    "sleepiness",
+    "confusion",
+    "dizziness",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "zolpidem",
+     "rxnorm": {
+      "rxcui": "39993",
+      "rxnormName": "zolpidem",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Ambien",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "131725",
+        "name": "Ambien",
+        "tty": "BN",
+        "ingredients": [
+         "zolpidem"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "001b2d3a-d81c-45da-8b63-5e9904835ea2",
+        "splEffective": "20120830",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=001b2d3a-d81c-45da-8b63-5e9904835ea2"
+       }
+      },
+      {
+       "brand": "Ambien CR",
+       "splEvidence": {
+        "splSetId": "0abb0285-f09c-2110-e570-542dae5fab1a",
+        "splEffective": "20180526",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0abb0285-f09c-2110-e570-542dae5fab1a"
+       },
+       "status": "verified-FDA-SPL-only"
+      },
+      {
+       "brand": "Edluar",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "836642",
+        "name": "Edluar",
+        "tty": "BN",
+        "ingredients": [
+         "zolpidem"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "a32884d0-85b5-11de-8a39-0800200c9a66",
+        "splEffective": "20220815",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a32884d0-85b5-11de-8a39-0800200c9a66"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "eszopiclone",
+     "rxnorm": {
+      "rxcui": "461016",
+      "rxnormName": "eszopiclone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Lunesta",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "540404",
+        "name": "Lunesta",
+        "tty": "BN",
+        "ingredients": [
+         "eszopiclone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1f468b3f-7edf-44aa-81e2-ddb1cc0c1724",
+        "splEffective": "20120119",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1f468b3f-7edf-44aa-81e2-ddb1cc0c1724"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "zaleplon",
+     "rxnorm": {
+      "rxcui": "74667",
+      "rxnormName": "zaleplon",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Sonata",
+       "splEvidence": {
+        "splSetId": "43ac81cb-1e3f-4d44-86bd-13db2721d060",
+        "splEffective": "20100527",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=43ac81cb-1e3f-4d44-86bd-13db2721d060"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    }
+   ],
+   "sourceCount": 5
+  },
+  {
+   "id": "antipsychotics",
+   "name": "Antipsychotics",
+   "stoppFall": {
+    "class": "Antipsychotics",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Antipsychotics",
+    "steadiRxChecklist2019": "Antipsychotics",
+    "steadiRxGuide2020": "antipsychotics"
+   },
+   "beers2023HistoryOfFalls": "Antipsychotics",
+   "subclassRiskNotes": [
+    "Risk differs with each agent's sedative, anticholinergic and alpha-adrenergic blocking properties (STOPPFall Table 1)."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "extrapyramidal or cardiac side effects, sedation, dizziness or blurred vision",
+     "prescribed for behavioural symptoms of dementia or for sleep (possibly bipolar disorder)"
+    ],
+    "stepwise": "generally needed",
+    "monitor": [
+     "recurrence of psychosis, aggression, agitation, delusions or hallucinations"
+    ],
+    "considerMonitoring": [
+     "insomnia"
+    ],
+    "taperExample": "For dementia-related behaviour treated >=3 months: reduce by 25-50% every 1-2 weeks."
+   },
+   "diarySignalsToWatch": [
+    "sleepiness",
+    "dizziness",
+    "falls",
+    "confusion"
+   ],
+   "examples": [
+    {
+     "generic": "quetiapine",
+     "rxnorm": {
+      "rxcui": "51272",
+      "rxnormName": "quetiapine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Seroquel",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "83553",
+        "name": "Seroquel",
+        "tty": "BN",
+        "ingredients": [
+         "quetiapine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0584dda8-bc3c-48fe-1a90-79608f78e8a0",
+        "splEffective": "20250122",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0584dda8-bc3c-48fe-1a90-79608f78e8a0"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "risperidone",
+     "rxnorm": {
+      "rxcui": "35636",
+      "rxnormName": "risperidone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Risperdal",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "152318",
+        "name": "Risperdal",
+        "tty": "BN",
+        "ingredients": [
+         "risperidone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "01859e07-1262-4cc6-b7ed-5a273cbf0c36",
+        "splEffective": "20101227",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01859e07-1262-4cc6-b7ed-5a273cbf0c36"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "olanzapine",
+     "rxnorm": {
+      "rxcui": "61381",
+      "rxnormName": "olanzapine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Zyprexa",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "135423",
+        "name": "Zyprexa",
+        "tty": "BN",
+        "ingredients": [
+         "olanzapine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "00309724-5ac7-4e6a-91e2-16087c83402c",
+        "splEffective": "20260130",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00309724-5ac7-4e6a-91e2-16087c83402c"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "aripiprazole",
+     "rxnorm": {
+      "rxcui": "89013",
+      "rxnormName": "aripiprazole",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Abilify",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "352393",
+        "name": "Abilify",
+        "tty": "BN",
+        "ingredients": [
+         "aripiprazole"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0424faf3-202f-438a-b65e-2a228790b8f9",
+        "splEffective": "20181026",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0424faf3-202f-438a-b65e-2a228790b8f9"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "haloperidol",
+     "rxnorm": {
+      "rxcui": "5093",
+      "rxnormName": "haloperidol",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Haldol",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "151839",
+        "name": "Haldol",
+        "tty": "BN",
+        "ingredients": [
+         "haloperidol"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "27cfe684-7d11-4f37-9c8b-b2bdd6b5348e",
+        "splEffective": "20221110",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=27cfe684-7d11-4f37-9c8b-b2bdd6b5348e"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "chlorpromazine",
+     "rxnorm": {
+      "rxcui": "2403",
+      "rxnormName": "chlorpromazine",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "prochlorperazine",
+     "rxnorm": {
+      "rxcui": "8704",
+      "rxnormName": "prochlorperazine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Compro",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "285056",
+        "name": "Compro",
+        "tty": "BN",
+        "ingredients": [
+         "prochlorperazine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "55b31748-e67f-470d-9e14-89e58d9f4bec",
+        "splEffective": "20240925",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=55b31748-e67f-470d-9e14-89e58d9f4bec"
+       }
+      }
+     ]
+    }
+   ],
+   "note": "Prochlorperazine (often used as an antiemetic) is a phenothiazine dopamine antagonist; grouping it here is a MedWatch pharmacology-based assumption.",
+   "sourceCount": 5
+  },
+  {
+   "id": "opioids",
+   "name": "Opioids",
+   "stoppFall": {
+    "class": "Opioids",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Opioids",
+    "steadiRxChecklist2019": "Opioids",
+    "steadiRxGuide2020": "opioids"
+   },
+   "beers2023HistoryOfFalls": "Opioids",
+   "subclassRiskNotes": [
+    "Strong opioids are more fall-risk-increasing than weak opioids (STOPPFall Table 1)."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "slowed reactions, impaired balance or sedation",
+     "prescribed for chronic pain (possibly acute pain)"
+    ],
+    "stepwise": "generally needed",
+    "monitor": [
+     "return of pain"
+    ],
+    "considerMonitoring": [
+     "musculoskeletal symptoms",
+     "restlessness",
+     "GI symptoms",
+     "anxiety",
+     "insomnia",
+     "sweating",
+     "irritability",
+     "chills"
+    ],
+    "taperExample": "Reduce by 5-25% of the daily dose every 1-4 weeks; faster if stopping for adverse effects, slower from high doses or long use."
+   },
+   "diarySignalsToWatch": [
+    "sleepiness",
+    "dizziness",
+    "confusion",
+    "constipation",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "oxycodone",
+     "rxnorm": {
+      "rxcui": "7804",
+      "rxnormName": "oxycodone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "OxyContin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "218986",
+        "name": "Oxycontin",
+        "tty": "BN",
+        "ingredients": [
+         "oxycodone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "000dde4b-1d94-442f-94c0-26e283e04d88",
+        "splEffective": "20170214",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=000dde4b-1d94-442f-94c0-26e283e04d88"
+       }
+      },
+      {
+       "brand": "Percocet",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "42844",
+        "name": "Percocet",
+        "tty": "BN",
+        "ingredients": [
+         "acetaminophen",
+         "acetaminophen / oxycodone",
+         "oxycodone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0a446947-2cda-4a32-aa6a-53e09245825a",
+        "splEffective": "20100225",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0a446947-2cda-4a32-aa6a-53e09245825a"
+       }
+      },
+      {
+       "brand": "Roxicodone",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "219740",
+        "name": "Roxicodone",
+        "tty": "BN",
+        "ingredients": [
+         "oxycodone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "5a8157d3-ba20-4abf-b0d4-6ad141b31d63",
+        "splEffective": "20260424",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=5a8157d3-ba20-4abf-b0d4-6ad141b31d63"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "hydrocodone",
+     "rxnorm": {
+      "rxcui": "5489",
+      "rxnormName": "hydrocodone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Hysingla ER",
+       "splEvidence": {
+        "splSetId": "b7d23ac2-e776-9f62-3290-c64c2d6eb353",
+        "splEffective": "20260529",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b7d23ac2-e776-9f62-3290-c64c2d6eb353"
+       },
+       "status": "verified-FDA-SPL-only"
+      },
+      {
+       "brand": "Norco",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "218772",
+        "name": "Norco",
+        "tty": "BN",
+        "ingredients": [
+         "acetaminophen",
+         "acetaminophen / hydrocodone",
+         "hydrocodone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1c7ff5b9-6698-4e8c-9060-2abcd3fb0dcf",
+        "splEffective": "20160421",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1c7ff5b9-6698-4e8c-9060-2abcd3fb0dcf"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "morphine",
+     "rxnorm": {
+      "rxcui": "7052",
+      "rxnormName": "morphine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "MS Contin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203354",
+        "name": "MS Contin",
+        "tty": "BN",
+        "ingredients": [
+         "morphine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "73c25835-d9e9-4051-b1b9-3d140effa3fd",
+        "splEffective": "20170321",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=73c25835-d9e9-4051-b1b9-3d140effa3fd"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "tramadol",
+     "rxnorm": {
+      "rxcui": "10689",
+      "rxnormName": "tramadol",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Ultram",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "220606",
+        "name": "Ultram",
+        "tty": "BN",
+        "ingredients": [
+         "tramadol"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "039f9e7c-97f5-4062-8656-6f355c82008e",
+        "splEffective": "20190416",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=039f9e7c-97f5-4062-8656-6f355c82008e"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "codeine",
+     "rxnorm": {
+      "rxcui": "2670",
+      "rxnormName": "codeine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Tylenol with Codeine",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "220586",
+        "name": "Tylenol with Codeine",
+        "tty": "BN",
+        "ingredients": [
+         "acetaminophen",
+         "acetaminophen / codeine",
+         "codeine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "160cd55a-a8ed-43f2-baf7-046d3c3b317f",
+        "splEffective": "20190401",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=160cd55a-a8ed-43f2-baf7-046d3c3b317f"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "hydromorphone",
+     "rxnorm": {
+      "rxcui": "3423",
+      "rxnormName": "hydromorphone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Dilaudid",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "224913",
+        "name": "Dilaudid",
+        "tty": "BN",
+        "ingredients": [
+         "hydromorphone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "3129ab18-7cd8-4c65-b3b1-ed0c8c1fdc00",
+        "splEffective": "20170817",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3129ab18-7cd8-4c65-b3b1-ed0c8c1fdc00"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "tapentadol",
+     "rxnorm": {
+      "rxcui": "787390",
+      "rxnormName": "tapentadol",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Nucynta",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "854137",
+        "name": "Nucynta",
+        "tty": "BN",
+        "ingredients": [
+         "tapentadol"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "00a8921e-46a6-4df1-a744-9e532b6fb06f",
+        "splEffective": "20181030",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00a8921e-46a6-4df1-a744-9e532b6fb06f"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "fentanyl",
+     "rxnorm": {
+      "rxcui": "4337",
+      "rxnormName": "fentanyl",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Duragesic",
+       "splEvidence": {
+        "splSetId": "4c3a6171-19e4-40c2-83f3-fb54d4736e4b",
+        "splEffective": "20220816",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4c3a6171-19e4-40c2-83f3-fb54d4736e4b"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "buprenorphine",
+     "rxnorm": {
+      "rxcui": "1819",
+      "rxnormName": "buprenorphine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Butrans",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "904871",
+        "name": "BuTrans",
+        "tty": "BN",
+        "ingredients": [
+         "buprenorphine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "794aa355-66de-41b8-aedf-f2c40f6bc664",
+        "splEffective": "20260501",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=794aa355-66de-41b8-aedf-f2c40f6bc664"
+       }
+      },
+      {
+       "brand": "Belbuca",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "1716058",
+        "name": "Belbuca",
+        "tty": "BN",
+        "ingredients": [
+         "buprenorphine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "36338030-20e2-4ddb-bc06-6c43be4f50a0",
+        "splEffective": "20250113",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=36338030-20e2-4ddb-bc06-6c43be4f50a0"
+       }
+      }
+     ]
+    }
+   ],
+   "sourceCount": 5
+  },
+  {
+   "id": "antidepressants",
+   "name": "Antidepressants",
+   "stoppFall": {
+    "class": "Antidepressants",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Antidepressants (TCAs and SSRIs)",
+    "steadiRxChecklist2019": "Antidepressants; Tricyclic antidepressants (listed separately)",
+    "steadiRxGuide2020": "antidepressants"
+   },
+   "beers2023HistoryOfFalls": "Antidepressants: SNRIs, SSRIs, TCAs",
+   "subclassRiskNotes": [
+    "Tricyclic antidepressants are more fall-risk-increasing than other antidepressants (STOPPFall Table 1).",
+    "Risk differs with sedation, propensity for orthostatic hypotension and anticholinergic activity (STOPPFall Table 1).",
+    "Beers 2023: evidence for falls/fractures is mixed for antidepressants; newer evidence suggests SNRIs may increase fall risk."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "hyponatraemia, orthostatic hypotension, dizziness, sedation, or tachycardia/arrhythmia",
+     "prescribed for sleep; for depression depending on symptom-free time and history (possibly neuropathic pain or anxiety)"
+    ],
+    "stepwise": "generally needed",
+    "monitor": [
+     "recurrence of depression",
+     "anxiety",
+     "irritability",
+     "insomnia"
+    ],
+    "considerMonitoring": [
+     "headache",
+     "malaise",
+     "GI symptoms"
+    ],
+    "taperExample": "Reduce by about 25% of the daily dose every 1-4 weeks."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "sleepiness",
+    "confusion",
+    "falls",
+    "poor_sleep"
+   ],
+   "examples": [
+    {
+     "generic": "amitriptyline",
+     "rxnorm": {
+      "rxcui": "704",
+      "rxnormName": "amitriptyline",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "nortriptyline",
+     "rxnorm": {
+      "rxcui": "7531",
+      "rxnormName": "nortriptyline",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Pamelor",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "7866",
+        "name": "Pamelor",
+        "tty": "BN",
+        "ingredients": [
+         "nortriptyline"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "e17dc299-f52d-414d-ab6e-e809bd6f8acb",
+        "splEffective": "20241204",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e17dc299-f52d-414d-ab6e-e809bd6f8acb"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "doxepin",
+     "rxnorm": {
+      "rxcui": "3638",
+      "rxnormName": "doxepin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Silenor",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "966788",
+        "name": "Silenor",
+        "tty": "BN",
+        "ingredients": [
+         "doxepin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1bec1223-5239-4eb6-a9e8-62444106d2c0",
+        "splEffective": "20260421",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1bec1223-5239-4eb6-a9e8-62444106d2c0"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "imipramine",
+     "rxnorm": {
+      "rxcui": "5691",
+      "rxnormName": "imipramine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Tofranil",
+       "splEvidence": {
+        "splSetId": "1827a5aa-733a-49d9-89d9-48ea0367b230",
+        "splEffective": "20210923",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1827a5aa-733a-49d9-89d9-48ea0367b230"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "sertraline",
+     "rxnorm": {
+      "rxcui": "36437",
+      "rxnormName": "sertraline",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Zoloft",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "82728",
+        "name": "Zoloft",
+        "tty": "BN",
+        "ingredients": [
+         "sertraline"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1611926a-6875-4c48-8cb5-54fca7871ced",
+        "splEffective": "20120424",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1611926a-6875-4c48-8cb5-54fca7871ced"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "citalopram",
+     "rxnorm": {
+      "rxcui": "2556",
+      "rxnormName": "citalopram",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Celexa",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "215928",
+        "name": "Celexa",
+        "tty": "BN",
+        "ingredients": [
+         "citalopram"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "4259d9b1-de34-43a4-85a8-41dd214e9177",
+        "splEffective": "20231009",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4259d9b1-de34-43a4-85a8-41dd214e9177"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "escitalopram",
+     "rxnorm": {
+      "rxcui": "321988",
+      "rxnormName": "escitalopram",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Lexapro",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "352741",
+        "name": "Lexapro",
+        "tty": "BN",
+        "ingredients": [
+         "escitalopram"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "13bb8267-1cab-43e5-acae-55a4d957630a",
+        "splEffective": "20231001",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=13bb8267-1cab-43e5-acae-55a4d957630a"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "fluoxetine",
+     "rxnorm": {
+      "rxcui": "4493",
+      "rxnormName": "fluoxetine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Prozac",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "58827",
+        "name": "Prozac",
+        "tty": "BN",
+        "ingredients": [
+         "fluoxetine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "06c38ea3-9952-4fb9-bdbe-f4ddb7b46dbd",
+        "splEffective": "20110627",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=06c38ea3-9952-4fb9-bdbe-f4ddb7b46dbd"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "paroxetine",
+     "rxnorm": {
+      "rxcui": "32937",
+      "rxnormName": "paroxetine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Paxil",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "114228",
+        "name": "Paxil",
+        "tty": "BN",
+        "ingredients": [
+         "paroxetine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "027c7db2-2a36-477f-90bf-608ff3a0e14e",
+        "splEffective": "20110715",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=027c7db2-2a36-477f-90bf-608ff3a0e14e"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "venlafaxine",
+     "rxnorm": {
+      "rxcui": "39786",
+      "rxnormName": "venlafaxine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Effexor XR",
+       "splEvidence": {
+        "splSetId": "1aaab6c4-4c01-4b96-84d1-a577e20cb72d",
+        "splEffective": "20180527",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1aaab6c4-4c01-4b96-84d1-a577e20cb72d"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "duloxetine",
+     "rxnorm": {
+      "rxcui": "72625",
+      "rxnormName": "duloxetine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Cymbalta",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "482574",
+        "name": "Cymbalta",
+        "tty": "BN",
+        "ingredients": [
+         "duloxetine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "00acd9e9-b26a-4626-949e-112ecd2f27e6",
+        "splEffective": "20160806",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00acd9e9-b26a-4626-949e-112ecd2f27e6"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "mirtazapine",
+     "rxnorm": {
+      "rxcui": "15996",
+      "rxnormName": "mirtazapine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Remeron",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "134774",
+        "name": "Remeron",
+        "tty": "BN",
+        "ingredients": [
+         "mirtazapine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "010f9162-9f7f-4b6d-a6e4-4f832f26f38e",
+        "splEffective": "20211231",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=010f9162-9f7f-4b6d-a6e4-4f832f26f38e"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "trazodone",
+     "rxnorm": {
+      "rxcui": "10737",
+      "rxnormName": "trazodone",
+      "tty": "IN"
+     },
+     "brands": []
+    }
+   ],
+   "sourceCount": 5
+  },
+  {
+   "id": "antiepileptics",
+   "name": "Antiepileptics (anticonvulsants)",
+   "stoppFall": {
+    "class": "Antiepileptics",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Anticonvulsants",
+    "steadiRxChecklist2019": "Anticonvulsants",
+    "steadiRxGuide2020": "anticonvulsants"
+   },
+   "beers2023HistoryOfFalls": "Antiepileptics",
+   "subclassRiskNotes": [
+    "Older-generation antiepileptics are more fall-risk-increasing than newer ones; risk differs with sedative effects (STOPPFall Table 1).",
+    "Beers 2023: avoid antiepileptics in people with falls/fractures except for seizure and mood disorders."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "ataxia, somnolence, impaired balance (possibly dizziness)",
+     "prescribed for anxiety or neuropathic pain"
+    ],
+    "stepwise": "consider",
+    "monitor": [
+     "seizure recurrence"
+    ],
+    "considerMonitoring": [
+     "anxiety",
+     "restlessness",
+     "insomnia",
+     "headache"
+    ],
+    "taperExample": "Individualised taper; consider neurologist input."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "sleepiness",
+    "falls",
+    "confusion"
+   ],
+   "examples": [
+    {
+     "generic": "phenytoin",
+     "rxnorm": {
+      "rxcui": "8183",
+      "rxnormName": "phenytoin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Dilantin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202740",
+        "name": "Dilantin",
+        "tty": "BN",
+        "ingredients": [
+         "phenytoin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "051742b5-b0f0-44a5-8d31-3288527b0638",
+        "splEffective": "20220311",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=051742b5-b0f0-44a5-8d31-3288527b0638"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "carbamazepine",
+     "rxnorm": {
+      "rxcui": "2002",
+      "rxnormName": "carbamazepine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Tegretol",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203029",
+        "name": "Tegretol",
+        "tty": "BN",
+        "ingredients": [
+         "carbamazepine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "00fe4618-6b16-4431-9c07-495872012eaf",
+        "splEffective": "20130813",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00fe4618-6b16-4431-9c07-495872012eaf"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "phenobarbital",
+     "rxnorm": {
+      "rxcui": "8134",
+      "rxnormName": "phenobarbital",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "valproate",
+     "rxnorm": {
+      "rxcui": "11118",
+      "rxnormName": "valproic acid",
+      "tty": "PIN"
+     },
+     "brands": [
+      {
+       "brand": "Depakote",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "216459",
+        "name": "Depakote",
+        "tty": "BN",
+        "ingredients": [
+         "valproate"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "08a65cf4-7749-4ceb-6895-8f4805e2b01f",
+        "splEffective": "20260331",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=08a65cf4-7749-4ceb-6895-8f4805e2b01f"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "oxcarbazepine",
+     "rxnorm": {
+      "rxcui": "32624",
+      "rxnormName": "oxcarbazepine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Trileptal",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "261680",
+        "name": "Trileptal",
+        "tty": "BN",
+        "ingredients": [
+         "oxcarbazepine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "33af9350-95f3-384e-e054-00144ff88e88",
+        "splEffective": "20160525",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=33af9350-95f3-384e-e054-00144ff88e88"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "levetiracetam",
+     "rxnorm": {
+      "rxcui": "114477",
+      "rxnormName": "levetiracetam",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Keppra",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "261547",
+        "name": "Keppra",
+        "tty": "BN",
+        "ingredients": [
+         "levetiracetam"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "2919e43b-69a8-434c-a2d2-1f3ecd7554c0",
+        "splEffective": "20250624",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2919e43b-69a8-434c-a2d2-1f3ecd7554c0"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "lamotrigine",
+     "rxnorm": {
+      "rxcui": "28439",
+      "rxnormName": "lamotrigine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Lamictal",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "196502",
+        "name": "Lamictal",
+        "tty": "BN",
+        "ingredients": [
+         "lamotrigine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "03f1d6d9-0300-46d8-8c6e-eeda78bf45d4",
+        "splEffective": "20170918",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03f1d6d9-0300-46d8-8c6e-eeda78bf45d4"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "topiramate",
+     "rxnorm": {
+      "rxcui": "38404",
+      "rxnormName": "topiramate",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Topamax",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "220343",
+        "name": "Topamax",
+        "tty": "BN",
+        "ingredients": [
+         "topiramate"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "202b1a2a-11dc-4c3d-aa53-27512a98a042",
+        "splEffective": "20101227",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=202b1a2a-11dc-4c3d-aa53-27512a98a042"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "lacosamide",
+     "rxnorm": {
+      "rxcui": "623400",
+      "rxnormName": "lacosamide",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Vimpat",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "809979",
+        "name": "Vimpat",
+        "tty": "BN",
+        "ingredients": [
+         "lacosamide"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1310e776-65c8-413d-aab5-81a8c15719c5",
+        "splEffective": "20120112",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1310e776-65c8-413d-aab5-81a8c15719c5"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "gabapentin",
+     "rxnorm": {
+      "rxcui": "25480",
+      "rxnormName": "gabapentin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Neurontin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "196498",
+        "name": "Neurontin",
+        "tty": "BN",
+        "ingredients": [
+         "gabapentin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "092ea243-ec15-406e-bb40-4fe092035c70",
+        "splEffective": "20200520",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=092ea243-ec15-406e-bb40-4fe092035c70"
+       }
+      },
+      {
+       "brand": "Gralise",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "1087976",
+        "name": "Gralise",
+        "tty": "BN",
+        "ingredients": [
+         "gabapentin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "11ba1b40-e30a-428e-9efa-3f40c9012ca0",
+        "splEffective": "20190424",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=11ba1b40-e30a-428e-9efa-3f40c9012ca0"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "pregabalin",
+     "rxnorm": {
+      "rxcui": "187832",
+      "rxnormName": "pregabalin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Lyrica",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "593441",
+        "name": "Lyrica",
+        "tty": "BN",
+        "ingredients": [
+         "pregabalin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "09ee9b0c-4b8b-4239-bce7-14f5352f3458",
+        "splEffective": "20190411",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=09ee9b0c-4b8b-4239-bce7-14f5352f3458"
+       }
+      }
+     ]
+    }
+   ],
+   "note": "Gabapentin and pregabalin are included as antiepileptics here (both are FDA-approved for seizures). Whether STOPPFall panellists meant them to be included is UNVERIFIED; their labels warn of dizziness and somnolence.",
+   "sourceCount": 5
+  },
+  {
+   "id": "diuretics",
+   "name": "Diuretics",
+   "stoppFall": {
+    "class": "Diuretics",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Medications affecting blood pressure",
+    "steadiRxChecklist2019": "Antihypertensives",
+    "steadiRxGuide2020": "antihypertensives"
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [
+    "Loop diuretics are more fall-risk-increasing than other diuretics (STOPPFall Table 1)."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "orthostatic hypotension, hypotension or electrolyte disturbance (possibly urinary incontinence)",
+     "possibly when prescribed for hypertension"
+    ],
+    "stepwise": "consider",
+    "monitor": [
+     "heart failure",
+     "blood pressure",
+     "fluid retention"
+    ],
+    "considerMonitoring": [],
+    "taperExample": "Halve the dose at weekly intervals down to the lowest licensed dose, then stop."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "urinary",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "furosemide",
+     "rxnorm": {
+      "rxcui": "4603",
+      "rxnormName": "furosemide",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Lasix",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202991",
+        "name": "Lasix",
+        "tty": "BN",
+        "ingredients": [
+         "furosemide"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "26959e10-7baa-467f-9ef6-65d181ddfc75",
+        "splEffective": "20180313",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=26959e10-7baa-467f-9ef6-65d181ddfc75"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "bumetanide",
+     "rxnorm": {
+      "rxcui": "1808",
+      "rxnormName": "bumetanide",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "torsemide",
+     "rxnorm": {
+      "rxcui": "38413",
+      "rxnormName": "torsemide",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Soaanz",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "2589872",
+        "name": "Soaanz",
+        "tty": "BN",
+        "ingredients": [
+         "torsemide"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "05eaa163-b6e9-438a-85f8-6a60e743d460",
+        "splEffective": "20260109",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=05eaa163-b6e9-438a-85f8-6a60e743d460"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "hydrochlorothiazide",
+     "rxnorm": {
+      "rxcui": "5487",
+      "rxnormName": "hydrochlorothiazide",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "chlorthalidone",
+     "rxnorm": {
+      "rxcui": "2409",
+      "rxnormName": "chlorthalidone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Thalitone",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203477",
+        "name": "Thalitone",
+        "tty": "BN",
+        "ingredients": [
+         "chlorthalidone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "bc5a0299-115b-4e60-bb3f-c75a95c51c15",
+        "splEffective": "20260625",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=bc5a0299-115b-4e60-bb3f-c75a95c51c15"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "indapamide",
+     "rxnorm": {
+      "rxcui": "5764",
+      "rxnormName": "indapamide",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "spironolactone",
+     "rxnorm": {
+      "rxcui": "9997",
+      "rxnormName": "spironolactone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Aldactone",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "151317",
+        "name": "Aldactone",
+        "tty": "BN",
+        "ingredients": [
+         "spironolactone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0fed2822-3a03-4b64-9857-c682fcd462bc",
+        "splEffective": "20251128",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0fed2822-3a03-4b64-9857-c682fcd462bc"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "triamterene",
+     "rxnorm": {
+      "rxcui": "10763",
+      "rxnormName": "triamterene",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Maxzide",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "52440",
+        "name": "Maxzide",
+        "tty": "BN",
+        "ingredients": [
+         "hydrochlorothiazide",
+         "hydrochlorothiazide / triamterene",
+         "triamterene"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "48136e4a-0e77-4a00-b2fa-d3d90617a7ae",
+        "splEffective": "20121008",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=48136e4a-0e77-4a00-b2fa-d3d90617a7ae"
+       }
+      },
+      {
+       "brand": "Dyazide",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "23742",
+        "name": "Dyazide",
+        "tty": "BN",
+        "ingredients": [
+         "hydrochlorothiazide",
+         "hydrochlorothiazide / triamterene",
+         "triamterene"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "7330f40d-b269-425b-a4e3-e7263a088fb7",
+        "splEffective": "20160413",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7330f40d-b269-425b-a4e3-e7263a088fb7"
+       }
+      }
+     ]
+    }
+   ],
+   "sourceCount": 4
+  },
+  {
+   "id": "alpha-blockers-antihypertensive",
+   "name": "Alpha-blockers used as antihypertensives",
+   "stoppFall": {
+    "class": "Alpha-blockers used as antihypertensives",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Medications affecting blood pressure",
+    "steadiRxChecklist2019": "Antihypertensives",
+    "steadiRxGuide2020": "antihypertensives"
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "hypotension, orthostatic hypotension or dizziness"
+    ],
+    "stepwise": "consider",
+    "monitor": [
+     "blood pressure"
+    ],
+    "considerMonitoring": [
+     "palpitations",
+     "headache"
+    ],
+    "taperExample": "Can be tapered over 1-2 weeks."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "doxazosin",
+     "rxnorm": {
+      "rxcui": "49276",
+      "rxnormName": "doxazosin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Cardura",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "196468",
+        "name": "Cardura",
+        "tty": "BN",
+        "ingredients": [
+         "doxazosin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "07638460-46c5-4fa1-a581-9a11fd8ed7bd",
+        "splEffective": "20250530",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=07638460-46c5-4fa1-a581-9a11fd8ed7bd"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "prazosin",
+     "rxnorm": {
+      "rxcui": "8629",
+      "rxnormName": "prazosin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Minipress",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "71515",
+        "name": "Minipress",
+        "tty": "BN",
+        "ingredients": [
+         "prazosin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1c56adef-1e91-40bc-b9fd-ff86545f188a",
+        "splEffective": "20240618",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1c56adef-1e91-40bc-b9fd-ff86545f188a"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "terazosin",
+     "rxnorm": {
+      "rxcui": "37798",
+      "rxnormName": "terazosin",
+      "tty": "IN"
+     },
+     "brands": []
+    }
+   ],
+   "sourceCount": 4
+  },
+  {
+   "id": "alpha-blockers-bph",
+   "name": "Alpha-blockers for benign prostatic hyperplasia",
+   "stoppFall": {
+    "class": "Alpha-blockers for prostate hyperplasia",
+    "consensusRound": 2
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Medications affecting blood pressure",
+    "steadiRxChecklist2019": "Other",
+    "steadiRxGuide2020": null
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [
+    "Non-selective alpha-blockers are more fall-risk-increasing than selective ones (STOPPFall Table 1)."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "hypotension, orthostatic hypotension or dizziness"
+    ],
+    "stepwise": "generally not needed",
+    "monitor": [
+     "return of urinary symptoms"
+    ],
+    "considerMonitoring": [],
+    "taperExample": "Can usually be stopped without a taper."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "tamsulosin",
+     "rxnorm": {
+      "rxcui": "77492",
+      "rxnormName": "tamsulosin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Flomax",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "190283",
+        "name": "Flomax",
+        "tty": "BN",
+        "ingredients": [
+         "tamsulosin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0bef87bd-42fc-428f-b683-e0538b78f8d0",
+        "splEffective": "20100118",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0bef87bd-42fc-428f-b683-e0538b78f8d0"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "alfuzosin",
+     "rxnorm": {
+      "rxcui": "17300",
+      "rxnormName": "alfuzosin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Uroxatral",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "356728",
+        "name": "UroXatral",
+        "tty": "BN",
+        "ingredients": [
+         "alfuzosin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0b845270-129e-4624-aeff-10eb77cc6984",
+        "splEffective": "20130930",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0b845270-129e-4624-aeff-10eb77cc6984"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "silodosin",
+     "rxnorm": {
+      "rxcui": "720825",
+      "rxnormName": "silodosin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Rapaflo",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "809478",
+        "name": "Rapaflo",
+        "tty": "BN",
+        "ingredients": [
+         "silodosin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "8a84d31b-b623-4125-aa29-354099a7008d",
+        "splEffective": "20180608",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8a84d31b-b623-4125-aa29-354099a7008d"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "doxazosin",
+     "rxnorm": {
+      "rxcui": "49276",
+      "rxnormName": "doxazosin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Cardura XL",
+       "splEvidence": {
+        "splSetId": "355bcdce-0481-48ba-8ebd-2009106aaf77",
+        "splEffective": "20230515",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=355bcdce-0481-48ba-8ebd-2009106aaf77"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "terazosin",
+     "rxnorm": {
+      "rxcui": "37798",
+      "rxnormName": "terazosin",
+      "tty": "IN"
+     },
+     "brands": []
+    }
+   ],
+   "sourceCount": 3
+  },
+  {
+   "id": "central-antihypertensives",
+   "name": "Centrally-acting antihypertensives",
+   "stoppFall": {
+    "class": "Centrally-acting antihypertensives",
+    "consensusRound": 2
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Medications affecting blood pressure",
+    "steadiRxChecklist2019": "Antihypertensives",
+    "steadiRxGuide2020": "antihypertensives"
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "hypotension, orthostatic hypotension or sedation"
+    ],
+    "stepwise": "consider",
+    "monitor": [
+     "blood pressure"
+    ],
+    "considerMonitoring": [],
+    "taperExample": "Taper over days to weeks depending on half-life (abrupt clonidine withdrawal can cause rebound hypertension - general pharmacology, not from STOPPFall)."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "sleepiness",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "clonidine",
+     "rxnorm": {
+      "rxcui": "2599",
+      "rxnormName": "clonidine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Catapres-TTS",
+       "splEvidence": {
+        "splSetId": "39e1d35e-533c-4647-8649-8168a6e92dfa",
+        "splEffective": "20260106",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=39e1d35e-533c-4647-8649-8168a6e92dfa"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "methyldopa",
+     "rxnorm": {
+      "rxcui": "6876",
+      "rxnormName": "methyldopa",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "guanfacine",
+     "rxnorm": {
+      "rxcui": "40114",
+      "rxnormName": "guanfacine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Intuniv",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "862007",
+        "name": "Intuniv",
+        "tty": "BN",
+        "ingredients": [
+         "guanfacine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1bb3fac5-11e8-4d1c-a5e4-2520abcdeb47",
+        "splEffective": "20130831",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1bb3fac5-11e8-4d1c-a5e4-2520abcdeb47"
+       }
+      }
+     ]
+    }
+   ],
+   "note": "Moxonidine (also centrally acting) is not marketed in the US.",
+   "sourceCount": 4
+  },
+  {
+   "id": "sedating-antihistamines",
+   "name": "Antihistamines (sedating / first-generation)",
+   "stoppFall": {
+    "class": "Antihistamines",
+    "consensusRound": 2
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Antihistamines",
+    "steadiRxChecklist2019": "Other (e.g., OTC agents)",
+    "steadiRxGuide2020": "antihistamines"
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [
+    "First-generation antihistamines are more fall-risk-increasing than second-generation; risk differs with sedation and anticholinergic activity (STOPPFall Table 1)."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "confusion, drowsiness, dizziness or blurred vision",
+     "any indication (sleep/sedation, chronic itch, allergy)"
+    ],
+    "stepwise": "consider",
+    "monitor": [
+     "return of symptoms"
+    ],
+    "considerMonitoring": [
+     "insomnia",
+     "anxiety"
+    ],
+    "taperExample": "Reduce by 25-50% of the daily dose every 1-4 weeks."
+   },
+   "diarySignalsToWatch": [
+    "sleepiness",
+    "confusion",
+    "dizziness",
+    "dry_mouth",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "diphenhydramine",
+     "rxnorm": {
+      "rxcui": "3498",
+      "rxnormName": "diphenhydramine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Benadryl",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203457",
+        "name": "Benadryl",
+        "tty": "BN",
+        "ingredients": [
+         "diphenhydramine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0bbc8617-3833-4a97-9749-7c0e793fc9c5",
+        "splEffective": "20170829",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0bbc8617-3833-4a97-9749-7c0e793fc9c5"
+       }
+      },
+      {
+       "brand": "Tylenol PM",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "220581",
+        "name": "Tylenol PM",
+        "tty": "BN",
+        "ingredients": [
+         "acetaminophen",
+         "acetaminophen / diphenhydramine",
+         "diphenhydramine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "14b0e72a-2cce-42d9-8f67-c750246dc3db",
+        "splEffective": "20121221",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=14b0e72a-2cce-42d9-8f67-c750246dc3db"
+       }
+      },
+      {
+       "brand": "ZzzQuil",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "1233547",
+        "name": "Zzzquil",
+        "tty": "BN",
+        "ingredients": [
+         "diphenhydramine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "01906eed-78ee-f2a1-e063-6294a90a809b",
+        "splEffective": "20260908",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01906eed-78ee-f2a1-e063-6294a90a809b"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "doxylamine",
+     "rxnorm": {
+      "rxcui": "3642",
+      "rxnormName": "doxylamine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Unisom SleepTabs",
+       "splEvidence": {
+        "splSetId": "7ae32d74-76a0-47e2-9e5c-812426413c4e",
+        "splEffective": "20260325",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7ae32d74-76a0-47e2-9e5c-812426413c4e"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "hydroxyzine",
+     "rxnorm": {
+      "rxcui": "5553",
+      "rxnormName": "hydroxyzine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Vistaril",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "282519",
+        "name": "Vistaril",
+        "tty": "BN",
+        "ingredients": [
+         "hydroxyzine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "17f166b4-5202-4b7c-bbb6-7922c36ab2ca",
+        "splEffective": "20170327",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=17f166b4-5202-4b7c-bbb6-7922c36ab2ca"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "chlorpheniramine",
+     "rxnorm": {
+      "rxcui": "2400",
+      "rxnormName": "chlorpheniramine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Chlor-Trimeton",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202384",
+        "name": "Chlor-Trimeton",
+        "tty": "BN",
+        "ingredients": [
+         "chlorpheniramine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "883a0a71-c9fb-44fd-9f2c-591d7e17c973",
+        "splEffective": "20180326",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=883a0a71-c9fb-44fd-9f2c-591d7e17c973"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "promethazine",
+     "rxnorm": {
+      "rxcui": "8745",
+      "rxnormName": "promethazine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Phenergan",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "152218",
+        "name": "Phenergan",
+        "tty": "BN",
+        "ingredients": [
+         "promethazine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1e3e9139-2505-441f-a221-2c803d3dc4f9",
+        "splEffective": "20240917",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1e3e9139-2505-441f-a221-2c803d3dc4f9"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "meclizine",
+     "rxnorm": {
+      "rxcui": "6676",
+      "rxnormName": "meclizine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Antivert",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "91818",
+        "name": "Antivert",
+        "tty": "BN",
+        "ingredients": [
+         "meclizine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "305a537b-db97-4c5b-824a-0b97dd4c6dc0",
+        "splEffective": "20181227",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=305a537b-db97-4c5b-824a-0b97dd4c6dc0"
+       }
+      },
+      {
+       "brand": "Bonine",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "1694",
+        "name": "Bonine",
+        "tty": "BN",
+        "ingredients": [
+         "meclizine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0b2ea6b8-b342-4940-8922-898758fbeb31",
+        "splEffective": "20250321",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0b2ea6b8-b342-4940-8922-898758fbeb31"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "dimenhydrinate",
+     "rxnorm": {
+      "rxcui": "3444",
+      "rxnormName": "dimenhydrinate",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Dramamine",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "151666",
+        "name": "Dramamine",
+        "tty": "BN",
+        "ingredients": [
+         "dimenhydrinate"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "09936316-8667-4950-b017-19e3a05385a4",
+        "splEffective": "20180712",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=09936316-8667-4950-b017-19e3a05385a4"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "cyproheptadine",
+     "rxnorm": {
+      "rxcui": "3013",
+      "rxnormName": "cyproheptadine",
+      "tty": "IN"
+     },
+     "brands": []
+    }
+   ],
+   "sourceCount": 4
+  },
+  {
+   "id": "cardiac-vasodilators",
+   "name": "Vasodilators used in cardiac diseases (nitrates)",
+   "stoppFall": {
+    "class": "Vasodilators used in cardiac diseases",
+    "consensusRound": 2
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Medications affecting blood pressure",
+    "steadiRxChecklist2019": "Antihypertensives",
+    "steadiRxGuide2020": "antihypertensives"
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "hypotension, orthostatic hypotension or dizziness"
+    ],
+    "stepwise": "consider",
+    "monitor": [
+     "angina symptoms"
+    ],
+    "considerMonitoring": [],
+    "taperExample": "Gradual taper; panellists suggested keeping short-acting nitrate available while tapering."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "isosorbide mononitrate",
+     "rxnorm": {
+      "rxcui": "28004",
+      "rxnormName": "isosorbide mononitrate",
+      "tty": "PIN"
+     },
+     "brands": [
+      {
+       "brand": "Monoket",
+       "splEvidence": {
+        "splSetId": "b8e0d977-6eb7-4b14-9176-64e5738d14da",
+        "splEffective": "20131023",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b8e0d977-6eb7-4b14-9176-64e5738d14da"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "isosorbide dinitrate",
+     "rxnorm": {
+      "rxcui": "6058",
+      "rxnormName": "isosorbide dinitrate",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Isordil",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "151187",
+        "name": "Isordil",
+        "tty": "BN",
+        "ingredients": [
+         "isosorbide dinitrate"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0e5bc1a3-6e3c-4ab9-856f-fd953eacf867",
+        "splEffective": "20151221",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0e5bc1a3-6e3c-4ab9-856f-fd953eacf867"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "nitroglycerin",
+     "rxnorm": {
+      "rxcui": "4917",
+      "rxnormName": "nitroglycerin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Nitrostat",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202525",
+        "name": "Nitrostat",
+        "tty": "BN",
+        "ingredients": [
+         "nitroglycerin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "18f94362-34c5-4271-9177-d81c92fa2d41",
+        "splEffective": "20161020",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=18f94362-34c5-4271-9177-d81c92fa2d41"
+       }
+      },
+      {
+       "brand": "Nitro-Dur",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202508",
+        "name": "Nitro-Dur",
+        "tty": "BN",
+        "ingredients": [
+         "nitroglycerin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "5de5366c-0719-4a4c-9483-cd99b218ee78",
+        "splEffective": "20180421",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=5de5366c-0719-4a4c-9483-cd99b218ee78"
+       }
+      }
+     ]
+    }
+   ],
+   "note": "Mapping STOPPFall 'vasodilators used in cardiac diseases' to organic nitrates follows the WHO ATC group C01D (MedWatch interpretation).",
+   "sourceCount": 4
+  },
+  {
+   "id": "oab-urge-incontinence",
+   "name": "Medications for overactive bladder and urge incontinence",
+   "stoppFall": {
+    "class": "Overactive bladder and urge incontinence medications",
+    "consensusRound": 3
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Anticholinergics",
+    "steadiRxChecklist2019": "Antispasmodics",
+    "steadiRxGuide2020": null
+   },
+   "beers2023HistoryOfFalls": "Anticholinergics (Table 7)",
+   "subclassRiskNotes": [
+    "Risk differs with anticholinergic activity (STOPPFall Table 1). Mirabegron/vibegron are beta-3 agonists without antimuscarinic action, so by that statement they would be expected to carry less anticholinergic-related risk (MedWatch inference, not a STOPPFall statement)."
+   ],
+   "deprescribing": {
+    "considerWithdrawalIf": [
+     "dizziness, confusion, blurred vision, drowsiness or QT prolongation"
+    ],
+    "stepwise": "consider",
+    "monitor": [
+     "return of urinary symptoms"
+    ],
+    "considerMonitoring": [],
+    "taperExample": "Reduce by 25-50% of the daily dose every 1-4 weeks."
+   },
+   "diarySignalsToWatch": [
+    "dizziness",
+    "confusion",
+    "sleepiness",
+    "dry_mouth",
+    "constipation",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "oxybutynin",
+     "rxnorm": {
+      "rxcui": "32675",
+      "rxnormName": "oxybutynin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Ditropan XL",
+       "splEvidence": {
+        "splSetId": "2b0384a5-c65a-454d-9761-716af8afe5bd",
+        "splEffective": "20120216",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2b0384a5-c65a-454d-9761-716af8afe5bd"
+       },
+       "status": "verified-FDA-SPL-only"
+      },
+      {
+       "brand": "Oxytrol",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "356886",
+        "name": "Oxytrol",
+        "tty": "BN",
+        "ingredients": [
+         "oxybutynin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "20dee37f-1412-44ed-9e8b-f4379ce23eb0",
+        "splEffective": "20240529",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=20dee37f-1412-44ed-9e8b-f4379ce23eb0"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "tolterodine",
+     "rxnorm": {
+      "rxcui": "119565",
+      "rxnormName": "tolterodine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Detrol",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "216511",
+        "name": "Detrol",
+        "tty": "BN",
+        "ingredients": [
+         "tolterodine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "25994fad-388d-4f9c-950e-14b7f8073b8c",
+        "splEffective": "20100114",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=25994fad-388d-4f9c-950e-14b7f8073b8c"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "solifenacin",
+     "rxnorm": {
+      "rxcui": "322167",
+      "rxnormName": "solifenacin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Vesicare",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "539812",
+        "name": "Vesicare",
+        "tty": "BN",
+        "ingredients": [
+         "solifenacin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "100678f1-313a-4e99-ae77-319c610a830f",
+        "splEffective": "20171228",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=100678f1-313a-4e99-ae77-319c610a830f"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "darifenacin",
+     "rxnorm": {
+      "rxcui": "136198",
+      "rxnormName": "darifenacin",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Enablex",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "397392",
+        "name": "Enablex",
+        "tty": "BN",
+        "ingredients": [
+         "darifenacin"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "a293cece-e97a-4e67-be72-b187568e3b11",
+        "splEffective": "20100101",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a293cece-e97a-4e67-be72-b187568e3b11"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "fesoterodine",
+     "rxnorm": {
+      "rxcui": "797195",
+      "rxnormName": "fesoterodine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Toviaz",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "810072",
+        "name": "Toviaz",
+        "tty": "BN",
+        "ingredients": [
+         "fesoterodine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "4f01dced-195a-4712-a614-d68012bc29df",
+        "splEffective": "20260305",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4f01dced-195a-4712-a614-d68012bc29df"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "trospium",
+     "rxnorm": {
+      "rxcui": "236778",
+      "rxnormName": "trospium",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "mirabegron",
+     "rxnorm": {
+      "rxcui": "1300786",
+      "rxnormName": "mirabegron",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Myrbetriq",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "1300792",
+        "name": "Myrbetriq",
+        "tty": "BN",
+        "ingredients": [
+         "mirabegron"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "1ede7e9a-a835-4d1d-a4fe-a2014a3fe1ed",
+        "splEffective": "20180607",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1ede7e9a-a835-4d1d-a4fe-a2014a3fe1ed"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "vibegron",
+     "rxnorm": {
+      "rxcui": "2472254",
+      "rxnormName": "vibegron",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Gemtesa",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "2472316",
+        "name": "Gemtesa",
+        "tty": "BN",
+        "ingredients": [
+         "vibegron"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "25f21d25-14f8-4fda-91f6-7aa8b68aa1c8",
+        "splEffective": "20250401",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=25f21d25-14f8-4fda-91f6-7aa8b68aa1c8"
+       }
+      }
+     ]
+    }
+   ],
+   "sourceCount": 4
+  },
+  {
+   "id": "anticholinergics",
+   "name": "Anticholinergics (other strongly anticholinergic drugs)",
+   "stoppFall": {
+    "class": "Anticholinergics",
+    "consensusRound": 1
+   },
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Anticholinergics",
+    "steadiRxChecklist2019": "Antispasmodics",
+    "steadiRxGuide2020": null
+   },
+   "beers2023HistoryOfFalls": "Anticholinergics (Table 7)",
+   "subclassRiskNotes": [
+    "Medications with high anticholinergic activity are more fall-risk-increasing than weak anticholinergics (STOPPFall Table 1). Use acb-scale.json (ACB >= 2) or Beers 2023 Table 7 to identify them."
+   ],
+   "deprescribing": null,
+   "diarySignalsToWatch": [
+    "confusion",
+    "dizziness",
+    "dry_mouth",
+    "constipation",
+    "urinary",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "benztropine",
+     "rxnorm": {
+      "rxcui": "1424",
+      "rxnormName": "benztropine",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "trihexyphenidyl",
+     "rxnorm": {
+      "rxcui": "10811",
+      "rxnormName": "trihexyphenidyl",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "dicyclomine",
+     "rxnorm": {
+      "rxcui": "3361",
+      "rxnormName": "dicyclomine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Bentyl",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203018",
+        "name": "Bentyl",
+        "tty": "BN",
+        "ingredients": [
+         "dicyclomine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "3e078249-7555-41ff-93f6-0b1260651aa1",
+        "splEffective": "20250106",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3e078249-7555-41ff-93f6-0b1260651aa1"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "hyoscyamine",
+     "rxnorm": {
+      "rxcui": "153970",
+      "rxnormName": "hyoscyamine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Levsin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "218003",
+        "name": "Levsin",
+        "tty": "BN",
+        "ingredients": [
+         "hyoscyamine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0918c44e-54f6-47b9-b927-4f1b0b394152",
+        "splEffective": "20091208",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0918c44e-54f6-47b9-b927-4f1b0b394152"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "scopolamine",
+     "rxnorm": {
+      "rxcui": "9601",
+      "rxnormName": "scopolamine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Transderm Scop",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "220372",
+        "name": "Transderm Scop",
+        "tty": "BN",
+        "ingredients": [
+         "scopolamine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "4b8cb288-251d-4f99-94d7-a5d0d132729f",
+        "splEffective": "20190301",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4b8cb288-251d-4f99-94d7-a5d0d132729f"
+       }
+      }
+     ]
+    }
+   ],
+   "sourceCount": 4
+  },
+  {
+   "id": "muscle-relaxants",
+   "name": "Skeletal muscle relaxants",
+   "stoppFall": null,
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Muscle relaxants",
+    "steadiRxChecklist2019": "Other",
+    "steadiRxGuide2020": "muscle relaxants"
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [],
+   "deprescribing": null,
+   "diarySignalsToWatch": [
+    "sleepiness",
+    "dizziness",
+    "confusion",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "cyclobenzaprine",
+     "rxnorm": {
+      "rxcui": "21949",
+      "rxnormName": "cyclobenzaprine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Flexeril",
+       "splEvidence": {
+        "splSetId": "1108d2c3-4755-418f-98ee-cc819606bcc4",
+        "splEffective": "20120118",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1108d2c3-4755-418f-98ee-cc819606bcc4"
+       },
+       "status": "verified-FDA-SPL-only"
+      },
+      {
+       "brand": "Amrix",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "725085",
+        "name": "Amrix",
+        "tty": "BN",
+        "ingredients": [
+         "cyclobenzaprine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "087ae128-1a5d-406e-8bd3-15cb640f6922",
+        "splEffective": "20111116",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=087ae128-1a5d-406e-8bd3-15cb640f6922"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "methocarbamol",
+     "rxnorm": {
+      "rxcui": "6845",
+      "rxnormName": "methocarbamol",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Robaxin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202955",
+        "name": "Robaxin",
+        "tty": "BN",
+        "ingredients": [
+         "methocarbamol"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "090a3d3d-92c3-4c30-a648-436461f81702",
+        "splEffective": "20240410",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=090a3d3d-92c3-4c30-a648-436461f81702"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "carisoprodol",
+     "rxnorm": {
+      "rxcui": "2101",
+      "rxnormName": "carisoprodol",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Soma",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "204362",
+        "name": "Soma",
+        "tty": "BN",
+        "ingredients": [
+         "carisoprodol"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "03cdc2f8-78d1-11dc-8314-0800200c9a66",
+        "splEffective": "20071025",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03cdc2f8-78d1-11dc-8314-0800200c9a66"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "tizanidine",
+     "rxnorm": {
+      "rxcui": "57258",
+      "rxnormName": "tizanidine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Zanaflex",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "153736",
+        "name": "Zanaflex",
+        "tty": "BN",
+        "ingredients": [
+         "tizanidine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "043d9e51-bfa2-4add-9058-5ece332f7e99",
+        "splEffective": "20250505",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=043d9e51-bfa2-4add-9058-5ece332f7e99"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "baclofen",
+     "rxnorm": {
+      "rxcui": "1292",
+      "rxnormName": "baclofen",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Lioresal",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "202996",
+        "name": "Lioresal",
+        "tty": "BN",
+        "ingredients": [
+         "baclofen"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "351cde63-00fa-404a-92df-cb055e991840",
+        "splEffective": "20161007",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=351cde63-00fa-404a-92df-cb055e991840"
+       }
+      },
+      {
+       "brand": "Ozobax",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "2201573",
+        "name": "Ozobax",
+        "tty": "BN",
+        "ingredients": [
+         "baclofen"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "92153f69-bc9b-4bef-9a8e-751effde5c7e",
+        "splEffective": "20231227",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=92153f69-bc9b-4bef-9a8e-751effde5c7e"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "metaxalone",
+     "rxnorm": {
+      "rxcui": "59078",
+      "rxnormName": "metaxalone",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Skelaxin",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "204315",
+        "name": "Skelaxin",
+        "tty": "BN",
+        "ingredients": [
+         "metaxalone"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0485d087-a215-4f61-8687-4161b9a55f06",
+        "splEffective": "20181214",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0485d087-a215-4f61-8687-4161b9a55f06"
+       }
+      }
+     ]
+    }
+   ],
+   "note": "Listed by CDC STEADI (2017 fact sheet, 2020 STEADI-Rx guide) but not among the 14 STOPPFall classes and not among its 17 no-consensus classes.",
+   "sourceCount": 3
+  },
+  {
+   "id": "other-antihypertensives",
+   "name": "Other blood-pressure-lowering drugs (ACE inhibitors, ARBs, calcium channel blockers, beta-blockers)",
+   "stoppFall": null,
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": "Medications affecting blood pressure",
+    "steadiRxChecklist2019": "Antihypertensives",
+    "steadiRxGuide2020": "antihypertensives"
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [
+    "STOPPFall reached NO consensus for ACE inhibitors, beta-blockers and calcium channel blockers as FRIDs; CDC groups all 'medications affecting blood pressure' together. Flag only when dizziness/orthostatic symptoms or recent start/dose change co-occur (MedWatch design choice)."
+   ],
+   "deprescribing": null,
+   "diarySignalsToWatch": [
+    "dizziness",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "lisinopril",
+     "rxnorm": {
+      "rxcui": "29046",
+      "rxnormName": "lisinopril",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Zestril",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "196472",
+        "name": "Zestril",
+        "tty": "BN",
+        "ingredients": [
+         "lisinopril"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "46f17ba7-a78c-4a9e-7597-27654f097bd3",
+        "splEffective": "20170117",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=46f17ba7-a78c-4a9e-7597-27654f097bd3"
+       }
+      },
+      {
+       "brand": "Prinivil",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203644",
+        "name": "Prinivil",
+        "tty": "BN",
+        "ingredients": [
+         "lisinopril"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "5fbebbf3-1604-4b65-afd7-605ce7c19805",
+        "splEffective": "20120913",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=5fbebbf3-1604-4b65-afd7-605ce7c19805"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "losartan",
+     "rxnorm": {
+      "rxcui": "52175",
+      "rxnormName": "losartan",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Cozaar",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "151558",
+        "name": "Cozaar",
+        "tty": "BN",
+        "ingredients": [
+         "losartan"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "21f96654-44ab-4abb-a338-17fbe567d563",
+        "splEffective": "20180427",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=21f96654-44ab-4abb-a338-17fbe567d563"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "amlodipine",
+     "rxnorm": {
+      "rxcui": "17767",
+      "rxnormName": "amlodipine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Norvasc",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "58927",
+        "name": "Norvasc",
+        "tty": "BN",
+        "ingredients": [
+         "amlodipine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0141c088-8fc2-4041-880e-a79ce0de6fdd",
+        "splEffective": "20181214",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0141c088-8fc2-4041-880e-a79ce0de6fdd"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "metoprolol",
+     "rxnorm": {
+      "rxcui": "6918",
+      "rxnormName": "metoprolol",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Toprol XL",
+       "splEvidence": {
+        "splSetId": "01038198-b4f0-41f3-9a9c-5c84e5a0d3b9",
+        "splEffective": "20181126",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01038198-b4f0-41f3-9a9c-5c84e5a0d3b9"
+       },
+       "status": "verified-FDA-SPL-only"
+      },
+      {
+       "brand": "Lopressor",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203344",
+        "name": "Lopressor",
+        "tty": "BN",
+        "ingredients": [
+         "metoprolol"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0283bc9d-6998-493a-824a-d4c85f704111",
+        "splEffective": "20230914",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0283bc9d-6998-493a-824a-d4c85f704111"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "carvedilol",
+     "rxnorm": {
+      "rxcui": "20352",
+      "rxnormName": "carvedilol",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Coreg",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "216221",
+        "name": "Coreg",
+        "tty": "BN",
+        "ingredients": [
+         "carvedilol"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "06400a4c-42b4-440a-92b4-1f47f98ac7ba",
+        "splEffective": "20201102",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=06400a4c-42b4-440a-92b4-1f47f98ac7ba"
+       }
+      }
+     ]
+    }
+   ],
+   "sourceCount": 3
+  },
+  {
+   "id": "sulfonylureas-insulin",
+   "name": "Glucose-lowering drugs that can cause hypoglycaemia (sulfonylureas, insulin)",
+   "stoppFall": null,
+   "cdcSteadi": {
+    "medsLinkedToFalls2017": null,
+    "steadiRxChecklist2019": null,
+    "steadiRxGuide2020": null
+   },
+   "beers2023HistoryOfFalls": null,
+   "subclassRiskNotes": [
+    "STOPPFall: oral hypoglycaemics as a class did NOT reach consensus, but panellists agreed that agents able to cause hypoglycaemia (sulfonylureas) are more fall-risk-increasing than other agents (Table 1)."
+   ],
+   "deprescribing": null,
+   "diarySignalsToWatch": [
+    "dizziness",
+    "confusion",
+    "falls"
+   ],
+   "examples": [
+    {
+     "generic": "glipizide",
+     "rxnorm": {
+      "rxcui": "4821",
+      "rxnormName": "glipizide",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Glucotrol",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "203680",
+        "name": "Glucotrol",
+        "tty": "BN",
+        "ingredients": [
+         "glipizide"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "3bda8c28-6436-4357-9c13-870a02332cdc",
+        "splEffective": "20130610",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3bda8c28-6436-4357-9c13-870a02332cdc"
+       }
+      }
+     ]
+    },
+    {
+     "generic": "glyburide",
+     "rxnorm": {
+      "rxcui": "4815",
+      "rxnormName": "glyburide",
+      "tty": "IN"
+     },
+     "brands": []
+    },
+    {
+     "generic": "glimepiride",
+     "rxnorm": {
+      "rxcui": "25789",
+      "rxnormName": "glimepiride",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Amaryl",
+       "splEvidence": {
+        "splSetId": "222b630b-7e09-43b4-9894-3d87f10add91",
+        "splEffective": "20230621",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=222b630b-7e09-43b4-9894-3d87f10add91"
+       },
+       "status": "verified-FDA-SPL-only"
+      }
+     ]
+    },
+    {
+     "generic": "insulin glargine",
+     "rxnorm": {
+      "rxcui": "274783",
+      "rxnormName": "insulin glargine",
+      "tty": "IN"
+     },
+     "brands": [
+      {
+       "brand": "Lantus",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "261551",
+        "name": "Lantus",
+        "tty": "BN",
+        "ingredients": [
+         "insulin glargine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "13cfe263-6a6a-4b0f-94f4-771ab6a105c0",
+        "splEffective": "20170301",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=13cfe263-6a6a-4b0f-94f4-771ab6a105c0"
+       }
+      },
+      {
+       "brand": "Basaglar",
+       "status": "verified-RxNorm",
+       "rxnormBrand": {
+        "rxcui": "1736859",
+        "name": "Basaglar",
+        "tty": "BN",
+        "ingredients": [
+         "insulin glargine"
+        ]
+       },
+       "splEvidence": {
+        "splSetId": "0ad21db3-2b1c-4ed9-a687-bdd6a74d0aae",
+        "splEffective": "20260616",
+        "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0ad21db3-2b1c-4ed9-a687-bdd6a74d0aae"
+       }
+      }
+     ]
+    }
+   ],
+   "sourceCount": 0
+  }
+ ]
+}

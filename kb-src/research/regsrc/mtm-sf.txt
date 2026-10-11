@@ -1,0 +1,141 @@
+Medication Therapy Management Program Standardized Format – English
+Form CMS-10396 (Expires: 12/31/2027)
+&lt; Additional space for optional plan/provider use, such as barcodes, document reference numbers, beneficiary identifiers, case numbers or title of document &gt;
+&lt; Additional space for optional plan/provider use, such as barcodes, document reference numbers, beneficiary identifiers, case numbers or title of document &gt;
+&lt; Insert member name &gt;
+&lt; Insert member address 1 &gt;
+&lt; Insert member address 2 &gt;
+&lt; Insert member city, state, and zip code &gt;
+Dear &lt; Insert member name &gt;,
+Thank you for talking with me on &lt; Insert CMR date &gt;, about your health and medications. As a follow-up to our conversation, I have included two documents:
+Your Recommended To-Do List has steps you should take to get the best results from your medications.
+Your Medication List will help you keep track of your medications and how to take them.
+If you want to talk about these documents, please call &lt; Insert MTM provider/department name &gt; at &lt; Insert contact information for MTM provider/plan, phone number, days/times, TTY, etc. &gt;.
+I look forward to working with you and your doctors to make sure your medications work well for you.
+Sincerely,
+&lt; Insert MTM provider name &gt;
+&lt; Insert MTM provider title&gt;, &lt; Insert Part D plan/pharmacy name/organization name &gt;
+According to the Paperwork Reduction Act of 1995, no persons are required to respond to a collection of information unless it displays a valid OMB control number. The valid OMB number for this information collection is 0938-1154. The time required to complete this information collection is estimated to average 40 minutes per response, including the time to review instructions, searching existing data resources, gather the data needed, and complete and review the information collection. If you have any comments concerning the accuracy of the time estimate(s) or suggestions for improving this form, please write to: CMS, Attn: PRA Reports Clearance Officer, 7500 Security Boulevard, Baltimore, Maryland 21244-1850
+Recommended To-Do List
+Prepared on: &lt; Insert CMR date &gt;
+You can get the best results from your medications by completing the items on this “To-Do List.”
+Bring your To-Do List when you go to your doctor. And, share it with your family or caregivers.
+My To-Do List
+What we talked about:
+&lt; Insert summary of discussion for topic 1 &gt;
+What I should do:
+&lt; Insert action item for topic 1 &gt;
+&lt; Insert action item for topic 1 &gt;
+What we talked about:
+&lt; Insert summary of discussion for topic 2 &gt;
+What I should do:
+&lt; Insert action item for topic 2 &gt;
+&lt; Insert action item for topic 2 &gt;
+What we talked about:
+&lt; Insert summary of discussion for topic 3 &gt;
+What I should do:
+&lt; Insert action item for topic 3 &gt;
+&lt; Insert action item for topic 3 &gt;
+What we talked about:
+&lt; Insert summary of discussion for topic 4 &gt;
+What I should do:
+&lt; Insert action item for topic 4 &gt;
+&lt; Insert action item for topic 4 &gt;
+How to Safely Dispose of Unused Prescription Medications
+Prepared on: &lt; Insert CMR date &gt;
+Medication List
+Prepared on: &lt; Insert CMR date &gt;
+Bring your Medication List when you go to the doctor, hospital, or emergency room. And, share it with your family or caregivers.
+Note any changes to how you take your medications. Cross out medications when you no longer use them.
+Medication
+How I take it
+Why I use it
+Prescriber
+&lt; Insert generic name and brand name, strength, and dosage form for current/active medications &gt;
+&lt; Insert regimen, (e.g., 1 tablet by mouth daily), use of related devices, and supplemental instructions as appropriate &gt;
+&lt; Insert indication or intended medical use &gt;
+&lt; Insert prescriber name &gt;
+Add new medications, over-the-counter drugs, herbals, vitamins, or minerals in the blank rows below.
+Medication
+How I take it
+Why I use it
+Prescriber
+Allergies:
+&lt; Insert allergy information &gt;
+Side effects I have had:
+&lt; Insert side effect information &gt;
+Other information:
+&lt; Optional &gt;
+My notes and questions:
+Medication Therapy Management Program Standardized Format – Spanish
+Form CMS-10396 (Vence: 12/31/2027)
+FORMATO ESTANDARIZADO PARA EL PROGRAMA DE CONTROL DE LA TERAPIA DE MEDICAMENTOS DE LA PARTE D DE MEDICARE
+&lt; Espacio adicional para uso optativo del plan/proveedor para códigos de barra, número de referencia del documento, título o número del caso &gt;
+&lt; Espacio adicional para uso optativo del plan/proveedor para códigos de barra, número de referencia del documento, título o número del caso &gt;
+&lt; Ingrese el nombre del beneficiario &gt;
+&lt; Ingrese la dirección del beneficiario 1 &gt;
+&lt; Ingrese la dirección del beneficiario 2 &gt;
+&lt; Ingrese la ciudad, estado, código postal del beneficiario &gt;
+Saludo &lt; Ingrese el nombre del beneficiario &gt;,
+Gracias por hablar conmigo el día &lt;ingrese fecha de CMR &gt; acerca de su salud y medicamentos. Para hacer seguimiento a nuestra conversación, le adjunto dos documentos:
+Su Lista de Cosas Para Hacer incluye los pasos que usted debe seguir para obtener los mejores resultados de sus medicamentos.
+Su Lista de Medicamentos le ayudará a monitorear sus medicamentos y saber cuándo y cómo tomarlos.
+Si usted quiere hablar acerca de estos documentos adjuntos, por favor llámme/nos &lt;ingrese el nombre del proveedor del MTM/departamento&gt; al &lt; ingrese la información de contacto del proveedor del MTM/plan, el número de teléfono, fechas/horas, TTY, etc. &gt;.
+Espero poder trabajar con usted y sus doctores para asegurarnos que sus medicamentos son efectivos.
+Muchas gracias por su atención,
+&lt; Ingrese el nombre del MTM proveedor &gt;
+&lt; Ingrese el título del MTM proveedor &gt;, &lt; Ingrese el nombre del plan de la Parte D/ la farmacia/ organización &gt;
+De conformidad con la Ley de reducción de los trámites burocráticos de 1995, nadie estará obligado a responder a una solicitud de información a menos que se identifique con un número de control válido de la Oficina de Administración y Presupuesto. El número de control válido de la Oficina de Administración y Presupuesto para esta recolección de información es 0938-1154. El tiempo necesario para completar esta solicitud es en promedio, 40 minutos incluido el tiempo necesario para revisar las instrucciones, buscar en las fuentes de datos existentes, seleccionar los datos necesarios y completarla. Si tiene comentarios sobre el tiempo estimado para responder o sugerencias para mejorar este formulario, sírvase escribir a: CMS, Attn: PRA Reports Clearance Officer, 7500 Security Boulevard, Baltimore, Maryland 21244-1850
+Lista de Cosas Por Hacer
+Preparado el: &lt; Fecha de la Revisión Integral de Medicamentos (CMR)&gt;
+Usted podrá obtener los mejores resultados de sus medicamentos completando todos los pasos en esta “Lista de Cosas por Hacer.”
+Lleve su “Lista de Cosas por Hacer” cuando visite su médico. Y compártala con su familia y cuidadores.
+Mi Lista de Cosas por Hacer
+Acerca de lo que hablamos:
+&lt; Ingrese resumen de discusión para el tema 1 &gt;
+Lo que debo hacer:
+&lt; Inserte acción a seguir para el tema 1 &gt;
+&lt; Inserte acción a seguir para el tema 1 &gt;
+Acerca de lo que hablamos:
+&lt; Ingrese resumen de discusión para el tema 2 &gt;
+Lo que debo hacer:
+&lt; Inserte acción a seguir para el tema 2 &gt;
+&lt; Inserte acción a seguir para el tema 2 &gt;
+Acerca de lo que hablamos:
+&lt; Ingrese resumen de discusión para el tema 3 &gt;
+Lo que debo hacer:
+&lt; Inserte acción a seguir para el tema 3 &gt;
+&lt; Inserte acción a seguir para el tema 3 &gt;
+Acerca de lo que hablamos:
+&lt; Ingrese resumen de discusión para el tema 4 &gt;
+Lo que debo hacer:
+&lt; Inserte acción a seguir para el tema 4 &gt;
+&lt; Inserte acción a seguir para el tema 4 &gt;
+Cómo desechar de forma segura los medicamentos recetados no utilizados
+Preparado el: &lt; Fecha de la Revisión Integral de Medicamentos (CMR) &gt;
+Lista de Medicamentos
+Preparado el: &lt; Fecha de la Revisión Integral de Medicamentos (CMR) &gt;
+Lleve su Lista de Medicamentos cuando vaya al médico, hospital, o sala de emergencia. Y compártala con su familia o cuidadores.
+Anote cualquier cambio en la forma como toma sus medicamentos.
+Tache los medicamentos que ya no toma.
+Medicamento
+Cómo lo tomo
+Por qué lo tomo
+Médico
+&lt; Ingrese el nombre genérico y de marca del medicamento, la potencia, y la dosis de los medicamentos que toma actualmente &gt;
+&lt; Ingrese la terapia que le ordenaron (por ejemplo, 1 tableta por vía oral diaria), los aparatos para usarla e instrucciones adicionales si correspondiera &gt;
+&lt; Ingrese indicaciones o el uso médico &gt;
+&lt; Ingrese nombre del médico &gt;
+Añada nuevos medicamentos de receta, medicamentos de venta libre,
+productos herbarios, vitaminas, y minerales en las líneas en blanco abajo.
+Medicamento
+Cómo lo tomo
+Por qué lo tomo
+Médico
+Alergias:
+&lt; Ingrese información sobre alergias &gt;
+Efectos secundarios que he tenido:
+&lt; Ingrese información sobre efectos secundarios &gt;
+Otra Información:
+&lt; Opcional &gt;
+Mis notas y preguntas:

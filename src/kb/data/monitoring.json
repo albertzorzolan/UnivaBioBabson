@@ -1,0 +1,129 @@
+[
+ {
+  "id": "mon-anticoagulant",
+  "appliesTo": {
+   "classes": [
+    "anticoagulant"
+   ]
+  },
+  "title": "Blood thinner: what to watch for",
+  "watchFor": [
+   "unusual bruising",
+   "bleeding gums or nosebleeds that are hard to stop",
+   "black or tarry stools",
+   "pink, red or brown urine",
+   "a fall or a bump to the head"
+  ],
+  "relatedConcepts": [
+   "bleeding_or_bruising",
+   "black_stools",
+   "fall"
+  ],
+  "plain": "{med} is a blood thinner; blood thinners are the medicines most often involved in emergency visits for medication harm in older adults.",
+  "clinician": "Anticoagulants are the leading drug class in ED visits for adverse drug events in adults 65 and older (Budnitz 2021). Bleeding signs, falls with head strike and new interacting medicines warrant review.",
+  "question": "Which signs of bleeding should prompt a call, and what should we do after a fall while taking {med}?",
+  "sourceId": "budnitz2021"
+ },
+ {
+  "id": "mon-antiplatelet",
+  "appliesTo": {
+   "classes": [
+    "antiplatelet"
+   ]
+  },
+  "title": "Anti-clotting medicine: what to watch for",
+  "watchFor": [
+   "unusual bruising",
+   "bleeding that is hard to stop",
+   "black or tarry stools",
+   "vomit that looks like coffee grounds"
+  ],
+  "relatedConcepts": [
+   "bleeding_or_bruising",
+   "black_stools"
+  ],
+  "plain": "{med} makes blood less likely to clot, so bleeding can happen more easily.",
+  "clinician": "Oral antiplatelet agents were implicated in about 13% of emergency hospitalizations for adverse drug events in adults 65 and older (Budnitz 2011). Combined antithrombotics and NSAIDs add bleeding risk.",
+  "question": "How long is {med} planned for, and which signs of bleeding should prompt a call?",
+  "sourceId": "budnitz2011"
+ },
+ {
+  "id": "mon-hypoglycemia",
+  "appliesTo": {
+   "classes": [
+    "sulfonylurea",
+    "insulin"
+   ]
+  },
+  "title": "Low blood sugar: what to watch for",
+  "watchFor": [
+   "shakiness or trembling",
+   "sweating",
+   "sudden confusion or unusual behavior",
+   "dizziness",
+   "a fast heartbeat"
+  ],
+  "relatedConcepts": [
+   "shakiness_or_sweating",
+   "tremor",
+   "confusion",
+   "dizziness"
+  ],
+  "plain": "{med} can lower blood sugar, and in older adults low blood sugar can show up as confusion, dizziness or a fall.",
+  "clinician": "Insulins and oral hypoglycemics together were implicated in about a quarter of emergency hospitalizations for adverse drug events in adults 65 and older (Budnitz 2011). Hypoglycemia may present atypically (confusion, falls).",
+  "question": "What blood sugar level should prompt a call, and what should we do if {person} feels shaky, sweaty or confused?",
+  "sourceId": "budnitz2011"
+ },
+ {
+  "id": "mon-opioid",
+  "appliesTo": {
+   "classes": [
+    "opioid"
+   ]
+  },
+  "title": "Opioid pain medicine: what to watch for",
+  "watchFor": [
+   "unusual sleepiness or trouble staying awake",
+   "slow or shallow breathing",
+   "new confusion",
+   "constipation",
+   "unsteadiness"
+  ],
+  "relatedConcepts": [
+   "drowsiness",
+   "confusion",
+   "constipation",
+   "dizziness",
+   "fall"
+  ],
+  "plain": "{med} is an opioid pain medicine; sleepiness, confusion and constipation are common, and older adults are more sensitive to them.",
+  "clinician": "Opioid analgesics are among the drug classes most often implicated in ED visits for adverse drug events in older adults (Shehab 2016; Budnitz 2021). Sedation, respiratory depression, constipation and falls warrant monitoring, especially with other CNS-active drugs.",
+  "question": "Which side effects of {med} should prompt a call, and is a plan for constipation or naloxone at home recommended?",
+  "sourceId": "budnitz2021"
+ },
+ {
+  "id": "mon-digoxin",
+  "appliesTo": {
+   "drugs": [
+    "digoxin"
+   ]
+  },
+  "title": "Digoxin: what to watch for",
+  "watchFor": [
+   "nausea or loss of appetite",
+   "blurred or yellow-tinted vision",
+   "new confusion",
+   "a very slow or irregular pulse"
+  ],
+  "relatedConcepts": [
+   "nausea",
+   "appetiteWorse",
+   "blurred_vision",
+   "confusion"
+  ],
+  "plain": "{med} has a narrow range between the right amount and too much, and early signs of too much can be easy to miss.",
+  "clinician": "Narrow therapeutic index; the label lists nausea, anorexia, visual disturbance and confusion among signs of toxicity, and risk rises with reduced renal function and interacting drugs (e.g. amiodarone).",
+  "question": "When should the digoxin level and kidney function next be checked, and which symptoms should prompt a call?",
+  "sourceId": "fda_labels"
+ }
+]

@@ -1,0 +1,22 @@
+// The Welcome proof strip must quote the committed evaluation results exactly.
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { PROOF_POINTS } from "./proofPoints";
+
+const read = (p: string) => JSON.parse(readFileSync(new URL(`../../../eval/results/${p}`, import.meta.url), "utf8"));
+
+describe("Welcome proof strip", () => {
+  it("quotes the held-out NLP result and the medication-review suite from eval/results", () => {
+    const nlp = read("nlp-eval.json");
+    const meds = read("meds-eval.json");
+    const [f1, med, device] = PROOF_POINTS;
+    expect(f1.figure).toBe(`${Math.round(nlp.heldout.micro.f1 * 100)}% F1`);
+    expect(f1.label).toContain(`${nlp.heldout.cases} held-out`);
+    expect(med.figure).toBe(`${meds.summary.casesPassed}/${meds.summary.cases}`);
+    expect(device.label).not.toMatch(/ms\b/);
+  });
+
+  it("never uses banned health words", () => {
+    for (const p of PROOF_POINTS) expect(`${p.figure} ${p.label}`).not.toMatch(/caus|\bsafe|danger|urgent|diagnos|risk score/i);
+  });
+});

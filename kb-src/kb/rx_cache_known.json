@@ -1,0 +1,964 @@
+{
+"alfuzosin": [
+"17300"
+],
+"aliskiren": [
+"325646"
+],
+"alprazolam": [
+"596"
+],
+"amiloride": [
+"644"
+],
+"amiodarone": [
+"703"
+],
+"amitriptyline": [
+"704"
+],
+"amoxapine": [
+"722"
+],
+"apixaban": [
+"1364430"
+],
+"aripiprazole": [
+"89013"
+],
+"aspirin": [
+"1191"
+],
+"atropine": [
+"1223"
+],
+"azilsartan": [
+"1091643"
+],
+"baclofen": [
+"1292"
+],
+"benazepril": [
+"18867"
+],
+"benztropine": [
+"1424"
+],
+"bexagliflozin": [
+"2627044"
+],
+"brexpiprazole": [
+"1658314"
+],
+"brompheniramine": [
+"1767"
+],
+"bumetanide": [
+"1808"
+],
+"buprenorphine": [
+"1819"
+],
+"butalbital": [
+"19860"
+],
+"canagliflozin": [
+"1373458"
+],
+"candesartan": [
+"214354"
+],
+"captopril": [
+"1998"
+],
+"carbamazepine": [
+"2002"
+],
+"cariprazine": [
+"1667655"
+],
+"carisoprodol": [
+"2101"
+],
+"celecoxib": [
+"140587"
+],
+"chlordiazepoxide": [
+"2356"
+],
+"chlorpheniramine": [
+"2400"
+],
+"chlorpromazine": [
+"2403"
+],
+"chlorthalidone": [
+"2409"
+],
+"chlorzoxazone": [
+"2410"
+],
+"cilostazol": [
+"21107"
+],
+"cimetidine": [
+"2541"
+],
+"ciprofloxacin": [
+"2551"
+],
+"citalopram": [
+"2556"
+],
+"clarithromycin": [
+"21212"
+],
+"clidinium": [
+"21232"
+],
+"clobazam": [
+"21241"
+],
+"clomipramine": [
+"2597"
+],
+"clonazepam": [
+"2598"
+],
+"clonidine": [
+"2599"
+],
+"clopidogrel": [
+"32968"
+],
+"clorazepate": [
+"2353"
+],
+"clozapine": [
+"2626"
+],
+"codeine": [
+"2670"
+],
+"colchicine": [
+"2683"
+],
+"cyclobenzaprine": [
+"21949"
+],
+"cyproheptadine": [
+"3013"
+],
+"dabigatran": [
+"1546356"
+],
+"dapagliflozin": [
+"1488564"
+],
+"darifenacin": [
+"136198"
+],
+"desipramine": [
+"3247"
+],
+"desmopressin": [
+"3251"
+],
+"desvenlafaxine": [
+"734064"
+],
+"dexamethasone": [
+"3264"
+],
+"dexlansoprazole": [
+"816346"
+],
+"dextromethorphan": [
+"3289"
+],
+"diazepam": [
+"3322"
+],
+"diclofenac": [
+"3355"
+],
+"dicyclomine": [
+"3361"
+],
+"diflunisal": [
+"3393"
+],
+"digoxin": [
+"3407"
+],
+"diltiazem": [
+"3443"
+],
+"dimenhydrinate": [
+"3444"
+],
+"diphenhydramine": [
+"3498"
+],
+"dipyridamole": [
+"3521"
+],
+"dofetilide": [
+"49247"
+],
+"donepezil": [
+"135447"
+],
+"doxazosin": [
+"49276"
+],
+"doxepin": [
+"3638"
+],
+"doxylamine": [
+"3642"
+],
+"dronedarone": [
+"233698"
+],
+"duloxetine": [
+"72625"
+],
+"edoxaban": [
+"1599538"
+],
+"empagliflozin": [
+"1545653"
+],
+"enalapril": [
+"3827"
+],
+"enoxaparin": [
+"67108"
+],
+"eplerenone": [
+"298869"
+],
+"ergoloid mesylates, USP": [
+"4024"
+],
+"ertugliflozin": [
+"1992672"
+],
+"erythromycin": [
+"4053"
+],
+"escitalopram": [
+"321988"
+],
+"esomeprazole": [
+"283742"
+],
+"estazolam": [
+"4077"
+],
+"estradiol": [
+"4083"
+],
+"estrogens, conjugated (USP)": [
+"4099"
+],
+"estrogens, esterified (USP)": [
+"214549"
+],
+"estropipate": [
+"33747"
+],
+"eszopiclone": [
+"461016"
+],
+"ethacrynic acid": [
+"4109"
+],
+"etodolac": [
+"24605"
+],
+"famotidine": [
+"4278"
+],
+"fentanyl": [
+"4337"
+],
+"fesoterodine": [
+"797195"
+],
+"flavoxate": [
+"4440"
+],
+"fluoxetine": [
+"4493"
+],
+"fluphenazine": [
+"4496"
+],
+"flurbiprofen": [
+"4502"
+],
+"fluvoxamine": [
+"42355"
+],
+"fondaparinux": [
+"321208"
+],
+"fosinopril": [
+"50166"
+],
+"furosemide": [
+"4603"
+],
+"gabapentin": [
+"25480"
+],
+"gabapentin enacarbil": [
+"1101333"
+],
+"galantamine": [
+"4637"
+],
+"gliclazide": [
+"4816"
+],
+"glimepiride": [
+"25789"
+],
+"glipizide": [
+"4821"
+],
+"glyburide": [
+"4815"
+],
+"guanfacine": [
+"40114"
+],
+"haloperidol": [
+"5093"
+],
+"homatropine": [
+"27084"
+],
+"hydrochlorothiazide": [
+"5487"
+],
+"hydrocodone": [
+"5489"
+],
+"hydrocortisone": [
+"5492"
+],
+"hydromorphone": [
+"3423"
+],
+"hydroxyzine": [
+"5553"
+],
+"hyoscyamine": [
+"153970"
+],
+"ibuprofen": [
+"5640"
+],
+"imipramine": [
+"5691"
+],
+"indapamide": [
+"5764"
+],
+"indomethacin": [
+"5781"
+],
+"insulin aspart": [
+"51428"
+],
+"insulin degludec": [
+"1670007"
+],
+"insulin detemir": [
+"139825"
+],
+"insulin glargine": [
+"274783"
+],
+"insulin glulisine": [
+"400008"
+],
+"insulin isophane": [
+"1605101"
+],
+"insulin lispro": [
+"86009"
+],
+"insulin, regular, human": [
+"253182"
+],
+"irbesartan": [
+"83818"
+],
+"ketorolac": [
+"35827"
+],
+"lacosamide": [
+"623400"
+],
+"lamotrigine": [
+"28439"
+],
+"lansoprazole": [
+"17128"
+],
+"levetiracetam": [
+"114477"
+],
+"levomilnacipran": [
+"1433212"
+],
+"lisinopril": [
+"29046"
+],
+"lithium": [
+"6448"
+],
+"lorazepam": [
+"6470"
+],
+"losartan": [
+"52175"
+],
+"lurasidone": [
+"1040028"
+],
+"magnesium salicylate": [
+"52364"
+],
+"meclizine": [
+"6676"
+],
+"megestrol": [
+"6703"
+],
+"meloxicam": [
+"41493"
+],
+"meperidine": [
+"6754"
+],
+"meprobamate": [
+"6760"
+],
+"metaxalone": [
+"59078"
+],
+"methadone": [
+"6813"
+],
+"methocarbamol": [
+"6845"
+],
+"methylprednisolone": [
+"6902"
+],
+"methyltestosterone": [
+"6904"
+],
+"metoclopramide": [
+"6915"
+],
+"metolazone": [
+"6916"
+],
+"midazolam": [
+"6960"
+],
+"milnacipran": [
+"588250"
+],
+"mineral oil": [
+"6972"
+],
+"mirtazapine": [
+"15996"
+],
+"moexipril": [
+"30131"
+],
+"morphine": [
+"7052"
+],
+"nabumetone": [
+"31448"
+],
+"naproxen": [
+"7258"
+],
+"nifedipine": [
+"7417"
+],
+"nitrofurantoin": [
+"7454"
+],
+"nizatidine": [
+"42319"
+],
+"nortriptyline": [
+"7531"
+],
+"olanzapine": [
+"61381"
+],
+"olmesartan": [
+"321064"
+],
+"omeprazole": [
+"7646"
+],
+"orphenadrine": [
+"7715"
+],
+"oxaprozin": [
+"32613"
+],
+"oxazepam": [
+"7781"
+],
+"oxcarbazepine": [
+"32624"
+],
+"oxybutynin": [
+"32675"
+],
+"oxycodone": [
+"7804"
+],
+"oxymorphone": [
+"7814"
+],
+"paliperidone": [
+"679314"
+],
+"pantoprazole": [
+"40790"
+],
+"paroxetine": [
+"32937"
+],
+"perindopril": [
+"54552"
+],
+"perphenazine": [
+"8076"
+],
+"phenobarbital": [
+"8134"
+],
+"phenytoin": [
+"8183"
+],
+"pimavanserin": [
+"1791685"
+],
+"pioglitazone": [
+"33738"
+],
+"piroxicam": [
+"8356"
+],
+"prasugrel": [
+"613391"
+],
+"prazosin": [
+"8629"
+],
+"prednisolone": [
+"8638"
+],
+"prednisone": [
+"8640"
+],
+"pregabalin": [
+"187832"
+],
+"primidone": [
+"8691"
+],
+"probenecid": [
+"8698"
+],
+"prochlorperazine": [
+"8704"
+],
+"promethazine": [
+"8745"
+],
+"quetiapine": [
+"51272"
+],
+"quinapril": [
+"35208"
+],
+"quinidine": [
+"9068"
+],
+"rabeprazole": [
+"114979"
+],
+"ramipril": [
+"35296"
+],
+"risperidone": [
+"35636"
+],
+"rivaroxaban": [
+"1114195"
+],
+"rivastigmine": [
+"183379"
+],
+"sacubitril": [
+"1656328"
+],
+"scopolamine": [
+"9601"
+],
+"sertraline": [
+"36437"
+],
+"silodosin": [
+"720825"
+],
+"solifenacin": [
+"322167"
+],
+"somatropin": [
+"61148"
+],
+"sotagliflozin": [
+"2638675"
+],
+"spironolactone": [
+"9997"
+],
+"sulfamethoxazole": [
+"10180"
+],
+"sulindac": [
+"10237"
+],
+"tamsulosin": [
+"77492"
+],
+"tapentadol": [
+"787390"
+],
+"telmisartan": [
+"73494"
+],
+"temazepam": [
+"10355"
+],
+"terazosin": [
+"37798"
+],
+"testosterone": [
+"10379"
+],
+"theophylline": [
+"10438"
+],
+"thyroid (USP)": [
+"10572"
+],
+"ticagrelor": [
+"1116632"
+],
+"tizanidine": [
+"57258"
+],
+"tolterodine": [
+"119565"
+],
+"topiramate": [
+"38404"
+],
+"torsemide": [
+"38413"
+],
+"tramadol": [
+"10689"
+],
+"trandolapril": [
+"38454"
+],
+"triamterene": [
+"10763"
+],
+"triazolam": [
+"10767"
+],
+"trihexyphenidyl": [
+"10811"
+],
+"trimethoprim": [
+"10829"
+],
+"triprolidine": [
+"10849"
+],
+"trospium": [
+"236778"
+],
+"valproate": [
+"11118",
+"40254"
+],
+"valsartan": [
+"69749"
+],
+"venlafaxine": [
+"39786"
+],
+"verapamil": [
+"11170"
+],
+"warfarin": [
+"11289"
+],
+"zaleplon": [
+"74667"
+],
+"ziprasidone": [
+"115698"
+],
+"zolpidem": [
+"39993"
+],
+"zonisamide": [
+"39998"
+],
+"trimeprazine": [
+"10825"
+],
+"alimemazine": [
+"10825"
+],
+"alverine": [
+"17627"
+],
+"asenapine": [
+"784649"
+],
+"atenolol": [
+"1202"
+],
+"bupropion": [
+"42347"
+],
+"cetirizine": [
+"20610"
+],
+"desloratadine": [
+"275635"
+],
+"disopyramide": [
+"3541"
+],
+"hydralazine": [
+"5470"
+],
+"iloperidone": [
+"73178"
+],
+"isosorbide dinitrate": [
+"6058"
+],
+"isosorbide": [
+"28004",
+"6058"
+],
+"isosorbide mononitrate": [
+"28004"
+],
+"levocetirizine": [
+"356887"
+],
+"loperamide": [
+"6468"
+],
+"loratadine": [
+"28889"
+],
+"metoprolol": [
+"6918"
+],
+"ranitidine": [
+"9143"
+],
+"trazodone": [
+"10737"
+],
+"amantadine": [
+"620"
+],
+"belladonna alkaloids": [
+"1359"
+],
+"belladonna": [
+"1359"
+],
+"loxapine": [
+"6475"
+],
+"methotrimeprazine": [
+"6852"
+],
+"molindone": [
+"7019"
+],
+"nefopam": [
+"7285"
+],
+"pimozide": [
+"8331"
+],
+"carbinoxamine": [
+"20220"
+],
+"clemastine": [
+"2578"
+],
+"propantheline": [
+"8761"
+],
+"propiverine": [
+"55175"
+],
+"thioridazine": [
+"10502"
+],
+"trifluoperazine": [
+"10800"
+],
+"trimipramine": [
+"10834"
+],
+"fexofenadine": [
+"87636"
+],
+"tamoxifen": [
+"10324"
+],
+"thyroid": [
+"10572"
+],
+"megestrol acetate": [
+"29451"
+],
+"valproic acid": [
+"11118"
+],
+"divalproex sodium": [
+"266856"
+],
+"dabigatran etexilate": [
+"1037042"
+],
+"lithium carbonate": [
+"42351"
+],
+"azithromycin": [
+"18631"
+],
+"acetaminophen": [
+"161"
+],
+"metformin": [
+"6809"
+],
+"amobarbital": [
+"719"
+],
+"butabarbital": [
+"477631"
+],
+"chlorpropamide": [
+"2404"
+],
+"dexbrompheniramine": [
+"22696"
+],
+"dexchlorpheniramine": [
+"22697"
+],
+"fenoprofen": [
+"4331"
+],
+"flurazepam": [
+"4501"
+],
+"guanabenz": [
+"5033"
+],
+"isoxsuprine": [
+"6066"
+],
+"ketoprofen": [
+"6142"
+],
+"meclofenamate": [
+"588003"
+],
+"mefenamic acid": [
+"6693"
+],
+"mephobarbital": [
+"6758"
+],
+"methscopolamine": [
+"89785"
+],
+"methyldopa": [
+"6876"
+],
+"pentobarbital": [
+"8004"
+],
+"protriptyline": [
+"8886"
+],
+"pyrilamine": [
+"9009"
+],
+"quazepam": [
+"35185"
+],
+"reserpine": [
+"9260"
+],
+"rosiglitazone": [
+"84108"
+],
+"secobarbital": [
+"9624"
+],
+"tolmetin": [
+"10636"
+],
+"nitroglycerin": [
+"4917"
+],
+"mirabegron": [
+"1300786"
+],
+"vibegron": [
+"2472254"
+],
+"amlodipine": [
+"17767"
+],
+"carvedilol": [
+"20352"
+]
+}

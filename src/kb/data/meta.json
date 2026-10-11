@@ -1,0 +1,82 @@
+{
+ "version": "2026.10.2",
+ "acbThresholds": {
+  "elevated": 3,
+  "high": 5,
+  "sourceId": "acb2012"
+ },
+ "coverageNote": "Kinwise reference set 2026.10.2: 427 medicines (766 brand names, 124 combination products), 89 AGS Beers 2023 rules (Table 2: 32, Table 3: 15, Table 4: 4, Table 5 and combinations: 14, Table 6: 24), 100 medicines scored on the ACB scale, 15 fall-risk classes, 26 prescribing cascades and 5 what-to-watch-for rules. Compiled from published criteria and cross-checked by automated research and an adversarial fact-check; not reviewed by a licensed clinician. It does not check doses, allergies or every interaction, and a medicine that is not flagged is not thereby shown to be free of risk.",
+ "acbHighNote": "ACB totals of 3 or more are the published review threshold (elevated); Kinwise labels totals of 5 or more as 'high' for display only.",
+ "counts": {
+  "drugs": 427,
+  "combos": 124,
+  "classes": 134,
+  "brands": 766,
+  "aliases": 63,
+  "rxcui": 425,
+  "acbListed": 100,
+  "beers": 89,
+  "beersByTable": {
+   "pim": 32,
+   "condition": 15,
+   "caution": 4,
+   "interaction": 14,
+   "renal": 24
+  },
+  "strongAnticholinergics": 40,
+  "cascades": 26,
+  "fridClasses": 15,
+  "monitoring": 5,
+  "sources": 22
+ },
+ "notEncoded": [
+  {
+   "criterion": "Table 2: nifedipine, immediate release",
+   "reason": "Formulation (immediate vs extended release) is not captured; matching the ingredient alone would flag the common long-acting forms."
+  },
+  {
+   "criterion": "Table 2: dipyridamole, oral short-acting",
+   "reason": "Cannot be told apart from extended-release dipyridamole in Aggrenox by ingredient."
+  },
+  {
+   "criterion": "Table 2: dronedarone (permanent AF, severe or recently decompensated heart failure)",
+   "reason": "Needs AF type and heart-failure severity; dronedarone in any heart failure is covered by the Table 3 heart-failure rule."
+  },
+  {
+   "criterion": "Table 2: insulin, sliding scale",
+   "reason": "Regimen type is not captured by the medication list."
+  },
+  {
+   "criterion": "Table 2: dose thresholds (digoxin > 0.125 mg/day, aspirin > 325 mg/day)",
+   "reason": "Dose is free text; thresholds are shown in the wording instead of being checked. (Doxepin > 6 mg/day is checked when a strength is typed, and Silenor is a separate low-dose entry.)"
+  },
+  {
+   "criterion": "Table 2: metoclopramide 12-week limit for gastroparesis",
+   "reason": "Shown as a qualifier; the indication exception is not machine-checked."
+  },
+  {
+   "criterion": "Table 3: syncope",
+   "reason": "No syncope condition tag in the Kinwise profile."
+  },
+  {
+   "criterion": "Table 3 and 4: dextromethorphan-quinidine",
+   "reason": "Only the combination product is covered by AGS; its ingredients alone (OTC cough medicine, quinidine) must not match, which the selector format cannot express."
+  },
+  {
+   "criterion": "Table 3: chronic kidney disease (derived)",
+   "reason": "AGS moved this criterion to Table 6; it is applied there when CrCl is recorded."
+  },
+  {
+   "criterion": "Table 5: spironolactone or eplerenone in the RAS + potassium-sparing row",
+   "reason": "AGS names only amiloride and triamterene; the aldosterone antagonists are ambiguous and left out."
+  },
+  {
+   "criterion": "Table 6: edoxaban when CrCl > 95 mL/min",
+   "reason": "Kinwise kidney rules trigger below a threshold only."
+  },
+  {
+   "criterion": "Table 8 (criteria removed in 2023 but still PIMs per 2019)",
+   "reason": "Not encoded; the 2023 tables are the reference."
+  }
+ ]
+}

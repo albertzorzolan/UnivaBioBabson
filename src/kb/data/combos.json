@@ -1,0 +1,1786 @@
+[
+ {
+  "id": "tylenol pm",
+  "display": "Tylenol PM",
+  "names": [
+   "tylenol pm",
+   "tylenol pm extra strength"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "excedrin pm",
+  "display": "Excedrin PM",
+  "names": [
+   "excedrin pm"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "excedrin pm triple action",
+  "display": "Excedrin PM Triple Action",
+  "names": [
+   "excedrin pm triple action"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "aspirin",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "advil pm",
+  "display": "Advil PM",
+  "names": [
+   "advil pm",
+   "advil pm liqui-gels"
+  ],
+  "ingredientIds": [
+   "ibuprofen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "motrin pm",
+  "display": "Motrin PM",
+  "names": [
+   "motrin pm"
+  ],
+  "ingredientIds": [
+   "ibuprofen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "aleve pm",
+  "display": "Aleve PM",
+  "names": [
+   "aleve pm"
+  ],
+  "ingredientIds": [
+   "naproxen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "doans pm",
+  "display": "Doan's PM",
+  "names": [
+   "doan's pm"
+  ],
+  "ingredientIds": [
+   "magnesium salicylate",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "nyquil",
+  "display": "NyQuil Cold & Flu",
+  "names": [
+   "nyquil",
+   "nyquil cold & flu",
+   "nyquil cold and flu",
+   "vicks nyquil"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "doxylamine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "dayquil",
+  "display": "DayQuil Cold & Flu",
+  "names": [
+   "dayquil",
+   "dayquil cold & flu",
+   "dayquil cold and flu",
+   "vicks dayquil"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "benadryl allergy plus congestion",
+  "display": "Benadryl Allergy Plus Congestion",
+  "names": [
+   "benadryl allergy plus congestion"
+  ],
+  "ingredientIds": [
+   "diphenhydramine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "claritin-d",
+  "display": "Claritin-D",
+  "names": [
+   "claritin d",
+   "claritin-d",
+   "claritin-d 12 hour",
+   "claritin-d 24 hour"
+  ],
+  "ingredientIds": [
+   "loratadine",
+   "pseudoephedrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "zyrtec-d",
+  "display": "Zyrtec-D",
+  "names": [
+   "zyrtec d",
+   "zyrtec-d"
+  ],
+  "ingredientIds": [
+   "cetirizine",
+   "pseudoephedrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "allegra-d",
+  "display": "Allegra-D",
+  "names": [
+   "allegra d",
+   "allegra-d",
+   "allegra-d 12 hour",
+   "allegra-d 24 hour"
+  ],
+  "ingredientIds": [
+   "fexofenadine",
+   "pseudoephedrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "mucinex dm",
+  "display": "Mucinex DM",
+  "names": [
+   "mucinex dm"
+  ],
+  "ingredientIds": [
+   "guaifenesin",
+   "dextromethorphan"
+  ],
+  "otc": true
+ },
+ {
+  "id": "robitussin dm",
+  "display": "Robitussin DM",
+  "names": [
+   "robitussin cough + chest congestion dm",
+   "robitussin dm"
+  ],
+  "ingredientIds": [
+   "dextromethorphan",
+   "guaifenesin"
+  ],
+  "otc": true
+ },
+ {
+  "id": "excedrin",
+  "display": "Excedrin Extra Strength / Migraine",
+  "names": [
+   "excedrin",
+   "excedrin extra strength",
+   "excedrin migraine"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "aspirin",
+   "caffeine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "hydrocodone-acetaminophen",
+  "display": "Hydrocodone + acetaminophen",
+  "names": [
+   "hydrocodone acetaminophen",
+   "hydrocodone apap",
+   "hydrocodone-acetaminophen",
+   "hydrocodone/acetaminophen",
+   "hydrocodone/apap",
+   "lorcet",
+   "lortab",
+   "norco",
+   "verdrocet",
+   "vicodin",
+   "xodol"
+  ],
+  "ingredientIds": [
+   "hydrocodone",
+   "acetaminophen"
+  ],
+  "otc": false
+ },
+ {
+  "id": "oxycodone-acetaminophen",
+  "display": "Oxycodone + acetaminophen",
+  "names": [
+   "endocet",
+   "nalocet",
+   "oxycodone acetaminophen",
+   "oxycodone-acetaminophen",
+   "oxycodone/acetaminophen",
+   "oxycodone/apap",
+   "percocet",
+   "primlev",
+   "prolate",
+   "roxicet"
+  ],
+  "ingredientIds": [
+   "oxycodone",
+   "acetaminophen"
+  ],
+  "otc": false
+ },
+ {
+  "id": "oxycodone-aspirin",
+  "display": "Oxycodone + aspirin",
+  "names": [
+   "oxycodone/aspirin",
+   "percodan"
+  ],
+  "ingredientIds": [
+   "oxycodone",
+   "aspirin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "acetaminophen-codeine",
+  "display": "Acetaminophen + codeine",
+  "names": [
+   "acetaminophen with codeine",
+   "acetaminophen/codeine",
+   "tylenol #3",
+   "tylenol #4",
+   "tylenol 3",
+   "tylenol with codeine",
+   "tylenol-codeine"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "codeine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "tramadol-acetaminophen",
+  "display": "Tramadol + acetaminophen",
+  "names": [
+   "tramadol-acetaminophen",
+   "tramadol/acetaminophen",
+   "ultracet"
+  ],
+  "ingredientIds": [
+   "tramadol",
+   "acetaminophen"
+  ],
+  "otc": false
+ },
+ {
+  "id": "fioricet",
+  "display": "Butalbital + acetaminophen + caffeine",
+  "names": [
+   "butalbital/acetaminophen/caffeine",
+   "esgic",
+   "fioricet"
+  ],
+  "ingredientIds": [
+   "butalbital",
+   "acetaminophen",
+   "caffeine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "fiorinal",
+  "display": "Butalbital + aspirin + caffeine",
+  "names": [
+   "butalbital/aspirin/caffeine",
+   "fiorinal"
+  ],
+  "ingredientIds": [
+   "butalbital",
+   "aspirin",
+   "caffeine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "buprenorphine-naloxone",
+  "display": "Buprenorphine + naloxone",
+  "names": [
+   "buprenorphine-naloxone",
+   "buprenorphine/naloxone",
+   "suboxone",
+   "zubsolv"
+  ],
+  "ingredientIds": [
+   "buprenorphine",
+   "naloxone"
+  ],
+  "otc": false
+ },
+ {
+  "id": "hydrocodone-homatropine",
+  "display": "Hydrocodone + homatropine (cough syrup)",
+  "names": [
+   "hycodan",
+   "hydrocodone/homatropine",
+   "hydromet"
+  ],
+  "ingredientIds": [
+   "hydrocodone",
+   "homatropine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "hydrocodone-chlorpheniramine",
+  "display": "Hydrocodone + chlorpheniramine (cough syrup)",
+  "names": [
+   "tussicaps",
+   "tussionex"
+  ],
+  "ingredientIds": [
+   "hydrocodone",
+   "chlorpheniramine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "promethazine-codeine",
+  "display": "Promethazine + codeine (cough syrup)",
+  "names": [
+   "phenergan with codeine",
+   "promethazine with codeine",
+   "promethazine-codeine",
+   "promethazine/codeine"
+  ],
+  "ingredientIds": [
+   "promethazine",
+   "codeine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "promethazine-dm",
+  "display": "Promethazine + dextromethorphan (cough syrup)",
+  "names": [
+   "promethazine dm",
+   "promethazine/dextromethorphan"
+  ],
+  "ingredientIds": [
+   "promethazine",
+   "dextromethorphan"
+  ],
+  "otc": false
+ },
+ {
+  "id": "sulfamethoxazole-trimethoprim",
+  "display": "Sulfamethoxazole + trimethoprim",
+  "names": [
+   "bactrim",
+   "bactrim ds",
+   "co-trimoxazole",
+   "cotrimoxazole",
+   "septra",
+   "septra ds",
+   "smx-tmp",
+   "smx/tmp",
+   "sulfamethoxazole trimethoprim",
+   "sulfamethoxazole-trimethoprim",
+   "sulfamethoxazole/trimethoprim",
+   "sulfatrim",
+   "tmp-smx",
+   "tmp/smx"
+  ],
+  "ingredientIds": [
+   "sulfamethoxazole",
+   "trimethoprim"
+  ],
+  "otc": false
+ },
+ {
+  "id": "amoxicillin-clavulanate",
+  "display": "Amoxicillin + clavulanate",
+  "names": [
+   "amox-clav",
+   "amoxicillin clavulanate",
+   "amoxicillin-clavulanate",
+   "amoxicillin/clavulanate",
+   "augmentin",
+   "augmentin xr",
+   "co-amoxiclav"
+  ],
+  "ingredientIds": [
+   "amoxicillin",
+   "clavulanate"
+  ],
+  "otc": false
+ },
+ {
+  "id": "carbidopa-levodopa",
+  "display": "Carbidopa + levodopa",
+  "names": [
+   "carbidopa levodopa",
+   "carbidopa-levodopa",
+   "carbidopa/levodopa",
+   "crexont",
+   "dhivy",
+   "duopa",
+   "levodopa-carbidopa",
+   "levodopa/carbidopa",
+   "rytary",
+   "sinemet",
+   "sinemet cr"
+  ],
+  "ingredientIds": [
+   "carbidopa",
+   "levodopa"
+  ],
+  "otc": false
+ },
+ {
+  "id": "memantine-donepezil",
+  "display": "Memantine + donepezil",
+  "names": [
+   "namzaric"
+  ],
+  "ingredientIds": [
+   "memantine",
+   "donepezil"
+  ],
+  "otc": false
+ },
+ {
+  "id": "dextromethorphan-quinidine",
+  "display": "Dextromethorphan + quinidine",
+  "names": [
+   "dextromethorphan-quinidine",
+   "dextromethorphan/quinidine",
+   "nuedexta"
+  ],
+  "ingredientIds": [
+   "dextromethorphan",
+   "quinidine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "olanzapine-fluoxetine",
+  "display": "Olanzapine + fluoxetine",
+  "names": [
+   "symbyax"
+  ],
+  "ingredientIds": [
+   "olanzapine",
+   "fluoxetine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "chlordiazepoxide-clidinium",
+  "display": "Chlordiazepoxide + clidinium",
+  "names": [
+   "chlordiazepoxide-clidinium",
+   "chlordiazepoxide/clidinium",
+   "librax"
+  ],
+  "ingredientIds": [
+   "chlordiazepoxide",
+   "clidinium"
+  ],
+  "otc": false
+ },
+ {
+  "id": "chlordiazepoxide-amitriptyline",
+  "display": "Chlordiazepoxide + amitriptyline",
+  "names": [
+   "chlordiazepoxide/amitriptyline",
+   "limbitrol"
+  ],
+  "ingredientIds": [
+   "chlordiazepoxide",
+   "amitriptyline"
+  ],
+  "otc": false
+ },
+ {
+  "id": "perphenazine-amitriptyline",
+  "display": "Perphenazine + amitriptyline",
+  "names": [
+   "perphenazine-amitriptyline",
+   "perphenazine/amitriptyline",
+   "triavil"
+  ],
+  "ingredientIds": [
+   "perphenazine",
+   "amitriptyline"
+  ],
+  "otc": false
+ },
+ {
+  "id": "diphenoxylate-atropine",
+  "display": "Diphenoxylate + atropine",
+  "names": [
+   "diphenoxylate atropine",
+   "diphenoxylate-atropine",
+   "diphenoxylate/atropine",
+   "lomotil"
+  ],
+  "ingredientIds": [
+   "diphenoxylate",
+   "atropine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "donnatal",
+  "display": "Phenobarbital + belladonna alkaloids",
+  "names": [
+   "donnatal",
+   "phenohytro"
+  ],
+  "ingredientIds": [
+   "phenobarbital",
+   "belladonna alkaloids"
+  ],
+  "otc": false
+ },
+ {
+  "id": "losartan-hctz",
+  "display": "Losartan + hydrochlorothiazide",
+  "names": [
+   "hyzaar",
+   "losartan hctz",
+   "losartan-hctz",
+   "losartan-hydrochlorothiazide",
+   "losartan/hctz",
+   "losartan/hydrochlorothiazide"
+  ],
+  "ingredientIds": [
+   "losartan",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "lisinopril-hctz",
+  "display": "Lisinopril + hydrochlorothiazide",
+  "names": [
+   "lisinopril hctz",
+   "lisinopril-hctz",
+   "lisinopril-hydrochlorothiazide",
+   "lisinopril/hctz",
+   "lisinopril/hydrochlorothiazide",
+   "prinzide",
+   "zestoretic"
+  ],
+  "ingredientIds": [
+   "lisinopril",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "valsartan-hctz",
+  "display": "Valsartan + hydrochlorothiazide",
+  "names": [
+   "diovan hct",
+   "valsartan-hctz",
+   "valsartan/hctz",
+   "valsartan/hydrochlorothiazide"
+  ],
+  "ingredientIds": [
+   "valsartan",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "olmesartan-hctz",
+  "display": "Olmesartan + hydrochlorothiazide",
+  "names": [
+   "benicar hct",
+   "olmesartan-hctz",
+   "olmesartan/hctz"
+  ],
+  "ingredientIds": [
+   "olmesartan",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "telmisartan-hctz",
+  "display": "Telmisartan + hydrochlorothiazide",
+  "names": [
+   "micardis hct",
+   "telmisartan/hctz"
+  ],
+  "ingredientIds": [
+   "telmisartan",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "irbesartan-hctz",
+  "display": "Irbesartan + hydrochlorothiazide",
+  "names": [
+   "avalide",
+   "irbesartan/hctz"
+  ],
+  "ingredientIds": [
+   "irbesartan",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "benazepril-hctz",
+  "display": "Benazepril + hydrochlorothiazide",
+  "names": [
+   "benazepril/hctz",
+   "lotensin hct"
+  ],
+  "ingredientIds": [
+   "benazepril",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "amlodipine-benazepril",
+  "display": "Amlodipine + benazepril",
+  "names": [
+   "amlodipine-benazepril",
+   "amlodipine/benazepril",
+   "lotrel"
+  ],
+  "ingredientIds": [
+   "amlodipine",
+   "benazepril"
+  ],
+  "otc": false
+ },
+ {
+  "id": "amlodipine-valsartan",
+  "display": "Amlodipine + valsartan",
+  "names": [
+   "amlodipine/valsartan",
+   "exforge"
+  ],
+  "ingredientIds": [
+   "amlodipine",
+   "valsartan"
+  ],
+  "otc": false
+ },
+ {
+  "id": "amlodipine-valsartan-hctz",
+  "display": "Amlodipine + valsartan + hydrochlorothiazide",
+  "names": [
+   "exforge hct"
+  ],
+  "ingredientIds": [
+   "amlodipine",
+   "valsartan",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "amlodipine-olmesartan",
+  "display": "Amlodipine + olmesartan",
+  "names": [
+   "amlodipine/olmesartan",
+   "azor"
+  ],
+  "ingredientIds": [
+   "amlodipine",
+   "olmesartan"
+  ],
+  "otc": false
+ },
+ {
+  "id": "amlodipine-atorvastatin",
+  "display": "Amlodipine + atorvastatin",
+  "names": [
+   "amlodipine/atorvastatin",
+   "caduet"
+  ],
+  "ingredientIds": [
+   "amlodipine",
+   "atorvastatin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "triamterene-hctz",
+  "display": "Triamterene + hydrochlorothiazide",
+  "names": [
+   "dyazide",
+   "maxzide",
+   "maxzide-25",
+   "triamterene hctz",
+   "triamterene-hctz",
+   "triamterene-hydrochlorothiazide",
+   "triamterene/hctz",
+   "triamterene/hydrochlorothiazide"
+  ],
+  "ingredientIds": [
+   "triamterene",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "spironolactone-hctz",
+  "display": "Spironolactone + hydrochlorothiazide",
+  "names": [
+   "aldactazide",
+   "spironolactone/hctz"
+  ],
+  "ingredientIds": [
+   "spironolactone",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "amiloride-hctz",
+  "display": "Amiloride + hydrochlorothiazide",
+  "names": [
+   "amiloride-hctz",
+   "amiloride/hctz",
+   "moduretic"
+  ],
+  "ingredientIds": [
+   "amiloride",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "atenolol-chlorthalidone",
+  "display": "Atenolol + chlorthalidone",
+  "names": [
+   "atenolol/chlorthalidone",
+   "tenoretic"
+  ],
+  "ingredientIds": [
+   "atenolol",
+   "chlorthalidone"
+  ],
+  "otc": false
+ },
+ {
+  "id": "bisoprolol-hctz",
+  "display": "Bisoprolol + hydrochlorothiazide",
+  "names": [
+   "bisoprolol-hctz",
+   "bisoprolol/hctz",
+   "ziac"
+  ],
+  "ingredientIds": [
+   "bisoprolol",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "metoprolol-hctz",
+  "display": "Metoprolol + hydrochlorothiazide",
+  "names": [
+   "dutoprol",
+   "lopressor hct",
+   "metoprolol/hctz"
+  ],
+  "ingredientIds": [
+   "metoprolol",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "azilsartan-chlorthalidone",
+  "display": "Azilsartan + chlorthalidone",
+  "names": [
+   "edarbyclor"
+  ],
+  "ingredientIds": [
+   "azilsartan",
+   "chlorthalidone"
+  ],
+  "otc": false
+ },
+ {
+  "id": "sacubitril-valsartan",
+  "display": "Sacubitril + valsartan",
+  "names": [
+   "entresto",
+   "sacubitril-valsartan",
+   "sacubitril/valsartan"
+  ],
+  "ingredientIds": [
+   "sacubitril",
+   "valsartan"
+  ],
+  "otc": false
+ },
+ {
+  "id": "isosorbide-dinitrate-hydralazine",
+  "display": "Isosorbide dinitrate + hydralazine",
+  "names": [
+   "bidil",
+   "isosorbide dinitrate/hydralazine"
+  ],
+  "ingredientIds": [
+   "isosorbide dinitrate",
+   "hydralazine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "aspirin-dipyridamole",
+  "display": "Aspirin + extended-release dipyridamole",
+  "names": [
+   "aggrenox",
+   "aspirin-dipyridamole",
+   "aspirin/dipyridamole"
+  ],
+  "ingredientIds": [
+   "aspirin",
+   "dipyridamole"
+  ],
+  "otc": false
+ },
+ {
+  "id": "ezetimibe-simvastatin",
+  "display": "Ezetimibe + simvastatin",
+  "names": [
+   "ezetimibe/simvastatin",
+   "vytorin"
+  ],
+  "ingredientIds": [
+   "ezetimibe",
+   "simvastatin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "sitagliptin-metformin",
+  "display": "Sitagliptin + metformin",
+  "names": [
+   "janumet",
+   "janumet xr",
+   "sitagliptin/metformin"
+  ],
+  "ingredientIds": [
+   "sitagliptin",
+   "metformin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "linagliptin-metformin",
+  "display": "Linagliptin + metformin",
+  "names": [
+   "jentadueto",
+   "jentadueto xr"
+  ],
+  "ingredientIds": [
+   "linagliptin",
+   "metformin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "empagliflozin-metformin",
+  "display": "Empagliflozin + metformin",
+  "names": [
+   "synjardy",
+   "synjardy xr"
+  ],
+  "ingredientIds": [
+   "empagliflozin",
+   "metformin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "empagliflozin-linagliptin",
+  "display": "Empagliflozin + linagliptin",
+  "names": [
+   "glyxambi"
+  ],
+  "ingredientIds": [
+   "empagliflozin",
+   "linagliptin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "dapagliflozin-metformin",
+  "display": "Dapagliflozin + metformin",
+  "names": [
+   "xigduo",
+   "xigduo xr"
+  ],
+  "ingredientIds": [
+   "dapagliflozin",
+   "metformin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "glyburide-metformin",
+  "display": "Glyburide + metformin",
+  "names": [
+   "glucovance",
+   "glyburide-metformin",
+   "glyburide/metformin"
+  ],
+  "ingredientIds": [
+   "glyburide",
+   "metformin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "glipizide-metformin",
+  "display": "Glipizide + metformin",
+  "names": [
+   "glipizide-metformin",
+   "glipizide/metformin",
+   "metaglip"
+  ],
+  "ingredientIds": [
+   "glipizide",
+   "metformin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "pioglitazone-metformin",
+  "display": "Pioglitazone + metformin",
+  "names": [
+   "actoplus met",
+   "pioglitazone/metformin"
+  ],
+  "ingredientIds": [
+   "pioglitazone",
+   "metformin"
+  ],
+  "otc": false
+ },
+ {
+  "id": "insulin-nph-regular-70-30",
+  "display": "Insulin NPH + regular 70/30",
+  "names": [
+   "humulin 70/30",
+   "insulin 70/30",
+   "novolin 70/30"
+  ],
+  "ingredientIds": [
+   "insulin nph",
+   "insulin regular"
+  ],
+  "otc": true
+ },
+ {
+  "id": "fluticasone-salmeterol",
+  "display": "Fluticasone + salmeterol",
+  "names": [
+   "advair",
+   "advair diskus",
+   "advair hfa",
+   "airduo respiclick",
+   "fluticasone/salmeterol",
+   "wixela inhub"
+  ],
+  "ingredientIds": [
+   "fluticasone",
+   "salmeterol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "budesonide-formoterol",
+  "display": "Budesonide + formoterol",
+  "names": [
+   "breyna",
+   "budesonide/formoterol",
+   "symbicort"
+  ],
+  "ingredientIds": [
+   "budesonide",
+   "formoterol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "ipratropium-albuterol",
+  "display": "Ipratropium + albuterol",
+  "names": [
+   "albuterol/ipratropium",
+   "combivent",
+   "combivent respimat",
+   "duoneb",
+   "ipratropium-albuterol",
+   "ipratropium/albuterol"
+  ],
+  "ingredientIds": [
+   "ipratropium",
+   "albuterol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "estradiol-norethindrone",
+  "display": "Estradiol + norethindrone",
+  "names": [
+   "activella",
+   "mimvey"
+  ],
+  "ingredientIds": [
+   "estradiol",
+   "norethindrone"
+  ],
+  "otc": false
+ },
+ {
+  "id": "conjugated-estrogens-medroxyprogesterone",
+  "display": "Conjugated estrogens + medroxyprogesterone",
+  "names": [
+   "premphase",
+   "prempro"
+  ],
+  "ingredientIds": [
+   "conjugated estrogens",
+   "medroxyprogesterone"
+  ],
+  "otc": false
+ },
+ {
+  "id": "hydrocodone-ibuprofen",
+  "display": "Hydrocodone + ibuprofen",
+  "names": [
+   "hydrocodone-ibuprofen",
+   "hydrocodone/ibuprofen",
+   "reprexain",
+   "vicoprofen"
+  ],
+  "ingredientIds": [
+   "hydrocodone",
+   "ibuprofen"
+  ],
+  "otc": false
+ },
+ {
+  "id": "sumatriptan-naproxen",
+  "display": "Sumatriptan + naproxen",
+  "names": [
+   "sumatriptan/naproxen",
+   "treximet"
+  ],
+  "ingredientIds": [
+   "sumatriptan",
+   "naproxen"
+  ],
+  "otc": false
+ },
+ {
+  "id": "diclofenac-misoprostol",
+  "display": "Diclofenac + misoprostol",
+  "names": [
+   "arthrotec",
+   "diclofenac/misoprostol"
+  ],
+  "ingredientIds": [
+   "diclofenac",
+   "misoprostol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "ibuprofen-famotidine",
+  "display": "Ibuprofen + famotidine",
+  "names": [
+   "duexis",
+   "ibuprofen/famotidine"
+  ],
+  "ingredientIds": [
+   "ibuprofen",
+   "famotidine"
+  ],
+  "otc": false
+ },
+ {
+  "id": "naproxen-esomeprazole",
+  "display": "Naproxen + esomeprazole",
+  "names": [
+   "naproxen/esomeprazole",
+   "vimovo"
+  ],
+  "ingredientIds": [
+   "naproxen",
+   "esomeprazole"
+  ],
+  "otc": false
+ },
+ {
+  "id": "ibuprofen-acetaminophen",
+  "display": "Ibuprofen + acetaminophen",
+  "names": [
+   "advil dual action",
+   "ibuprofen and acetaminophen",
+   "ibuprofen/acetaminophen"
+  ],
+  "ingredientIds": [
+   "ibuprofen",
+   "acetaminophen"
+  ],
+  "otc": true
+ },
+ {
+  "id": "quinapril-hctz",
+  "display": "Quinapril + hydrochlorothiazide",
+  "names": [
+   "accuretic",
+   "quinapril/hctz",
+   "quinapril/hydrochlorothiazide"
+  ],
+  "ingredientIds": [
+   "quinapril",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "enalapril-hctz",
+  "display": "Enalapril + hydrochlorothiazide",
+  "names": [
+   "enalapril/hctz",
+   "enalapril/hydrochlorothiazide",
+   "vaseretic"
+  ],
+  "ingredientIds": [
+   "enalapril",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "candesartan-hctz",
+  "display": "Candesartan + hydrochlorothiazide",
+  "names": [
+   "atacand hct",
+   "candesartan/hctz"
+  ],
+  "ingredientIds": [
+   "candesartan",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "olmesartan-amlodipine-hctz",
+  "display": "Olmesartan + amlodipine + hydrochlorothiazide",
+  "names": [
+   "tribenzor"
+  ],
+  "ingredientIds": [
+   "olmesartan",
+   "amlodipine",
+   "hydrochlorothiazide"
+  ],
+  "otc": false
+ },
+ {
+  "id": "unisom pm pain",
+  "display": "Unisom PM Pain",
+  "names": [
+   "unisom pm pain"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "bayer pm",
+  "display": "Bayer PM (aspirin + sleep aid)",
+  "names": [
+   "bayer pm",
+   "bayer pm aspirin plus sleep aid",
+   "bayer pm extra strength"
+  ],
+  "ingredientIds": [
+   "aspirin",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "zzzquil night pain",
+  "display": "ZzzQuil Night Pain",
+  "names": [
+   "vicks zzzquil night pain",
+   "zzzquil night pain"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "percogesic",
+  "display": "Percogesic",
+  "names": [
+   "percogesic",
+   "percogesic extra strength"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "diphenhydramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "advil allergy sinus",
+  "display": "Advil Allergy Sinus",
+  "names": [
+   "advil allergy & sinus",
+   "advil allergy sinus"
+  ],
+  "ingredientIds": [
+   "ibuprofen",
+   "chlorpheniramine",
+   "pseudoephedrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "advil cold and sinus",
+  "display": "Advil Cold & Sinus",
+  "names": [
+   "advil cold & sinus",
+   "advil cold sinus"
+  ],
+  "ingredientIds": [
+   "ibuprofen",
+   "pseudoephedrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "advil sinus congestion and pain",
+  "display": "Advil Sinus Congestion & Pain",
+  "names": [
+   "advil sinus",
+   "advil sinus congestion & pain"
+  ],
+  "ingredientIds": [
+   "ibuprofen",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "tylenol cold and flu severe",
+  "display": "Tylenol Cold + Flu Severe (day)",
+  "names": [
+   "tylenol cold + flu severe",
+   "tylenol cold + flu severe day",
+   "tylenol cold + flu severe daytime",
+   "tylenol cold plus flu severe",
+   "tylenol cold plus flu severe day",
+   "tylenol cold plus flu severe daytime"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "guaifenesin",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "tylenol cold and flu night",
+  "display": "Tylenol Cold + Flu Multi-Symptom Nighttime",
+  "names": [
+   "tylenol cold + flu multi-symptom night",
+   "tylenol cold + flu multi-symptom nighttime",
+   "tylenol cold + flu night",
+   "tylenol cold + flu nighttime",
+   "tylenol cold multi-symptom nighttime",
+   "tylenol cold night",
+   "tylenol cold nighttime",
+   "tylenol cold plus flu multi-symptom night",
+   "tylenol cold plus flu multi-symptom nighttime",
+   "tylenol cold plus flu night",
+   "tylenol cold plus flu nighttime"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "doxylamine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "tylenol cold flu cough night",
+  "display": "Tylenol Cold + Flu + Cough Night",
+  "names": [
+   "tylenol cold + flu + cough night",
+   "tylenol cold + flu severe night",
+   "tylenol cold + flu severe nighttime",
+   "tylenol cold plus flu plus cough night",
+   "tylenol cold plus flu severe night",
+   "tylenol cold plus flu severe nighttime"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "doxylamine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "mucinex nightshift",
+  "display": "Mucinex Nightshift Cold & Flu",
+  "names": [
+   "mucinex fast max night",
+   "mucinex fast max nighttime",
+   "mucinex fast-max night",
+   "mucinex fast-max nighttime",
+   "mucinex fast-max nighttime cold & flu",
+   "mucinex nightshift",
+   "mucinex nightshift cold & flu",
+   "mucinex nightshift night severe cold & flu"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "triprolidine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "mucinex nightshift sinus",
+  "display": "Mucinex Nightshift Sinus",
+  "names": [
+   "mucinex nightshift sinus"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "phenylephrine",
+   "triprolidine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "mucinex d",
+  "display": "Mucinex D",
+  "names": [
+   "mucinex d",
+   "mucinex d maximum strength"
+  ],
+  "ingredientIds": [
+   "guaifenesin",
+   "pseudoephedrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "theraflu nighttime",
+  "display": "Theraflu Nighttime Severe Cold & Cough",
+  "names": [
+   "theraflu night",
+   "theraflu night time",
+   "theraflu nighttime",
+   "theraflu nighttime severe cold & cough"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "diphenhydramine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "alka-seltzer plus cold",
+  "display": "Alka-Seltzer Plus Cold (effervescent)",
+  "names": [
+   "alka seltzer plus",
+   "alka seltzer plus cold",
+   "alka-seltzer plus",
+   "alka-seltzer plus cold",
+   "alka-seltzer plus cold sparkling original"
+  ],
+  "ingredientIds": [
+   "aspirin",
+   "chlorpheniramine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "alka-seltzer plus night",
+  "display": "Alka-Seltzer Plus Night Cold & Flu",
+  "names": [
+   "alka seltzer plus night",
+   "alka-seltzer plus maximum strength night cold & flu",
+   "alka-seltzer plus night",
+   "alka-seltzer plus night cold & flu",
+   "alka-seltzer plus night severe cold & flu"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "doxylamine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "alka-seltzer plus cold night",
+  "display": "Alka-Seltzer Plus Cold Night (effervescent)",
+  "names": [
+   "alka seltzer plus cold night",
+   "alka-seltzer plus cold night"
+  ],
+  "ingredientIds": [
+   "aspirin",
+   "dextromethorphan",
+   "doxylamine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "coricidin hbp cold and flu",
+  "display": "Coricidin HBP Cold & Flu",
+  "names": [
+   "coricidin",
+   "coricidin hbp",
+   "coricidin hbp cold & flu"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "chlorpheniramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "coricidin hbp cough and cold",
+  "display": "Coricidin HBP Cough & Cold",
+  "names": [
+   "coricidin hbp cough & cold"
+  ],
+  "ingredientIds": [
+   "chlorpheniramine",
+   "dextromethorphan"
+  ],
+  "otc": true
+ },
+ {
+  "id": "coricidin hbp flu",
+  "display": "Coricidin HBP Maximum Strength Flu",
+  "names": [
+   "coricidin hbp flu",
+   "coricidin hbp maximum strength flu",
+   "coricidin hbp multi-symptom flu"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "chlorpheniramine",
+   "dextromethorphan"
+  ],
+  "otc": true
+ },
+ {
+  "id": "coricidin hbp nighttime",
+  "display": "Coricidin HBP Nighttime Multi-Symptom Cold",
+  "names": [
+   "coricidin hbp night",
+   "coricidin hbp nighttime",
+   "coricidin hbp nighttime multi-symptom cold"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "dextromethorphan",
+   "doxylamine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "coricidin hbp chest congestion and cough",
+  "display": "Coricidin HBP Chest Congestion & Cough",
+  "names": [
+   "coricidin hbp chest congestion & cough"
+  ],
+  "ingredientIds": [
+   "dextromethorphan",
+   "guaifenesin"
+  ],
+  "otc": true
+ },
+ {
+  "id": "dimetapp cold and allergy",
+  "display": "Dimetapp Cold & Allergy",
+  "names": [
+   "dimetapp",
+   "dimetapp cold & allergy"
+  ],
+  "ingredientIds": [
+   "brompheniramine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "dimetapp cold and cough",
+  "display": "Dimetapp Cold & Cough",
+  "names": [
+   "dimetapp cold & cough",
+   "dimetapp dm"
+  ],
+  "ingredientIds": [
+   "brompheniramine",
+   "dextromethorphan",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "dimetapp nighttime",
+  "display": "Dimetapp Nighttime Cold & Congestion",
+  "names": [
+   "dimetapp nighttime",
+   "dimetapp nighttime cold & congestion"
+  ],
+  "ingredientIds": [
+   "diphenhydramine",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "robitussin nighttime",
+  "display": "Robitussin Nighttime Cough DM",
+  "names": [
+   "robitussin night",
+   "robitussin night time",
+   "robitussin nighttime",
+   "robitussin nighttime cough dm"
+  ],
+  "ingredientIds": [
+   "dextromethorphan",
+   "doxylamine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "sudafed pe sinus and allergy",
+  "display": "Sudafed PE Sinus & Allergy",
+  "names": [
+   "sudafed pe sinus & allergy",
+   "sudafed sinus & allergy"
+  ],
+  "ingredientIds": [
+   "phenylephrine",
+   "chlorpheniramine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "sudafed pe pressure and pain",
+  "display": "Sudafed PE Sinus Pressure + Pain",
+  "names": [
+   "sudafed pe pressure + pain",
+   "sudafed pe pressure plus pain",
+   "sudafed pe sinus pressure + pain",
+   "sudafed pe sinus pressure plus pain"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "phenylephrine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "midol complete",
+  "display": "Midol Complete",
+  "names": [
+   "midol",
+   "midol complete"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "caffeine",
+   "pyrilamine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "pamprin multi-symptom",
+  "display": "Pamprin Multi-Symptom",
+  "names": [
+   "pamprin",
+   "pamprin multi-symptom"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "pamabrom",
+   "pyrilamine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "bc powder",
+  "display": "BC Powder (aspirin + caffeine)",
+  "names": [
+   "bc arthritis",
+   "bc original",
+   "bc original powder",
+   "bc powder"
+  ],
+  "ingredientIds": [
+   "aspirin",
+   "caffeine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "goodys powder",
+  "display": "Goody's Extra Strength Powder",
+  "names": [
+   "goody's",
+   "goody's extra strength",
+   "goody's headache powder",
+   "goody's powder"
+  ],
+  "ingredientIds": [
+   "acetaminophen",
+   "aspirin",
+   "caffeine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "anacin",
+  "display": "Anacin (aspirin + caffeine)",
+  "names": [
+   "anacin",
+   "anacin regular strength"
+  ],
+  "ingredientIds": [
+   "aspirin",
+   "caffeine"
+  ],
+  "otc": true
+ },
+ {
+  "id": "fluticasone-vilanterol",
+  "display": "Fluticasone + vilanterol",
+  "names": [
+   "breo",
+   "breo ellipta",
+   "fluticasone/vilanterol"
+  ],
+  "ingredientIds": [
+   "fluticasone",
+   "vilanterol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "umeclidinium-vilanterol",
+  "display": "Umeclidinium + vilanterol",
+  "names": [
+   "anoro",
+   "anoro ellipta",
+   "umeclidinium/vilanterol"
+  ],
+  "ingredientIds": [
+   "umeclidinium",
+   "vilanterol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "fluticasone-umeclidinium-vilanterol",
+  "display": "Fluticasone + umeclidinium + vilanterol",
+  "names": [
+   "trelegy",
+   "trelegy ellipta"
+  ],
+  "ingredientIds": [
+   "fluticasone",
+   "umeclidinium",
+   "vilanterol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "dorzolamide-timolol",
+  "display": "Dorzolamide + timolol (eye drops)",
+  "names": [
+   "cosopt",
+   "cosopt pf",
+   "dorzolamide-timolol",
+   "dorzolamide/timolol"
+  ],
+  "ingredientIds": [
+   "dorzolamide",
+   "timolol"
+  ],
+  "otc": false
+ },
+ {
+  "id": "dutasteride-tamsulosin",
+  "display": "Dutasteride + tamsulosin",
+  "names": [
+   "dutasteride-tamsulosin",
+   "dutasteride/tamsulosin",
+   "jalyn"
+  ],
+  "ingredientIds": [
+   "dutasteride",
+   "tamsulosin"
+  ],
+  "otc": false
+ }
+]

@@ -1,0 +1,450 @@
+[
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Angiotensin converting enzyme inhibitor",
+  "adverseEvent": "Cough",
+  "drugB": "Cough remedy"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Antihypertensive",
+  "adverseEvent": "Orthostatic hypotension/dizziness",
+  "drugB": "Antiemetic"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Beta-blocker (particularly lipophilic e.g., propranolol)",
+  "adverseEvent": "Depression",
+  "drugB": "Antidepressant"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Beta-blocker (particularly lipophilic e.g., propranolol)",
+  "adverseEvent": "Erectile dysfunction",
+  "drugB": "Phosphodiesterase-5 inhibitor, alprostadil"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Calcium channel blocker",
+  "adverseEvent": "Peripheral edema",
+  "drugB": "Diuretic"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Calcium channel blocker",
+  "adverseEvent": "Constipation",
+  "drugB": "Laxative"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Diuretic",
+  "adverseEvent": "Gout or Hyperuricemia",
+  "drugB": "Anti-gout agent"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "Diuretic",
+  "adverseEvent": "Urinary incontinence",
+  "drugB": "Overactive bladder medication"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "HMG Co-A reductase inhibitor",
+  "adverseEvent": "Myalgia/myositis",
+  "drugB": "Mineral supplement"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "HMG Co-A reductase inhibitor",
+  "adverseEvent": "Myalgia/myositis",
+  "drugB": "Quinine sulfate"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Drug Class",
+  "drugA": "HMG Co-A reductase inhibitor",
+  "adverseEvent": "Insomnia",
+  "drugB": "Sleep agent"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Individual Drug",
+  "drugA": "Digoxin",
+  "adverseEvent": "Nausea",
+  "drugB": "Antiemetic"
+ },
+ {
+  "system": "Cardiovascular system",
+  "level": "Individual Drug",
+  "drugA": "Midodrine",
+  "adverseEvent": "Hypertension",
+  "drugB": "Antihypertensive"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Anticonvulsant",
+  "adverseEvent": "Rash",
+  "drugB": "Topical corticosteroid"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Anticonvulsant",
+  "adverseEvent": "Nausea",
+  "drugB": "Antiemetic"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Antipsychotic",
+  "adverseEvent": "Extrapyramidal symptoms",
+  "drugB": "Beta-blocker"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Antipsychotic",
+  "adverseEvent": "Extrapyramidal symptoms",
+  "drugB": "Antiparkinsonian agent"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Antipsychotic",
+  "adverseEvent": "Extrapyramidal symptoms",
+  "drugB": "Anti-tremor antimuscarinic"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Antipsychotic",
+  "adverseEvent": "Akathisia or tardive movements",
+  "drugB": "Sedative"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Antipsychotic",
+  "adverseEvent": "Arrhythmia",
+  "drugB": "Antiarrhythmic"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Antipsychotic",
+  "adverseEvent": "Hyperglycemia",
+  "drugB": "Antihyperglycemic"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Benzodiazepine",
+  "adverseEvent": "Cognitive impairment",
+  "drugB": "Cholinesterase Inhibitor"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Cholinesterase inhibitor",
+  "adverseEvent": "Urinary incontinence",
+  "drugB": "Overactive bladder medication"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Cholinesterase inhibitor",
+  "adverseEvent": "Insomnia",
+  "drugB": "Sleep agent"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Cholinesterase inhibitor",
+  "adverseEvent": "Gastrointestinal upset",
+  "drugB": "Antiemetic"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Cholinesterase inhibitor",
+  "adverseEvent": "Gastrointestinal upset",
+  "drugB": "Bismuth subsalicylate"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Cholinesterase inhibitor",
+  "adverseEvent": "Diarrhea",
+  "drugB": "Antidiarrheal"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Cholinesterase inhibitor",
+  "adverseEvent": "Rhinorrhea",
+  "drugB": "Antihistamine"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Dopaminergic Antiparkinsonian agent",
+  "adverseEvent": "Psychotic symptoms, hallucinations",
+  "drugB": "Antipsychotic"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Gabapentinoid",
+  "adverseEvent": "Peripheral edema",
+  "drugB": "Diuretic"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Selective serotonin reuptake inhibitor/Serotonin and norepinephrine reuptake inhibitor (SSRI/SNRI)",
+  "adverseEvent": "Urinary Incontinence",
+  "drugB": "Overactive bladder medication"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Tricyclic antidepressant",
+  "adverseEvent": "Cognitive Impairment",
+  "drugB": "Cholinesterase Inhibitor"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Tricyclic antidepressant",
+  "adverseEvent": "Constipation",
+  "drugB": "Laxative"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Drug Class",
+  "drugA": "Tricyclic antidepressant",
+  "adverseEvent": "Urinary incontinence",
+  "drugB": "Overactive bladder medication"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Individual Drug",
+  "drugA": "Flunarizine",
+  "adverseEvent": "Depression",
+  "drugB": "Antidepressant"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Individual Drug",
+  "drugA": "Lithium",
+  "adverseEvent": "Extrapyramidal symptoms",
+  "drugB": "Antiparkinsonian agent"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Individual Drug",
+  "drugA": "Venlafaxine",
+  "adverseEvent": "Hypertension (dose-related)",
+  "drugB": "Antihypertensive"
+ },
+ {
+  "system": "Central nervous system",
+  "level": "Individual Drug",
+  "drugA": "Venlafaxine",
+  "adverseEvent": "Tremor",
+  "drugB": "Benzodiazepine"
+ },
+ {
+  "system": "Endocrine system",
+  "level": "Drug Class",
+  "drugA": "Dipeptidyl peptidase 4 (DPP-4) inhibitor (e.g., sitagliptin, saxagliptin)",
+  "adverseEvent": "Joint pain",
+  "drugB": "Nonsteroidal anti-inflammatory drug"
+ },
+ {
+  "system": "Endocrine system",
+  "level": "Drug Class",
+  "drugA": "Sodium-glucose cotransporter-2 (SGLT-2) inhibitor",
+  "adverseEvent": "Mycotic genital infections",
+  "drugB": "Antifungal"
+ },
+ {
+  "system": "Endocrine system",
+  "level": "Individual Drug",
+  "drugA": "Metformin",
+  "adverseEvent": "Diarrhea",
+  "drugB": "Antidiarrheal"
+ },
+ {
+  "system": "Endocrine system",
+  "level": "Individual Drug",
+  "drugA": "Pioglitazone or Rosiglitazone",
+  "adverseEvent": "Edema",
+  "drugB": "Diuretic"
+ },
+ {
+  "system": "Endocrine system",
+  "level": "Individual Drug",
+  "drugA": "Rosiglitazone",
+  "adverseEvent": "Heart failure",
+  "drugB": "Diuretic"
+ },
+ {
+  "system": "Gastrointestinal system",
+  "level": "Drug Class",
+  "drugA": "Anticholinergic antiemetic",
+  "adverseEvent": "Urinary retention",
+  "drugB": "Alpha-1 receptor blocker"
+ },
+ {
+  "system": "Gastrointestinal system",
+  "level": "Drug Class",
+  "drugA": "Antidopaminergic antiemetic",
+  "adverseEvent": "Extrapyramidal symptoms",
+  "drugB": "Antiparkinsonian agent"
+ },
+ {
+  "system": "Gastrointestinal system",
+  "level": "Drug Class",
+  "drugA": "Laxative",
+  "adverseEvent": "Diarrhea",
+  "drugB": "Antidiarrheal agent"
+ },
+ {
+  "system": "Gastrointestinal system",
+  "level": "Drug Class",
+  "drugA": "Proton pump inhibitor",
+  "adverseEvent": "Osteoporosis, fractures",
+  "drugB": "Vitamin supplement"
+ },
+ {
+  "system": "Gastrointestinal system",
+  "level": "Drug Class",
+  "drugA": "Proton pump inhibitor",
+  "adverseEvent": "Vitamin or Mineral Deficiency",
+  "drugB": "Vitamin or Mineral Deficiency"
+ },
+ {
+  "system": "Musculoskeletal system",
+  "level": "Drug Class",
+  "drugA": "Bisphosphonate",
+  "adverseEvent": "Gastritis",
+  "drugB": "Gastroprotective agent"
+ },
+ {
+  "system": "Musculoskeletal system",
+  "level": "Drug Class",
+  "drugA": "Nonsteroidal anti-inflammatory drug (NSAID)",
+  "adverseEvent": "Gastritis/gastric ulcer/gastrointestinal bleed",
+  "drugB": "Gastroprotective agent"
+ },
+ {
+  "system": "Musculoskeletal system",
+  "level": "Drug Class",
+  "drugA": "NSAID",
+  "adverseEvent": "Nausea",
+  "drugB": "Antiemetic"
+ },
+ {
+  "system": "Musculoskeletal system",
+  "level": "Drug Class",
+  "drugA": "NSAID",
+  "adverseEvent": "Hypertension",
+  "drugB": "Antihypertensive"
+ },
+ {
+  "system": "Musculoskeletal system",
+  "level": "Drug Class",
+  "drugA": "NSAID",
+  "adverseEvent": "Worsening of heart failure",
+  "drugB": "Heart failure agent"
+ },
+ {
+  "system": "Musculoskeletal system",
+  "level": "Drug Class",
+  "drugA": "Opioid",
+  "adverseEvent": "Depression",
+  "drugB": "Antidepressant"
+ },
+ {
+  "system": "Urogenital system",
+  "level": "Drug Class",
+  "drugA": "Alpha-1 receptor blocker",
+  "adverseEvent": "Orthostatic hypotension, dizziness",
+  "drugB": "Vestibular suppressant"
+ },
+ {
+  "system": "Urogenital system",
+  "level": "Drug Class",
+  "drugA": "Urinary anticholinergic",
+  "adverseEvent": "Dry mouth",
+  "drugB": "Saliva substitute"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Drug Class",
+  "drugA": "Carbapenem (e.g., imipenem, meropenem, ertapenem)",
+  "adverseEvent": "Seizures",
+  "drugB": "Anticonvulsant"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Drug Class",
+  "drugA": "Corticosteroid",
+  "adverseEvent": "Insomnia",
+  "drugB": "Sleep agent"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Drug Class",
+  "drugA": "Corticosteroid",
+  "adverseEvent": "Psychosis",
+  "drugB": "Antipsychotic"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Drug Class",
+  "drugA": "Corticosteroid",
+  "adverseEvent": "Hypertension",
+  "drugB": "Antihypertensive"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Individual Drug",
+  "drugA": "Acitretin",
+  "adverseEvent": "Vulvo-vaginal candidiasis",
+  "drugB": "Antifungal"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Individual Drug",
+  "drugA": "Erythromycin",
+  "adverseEvent": "Arrhythmia",
+  "drugB": "Antiarrhythmic"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Individual Drug",
+  "drugA": "Fludrocortisone",
+  "adverseEvent": "Hypertension",
+  "drugB": "Antihypertensive"
+ },
+ {
+  "system": "Miscellaneous system",
+  "level": "Individual Drug",
+  "drugA": "Iron supplement",
+  "adverseEvent": "Constipation",
+  "drugB": "Laxative"
+ }
+]

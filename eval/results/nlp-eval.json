@@ -1,0 +1,1025 @@
+{
+  "generatedAt": "2026-10-11T08:17:29.333Z",
+  "engine": "kinwise-nlp 2.0.0",
+  "protocol": "Scoring per eval/ANNOTATION-GUIDE.md. Dev set used for development; held-out set written independently and never used for tuning (reported, not asserted).",
+  "today": "2026-10-10",
+  "dev": {
+    "corpus": "dev",
+    "engine": "kinwise-nlp 2.0.0",
+    "cases": 245,
+    "perField": {
+      "energy": {
+        "tp": 37,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 37
+      },
+      "sleep": {
+        "tp": 48,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 48
+      },
+      "appetite": {
+        "tp": 29,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 29
+      },
+      "dizziness": {
+        "tp": 74,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 74
+      },
+      "dizzinessSeverity": {
+        "tp": 13,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 13
+      },
+      "drowsiness": {
+        "tp": 24,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 24
+      },
+      "confusion": {
+        "tp": 23,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 23
+      },
+      "fall": {
+        "tp": 29,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 29
+      },
+      "nearFall": {
+        "tp": 21,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 21
+      },
+      "swelling": {
+        "tp": 26,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1,
+        "recall": 0.963,
+        "f1": 0.9811,
+        "support": 27
+      }
+    },
+    "micro": {
+      "tp": 324,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1,
+      "recall": 0.9969,
+      "f1": 0.9985,
+      "support": 325
+    },
+    "macroF1": 0.9981,
+    "within1": {
+      "energy": {
+        "gold": 37,
+        "exact": 37,
+        "within1": 37,
+        "rate": 1
+      },
+      "sleep": {
+        "gold": 48,
+        "exact": 48,
+        "within1": 48,
+        "rate": 1
+      },
+      "dizzinessSeverity": {
+        "gold": 13,
+        "exact": 13,
+        "within1": 13,
+        "rate": 1
+      }
+    },
+    "other": {
+      "micro": {
+        "tp": 48,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 48
+      },
+      "perConcept": {
+        "urinary_problem": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 4
+        },
+        "headache": {
+          "tp": 7,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 7
+        },
+        "nausea": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 4
+        },
+        "constipation": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 3
+        },
+        "dry_mouth": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 4
+        },
+        "pain": {
+          "tp": 6,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 6
+        },
+        "anxiety": {
+          "tp": 6,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 6
+        },
+        "shortness_of_breath": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        },
+        "palpitations": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 1
+        },
+        "tremor": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 3
+        },
+        "rash": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 1
+        },
+        "low_mood": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        },
+        "diarrhea": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 1
+        },
+        "blurred_vision": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        },
+        "cough": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        }
+      }
+    },
+    "subsets": {
+      "explicit_rating": {
+        "cases": 17,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "qualitative": {
+        "cases": 51,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "negation": {
+        "cases": 55,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "colloquial": {
+        "cases": 65,
+        "errors": 1,
+        "fp": 0,
+        "fn": 1
+      },
+      "multi_symptom": {
+        "cases": 38,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "fall_vs_near_fall": {
+        "cases": 38,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "pseudo_negation": {
+        "cases": 13,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "double_negation": {
+        "cases": 6,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "med_mention": {
+        "cases": 22,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "experiencer_other": {
+        "cases": 24,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "no_symptoms": {
+        "cases": 24,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "historical": {
+        "cases": 12,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "hypothetical": {
+        "cases": 19,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "long": {
+        "cases": 6,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "typo": {
+        "cases": 7,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "conflict": {
+        "cases": 7,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "caregiver_voice": {
+        "cases": 18,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    "negation": {
+      "goldNegatives": 62,
+      "correct": 62,
+      "accuracy": 1,
+      "polarityFlips": 0
+    },
+    "exactCases": 244,
+    "exactRate": 0.9959,
+    "conflictsSurfaced": 4,
+    "latency": {
+      "meanMs": 0.451,
+      "p95Ms": 0.423,
+      "maxMs": 59.776
+    },
+    "errors": [
+      {
+        "id": "d236",
+        "field": "swelling",
+        "gold": true,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "colloquial"
+        ]
+      }
+    ]
+  },
+  "heldout": {
+    "corpus": "heldout",
+    "engine": "kinwise-nlp 2.0.0",
+    "cases": 70,
+    "perField": {
+      "energy": {
+        "tp": 19,
+        "fp": 0,
+        "fn": 2,
+        "precision": 1,
+        "recall": 0.9048,
+        "f1": 0.95,
+        "support": 21
+      },
+      "sleep": {
+        "tp": 19,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1,
+        "recall": 0.95,
+        "f1": 0.9744,
+        "support": 20
+      },
+      "appetite": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 10
+      },
+      "dizziness": {
+        "tp": 19,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.9048,
+        "recall": 0.95,
+        "f1": 0.9268,
+        "support": 20
+      },
+      "dizzinessSeverity": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 4,
+        "precision": 1,
+        "recall": 0.4286,
+        "f1": 0.6,
+        "support": 7
+      },
+      "drowsiness": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 7
+      },
+      "confusion": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 7
+      },
+      "fall": {
+        "tp": 7,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.875,
+        "recall": 0.875,
+        "f1": 0.875,
+        "support": 8
+      },
+      "nearFall": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1,
+        "recall": 0.875,
+        "f1": 0.9333,
+        "support": 8
+      },
+      "swelling": {
+        "tp": 8,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "support": 8
+      }
+    },
+    "micro": {
+      "tp": 106,
+      "fp": 3,
+      "fn": 10,
+      "precision": 0.9725,
+      "recall": 0.9138,
+      "f1": 0.9422,
+      "support": 116
+    },
+    "macroF1": 0.926,
+    "within1": {
+      "energy": {
+        "gold": 21,
+        "exact": 19,
+        "within1": 19,
+        "rate": 0.9048
+      },
+      "sleep": {
+        "gold": 20,
+        "exact": 19,
+        "within1": 19,
+        "rate": 0.95
+      },
+      "dizzinessSeverity": {
+        "gold": 7,
+        "exact": 3,
+        "within1": 3,
+        "rate": 0.4286
+      }
+    },
+    "other": {
+      "micro": {
+        "tp": 23,
+        "fp": 1,
+        "fn": 5,
+        "precision": 0.9583,
+        "recall": 0.8214,
+        "f1": 0.8846,
+        "support": 28
+      },
+      "perConcept": {
+        "headache": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 4
+        },
+        "pain": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 4
+        },
+        "dry_mouth": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        },
+        "urinary_problem": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        },
+        "nausea": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1,
+          "recall": 0.5,
+          "f1": 0.6667,
+          "support": 2
+        },
+        "tremor": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 1
+        },
+        "anxiety": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1,
+          "recall": 0.5,
+          "f1": 0.6667,
+          "support": 2
+        },
+        "cough": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.5,
+          "recall": 1,
+          "f1": 0.6667,
+          "support": 1
+        },
+        "shortness_of_breath": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        },
+        "low_mood": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        },
+        "palpitations": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        },
+        "blurred_vision": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 2
+        },
+        "diarrhea": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 1
+        },
+        "constipation": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1,
+          "recall": 0.5,
+          "f1": 0.6667,
+          "support": 2
+        },
+        "rash": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "support": 1
+        }
+      }
+    },
+    "subsets": {
+      "no_symptoms": {
+        "cases": 10,
+        "errors": 1,
+        "fp": 1,
+        "fn": 0
+      },
+      "negation": {
+        "cases": 23,
+        "errors": 5,
+        "fp": 2,
+        "fn": 4
+      },
+      "fall_vs_near_fall": {
+        "cases": 18,
+        "errors": 6,
+        "fp": 1,
+        "fn": 5
+      },
+      "qualitative": {
+        "cases": 33,
+        "errors": 7,
+        "fp": 1,
+        "fn": 6
+      },
+      "multi_symptom": {
+        "cases": 30,
+        "errors": 4,
+        "fp": 0,
+        "fn": 4
+      },
+      "colloquial": {
+        "cases": 17,
+        "errors": 4,
+        "fp": 0,
+        "fn": 4
+      },
+      "med_mention": {
+        "cases": 11,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "explicit_rating": {
+        "cases": 10,
+        "errors": 1,
+        "fp": 0,
+        "fn": 1
+      },
+      "experiencer_other": {
+        "cases": 13,
+        "errors": 3,
+        "fp": 1,
+        "fn": 3
+      },
+      "historical": {
+        "cases": 9,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "hypothetical": {
+        "cases": 7,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "caregiver_voice": {
+        "cases": 10,
+        "errors": 1,
+        "fp": 1,
+        "fn": 0
+      },
+      "typo": {
+        "cases": 5,
+        "errors": 1,
+        "fp": 0,
+        "fn": 1
+      },
+      "pseudo_negation": {
+        "cases": 5,
+        "errors": 3,
+        "fp": 1,
+        "fn": 3
+      },
+      "double_negation": {
+        "cases": 1,
+        "errors": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "long": {
+        "cases": 2,
+        "errors": 1,
+        "fp": 0,
+        "fn": 1
+      },
+      "conflict": {
+        "cases": 3,
+        "errors": 1,
+        "fp": 1,
+        "fn": 0
+      }
+    },
+    "negation": {
+      "goldNegatives": 23,
+      "correct": 21,
+      "accuracy": 0.913,
+      "polarityFlips": 1
+    },
+    "exactCases": 58,
+    "exactRate": 0.8286,
+    "conflictsSurfaced": 1,
+    "latency": {
+      "meanMs": 0.287,
+      "p95Ms": 0.435,
+      "maxMs": 0.78
+    },
+    "errors": [
+      {
+        "id": "h008",
+        "field": "energy",
+        "gold": 4,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "fall_vs_near_fall",
+          "qualitative"
+        ]
+      },
+      {
+        "id": "h019",
+        "field": "fall",
+        "gold": false,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "fall_vs_near_fall",
+          "negation"
+        ]
+      },
+      {
+        "id": "h020",
+        "field": "fall",
+        "gold": null,
+        "predicted": true,
+        "kind": "false_positive",
+        "tags": [
+          "no_symptoms",
+          "fall_vs_near_fall"
+        ]
+      },
+      {
+        "id": "h031",
+        "field": "dizzinessSeverity",
+        "gold": 1,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "experiencer_other",
+          "qualitative"
+        ]
+      },
+      {
+        "id": "h033",
+        "field": "dizziness",
+        "gold": null,
+        "predicted": false,
+        "kind": "false_positive",
+        "tags": [
+          "caregiver_voice",
+          "conflict",
+          "negation",
+          "qualitative"
+        ]
+      },
+      {
+        "id": "h035",
+        "field": "other:shortness_of_breath",
+        "gold": true,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "typo",
+          "negation",
+          "multi_symptom"
+        ]
+      },
+      {
+        "id": "h036",
+        "field": "dizzinessSeverity",
+        "gold": 3,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "pseudo_negation",
+          "colloquial",
+          "qualitative",
+          "multi_symptom"
+        ]
+      },
+      {
+        "id": "h040",
+        "field": "dizzinessSeverity",
+        "gold": 3,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "pseudo_negation",
+          "qualitative",
+          "colloquial",
+          "multi_symptom"
+        ]
+      },
+      {
+        "id": "h043",
+        "field": "other:anxiety",
+        "gold": true,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "qualitative",
+          "multi_symptom"
+        ]
+      },
+      {
+        "id": "h043",
+        "field": "other:palpitations",
+        "gold": true,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "qualitative",
+          "multi_symptom"
+        ]
+      },
+      {
+        "id": "h045",
+        "field": "energy",
+        "gold": 5,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "negation",
+          "qualitative",
+          "colloquial",
+          "fall_vs_near_fall"
+        ]
+      },
+      {
+        "id": "h051",
+        "field": "sleep",
+        "gold": 4,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "explicit_rating",
+          "multi_symptom"
+        ]
+      },
+      {
+        "id": "h054",
+        "field": "nearFall",
+        "gold": true,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "typo",
+          "fall_vs_near_fall",
+          "negation"
+        ]
+      },
+      {
+        "id": "h065",
+        "field": "dizzinessSeverity",
+        "gold": 1,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "long",
+          "experiencer_other",
+          "multi_symptom",
+          "colloquial",
+          "qualitative",
+          "fall_vs_near_fall"
+        ]
+      },
+      {
+        "id": "h067",
+        "field": "other:nausea",
+        "gold": true,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "caregiver_voice",
+          "negation",
+          "med_mention",
+          "experiencer_other"
+        ]
+      },
+      {
+        "id": "h067",
+        "field": "other:constipation",
+        "gold": false,
+        "predicted": null,
+        "kind": "false_negative",
+        "tags": [
+          "caregiver_voice",
+          "negation",
+          "med_mention",
+          "experiencer_other"
+        ]
+      },
+      {
+        "id": "h067",
+        "field": "other:cough",
+        "gold": null,
+        "predicted": true,
+        "kind": "false_positive",
+        "tags": [
+          "caregiver_voice",
+          "negation",
+          "med_mention",
+          "experiencer_other"
+        ]
+      },
+      {
+        "id": "h070",
+        "field": "dizziness",
+        "gold": false,
+        "predicted": true,
+        "kind": "wrong_value",
+        "tags": [
+          "pseudo_negation",
+          "experiencer_other",
+          "negation"
+        ]
+      }
+    ]
+  }
+}

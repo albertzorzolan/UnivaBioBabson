@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kinwise AI harness</title>
+    <style>
+      :root { color-scheme: light; --ink: #1f2a26; --muted: #5e6a64; --line: #e3e0d6; --bg: #f7f5ef; --green: #25584a; --rust: #b5523b; --amber: #b7791f; }
+      body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+      main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 64px; }
+      h1 { font-size: 22px; margin: 0 0 4px; }
+      h2 { font-size: 16px; margin: 24px 0 8px; }
+      .muted { color: var(--muted); }
+      .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+      button, select { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; }
+      button.primary { background: var(--green); color: #fff; border-color: var(--green); }
+      button:disabled { opacity: 0.5; cursor: default; }
+      .status { padding: 8px 12px; border-radius: 8px; background: #fff; border: 1px solid var(--line); }
+      .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 800px) { .row { grid-template-columns: 1fr; } }
+      pre { white-space: pre-wrap; word-break: break-word; background: #faf9f5; border: 1px solid var(--line); border-radius: 8px; padding: 8px; max-height: 360px; overflow: auto; font-size: 12px; margin: 4px 0; }
+      .ok { color: var(--green); font-weight: 600; }
+      .fail { color: var(--rust); font-weight: 600; }
+      .drop { color: var(--rust); }
+      .issue { color: var(--amber); font-size: 12px; }
+      table { border-collapse: collapse; width: 100%; background: #fff; }
+      td, th { border: 1px solid var(--line); padding: 4px 8px; text-align: left; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/ai/harness.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,6021 @@
+{
+ "id": "cascades",
+ "title": "Prescribing cascades relevant to older adults - machine-readable knowledge base",
+ "compiled": "2026-10-10",
+ "definition": {
+  "text": "A prescribing cascade occurs when an adverse drug event is misinterpreted as a new medical condition and a further drug is prescribed to treat it.",
+  "sources": [
+   "rochon1997",
+   "rochon2017",
+   "mccarthy2019"
+  ]
+ },
+ "coverage": {
+  "pipc2025": 65,
+  "thinkCascades2022": 9,
+  "thinkCascadesOnly": 3,
+  "otherDocumented": 3,
+  "total": 71,
+  "ontarioPrioritised": 24
+ },
+ "sources": {
+  "pipc2025": {
+   "citation": "Rochon PA, O'Mahony D, Cherubini A, et al. International expert panel's potentially inappropriate prescribing cascades (PIPC) list. Eur Geriatr Med. 2025;16(5):1573-1584 (correction: 2026;17(1):409-410, licence changed to CC BY 4.0).",
+   "pmid": "40742670",
+   "doi": "10.1007/s41999-025-01215-x",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12712104/",
+   "design": "Delphi consensus, 12 international experts; 65 cascades accepted (>=75% agreement)."
+  },
+  "rochon2026bmj": {
+   "citation": "Rochon PA, Austin PC, Gurwitz JH, et al. Exploring high priority potentially inappropriate prescribing cascades in older adults: population level retrospective cohort study. BMJ. 2026;394:e100499.",
+   "pmid": "42727946",
+   "doi": "10.1136/bmj-2026-100499",
+   "url": "https://www.bmj.com/content/394/bmj-2026-100499",
+   "design": "Ontario, 2,297,942 community-dwelling adults >=66 y; prescription sequence symmetry analysis (PSSA) of all 65 PIPCs, 1-year window (180-day sensitivity analysis), accrual 2022-2023. Prioritised = initial-drug prevalence >=5%, cascade incidence >=1%/yr and adjusted sequence ratio (aSR) >1, each with lower 95% CI above threshold."
+  },
+  "thinkcascades2022": {
+   "citation": "McCarthy LM, Savage R, Dalton K, et al. ThinkCascades: a tool for identifying clinically important prescribing cascades affecting older people. Drugs Aging. 2022;39(10):829-840.",
+   "pmid": "36107399",
+   "doi": "10.1007/s40266-022-00964-9",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9477172/",
+   "design": "Modified Delphi, 38-40 clinicians from 6 countries; 139 cascades rated; final tool of 9 clinically important cascades."
+  },
+  "doherty2022": {
+   "citation": "Doherty AS, Shahid F, Moriarty F, et al. Prescribing cascades in community-dwelling adults: a systematic review. Pharmacol Res Perspect. 2022;10(5):e01008.",
+   "pmid": "36123967",
+   "doi": "10.1002/prp2.1008",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/36123967/",
+   "design": "Systematic review of 101 studies; cascades occurred within 3 months to 1 year of the first drug."
+  },
+  "rochon1997": {
+   "citation": "Rochon PA, Gurwitz JH. Optimising drug treatment for elderly people: the prescribing cascade. BMJ. 1997;315(7115):1096-1099.",
+   "pmid": "9366745",
+   "doi": "10.1136/bmj.315.7115.1096",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/9366745/"
+  },
+  "rochon2017": {
+   "citation": "Rochon PA, Gurwitz JH. The prescribing cascade revisited. Lancet. 2017;389(10081):1778-1780.",
+   "pmid": "28495154",
+   "doi": "10.1016/S0140-6736(17)31188-1",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/28495154/"
+  },
+  "mccarthy2019": {
+   "citation": "McCarthy LM, Visentin JD, Rochon PA. Assessing the scope and appropriateness of prescribing cascades. J Am Geriatr Soc. 2019;67(5):1023-1026.",
+   "pmid": "30747997",
+   "doi": "10.1111/jgs.15800",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/30747997/"
+  },
+  "savage2020": {
+   "citation": "Savage RD, Visentin JD, Bronskill SE, et al. Evaluation of a common prescribing cascade of calcium channel blockers and diuretics in older adults with hypertension. JAMA Intern Med. 2020;180(5):643-651.",
+   "pmid": "32091538",
+   "doi": "10.1001/jamainternmed.2019.7087",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/32091538/",
+   "finding": "Ontario adults >=66 y with hypertension: new CCB users had higher 90-day cumulative incidence of loop-diuretic dispensing (1.4% vs 0.7% ACEi/ARB and 0.5% unrelated drugs); adjusted HR vs ACEi/ARB 1.68 (days 1-30), 2.26 (31-60), 2.40 (61-90); association persisted to 1 year.",
+   "windowDays": 90
+  },
+  "vouri2019": {
+   "citation": "Vouri SM, Jiang X, Manini TM, et al. Magnitude of and characteristics associated with the treatment of calcium channel blocker-induced lower-extremity edema with loop diuretics. JAMA Netw Open. 2019;2(12):e1918425.",
+   "pmid": "31880802",
+   "doi": "10.1001/jamanetworkopen.2019.18425",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/31880802/",
+   "finding": "PSSA in 1.2 million dihydropyridine-CCB initiators: aSR 1.87 (95% CI 1.84-1.90) for loop diuretic within 360 days; stronger with high doses (aSR 2.20) and amlodipine (1.89); ~1.44% of initiators experienced the cascade.",
+   "windowDays": 360
+  },
+  "rochon2024": {
+   "citation": "Rochon PA, Austin PC, Normand SL, et al. Association of a calcium channel blocker and diuretic prescribing cascade with adverse events: a population-based cohort study. J Am Geriatr Soc. 2024;72(2):467-478.",
+   "pmid": "38009803",
+   "doi": "10.1111/jgs.18683",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/38009803/",
+   "finding": "4.8% of 39,347 new CCB users with hypertension received a new diuretic within 90 days; this cascade group had more ED visits/hospitalisations over 90 days (HR 1.21, 95% CI 1.02-1.43).",
+   "windowDays": 90
+  },
+  "vegter2010": {
+   "citation": "Vegter S, de Jong-van den Berg LT. Misdiagnosis and mistreatment of a common side-effect--angiotensin-converting enzyme inhibitor-induced cough. Br J Clin Pharmacol. 2010;69(2):200-203.",
+   "pmid": "20233184",
+   "doi": "10.1111/j.1365-2125.2009.03571.x",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/20233184/",
+   "finding": "PSSA (Netherlands, 27,446 incident ACEi users): antitussives started after vs before ACEi within a half-year span, adjusted sequence ratio 2.2 (95% CI 1.9-2.4); estimated ~15% of ACEi cough treated with antitussives.",
+   "windowDays": 183
+  },
+  "gurwitz1994": {
+   "citation": "Gurwitz JH, Avorn J, Bohn RL, et al. Initiation of antihypertensive treatment during nonsteroidal anti-inflammatory drug therapy. JAMA. 1994;272(10):781-786.",
+   "pmid": "8078142",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/8078142/",
+   "finding": "Case-control, NJ Medicaid >=65 y: recent NSAID users had higher odds of starting antihypertensive therapy (adjusted OR 1.66, 95% CI 1.54-1.80), rising with NSAID dose (1.55 low, 1.64 medium, 1.82 high).",
+   "windowDays": null
+  },
+  "gill2005": {
+   "citation": "Gill SS, Mamdani M, Naglie G, et al. A prescribing cascade involving cholinesterase inhibitors and anticholinergic drugs. Arch Intern Med. 2005;165(7):808-813.",
+   "pmid": "15824303",
+   "doi": "10.1001/archinte.165.7.808",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/15824303/",
+   "finding": "Ontario cohort of 44,884 older adults with dementia: ChEI users more likely to receive an anticholinergic for urinary incontinence (4.5% vs 3.1%; adjusted HR 1.55, 95% CI 1.39-1.72).",
+   "windowDays": null
+  },
+  "masurkar2021": {
+   "citation": "Masurkar PP, Chatterjee S, Sherer JT, Aparasu RR. Antimuscarinic cascade across individual cholinesterase inhibitors in older adults with dementia. Drugs Aging. 2021;38(7):593-602.",
+   "pmid": "34027602",
+   "doi": "10.1007/s40266-021-00863-5",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/34027602/",
+   "finding": "47,059 incident ChEI users: 3.7% started an antimuscarinic within 6 months; donepezil vs rivastigmine adjusted HR 1.55 (1.31-1.83).",
+   "windowDays": 180
+  },
+  "tucker2026": {
+   "citation": "Tucker SB, Love BL, Okeke CM, et al. Association between cholinesterase inhibitor-overactive bladder antimuscarinic prescribing cascade and risk of delirium and falls among individuals living with dementia. J Am Geriatr Soc. 2026;74(5):1314-1325.",
+   "pmid": "41833520",
+   "doi": "10.1111/jgs.70386",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/41833520/",
+   "finding": "Used a 60-day window after ChEI start to define the cascade; vs mirabegron, delirium/fall estimates were imprecise (compatible with benefit, harm or no difference).",
+   "windowDays": 60
+  },
+  "avorn1995jama": {
+   "citation": "Avorn J, Gurwitz JH, Bohn RL, et al. Increased incidence of levodopa therapy following metoclopramide use. JAMA. 1995;274(22):1780-1782.",
+   "pmid": "7500509",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/7500509/",
+   "finding": "Case-control (NJ Medicaid >=65 y): metoclopramide users ~3 times more likely to start levodopa (OR 3.09, 95% CI 2.25-4.26), with dose-response.",
+   "windowDays": null
+  },
+  "avorn1995ajm": {
+   "citation": "Avorn J, Bohn RL, Mogun H, et al. Neuroleptic drug exposure and treatment of parkinsonism in the elderly: a case-control study. Am J Med. 1995;99(1):48-54.",
+   "pmid": "7598142",
+   "doi": "10.1016/s0002-9343(99)80104-1",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/7598142/",
+   "finding": "Neuroleptic use in the 90 days before was associated with 5.4-fold odds of starting antiparkinsonian medication and 2.2-fold odds of starting a dopaminergic drug; 37% of dopaminergic starts attributable to prior neuroleptic use.",
+   "windowDays": 90
+  },
+  "kalish1995": {
+   "citation": "Kalish SC, Bohn RL, Mogun H, et al. Antipsychotic prescribing patterns and the treatment of extrapyramidal symptoms in older people. J Am Geriatr Soc. 1995;43(9):967-973.",
+   "pmid": "7657936",
+   "doi": "10.1111/j.1532-5415.1995.tb05559.x",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/7657936/",
+   "finding": "Antipsychotics were often not stopped or reduced before antiparkinsonian drugs were added (discontinued in only 12% of those started on anticholinergic antiparkinsonian drugs)."
+  },
+  "gurwitz1997": {
+   "citation": "Gurwitz JH, Kalish SC, Bohn RL, et al. Thiazide diuretics and the initiation of anti-gout therapy. J Clin Epidemiol. 1997;50(8):953-959.",
+   "pmid": "9291881",
+   "doi": "10.1016/s0895-4356(97)00101-7",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/9291881/",
+   "finding": "Cohort of 9,249 adults >=65 y followed up to 2 years: thiazide monotherapy RR 1.99 (1.21-3.26) for starting anti-gout therapy; increased risk only at >=25 mg/day hydrochlorothiazide-equivalent.",
+   "windowDays": 730
+  },
+  "read2021": {
+   "citation": "Read SH, Giannakeas V, Pop P, et al. Evidence of a gabapentinoid and diuretic prescribing cascade among older adults with lower back pain. J Am Geriatr Soc. 2021;69(10):2842-2850.",
+   "pmid": "34118076",
+   "doi": "10.1111/jgs.17312",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/34118076/",
+   "finding": "Ontario adults >=66 y with new low back pain: new gabapentinoid users more often received a diuretic within 90 days (2.0% vs 1.3%; adjusted HR 1.44, 1.23-1.70), increasing with dose.",
+   "windowDays": 90
+  },
+  "growdon2025jno": {
+   "citation": "Growdon ME, Tjota N, Campbell R, et al. Decision-making and downstream outcomes of the gabapentinoid-diuretic prescribing cascade. JAMA Netw Open. 2025;8(12):e2545274.",
+   "pmid": "41329486",
+   "doi": "10.1001/jamanetworkopen.2025.45274",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/41329486/",
+   "finding": "Chart review of 120 US veterans: gabapentinoids were almost never documented in the differential for edema (3.3%); downstream events after loop diuretic start included worsening kidney function and orthostasis."
+  },
+  "hayes2026": {
+   "citation": "Hayes KN, Belanger E, Oganisian A, et al. Predictors of a gabapentinoid-loop-diuretic prescribing cascade in U.S. nursing home residents. J Am Geriatr Soc. 2026;74(2):336-344.",
+   "pmid": "41313166",
+   "doi": "10.1111/jgs.70219",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/41313166/",
+   "finding": "4.2% of 23,544 nursing-home residents started a loop diuretic within 90 days of a gabapentinoid, median 36 days (IQR 15-61) after initiation.",
+   "windowDays": 90
+  },
+  "growdon2025jgms": {
+   "citation": "Growdon ME, Jing B, Deardorff WJ, et al. Loop diuretics and subsequent use of urinary symptom medications in older adults: evaluation of a possible prescribing cascade. J Gerontol A Biol Sci Med Sci. 2025;80(8):glaf150.",
+   "pmid": "40668217",
+   "doi": "10.1093/gerona/glaf150",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/40668217/",
+   "finding": "US veterans (99% male) starting loop diuretics: NO overall cascade signal (aSR 0.74, 0.73-0.76) for urinary symptom medications within 6 months; a signal appeared only in men with heart failure without baseline urinary symptoms (aSR 1.24).",
+   "windowDays": 180
+  },
+  "vouri2022": {
+   "citation": "Vouri SM, Morris EJ, Jiang X, et al. Evaluation of a beta-blocker-edema-loop diuretic prescribing cascade: a prescription sequence symmetry analysis. Am J Hypertens. 2022;35(7):601-609.",
+   "pmid": "35106529",
+   "doi": "10.1093/ajh/hpac013",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/35106529/",
+   "finding": "988,675 beta-blocker initiators: loop diuretic started within 90 days after vs before, aSR 1.78 (1.72-1.84); higher in older adults (1.97).",
+   "windowDays": 90
+  }
+ },
+ "licenseNotes": {
+  "pipc2025": "CC BY 4.0 (after 2026 correction) - list reproduced with attribution.",
+  "thinkCascades2022": "Not CC-licensed: PMC record says it is available via the PMC Open Access Subset under COVID-19 emergency permissions with acknowledgement; MedWatch uses only the cascade names/structure (facts) and writes its own descriptions.",
+  "rochon2026bmj": "CC BY-NC open access per BMJ page; numbers transcribed as facts."
+ },
+ "engineGuidance": {
+  "matching": "Match the person's medication list against indexDrugs[].examples and markerDrugs[].examples (generic or RxNorm ingredient); require marker start date AFTER index start date. Without dates, show 'possible cascade - order unknown'.",
+  "language": "Never say a drug caused a symptom. Say 'X was started N days after Y; Y is known to sometimes cause Z (source). Worth asking the prescriber.'",
+  "ranking": "Rank: ThinkCascades or Ontario-prioritised first; then entries with populationSignal true; entries with populationSignal false/null are still valid individual-level prompts but lower priority (MedWatch heuristic).",
+  "diaryLink": "diarySymptoms links to symptom ids in symptom-adr-map.json so a diary symptom (e.g. ankle_swelling) can surface the relevant cascade."
+ },
+ "labelClaimChecks": {
+  "note": "FDA label text checks (openFDA, 2026-10-10) supporting statements in clinicianNote fields.",
+  "DPP-4 arthralgia warning": {
+   "generic": "sitagliptin",
+   "splSetId": "194c3718-5eb5-4cf5-85d0-2bb1ed8293b8",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=194c3718-5eb5-4cf5-85d0-2bb1ed8293b8",
+   "splEffective": "20260708",
+   "genericName": "SITAGLIPTIN",
+   "brandName": "JANUVIA",
+   "manufacturer": "A-S Medication Solutions",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "warnings_and_cautions",
+     "term": "Arthralgia",
+     "snippet": "auses, institute appropriate monitoring and treatment. ( 5.5 , 6.2 ) Severe and Disabling Arthralgia: Has been reported in patients taking DPP-4 inhibitors. Consider as a possible cause for"
+    },
+    {
+     "section": "adverse_reactions",
+     "term": "Arthralgia",
+     "snippet": ") ] Hypersensitivity Reactions [see Warnings and Precautions (5.5) ] Severe and Disabling Arthralgia [see Warnings and Precautions (5.6) ] Bullous Pemphigoid [see Warnings and Precautions (5"
+    }
+   ]
+  },
+  "pioglitazone HF boxed warning": {
+   "generic": "pioglitazone",
+   "splSetId": "060e3169-46a7-419d-9acc-05586cb2406b",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=060e3169-46a7-419d-9acc-05586cb2406b",
+   "splEffective": "20260817",
+   "genericName": "PIOGLITAZONE",
+   "brandName": "Pioglitazone",
+   "manufacturer": "Preferred Pharmaceuticals, Inc.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "boxed_warning",
+     "term": "HEART FAILURE",
+     "snippet": "WARNING: CONGESTIVE HEART FAILURE • Thiazolidinediones, including pioglitazone, cause or exacerbate congestive heart failur"
+    }
+   ]
+  },
+  "digoxin GI symptoms": {
+   "generic": "digoxin",
+   "splSetId": "2636527a-1ecd-455f-a928-19549ac83fa1",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2636527a-1ecd-455f-a928-19549ac83fa1",
+   "splEffective": "20260414",
+   "genericName": "DIGOXIN",
+   "brandName": "Digoxin",
+   "manufacturer": "Golden State Medical Supply, Inc.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "warnings_and_cautions",
+     "term": "nausea",
+     "snippet": "in patients with sinus node disease and AV block. ( 5.2 ) Digoxin toxicity: Indicated by nausea, vomiting, visual disturbances, and cardiac arrhythmias. Advanced age, low body weight, i"
+    },
+    {
+     "section": "adverse_reactions",
+     "term": "nausea",
+     "snippet": "r toxicity for about one-fourth of these adverse events. Gastrointestinal: In addition to nausea and vomiting, the use of digoxin has been associated with abdominal pain, intestinal isch"
+    }
+   ]
+  },
+  "tramadol serotonin syndrome": {
+   "generic": "tramadol",
+   "splSetId": "007bf37f-0e46-426a-ac8c-be63d4b7414c",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=007bf37f-0e46-426a-ac8c-be63d4b7414c",
+   "splEffective": "20260410",
+   "genericName": "TRAMADOL HYDROCHLORIDE",
+   "brandName": "Tramadol Hydrochloride",
+   "manufacturer": "Unichem Pharmaceuticals (USA), Inc.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "warnings_and_cautions",
+     "term": "Serotonin Syndrome",
+     "snippet": "priately decreasing the dose of the current opioid analgesic, or opioid rotation. ( 5.8 ) Serotonin Syndrome : May be life-threatening. Can occur with use of tramadol alone, with concomitant use of"
+    },
+    {
+     "section": "adverse_reactions",
+     "term": "Serotonin Syndrome",
+     "snippet": "ions with Benzodiazepines or Other CNS Depressants [see Warnings and Precautions ( 5.3 )] Serotonin Syndrome [see Warnings and Precautions ( 5.9 )] Seizures [see Warnings and Precautions ( 5.10 )] S"
+    }
+   ]
+  },
+  "amlodipine edema dose-related": {
+   "generic": "amlodipine",
+   "splSetId": "003dd1ec-16f8-4f96-b6a8-c4689d35892a",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=003dd1ec-16f8-4f96-b6a8-c4689d35892a",
+   "splEffective": "20260420",
+   "genericName": "AMLODIPINE BESYLATE",
+   "brandName": "Amlodipine Besylate",
+   "manufacturer": "Lupin Pharmaceuticals, Inc.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "adverse_reactions",
+     "term": "dose related",
+     "snippet": "ADVERSE REACTIONS Most common adverse reaction to amlodipine is edema which occurred in a dose related manner. Other adverse experiences not dose related but reported with an incidence >1.0% a"
+    }
+   ]
+  },
+  "clonidine withdrawal": {
+   "generic": "clonidine",
+   "splSetId": "00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
+   "splEffective": "20260908",
+   "genericName": "CLONIDINE HYDROCHLORIDE",
+   "brandName": "Clonidine Hydrochloride",
+   "manufacturer": "REMEDYREPACK INC.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "warnings",
+     "term": "Withdrawal",
+     "snippet": "WARNINGS Withdrawal Patients should be instructed not to discontinue therapy without consulting their physici"
+    },
+    {
+     "section": "precautions",
+     "term": "Withdrawal",
+     "snippet": "patients have not been established in adequate and well-controlled trials (see WARNINGS, Withdrawal )."
+    }
+   ]
+  },
+  "prednisone insomnia": {
+   "generic": "prednisone",
+   "splSetId": "0062fcc7-aa08-4990-9d33-d798725907f1",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0062fcc7-aa08-4990-9d33-d798725907f1",
+   "splEffective": "20260908",
+   "genericName": "PREDNISONE",
+   "brandName": "Prednisone",
+   "manufacturer": "Bryant Ranch Prepack",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "precautions",
+     "term": "insomnia",
+     "snippet": "Psychiatric derangements may appear when corticosteroids are used, ranging from euphoria, insomnia, mood swings, personality changes, and severe depression, to frank psychotic manifestatio"
+    },
+    {
+     "section": "adverse_reactions",
+     "term": "insomnia",
+     "snippet": "otumor cerebri) usually following discontinuation of treatment, increased motor activity, insomnia, ischemic neuropathy, long-term memory loss, mania, mood swings, neuritis, neuropathy, pa"
+    }
+   ]
+  },
+  "donepezil insomnia": {
+   "generic": "donepezil",
+   "splSetId": "0516d548-db9b-410a-aec9-79aedbc3f6e9",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0516d548-db9b-410a-aec9-79aedbc3f6e9",
+   "splEffective": "20260818",
+   "genericName": "DONEPEZIL HYDROCHLORIDE",
+   "brandName": "Donepezil Hydrochloride",
+   "manufacturer": "A-S Medication Solutions",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "adverse_reactions",
+     "term": "insomnia",
+     "snippet": "on adverse reactions in clinical studies of donepezil hydrochloride are nausea, diarrhea, insomnia, vomiting, muscle cramps, fatigue, and anorexia (6.1) To report SUSPECTED ADVERSE REACTIO"
+    },
+    {
+     "section": "information_for_patients",
+     "term": "insomnia",
+     "snippet": ". Advise patients and caregivers that donepezil hydrochloride may cause nausea, diarrhea, insomnia, vomiting, muscle cramps, fatigue, and decreased appetite. Advise patients to notify thei"
+    }
+   ]
+  },
+  "lisinopril cough": {
+   "generic": "lisinopril",
+   "splSetId": "02c23f9c-f3cf-4366-ae1e-56296f1fedf9",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=02c23f9c-f3cf-4366-ae1e-56296f1fedf9",
+   "splEffective": "20260522",
+   "genericName": "LISINOPRIL",
+   "brandName": "LISINOPRIL",
+   "manufacturer": "Preferred Pharmaceuticals Inc.",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "adverse_reactions",
+     "term": "cough",
+     "snippet": "eactions (events 2% greater than placebo) by use: • Hypertension: headache, dizziness and cough (6.1) • Heart Failure: hypotension and chest pain (6.1) • Acute Myocardial Infarction: hy"
+    }
+   ]
+  },
+  "verapamil constipation": {
+   "generic": "verapamil",
+   "splSetId": "18f6d349-8c5c-4443-ac65-16bf6619ecdc",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=18f6d349-8c5c-4443-ac65-16bf6619ecdc",
+   "splEffective": "20250325",
+   "genericName": "VERAPAMIL HYDROCHLORIDE",
+   "brandName": "Verapamil Hydrochloride",
+   "manufacturer": "Chartwell RX, LLC",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "adverse_reactions",
+     "term": "constipation",
+     "snippet": "ence ≥ 3% and more common than in patients treated with placebo) are headache, infection, constipation, flu syndrome, peripheral edema, dizziness, pharyngitis, and sinusitis ( 6.1 ) To report"
+    }
+   ]
+  },
+  "metoclopramide EPS": {
+   "generic": "metoclopramide",
+   "splSetId": "0034a97a-fb05-418a-a234-de278907cd2a",
+   "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0034a97a-fb05-418a-a234-de278907cd2a",
+   "splEffective": "20260724",
+   "genericName": "METOCLOPRAMIDE",
+   "brandName": "Metoclopramide",
+   "manufacturer": "American Health Packaging",
+   "productType": "HUMAN PRESCRIPTION DRUG",
+   "matched": true,
+   "hits": [
+    {
+     "section": "boxed_warning",
+     "term": "TARDIVE",
+     "snippet": "WARNING: TARDIVE DYSKINESIA Treatment with metoclopramide can cause tardive dyskinesia, a serious movement"
+    },
+    {
+     "section": "warnings",
+     "term": "Extrapyramidal",
+     "snippet": "a prior history of depression only if the expected benefits outweigh the potential risks. Extrapyramidal symptoms, manifested primarily as acute dystonic reactions, occur in approximately 1 in 5"
+    }
+   ]
+  }
+ },
+ "cascades": [
+  {
+   "id": "acei-cough-cough-remedy",
+   "indexDrugs": [
+    {
+     "class": "ace inhibitor",
+     "examples": [
+      "lisinopril",
+      "enalapril",
+      "ramipril",
+      "benazepril",
+      "quinapril",
+      "captopril",
+      "perindopril",
+      "fosinopril",
+      "trandolapril"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Cough (dry, persistent)",
+   "markerDrugs": [
+    {
+     "class": "cough remedy",
+     "examples": [
+      "dextromethorphan",
+      "benzonatate",
+      "codeine",
+      "guaifenesin",
+      "montelukast",
+      "promethazine"
+     ],
+     "examplesSource": "ThinkCascades 2022 Round 1 (antibiotics, cough suppressant, bronchodilators, montelukast, antihistamine)"
+    }
+   ],
+   "diarySymptoms": [
+    "cough"
+   ],
+   "plainLanguage": "Blood-pressure medicines ending in '-pril' (ACE inhibitors such as lisinopril) can cause a dry, tickly cough. If a cough medicine was started after one of these, it is worth asking whether the cough could be a side effect.",
+   "clinicianNote": "ACEi cough is a labelled adverse reaction; PSSA evidence shows excess antitussive starts after ACEi initiation (Vegter 2010). Consider whether cough predates the ACEi before continuing antitussives.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Angiotensin converting enzyme inhibitor",
+    "adverseEvent": "Cough",
+    "drugB": "Cough remedy"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Angiotensin converting enzyme inhibitor to cough remedy",
+    "initialBeforeSubsequent": "1877",
+    "initialAfterSubsequent": "1197",
+    "adjustedSequenceRatio": "1.47 (1.37 to 1.58)",
+    "parsed": {
+     "aSR": 1.47,
+     "lower95": 1.37,
+     "upper95": 1.58
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "27.2",
+     "incidencePct": "2.1 (2.0 to 2.2)",
+     "adjustedSR": "1.47 (1.37 to 1.58)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "vegter2010",
+     "finding": "PSSA (Netherlands, 27,446 incident ACEi users): antitussives started after vs before ACEi within a half-year span, adjusted sequence ratio 2.2 (95% CI 1.9-2.4); estimated ~15% of ACEi cough treated with antitussives.",
+     "windowDays": 183
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     183
+    ],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj",
+    "vegter2010"
+   ]
+  },
+  {
+   "id": "antihypertensive-dizziness-antiemetic",
+   "indexDrugs": [
+    {
+     "class": "antihypertensive",
+     "examples": [
+      "lisinopril",
+      "losartan",
+      "amlodipine",
+      "metoprolol",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "doxazosin",
+      "clonidine",
+      "hydralazine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Orthostatic hypotension / dizziness",
+   "markerDrugs": [
+    {
+     "class": "antiemetic",
+     "examples": [
+      "ondansetron",
+      "prochlorperazine",
+      "promethazine",
+      "metoclopramide",
+      "meclizine",
+      "trimethobenzamide",
+      "dimenhydrinate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    },
+    {
+     "class": "vestibular suppressant",
+     "examples": [
+      "meclizine",
+      "dimenhydrinate",
+      "betahistine",
+      "promethazine",
+      "scopolamine",
+      "diazepam",
+      "lorazepam"
+     ],
+     "examplesSource": "ThinkCascades 2022 (betahistine, antihistamines, benzodiazepines)"
+    }
+   ],
+   "diarySymptoms": [
+    "dizziness"
+   ],
+   "plainLanguage": "Blood-pressure medicines can make people dizzy or lightheaded, especially when standing up. Sometimes that dizziness is treated with an anti-nausea or 'dizziness' pill (like meclizine) instead of checking the blood-pressure medicine.",
+   "clinicianNote": "Prioritised PIPC in Ontario (prevalence 65.9% of older adults on antihypertensives; incidence 2.0%/yr). Check orthostatic BP before treating dizziness symptomatically; antiemetics/vestibular suppressants are themselves FRIDs/anticholinergic.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Antihypertensive",
+    "adverseEvent": "Orthostatic hypotension/dizziness",
+    "drugB": "Antiemetic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antihypertensive to antiemetic",
+    "initialBeforeSubsequent": "3086",
+    "initialAfterSubsequent": "1917",
+    "adjustedSequenceRatio": "1.65 (1.56 to 1.75)",
+    "parsed": {
+     "aSR": 1.65,
+     "lower95": 1.56,
+     "upper95": 1.75
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "65.9",
+     "incidencePct": "2.0 (2.0 to 2.1)",
+     "adjustedSR": "1.65 (1.56 to 1.75)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "betablocker-depression-antidepressant",
+   "indexDrugs": [
+    {
+     "class": "lipophilic beta blocker",
+     "examples": [
+      "propranolol"
+     ],
+     "examplesSource": "PIPC 2025"
+    },
+    {
+     "class": "beta blocker",
+     "examples": [
+      "metoprolol",
+      "atenolol",
+      "carvedilol",
+      "propranolol",
+      "bisoprolol",
+      "nebivolol",
+      "labetalol",
+      "nadolol"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Depression / low mood",
+   "markerDrugs": [
+    {
+     "class": "antidepressant",
+     "examples": [
+      "sertraline",
+      "citalopram",
+      "escitalopram",
+      "fluoxetine",
+      "paroxetine",
+      "venlafaxine",
+      "duloxetine",
+      "mirtazapine",
+      "bupropion",
+      "trazodone",
+      "amitriptyline",
+      "nortriptyline"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Some beta-blockers (especially propranolol) have been linked to low mood or tiredness. If an antidepressant was added after a beta-blocker, the doctor may want to review both.",
+   "clinicianNote": "PIPC lists lipophilic beta-blockers (e.g., propranolol). Prioritised in Ontario (aSR 1.25). The BMJ authors note this cascade may take months to appear.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Beta-blocker (particularly lipophilic e.g., propranolol)",
+    "adverseEvent": "Depression",
+    "drugB": "Antidepressant"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Beta blocker to antidepressant",
+    "initialBeforeSubsequent": "7221",
+    "initialAfterSubsequent": "5927",
+    "adjustedSequenceRatio": "1.25 (1.21 to 1.29)",
+    "parsed": {
+     "aSR": 1.25,
+     "lower95": 1.21,
+     "upper95": 1.29
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "26.1",
+     "incidencePct": "5.2 (5.1 to 5.3)",
+     "adjustedSR": "1.25 (1.21 to 1.29)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "betablocker-ed-pde5",
+   "indexDrugs": [
+    {
+     "class": "lipophilic beta blocker",
+     "examples": [
+      "propranolol"
+     ],
+     "examplesSource": "PIPC 2025"
+    },
+    {
+     "class": "beta blocker",
+     "examples": [
+      "metoprolol",
+      "atenolol",
+      "carvedilol",
+      "propranolol",
+      "bisoprolol",
+      "nebivolol",
+      "labetalol",
+      "nadolol"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Erectile dysfunction",
+   "markerDrugs": [
+    {
+     "class": "pde5 or alprostadil",
+     "examples": [
+      "sildenafil",
+      "tadalafil",
+      "vardenafil",
+      "alprostadil"
+     ],
+     "examplesSource": "PIPC 2025 (PDE-5 inhibitor, alprostadil)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Some beta-blockers can affect sexual function. Medicines for erectile dysfunction started afterwards may be worth discussing.",
+   "clinicianNote": "Consensus item; Ontario PSSA too sparse for a signal (aSR 0.98, wide CI). Note PDE-5 inhibitors plus alpha-blockers/nitrates add hypotension risk.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Beta-blocker (particularly lipophilic e.g., propranolol)",
+    "adverseEvent": "Erectile dysfunction",
+    "drugB": "Phosphodiesterase-5 inhibitor, alprostadil"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Beta blocker to phosphodiesterase-5 inhibitor",
+    "initialBeforeSubsequent": "8",
+    "initialAfterSubsequent": "7",
+    "adjustedSequenceRatio": "0.98 (0.36 to 2.71)",
+    "parsed": {
+     "aSR": 0.98,
+     "lower95": 0.36,
+     "upper95": 2.71
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "ccb-edema-diuretic",
+   "indexDrugs": [
+    {
+     "class": "ccb",
+     "examples": [
+      "amlodipine",
+      "nifedipine",
+      "felodipine",
+      "nicardipine",
+      "isradipine",
+      "diltiazem",
+      "verapamil"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Peripheral (ankle) edema",
+   "markerDrugs": [
+    {
+     "class": "loop diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    },
+    {
+     "class": "diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "indapamide",
+      "metolazone",
+      "spironolactone",
+      "triamterene",
+      "amiloride"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "ankle_swelling"
+   ],
+   "plainLanguage": "Calcium channel blockers such as amlodipine commonly cause ankle swelling. Sometimes a 'water pill' is added to treat the swelling instead of adjusting the blood-pressure medicine. If a water pill was started within a few months after amlodipine, ask whether the swelling could be a side effect.",
+   "clinicianNote": "Amlodipine label: edema is the most common adverse reaction and is dose-related. Loop-diuretic starts rise within 30-90 days of CCB initiation (Savage 2020) and the cascade is associated with more ED visits/hospitalisations (Rochon 2024). Highest risk with dihydropyridines and higher doses (Vouri 2019).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "25/31 (80.6%)",
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Calcium channel blocker",
+    "adverseEvent": "Peripheral edema",
+    "drugB": "Diuretic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Calcium channel blocker to diuretic",
+    "initialBeforeSubsequent": "11 018",
+    "initialAfterSubsequent": "6671",
+    "adjustedSequenceRatio": "1.65 (1.60 to 1.70)",
+    "parsed": {
+     "aSR": 1.65,
+     "lower95": 1.6,
+     "upper95": 1.7
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "23.6",
+     "incidencePct": "7.5 (7.3 to 7.6)",
+     "adjustedSR": "1.65 (1.60 to 1.70)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "savage2020",
+     "finding": "Ontario adults >=66 y with hypertension: new CCB users had higher 90-day cumulative incidence of loop-diuretic dispensing (1.4% vs 0.7% ACEi/ARB and 0.5% unrelated drugs); adjusted HR vs ACEi/ARB 1.68 (days 1-30), 2.26 (31-60), 2.40 (61-90); association persisted to 1 year.",
+     "windowDays": 90
+    },
+    {
+     "ref": "vouri2019",
+     "finding": "PSSA in 1.2 million dihydropyridine-CCB initiators: aSR 1.87 (95% CI 1.84-1.90) for loop diuretic within 360 days; stronger with high doses (aSR 2.20) and amlodipine (1.89); ~1.44% of initiators experienced the cascade.",
+     "windowDays": 360
+    },
+    {
+     "ref": "rochon2024",
+     "finding": "4.8% of 39,347 new CCB users with hypertension received a new diuretic within 90 days; this cascade group had more ED visits/hospitalisations over 90 days (HR 1.21, 95% CI 1.02-1.43).",
+     "windowDays": 90
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     90,
+     360
+    ],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj",
+    "savage2020",
+    "vouri2019",
+    "rochon2024"
+   ]
+  },
+  {
+   "id": "ccb-constipation-laxative",
+   "indexDrugs": [
+    {
+     "class": "ccb",
+     "examples": [
+      "amlodipine",
+      "nifedipine",
+      "felodipine",
+      "nicardipine",
+      "isradipine",
+      "diltiazem",
+      "verapamil"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Constipation",
+   "markerDrugs": [
+    {
+     "class": "laxative",
+     "examples": [
+      "polyethylene glycol 3350",
+      "sennosides",
+      "docusate",
+      "bisacodyl",
+      "lactulose",
+      "psyllium",
+      "magnesium hydroxide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "constipation"
+   ],
+   "plainLanguage": "Some calcium channel blockers (especially verapamil) can cause constipation. A new laxative after starting one may be worth mentioning.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.24, incidence 7.6%/yr in Ontario). Constipation is most associated with non-dihydropyridine CCBs (verapamil) - check label of the specific agent.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Calcium channel blocker",
+    "adverseEvent": "Constipation",
+    "drugB": "Laxative"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Calcium channel blocker to laxative",
+    "initialBeforeSubsequent": "11 129",
+    "initialAfterSubsequent": "9111",
+    "adjustedSequenceRatio": "1.24 (1.21 to 1.28)",
+    "parsed": {
+     "aSR": 1.24,
+     "lower95": 1.21,
+     "upper95": 1.28
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "(same as previous row)",
+     "incidencePct": "7.6 (7.4 to 7.7)",
+     "adjustedSR": "1.24 (1.21 to 1.28)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "diuretic-gout-antigout",
+   "indexDrugs": [
+    {
+     "class": "thiazide",
+     "examples": [
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "indapamide",
+      "metolazone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    },
+    {
+     "class": "loop diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Gout or hyperuricaemia",
+   "markerDrugs": [
+    {
+     "class": "anti gout",
+     "examples": [
+      "allopurinol",
+      "colchicine",
+      "febuxostat",
+      "probenecid"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Water pills can raise uric acid and trigger gout. If a gout medicine (like allopurinol or colchicine) was started after a water pill, the doctor may want to review the water pill.",
+   "clinicianNote": "Thiazide >=25 mg/day HCTZ-equivalent associated with starting anti-gout therapy (RR ~2, Gurwitz 1997). Ontario 2022-23 PSSA showed no population signal (aSR 0.82), so treat as an individual-level prompt only.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Diuretic",
+    "adverseEvent": "Gout or Hyperuricemia",
+    "drugB": "Anti-gout agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Diuretic to anti-gout agent",
+    "initialBeforeSubsequent": "12 906",
+    "initialAfterSubsequent": "16 131",
+    "adjustedSequenceRatio": "0.82 (0.80 to 0.84)",
+    "parsed": {
+     "aSR": 0.82,
+     "lower95": 0.8,
+     "upper95": 0.84
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "gurwitz1997",
+     "finding": "Cohort of 9,249 adults >=65 y followed up to 2 years: thiazide monotherapy RR 1.99 (1.21-3.26) for starting anti-gout therapy; increased risk only at >=25 mg/day hydrochlorothiazide-equivalent.",
+     "windowDays": 730
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     730
+    ],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj",
+    "gurwitz1997"
+   ]
+  },
+  {
+   "id": "diuretic-incontinence-oab",
+   "indexDrugs": [
+    {
+     "class": "diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "indapamide",
+      "metolazone",
+      "spironolactone",
+      "triamterene",
+      "amiloride"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Urinary incontinence / urgency",
+   "markerDrugs": [
+    {
+     "class": "oab medication",
+     "examples": [
+      "oxybutynin",
+      "tolterodine",
+      "solifenacin",
+      "darifenacin",
+      "fesoterodine",
+      "trospium",
+      "mirabegron",
+      "vibegron"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "urinary"
+   ],
+   "plainLanguage": "Water pills make people pass urine more often and urgently, which can cause leaking. Bladder medicines started after a water pill may be treating a side effect - and many bladder medicines can cause confusion and constipation.",
+   "clinicianNote": "ThinkCascades item. Population evidence is mixed: Ontario PSSA aSR 0.95 and US veterans aSR 0.74 (no overall signal; signal only in men with heart failure). Consider timing of diuretic dose and whether incontinence began after the diuretic.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "24/31 (77.4%)",
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Diuretic",
+    "adverseEvent": "Urinary incontinence",
+    "drugB": "Overactive bladder medication"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Diuretic to overactive bladder drug",
+    "initialBeforeSubsequent": "4595",
+    "initialAfterSubsequent": "4877",
+    "adjustedSequenceRatio": "0.95 (0.91 to 0.99)",
+    "parsed": {
+     "aSR": 0.95,
+     "lower95": 0.91,
+     "upper95": 0.99
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "growdon2025jgms",
+     "finding": "US veterans (99% male) starting loop diuretics: NO overall cascade signal (aSR 0.74, 0.73-0.76) for urinary symptom medications within 6 months; a signal appeared only in men with heart failure without baseline urinary symptoms (aSR 1.24).",
+     "windowDays": 180
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     180
+    ],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj",
+    "growdon2025jgms"
+   ]
+  },
+  {
+   "id": "statin-myalgia-pain-reliever",
+   "indexDrugs": [
+    {
+     "class": "statin",
+     "examples": [
+      "atorvastatin",
+      "simvastatin",
+      "rosuvastatin",
+      "pravastatin",
+      "lovastatin",
+      "pitavastatin",
+      "fluvastatin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Muscle aches (myalgia/myositis)",
+   "markerDrugs": [
+    {
+     "class": "pain reliever",
+     "examples": [
+      "acetaminophen",
+      "ibuprofen",
+      "naproxen",
+      "celecoxib",
+      "diclofenac",
+      "tramadol",
+      "oxycodone"
+     ],
+     "examplesSource": "ThinkCascades 2022 Round 1 (NSAIDs, opioids)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Cholesterol medicines (statins) can cause muscle aches in some people. If pain relievers were started after a statin, ask whether the aches could be related.",
+   "clinicianNote": "Prioritised PIPC with the 2nd-highest incidence in Ontario (10.9%/yr; aSR 1.16). NSAIDs as the marker carry renal/GI/BP risks in older adults.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "Hydroxymethylglutaryl-coenzyme A (HMG Co-A) reductase inhibitor (statin)",
+    "adverseEvent": "Myalgia/myositis",
+    "drugB": "Pain reliever"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "HMG Co-A reductase inhibitor to pain reliever",
+    "initialBeforeSubsequent": "19 339",
+    "initialAfterSubsequent": "18 144",
+    "adjustedSequenceRatio": "1.16 (1.14 to 1.19)",
+    "parsed": {
+     "aSR": 1.16,
+     "lower95": 1.14,
+     "upper95": 1.19
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "54.9",
+     "incidencePct": "10.9 (10.7 to 11.0)",
+     "adjustedSR": "1.16 (1.14 to 1.19)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "statin-myalgia-mineral",
+   "indexDrugs": [
+    {
+     "class": "statin",
+     "examples": [
+      "atorvastatin",
+      "simvastatin",
+      "rosuvastatin",
+      "pravastatin",
+      "lovastatin",
+      "pitavastatin",
+      "fluvastatin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Muscle aches / cramps",
+   "markerDrugs": [
+    {
+     "class": "mineral supplement",
+     "examples": [
+      "magnesium"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Muscle aches or cramps after starting a statin are sometimes treated with supplements such as magnesium; the statin itself may be worth reviewing.",
+   "clinicianNote": "Consensus item; Ontario aSR 1.76 (1.42-2.19) but low incidence.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "HMG Co-A reductase inhibitor",
+    "adverseEvent": "Myalgia/myositis",
+    "drugB": "Mineral supplement"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "HMG Co-A reductase inhibitor to mineral supplement",
+    "initialBeforeSubsequent": "219",
+    "initialAfterSubsequent": "134",
+    "adjustedSequenceRatio": "1.76 (1.42 to 2.19)",
+    "parsed": {
+     "aSR": 1.76,
+     "lower95": 1.42,
+     "upper95": 2.19
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "statin-myalgia-quinine",
+   "indexDrugs": [
+    {
+     "class": "statin",
+     "examples": [
+      "atorvastatin",
+      "simvastatin",
+      "rosuvastatin",
+      "pravastatin",
+      "lovastatin",
+      "pitavastatin",
+      "fluvastatin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Muscle cramps",
+   "markerDrugs": [
+    {
+     "class": "quinine",
+     "examples": [
+      "quinine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Leg cramps after starting a statin are occasionally treated with quinine, which has serious risks; ask about the statin instead.",
+   "clinicianNote": "Consensus item; no Ontario events (quinine for cramps is rare/discouraged).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "HMG Co-A reductase inhibitor",
+    "adverseEvent": "Myalgia/myositis",
+    "drugB": "Quinine sulfate"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "HMG Co-A reductase inhibitor to quinine sulfate",
+    "initialBeforeSubsequent": "0",
+    "initialAfterSubsequent": "0",
+    "adjustedSequenceRatio": "—",
+    "populationSignal": null,
+    "note": "suppressed/too few events",
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "statin-insomnia-sleep-agent",
+   "indexDrugs": [
+    {
+     "class": "statin",
+     "examples": [
+      "atorvastatin",
+      "simvastatin",
+      "rosuvastatin",
+      "pravastatin",
+      "lovastatin",
+      "pitavastatin",
+      "fluvastatin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Insomnia",
+   "markerDrugs": [
+    {
+     "class": "sleep agent",
+     "examples": [
+      "zolpidem",
+      "eszopiclone",
+      "zaleplon",
+      "lorazepam",
+      "temazepam",
+      "trazodone",
+      "mirtazapine",
+      "doxepin",
+      "melatonin",
+      "diphenhydramine"
+     ],
+     "examplesSource": "ThinkCascades 2022 (benzodiazepines, BZRAs, sedating antidepressants, melatonin)"
+    }
+   ],
+   "diarySymptoms": [
+    "poor_sleep"
+   ],
+   "plainLanguage": "Some people report poor sleep after starting a statin. If a sleeping pill was added afterwards, it may be worth discussing.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.34, incidence 4.3%/yr). Sleep agents are FRIDs.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Drug Class",
+    "drugA": "HMG Co-A reductase inhibitor",
+    "adverseEvent": "Insomnia",
+    "drugB": "Sleep agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "HMG Co-A reductase inhibitor to sleep agent",
+    "initialBeforeSubsequent": "7654",
+    "initialAfterSubsequent": "6216",
+    "adjustedSequenceRatio": "1.34 (1.29 to 1.38)",
+    "parsed": {
+     "aSR": 1.34,
+     "lower95": 1.29,
+     "upper95": 1.38
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "(same as previous row)",
+     "incidencePct": "4.3 (4.2 to 4.4)",
+     "adjustedSR": "1.34 (1.29 to 1.38)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "digoxin-nausea-antiemetic",
+   "indexDrugs": [
+    {
+     "class": "digoxin",
+     "examples": [
+      "digoxin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Nausea / poor appetite (possible digoxin toxicity)",
+   "markerDrugs": [
+    {
+     "class": "antiemetic",
+     "examples": [
+      "ondansetron",
+      "prochlorperazine",
+      "promethazine",
+      "metoclopramide",
+      "meclizine",
+      "trimethobenzamide",
+      "dimenhydrinate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "appetite_nausea"
+   ],
+   "plainLanguage": "Nausea or loss of appetite in someone taking digoxin can be a sign that the digoxin level is too high. It is important to tell the doctor rather than only taking an anti-nausea pill.",
+   "clinicianNote": "Ontario aSR 1.68 (1.44-1.96). Nausea/anorexia are recognised features of digoxin toxicity (see digoxin label); consider level and renal function.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Individual Drug",
+    "drugA": "Digoxin",
+    "adverseEvent": "Nausea",
+    "drugB": "Antiemetic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Digoxin to antiemetic",
+    "initialBeforeSubsequent": "423",
+    "initialAfterSubsequent": "264",
+    "adjustedSequenceRatio": "1.68 (1.44 to 1.96)",
+    "parsed": {
+     "aSR": 1.68,
+     "lower95": 1.44,
+     "upper95": 1.96
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "midodrine-hypertension-antihypertensive",
+   "indexDrugs": [
+    {
+     "class": "midodrine",
+     "examples": [
+      "midodrine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Supine hypertension",
+   "markerDrugs": [
+    {
+     "class": "antihypertensive",
+     "examples": [
+      "lisinopril",
+      "losartan",
+      "amlodipine",
+      "metoprolol",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "doxazosin",
+      "clonidine",
+      "hydralazine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Midodrine raises blood pressure and can cause high pressure when lying down; adding a blood-pressure medicine on top should be reviewed.",
+   "clinicianNote": "Consensus item; Ontario aSR 0.56 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Cardiovascular system",
+    "level": "Individual Drug",
+    "drugA": "Midodrine",
+    "adverseEvent": "Hypertension",
+    "drugB": "Antihypertensive"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Midodrine to antihypertensive",
+    "initialBeforeSubsequent": "148",
+    "initialAfterSubsequent": "300",
+    "adjustedSequenceRatio": "0.56 (0.46 to 0.68)",
+    "parsed": {
+     "aSR": 0.56,
+     "lower95": 0.46,
+     "upper95": 0.68
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "anticonvulsant-rash-topical-steroid",
+   "indexDrugs": [
+    {
+     "class": "anticonvulsant",
+     "examples": [
+      "carbamazepine",
+      "oxcarbazepine",
+      "phenytoin",
+      "lamotrigine",
+      "valproate",
+      "levetiracetam",
+      "topiramate",
+      "lacosamide",
+      "gabapentin",
+      "pregabalin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Rash",
+   "markerDrugs": [
+    {
+     "class": "topical corticosteroid",
+     "examples": [
+      "hydrocortisone (topical)",
+      "triamcinolone (topical)",
+      "betamethasone (topical)",
+      "clobetasol"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "A new rash after starting a seizure or nerve-pain medicine should be reported promptly - some drug rashes can become serious.",
+   "clinicianNote": "Consensus item; Ontario aSR 0.98 (no signal). Rash with lamotrigine/carbamazepine/phenytoin can herald SJS/TEN - escalate rather than treat topically.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Anticonvulsant",
+    "adverseEvent": "Rash",
+    "drugB": "Topical corticosteroid"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Anticonvulsant to topical corticosteroid",
+    "initialBeforeSubsequent": "7539",
+    "initialAfterSubsequent": "8363",
+    "adjustedSequenceRatio": "0.98 (0.95 to 1.01)",
+    "parsed": {
+     "aSR": 0.98,
+     "lower95": 0.95,
+     "upper95": 1.01
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "anticonvulsant-nausea-antiemetic",
+   "indexDrugs": [
+    {
+     "class": "anticonvulsant",
+     "examples": [
+      "carbamazepine",
+      "oxcarbazepine",
+      "phenytoin",
+      "lamotrigine",
+      "valproate",
+      "levetiracetam",
+      "topiramate",
+      "lacosamide",
+      "gabapentin",
+      "pregabalin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Nausea",
+   "markerDrugs": [
+    {
+     "class": "antiemetic",
+     "examples": [
+      "ondansetron",
+      "prochlorperazine",
+      "promethazine",
+      "metoclopramide",
+      "meclizine",
+      "trimethobenzamide",
+      "dimenhydrinate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "appetite_nausea"
+   ],
+   "plainLanguage": "Seizure and nerve-pain medicines can upset the stomach. Anti-nausea pills started afterwards may be treating a side effect.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.27, incidence 3.4%/yr).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Anticonvulsant",
+    "adverseEvent": "Nausea",
+    "drugB": "Antiemetic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Anticonvulsant to antiemetic",
+    "initialBeforeSubsequent": "2840",
+    "initialAfterSubsequent": "2343",
+    "adjustedSequenceRatio": "1.27 (1.20 to 1.34)",
+    "parsed": {
+     "aSR": 1.27,
+     "lower95": 1.2,
+     "upper95": 1.34
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "5.6",
+     "incidencePct": "3.4 (3.3 to 3.5)",
+     "adjustedSR": "1.27 (1.20 to 1.34)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "antipsychotic-eps-betablocker",
+   "indexDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Extrapyramidal symptoms (tremor, akathisia)",
+   "markerDrugs": [
+    {
+     "class": "beta blocker",
+     "examples": [
+      "metoprolol",
+      "atenolol",
+      "carvedilol",
+      "propranolol",
+      "bisoprolol",
+      "nebivolol",
+      "labetalol",
+      "nadolol"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Antipsychotic medicines can cause shakiness or restlessness, which is sometimes treated with another medicine such as propranolol.",
+   "clinicianNote": "Consensus item; Ontario aSR 0.54 (no signal; beta-blockers have many other indications).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Antipsychotic",
+    "adverseEvent": "Extrapyramidal symptoms",
+    "drugB": "Beta-blocker"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antipsychotic to beta blocker",
+    "initialBeforeSubsequent": "1765",
+    "initialAfterSubsequent": "3292",
+    "adjustedSequenceRatio": "0.54 (0.51 to 0.57)",
+    "parsed": {
+     "aSR": 0.54,
+     "lower95": 0.51,
+     "upper95": 0.57
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "antipsychotic-eps-antiparkinsonian",
+   "indexDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Drug-induced parkinsonism / extrapyramidal symptoms",
+   "markerDrugs": [
+    {
+     "class": "antiparkinsonian",
+     "examples": [
+      "carbidopa-levodopa",
+      "pramipexole",
+      "ropinirole",
+      "rotigotine",
+      "amantadine",
+      "benztropine",
+      "trihexyphenidyl",
+      "rasagiline",
+      "selegiline"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "falls"
+   ],
+   "plainLanguage": "Antipsychotic medicines can cause stiffness, shuffling or tremor that looks like Parkinson's disease. Starting a Parkinson's medicine without reviewing the antipsychotic can add more side effects.",
+   "clinicianNote": "Classic cascade: neuroleptic exposure in prior 90 days associated with 5.4x odds of starting antiparkinsonian therapy (Avorn 1995); antipsychotic often not reduced first (Kalish 1995). Ontario 2022-23 PSSA aSR 0.80 (no population signal), so use as an individual-level prompt.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "25/31 (80.6%)",
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Antipsychotic",
+    "adverseEvent": "Extrapyramidal symptoms",
+    "drugB": "Antiparkinsonian agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antipsychotic to antiparkinsonian agent",
+    "initialBeforeSubsequent": "472",
+    "initialAfterSubsequent": "575",
+    "adjustedSequenceRatio": "0.80 (0.71 to 0.90)",
+    "parsed": {
+     "aSR": 0.8,
+     "lower95": 0.71,
+     "upper95": 0.9
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "avorn1995ajm",
+     "finding": "Neuroleptic use in the 90 days before was associated with 5.4-fold odds of starting antiparkinsonian medication and 2.2-fold odds of starting a dopaminergic drug; 37% of dopaminergic starts attributable to prior neuroleptic use.",
+     "windowDays": 90
+    },
+    {
+     "ref": "kalish1995",
+     "finding": "Antipsychotics were often not stopped or reduced before antiparkinsonian drugs were added (discontinued in only 12% of those started on anticholinergic antiparkinsonian drugs)."
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     90
+    ],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj",
+    "avorn1995ajm",
+    "kalish1995"
+   ]
+  },
+  {
+   "id": "antipsychotic-eps-antimuscarinic",
+   "indexDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Extrapyramidal symptoms",
+   "markerDrugs": [
+    {
+     "class": "anti tremor antimuscarinic",
+     "examples": [
+      "benztropine",
+      "trihexyphenidyl"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "confusion",
+    "dry_mouth",
+    "constipation"
+   ],
+   "plainLanguage": "Benztropine or trihexyphenidyl are sometimes added to treat stiffness or tremor from antipsychotics; these add strong anticholinergic effects (confusion, constipation, dry mouth).",
+   "clinicianNote": "Ontario aSR 3.69 (2.39-5.70) - strong temporal signal but low counts. Beers 2023 advises against benztropine/trihexyphenidyl for antipsychotic-induced EPS; both are ACB 3.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Antipsychotic",
+    "adverseEvent": "Extrapyramidal symptoms",
+    "drugB": "Anti-tremor antimuscarinic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antipsychotic to anti-tremor antimuscarinic",
+    "initialBeforeSubsequent": "91",
+    "initialAfterSubsequent": "26",
+    "adjustedSequenceRatio": "3.69 (2.39 to 5.70)",
+    "parsed": {
+     "aSR": 3.69,
+     "lower95": 2.39,
+     "upper95": 5.7
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "antipsychotic-akathisia-sedative",
+   "indexDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Akathisia (inner restlessness) or tardive movements",
+   "markerDrugs": [
+    {
+     "class": "sedative",
+     "examples": [
+      "lorazepam",
+      "clonazepam",
+      "diazepam",
+      "alprazolam",
+      "zolpidem",
+      "hydroxyzine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    },
+    {
+     "class": "benzodiazepine",
+     "examples": [
+      "lorazepam",
+      "alprazolam",
+      "diazepam",
+      "clonazepam",
+      "temazepam",
+      "chlordiazepoxide",
+      "oxazepam",
+      "clorazepate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "sleepiness",
+    "falls"
+   ],
+   "plainLanguage": "Restlessness caused by an antipsychotic is sometimes treated with a sedative, which can add drowsiness and fall risk.",
+   "clinicianNote": "Ontario aSR 1.32 (1.28-1.37).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Antipsychotic",
+    "adverseEvent": "Akathisia or tardive movements",
+    "drugB": "Sedative"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antipsychotic to sedative",
+    "initialBeforeSubsequent": "7211",
+    "initialAfterSubsequent": "5912",
+    "adjustedSequenceRatio": "1.32 (1.28 to 1.37)",
+    "parsed": {
+     "aSR": 1.32,
+     "lower95": 1.28,
+     "upper95": 1.37
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "antipsychotic-arrhythmia-antiarrhythmic",
+   "indexDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Arrhythmia (e.g., QT prolongation)",
+   "markerDrugs": [
+    {
+     "class": "antiarrhythmic",
+     "examples": [
+      "amiodarone",
+      "sotalol",
+      "flecainide",
+      "dronedarone",
+      "dofetilide",
+      "propafenone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Some antipsychotics affect heart rhythm. A new heart-rhythm medicine afterwards should prompt a review of the antipsychotic.",
+   "clinicianNote": "Consensus item; Ontario aSR 0.54 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Antipsychotic",
+    "adverseEvent": "Arrhythmia",
+    "drugB": "Antiarrhythmic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antipsychotic to antiarrhythmic",
+    "initialBeforeSubsequent": "1636",
+    "initialAfterSubsequent": "3083",
+    "adjustedSequenceRatio": "0.54 (0.51 to 0.57)",
+    "parsed": {
+     "aSR": 0.54,
+     "lower95": 0.51,
+     "upper95": 0.57
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "antipsychotic-hyperglycemia-antihyperglycemic",
+   "indexDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Hyperglycaemia",
+   "markerDrugs": [
+    {
+     "class": "antihyperglycemic",
+     "examples": [
+      "metformin",
+      "glipizide",
+      "glimepiride",
+      "sitagliptin",
+      "empagliflozin",
+      "dapagliflozin",
+      "pioglitazone",
+      "insulin",
+      "semaglutide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Some antipsychotics raise blood sugar. A new diabetes medicine after an antipsychotic is worth discussing.",
+   "clinicianNote": "Consensus item; Ontario aSR 0.58 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Antipsychotic",
+    "adverseEvent": "Hyperglycemia",
+    "drugB": "Antihyperglycemic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antipsychotic to antihyperglycaemic",
+    "initialBeforeSubsequent": "1074",
+    "initialAfterSubsequent": "1754",
+    "adjustedSequenceRatio": "0.58 (0.53 to 0.62)",
+    "parsed": {
+     "aSR": 0.58,
+     "lower95": 0.53,
+     "upper95": 0.62
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "benzodiazepine-cognition-chei",
+   "indexDrugs": [
+    {
+     "class": "benzodiazepine",
+     "examples": [
+      "lorazepam",
+      "alprazolam",
+      "diazepam",
+      "clonazepam",
+      "temazepam",
+      "chlordiazepoxide",
+      "oxazepam",
+      "clorazepate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Cognitive impairment (memory problems, confusion)",
+   "markerDrugs": [
+    {
+     "class": "chei or memantine",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine",
+      "memantine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "confusion"
+   ],
+   "plainLanguage": "Sedatives such as lorazepam or diazepam can cause memory problems and confusion that may be mistaken for dementia. If a dementia medicine was started while taking a sedative, ask whether the sedative could be contributing.",
+   "clinicianNote": "ThinkCascades (ChEI or memantine as marker) and PIPC (ChEI). Ontario aSR 0.88 (no population signal) - individual-level prompt.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "25/31 (80.6%)",
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Benzodiazepine",
+    "adverseEvent": "Cognitive impairment",
+    "drugB": "Cholinesterase Inhibitor"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Benzodiazepine to cholinesterase inhibitor",
+    "initialBeforeSubsequent": "591",
+    "initialAfterSubsequent": "618",
+    "adjustedSequenceRatio": "0.88 (0.79 to 0.99)",
+    "parsed": {
+     "aSR": 0.88,
+     "lower95": 0.79,
+     "upper95": 0.99
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "chei-incontinence-oab",
+   "indexDrugs": [
+    {
+     "class": "chei",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Urinary incontinence",
+   "markerDrugs": [
+    {
+     "class": "oab medication",
+     "examples": [
+      "oxybutynin",
+      "tolterodine",
+      "solifenacin",
+      "darifenacin",
+      "fesoterodine",
+      "trospium",
+      "mirabegron",
+      "vibegron"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    },
+    {
+     "class": "urinary anticholinergic",
+     "examples": [
+      "oxybutynin",
+      "tolterodine",
+      "propiverine",
+      "solifenacin",
+      "darifenacin",
+      "trospium",
+      "fesoterodine"
+     ],
+     "examplesSource": "ThinkCascades 2022"
+    }
+   ],
+   "diarySymptoms": [
+    "urinary"
+   ],
+   "plainLanguage": "Dementia medicines such as donepezil can cause bladder leaking. Bladder pills (like oxybutynin) work in the opposite direction and can worsen memory and confusion, so the combination deserves a review.",
+   "clinicianNote": "Gill 2005: ChEI users more likely to receive bladder anticholinergic (HR 1.55); donepezil more than rivastigmine (Masurkar 2021, 6-month window). Ontario aSR 1.13 (1.02-1.25).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Cholinesterase inhibitor",
+    "adverseEvent": "Urinary incontinence",
+    "drugB": "Overactive bladder medication"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Cholinesterase inhibitor to overactive bladder drug",
+    "initialBeforeSubsequent": "835",
+    "initialAfterSubsequent": "745",
+    "adjustedSequenceRatio": "1.13 (1.02 to 1.25)",
+    "parsed": {
+     "aSR": 1.13,
+     "lower95": 1.02,
+     "upper95": 1.25
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "gill2005",
+     "finding": "Ontario cohort of 44,884 older adults with dementia: ChEI users more likely to receive an anticholinergic for urinary incontinence (4.5% vs 3.1%; adjusted HR 1.55, 95% CI 1.39-1.72).",
+     "windowDays": null
+    },
+    {
+     "ref": "masurkar2021",
+     "finding": "47,059 incident ChEI users: 3.7% started an antimuscarinic within 6 months; donepezil vs rivastigmine adjusted HR 1.55 (1.31-1.83).",
+     "windowDays": 180
+    },
+    {
+     "ref": "tucker2026",
+     "finding": "Used a 60-day window after ChEI start to define the cascade; vs mirabegron, delirium/fall estimates were imprecise (compatible with benefit, harm or no difference).",
+     "windowDays": 60
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     60,
+     180
+    ],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj",
+    "gill2005",
+    "masurkar2021",
+    "tucker2026"
+   ]
+  },
+  {
+   "id": "chei-insomnia-sleep-agent",
+   "indexDrugs": [
+    {
+     "class": "chei",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Insomnia / vivid dreams",
+   "markerDrugs": [
+    {
+     "class": "sleep agent",
+     "examples": [
+      "zolpidem",
+      "eszopiclone",
+      "zaleplon",
+      "lorazepam",
+      "temazepam",
+      "trazodone",
+      "mirtazapine",
+      "doxepin",
+      "melatonin",
+      "diphenhydramine"
+     ],
+     "examplesSource": "ThinkCascades 2022 (benzodiazepines, BZRAs, sedating antidepressants, melatonin)"
+    }
+   ],
+   "diarySymptoms": [
+    "poor_sleep"
+   ],
+   "plainLanguage": "Dementia medicines like donepezil can disturb sleep or cause vivid dreams, especially if taken at night. A sleeping pill added afterwards may be treating a side effect.",
+   "clinicianNote": "Ontario incidence 10.3%/yr (3rd highest), aSR 1.31. Consider dose timing (morning) before adding hypnotics.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Cholinesterase inhibitor",
+    "adverseEvent": "Insomnia",
+    "drugB": "Sleep agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Cholinesterase inhibitor to sleep agent",
+    "initialBeforeSubsequent": "2475",
+    "initialAfterSubsequent": "2044",
+    "adjustedSequenceRatio": "1.31 (1.23 to 1.39)",
+    "parsed": {
+     "aSR": 1.31,
+     "lower95": 1.23,
+     "upper95": 1.39
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "chei-gi-antiemetic",
+   "indexDrugs": [
+    {
+     "class": "chei",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Nausea / GI upset",
+   "markerDrugs": [
+    {
+     "class": "antiemetic",
+     "examples": [
+      "ondansetron",
+      "prochlorperazine",
+      "promethazine",
+      "metoclopramide",
+      "meclizine",
+      "trimethobenzamide",
+      "dimenhydrinate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "appetite_nausea"
+   ],
+   "plainLanguage": "Nausea and poor appetite are common after starting dementia medicines; anti-nausea pills added afterwards should prompt a review.",
+   "clinicianNote": "Ontario aSR 2.24 (1.90-2.65), one of the strongest temporal signals. Some antiemetics (metoclopramide, prochlorperazine) worsen parkinsonism/cognition.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Cholinesterase inhibitor",
+    "adverseEvent": "Gastrointestinal upset",
+    "drugB": "Antiemetic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Cholinesterase inhibitor to antiemetic",
+    "initialBeforeSubsequent": "437",
+    "initialAfterSubsequent": "206",
+    "adjustedSequenceRatio": "2.24 (1.90 to 2.65)",
+    "parsed": {
+     "aSR": 2.24,
+     "lower95": 1.9,
+     "upper95": 2.65
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "chei-gi-bismuth",
+   "indexDrugs": [
+    {
+     "class": "chei",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "GI upset",
+   "markerDrugs": [
+    {
+     "class": "bismuth",
+     "examples": [
+      "bismuth subsalicylate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "appetite_nausea"
+   ],
+   "plainLanguage": "Stomach upset after a dementia medicine is sometimes treated with bismuth (Pepto-type) products.",
+   "clinicianNote": "Consensus item; no Ontario events.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Cholinesterase inhibitor",
+    "adverseEvent": "Gastrointestinal upset",
+    "drugB": "Bismuth subsalicylate"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Cholinesterase inhibitor to bismuth subsalicylate",
+    "initialBeforeSubsequent": "0",
+    "initialAfterSubsequent": "0",
+    "adjustedSequenceRatio": "—",
+    "populationSignal": null,
+    "note": "suppressed/too few events",
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "chei-diarrhea-antidiarrheal",
+   "indexDrugs": [
+    {
+     "class": "chei",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Diarrhoea",
+   "markerDrugs": [
+    {
+     "class": "antidiarrheal",
+     "examples": [
+      "loperamide",
+      "diphenoxylate-atropine",
+      "bismuth subsalicylate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Dementia medicines can cause diarrhoea; anti-diarrhoea medicines started afterwards may be treating a side effect.",
+   "clinicianNote": "Ontario aSR 1.83 (1.55-2.16).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Cholinesterase inhibitor",
+    "adverseEvent": "Diarrhea",
+    "drugB": "Antidiarrheal"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Cholinesterase inhibitor to antidiarrheal",
+    "initialBeforeSubsequent": "392",
+    "initialAfterSubsequent": "220",
+    "adjustedSequenceRatio": "1.83 (1.55 to 2.16)",
+    "parsed": {
+     "aSR": 1.83,
+     "lower95": 1.55,
+     "upper95": 2.16
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "chei-rhinorrhea-antihistamine",
+   "indexDrugs": [
+    {
+     "class": "chei",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Runny nose",
+   "markerDrugs": [
+    {
+     "class": "antihistamine",
+     "examples": [
+      "diphenhydramine",
+      "chlorpheniramine",
+      "loratadine",
+      "cetirizine",
+      "fexofenadine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "A runny nose after a dementia medicine is sometimes treated with antihistamines, some of which worsen memory.",
+   "clinicianNote": "Consensus item; too few Ontario events.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Cholinesterase inhibitor",
+    "adverseEvent": "Rhinorrhea",
+    "drugB": "Antihistamine"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Cholinesterase inhibitor to antihistamine",
+    "initialBeforeSubsequent": "≤5",
+    "initialAfterSubsequent": "≤5",
+    "adjustedSequenceRatio": "—",
+    "populationSignal": null,
+    "note": "suppressed/too few events",
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "dopaminergic-psychosis-antipsychotic",
+   "indexDrugs": [
+    {
+     "class": "dopaminergic antiparkinsonian",
+     "examples": [
+      "bromocriptine",
+      "pramipexole",
+      "ropinirole",
+      "rotigotine",
+      "levodopa"
+     ],
+     "examplesSource": "ThinkCascades 2022"
+    }
+   ],
+   "adverseEvent": "Hallucinations / psychotic symptoms",
+   "markerDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "confusion"
+   ],
+   "plainLanguage": "Parkinson's medicines can cause hallucinations or confusion. Adding an antipsychotic can worsen Parkinson's symptoms, so a review of the Parkinson's medicine is usually considered first.",
+   "clinicianNote": "Ontario aSR 1.80 (1.58-2.05).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Dopaminergic Antiparkinsonian agent",
+    "adverseEvent": "Psychotic symptoms, hallucinations",
+    "drugB": "Antipsychotic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Dopaminergic antiparkinsonian agent to antipsychotic",
+    "initialBeforeSubsequent": "614",
+    "initialAfterSubsequent": "351",
+    "adjustedSequenceRatio": "1.80 (1.58 to 2.05)",
+    "parsed": {
+     "aSR": 1.8,
+     "lower95": 1.58,
+     "upper95": 2.05
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "gabapentinoid-edema-diuretic",
+   "indexDrugs": [
+    {
+     "class": "gabapentinoid",
+     "examples": [
+      "gabapentin",
+      "pregabalin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Peripheral (ankle) edema",
+   "markerDrugs": [
+    {
+     "class": "loop diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    },
+    {
+     "class": "diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "indapamide",
+      "metolazone",
+      "spironolactone",
+      "triamterene",
+      "amiloride"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "ankle_swelling"
+   ],
+   "plainLanguage": "Gabapentin and pregabalin can cause ankle swelling. If a water pill was started within a few months after one of them, ask whether the swelling could be a side effect.",
+   "clinicianNote": "Diuretic starts within 90 days rise with gabapentinoid dose (Read 2021, HR 1.44); median 36 days in nursing homes (Hayes 2026); clinicians rarely consider gabapentinoids in the edema differential (Growdon 2025). Prioritised PIPC (aSR 1.21).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Gabapentinoid",
+    "adverseEvent": "Peripheral edema",
+    "drugB": "Diuretic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Gabapentinoid to diuretic",
+    "initialBeforeSubsequent": "8162",
+    "initialAfterSubsequent": "6809",
+    "adjustedSequenceRatio": "1.21 (1.17 to 1.25)",
+    "parsed": {
+     "aSR": 1.21,
+     "lower95": 1.17,
+     "upper95": 1.25
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "9.0",
+     "incidencePct": "4.9 (4.8 to 5.0)",
+     "adjustedSR": "1.21 (1.17 to 1.25)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "read2021",
+     "finding": "Ontario adults >=66 y with new low back pain: new gabapentinoid users more often received a diuretic within 90 days (2.0% vs 1.3%; adjusted HR 1.44, 1.23-1.70), increasing with dose.",
+     "windowDays": 90
+    },
+    {
+     "ref": "hayes2026",
+     "finding": "4.2% of 23,544 nursing-home residents started a loop diuretic within 90 days of a gabapentinoid, median 36 days (IQR 15-61) after initiation.",
+     "windowDays": 90
+    },
+    {
+     "ref": "growdon2025jno",
+     "finding": "Chart review of 120 US veterans: gabapentinoids were almost never documented in the differential for edema (3.3%); downstream events after loop diuretic start included worsening kidney function and orthostasis."
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     90
+    ],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj",
+    "read2021",
+    "hayes2026",
+    "growdon2025jno"
+   ]
+  },
+  {
+   "id": "ssri-snri-incontinence-oab",
+   "indexDrugs": [
+    {
+     "class": "ssri snri",
+     "examples": [
+      "sertraline",
+      "citalopram",
+      "escitalopram",
+      "fluoxetine",
+      "paroxetine",
+      "fluvoxamine",
+      "venlafaxine",
+      "desvenlafaxine",
+      "duloxetine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Urinary incontinence",
+   "markerDrugs": [
+    {
+     "class": "oab medication",
+     "examples": [
+      "oxybutynin",
+      "tolterodine",
+      "solifenacin",
+      "darifenacin",
+      "fesoterodine",
+      "trospium",
+      "mirabegron",
+      "vibegron"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "urinary"
+   ],
+   "plainLanguage": "Some antidepressants can cause bladder leaking; bladder medicines started afterwards may be worth reviewing.",
+   "clinicianNote": "Prioritised PIPC overall (aSR 1.07) but sex-specific: signal in men (1.21), not women (1.02).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Selective serotonin reuptake inhibitor/Serotonin and norepinephrine reuptake inhibitor (SSRI/SNRI)",
+    "adverseEvent": "Urinary Incontinence",
+    "drugB": "Overactive bladder medication"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "SSRI or SNRI to overactive bladder drug",
+    "initialBeforeSubsequent": "3107",
+    "initialAfterSubsequent": "2808",
+    "adjustedSequenceRatio": "1.07 (1.02 to 1.13)",
+    "parsed": {
+     "aSR": 1.07,
+     "lower95": 1.02,
+     "upper95": 1.13
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "13.5",
+     "incidencePct": "3.0 (2.9 to 3.1)",
+     "adjustedSR": "1.07 (1.02 to 1.13)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "tca-cognition-chei",
+   "indexDrugs": [
+    {
+     "class": "tca",
+     "examples": [
+      "amitriptyline",
+      "nortriptyline",
+      "imipramine",
+      "desipramine",
+      "doxepin",
+      "clomipramine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Cognitive impairment",
+   "markerDrugs": [
+    {
+     "class": "chei or memantine",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine",
+      "memantine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "confusion"
+   ],
+   "plainLanguage": "Older antidepressants like amitriptyline are strongly anticholinergic and can cause confusion that may be mistaken for dementia.",
+   "clinicianNote": "Ontario aSR 1.22 (0.96-1.55).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Tricyclic antidepressant",
+    "adverseEvent": "Cognitive Impairment",
+    "drugB": "Cholinesterase Inhibitor"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Tricyclic antidepressant to cholinesterase inhibitor",
+    "initialBeforeSubsequent": "156",
+    "initialAfterSubsequent": "120",
+    "adjustedSequenceRatio": "1.22 (0.96 to 1.55)",
+    "parsed": {
+     "aSR": 1.22,
+     "lower95": 0.96,
+     "upper95": 1.55
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "tca-constipation-laxative",
+   "indexDrugs": [
+    {
+     "class": "tca",
+     "examples": [
+      "amitriptyline",
+      "nortriptyline",
+      "imipramine",
+      "desipramine",
+      "doxepin",
+      "clomipramine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Constipation",
+   "markerDrugs": [
+    {
+     "class": "laxative",
+     "examples": [
+      "polyethylene glycol 3350",
+      "sennosides",
+      "docusate",
+      "bisacodyl",
+      "lactulose",
+      "psyllium",
+      "magnesium hydroxide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "constipation"
+   ],
+   "plainLanguage": "Amitriptyline and similar medicines often cause constipation.",
+   "clinicianNote": "Ontario aSR 0.96 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Tricyclic antidepressant",
+    "adverseEvent": "Constipation",
+    "drugB": "Laxative"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Tricyclic antidepressant to laxative",
+    "initialBeforeSubsequent": "3186",
+    "initialAfterSubsequent": "3163",
+    "adjustedSequenceRatio": "0.96 (0.92 to 1.01)",
+    "parsed": {
+     "aSR": 0.96,
+     "lower95": 0.92,
+     "upper95": 1.01
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "tca-incontinence-oab",
+   "indexDrugs": [
+    {
+     "class": "tca",
+     "examples": [
+      "amitriptyline",
+      "nortriptyline",
+      "imipramine",
+      "desipramine",
+      "doxepin",
+      "clomipramine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Urinary symptoms",
+   "markerDrugs": [
+    {
+     "class": "oab medication",
+     "examples": [
+      "oxybutynin",
+      "tolterodine",
+      "solifenacin",
+      "darifenacin",
+      "fesoterodine",
+      "trospium",
+      "mirabegron",
+      "vibegron"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "urinary"
+   ],
+   "plainLanguage": "Tricyclic antidepressants can disturb bladder function (usually retention); adding bladder anticholinergics stacks anticholinergic burden.",
+   "clinicianNote": "Ontario aSR 0.87 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Drug Class",
+    "drugA": "Tricyclic antidepressant",
+    "adverseEvent": "Urinary incontinence",
+    "drugB": "Overactive bladder medication"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Tricyclic antidepressant to overactive bladder drug",
+    "initialBeforeSubsequent": "2008",
+    "initialAfterSubsequent": "2178",
+    "adjustedSequenceRatio": "0.87 (0.82 to 0.93)",
+    "parsed": {
+     "aSR": 0.87,
+     "lower95": 0.82,
+     "upper95": 0.93
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "flunarizine-depression-antidepressant",
+   "indexDrugs": [
+    {
+     "class": "flunarizine",
+     "examples": [
+      "flunarizine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Depression",
+   "markerDrugs": [
+    {
+     "class": "antidepressant",
+     "examples": [
+      "sertraline",
+      "citalopram",
+      "escitalopram",
+      "fluoxetine",
+      "paroxetine",
+      "venlafaxine",
+      "duloxetine",
+      "mirtazapine",
+      "bupropion",
+      "trazodone",
+      "amitriptyline",
+      "nortriptyline"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Flunarizine (not sold in the US) can lower mood.",
+   "clinicianNote": "Consensus item; not US-marketed (UNVERIFIED).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Individual Drug",
+    "drugA": "Flunarizine",
+    "adverseEvent": "Depression",
+    "drugB": "Antidepressant"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Flunarizine to antidepressant",
+    "initialBeforeSubsequent": "7",
+    "initialAfterSubsequent": "10",
+    "adjustedSequenceRatio": "0.75 (0.29 to 1.98)",
+    "parsed": {
+     "aSR": 0.75,
+     "lower95": 0.29,
+     "upper95": 1.98
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "lithium-eps-antiparkinsonian",
+   "indexDrugs": [
+    {
+     "class": "lithium",
+     "examples": [
+      "lithium"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Tremor / extrapyramidal symptoms",
+   "markerDrugs": [
+    {
+     "class": "antiparkinsonian",
+     "examples": [
+      "carbidopa-levodopa",
+      "pramipexole",
+      "ropinirole",
+      "rotigotine",
+      "amantadine",
+      "benztropine",
+      "trihexyphenidyl",
+      "rasagiline",
+      "selegiline"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Lithium can cause tremor; a new Parkinson's medicine after lithium should prompt a lithium review.",
+   "clinicianNote": "Consensus item; sparse Ontario data.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Individual Drug",
+    "drugA": "Lithium",
+    "adverseEvent": "Extrapyramidal symptoms",
+    "drugB": "Antiparkinsonian agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Lithium to antiparkinsonian agent",
+    "initialBeforeSubsequent": "9",
+    "initialAfterSubsequent": "9",
+    "adjustedSequenceRatio": "0.89 (0.35 to 2.23)",
+    "parsed": {
+     "aSR": 0.89,
+     "lower95": 0.35,
+     "upper95": 2.23
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "venlafaxine-hypertension-antihypertensive",
+   "indexDrugs": [
+    {
+     "class": "venlafaxine",
+     "examples": [
+      "venlafaxine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Dose-related hypertension",
+   "markerDrugs": [
+    {
+     "class": "antihypertensive",
+     "examples": [
+      "lisinopril",
+      "losartan",
+      "amlodipine",
+      "metoprolol",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "doxazosin",
+      "clonidine",
+      "hydralazine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Venlafaxine can raise blood pressure at higher doses.",
+   "clinicianNote": "Ontario aSR 0.96 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Individual Drug",
+    "drugA": "Venlafaxine",
+    "adverseEvent": "Hypertension (dose-related)",
+    "drugB": "Antihypertensive"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Venlafaxine to antihypertensive",
+    "initialBeforeSubsequent": "421",
+    "initialAfterSubsequent": "431",
+    "adjustedSequenceRatio": "0.96 (0.84 to 1.10)",
+    "parsed": {
+     "aSR": 0.96,
+     "lower95": 0.84,
+     "upper95": 1.1
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "venlafaxine-tremor-benzodiazepine",
+   "indexDrugs": [
+    {
+     "class": "venlafaxine",
+     "examples": [
+      "venlafaxine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Tremor",
+   "markerDrugs": [
+    {
+     "class": "benzodiazepine",
+     "examples": [
+      "lorazepam",
+      "alprazolam",
+      "diazepam",
+      "clonazepam",
+      "temazepam",
+      "chlordiazepoxide",
+      "oxazepam",
+      "clorazepate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Venlafaxine can cause shakiness; a sedative added to treat it brings fall risk.",
+   "clinicianNote": "Ontario aSR 0.59 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Central nervous system",
+    "level": "Individual Drug",
+    "drugA": "Venlafaxine",
+    "adverseEvent": "Tremor",
+    "drugB": "Benzodiazepine"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Venlafaxine to benzodiazepine",
+    "initialBeforeSubsequent": "530",
+    "initialAfterSubsequent": "945",
+    "adjustedSequenceRatio": "0.59 (0.53 to 0.65)",
+    "parsed": {
+     "aSR": 0.59,
+     "lower95": 0.53,
+     "upper95": 0.65
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "dpp4-arthralgia-nsaid",
+   "indexDrugs": [
+    {
+     "class": "dpp4",
+     "examples": [
+      "sitagliptin",
+      "saxagliptin",
+      "linagliptin",
+      "alogliptin"
+     ],
+     "examplesSource": "PIPC 2025 (sitagliptin, saxagliptin)"
+    }
+   ],
+   "adverseEvent": "Joint pain",
+   "markerDrugs": [
+    {
+     "class": "nsaid",
+     "examples": [
+      "ibuprofen",
+      "naproxen",
+      "diclofenac",
+      "meloxicam",
+      "celecoxib",
+      "indomethacin",
+      "ketorolac",
+      "etodolac",
+      "nabumetone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Some diabetes medicines (gliptins) can cause joint pain; anti-inflammatory painkillers added afterwards can harm kidneys and raise blood pressure.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.10); DPP-4 inhibitor labels carry an arthralgia warning.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Endocrine system",
+    "level": "Drug Class",
+    "drugA": "Dipeptidyl peptidase 4 (DPP-4) inhibitor (e.g., sitagliptin, saxagliptin)",
+    "adverseEvent": "Joint pain",
+    "drugB": "Nonsteroidal anti-inflammatory drug"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Dipeptidyl peptidase-4 inhibitor to NSAID",
+    "initialBeforeSubsequent": "2173",
+    "initialAfterSubsequent": "2264",
+    "adjustedSequenceRatio": "1.10 (1.04 to 1.17)",
+    "parsed": {
+     "aSR": 1.1,
+     "lower95": 1.04,
+     "upper95": 1.17
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "9.6",
+     "incidencePct": "5.4 (5.2 to 5.6)",
+     "adjustedSR": "1.10 (1.04 to 1.17)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "sglt2-genital-infection-antifungal",
+   "indexDrugs": [
+    {
+     "class": "sglt2",
+     "examples": [
+      "empagliflozin",
+      "dapagliflozin",
+      "canagliflozin",
+      "ertugliflozin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Genital yeast infections",
+   "markerDrugs": [
+    {
+     "class": "antifungal",
+     "examples": [
+      "fluconazole",
+      "miconazole",
+      "clotrimazole",
+      "terconazole",
+      "nystatin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Diabetes/heart medicines ending in '-gliflozin' can cause genital yeast infections.",
+   "clinicianNote": "Prioritised PIPC with strong signal (aSR 2.12; incidence 6.7%/yr).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Endocrine system",
+    "level": "Drug Class",
+    "drugA": "Sodium-glucose cotransporter-2 (SGLT-2) inhibitor",
+    "adverseEvent": "Mycotic genital infections",
+    "drugB": "Antifungal"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Sodium-glucose cotransporter-2 inhibitor to antifungal",
+    "initialBeforeSubsequent": "7129",
+    "initialAfterSubsequent": "3431",
+    "adjustedSequenceRatio": "2.12 (2.04 to 2.21)",
+    "parsed": {
+     "aSR": 2.12,
+     "lower95": 2.04,
+     "upper95": 2.21
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "7.8",
+     "incidencePct": "6.7 (6.5 to 6.8)",
+     "adjustedSR": "2.12 (2.04 to 2.21)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "metformin-diarrhea-antidiarrheal",
+   "indexDrugs": [
+    {
+     "class": "metformin",
+     "examples": [
+      "metformin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Diarrhoea",
+   "markerDrugs": [
+    {
+     "class": "antidiarrheal",
+     "examples": [
+      "loperamide",
+      "diphenoxylate-atropine",
+      "bismuth subsalicylate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Metformin often causes loose stools; anti-diarrhoea medicines afterwards may be treating a side effect.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.54).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Endocrine system",
+    "level": "Individual Drug",
+    "drugA": "Metformin",
+    "adverseEvent": "Diarrhea",
+    "drugB": "Antidiarrheal"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Metformin to antidiarrheal",
+    "initialBeforeSubsequent": "734",
+    "initialAfterSubsequent": "465",
+    "adjustedSequenceRatio": "1.54 (1.37 to 1.73)",
+    "parsed": {
+     "aSR": 1.54,
+     "lower95": 1.37,
+     "upper95": 1.73
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "17.9",
+     "incidencePct": "1.2 (1.1 to 1.3)",
+     "adjustedSR": "1.54 (1.37 to 1.73)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "tzd-edema-diuretic",
+   "indexDrugs": [
+    {
+     "class": "tzd",
+     "examples": [
+      "pioglitazone",
+      "rosiglitazone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Edema / fluid retention",
+   "markerDrugs": [
+    {
+     "class": "diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "indapamide",
+      "metolazone",
+      "spironolactone",
+      "triamterene",
+      "amiloride"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "ankle_swelling"
+   ],
+   "plainLanguage": "Pioglitazone can cause fluid retention and ankle swelling; a new water pill afterwards should prompt a review.",
+   "clinicianNote": "Consensus item; too few Ontario events. Pioglitazone label carries a heart-failure boxed warning.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Endocrine system",
+    "level": "Individual Drug",
+    "drugA": "Pioglitazone or Rosiglitazone",
+    "adverseEvent": "Edema",
+    "drugB": "Diuretic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Pioglitazone or rosiglitazone to diuretic",
+    "initialBeforeSubsequent": "≤5",
+    "initialAfterSubsequent": "≤5",
+    "adjustedSequenceRatio": "—",
+    "populationSignal": null,
+    "note": "suppressed/too few events",
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "rosiglitazone-hf-diuretic",
+   "indexDrugs": [
+    {
+     "class": "rosiglitazone",
+     "examples": [
+      "rosiglitazone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Heart failure",
+   "markerDrugs": [
+    {
+     "class": "diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "indapamide",
+      "metolazone",
+      "spironolactone",
+      "triamterene",
+      "amiloride"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "ankle_swelling"
+   ],
+   "plainLanguage": "Rosiglitazone can worsen heart failure.",
+   "clinicianNote": "Consensus item; rarely used now.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Endocrine system",
+    "level": "Individual Drug",
+    "drugA": "Rosiglitazone",
+    "adverseEvent": "Heart failure",
+    "drugB": "Diuretic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Rosiglitazone to diuretic",
+    "initialBeforeSubsequent": "≤5",
+    "initialAfterSubsequent": "≤5",
+    "adjustedSequenceRatio": "—",
+    "populationSignal": null,
+    "note": "suppressed/too few events",
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "anticholinergic-antiemetic-retention-alpha-blocker",
+   "indexDrugs": [
+    {
+     "class": "anticholinergic antiemetic",
+     "examples": [
+      "scopolamine",
+      "promethazine",
+      "meclizine",
+      "dimenhydrinate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Urinary retention",
+   "markerDrugs": [
+    {
+     "class": "alpha1 blocker",
+     "examples": [
+      "tamsulosin",
+      "alfuzosin",
+      "silodosin",
+      "doxazosin",
+      "terazosin",
+      "prazosin"
+     ],
+     "examplesSource": "ThinkCascades 2022 Round 1 (doxazosin, terazosin, alfuzosin, tamsulosin)"
+    }
+   ],
+   "diarySymptoms": [
+    "urinary"
+   ],
+   "plainLanguage": "Anticholinergic anti-nausea medicines (e.g., scopolamine patch, meclizine) can make it hard to pass urine; prostate medicines started afterwards may be treating a side effect.",
+   "clinicianNote": "Ontario aSR 0.14 (strong inverse sequence - no cascade signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Gastrointestinal system",
+    "level": "Drug Class",
+    "drugA": "Anticholinergic antiemetic",
+    "adverseEvent": "Urinary retention",
+    "drugB": "Alpha-1 receptor blocker"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Anticholinergic antiemetics to alpha-1 receptor blocker",
+    "initialBeforeSubsequent": "112",
+    "initialAfterSubsequent": "733",
+    "adjustedSequenceRatio": "0.14 (0.12 to 0.18)",
+    "parsed": {
+     "aSR": 0.14,
+     "lower95": 0.12,
+     "upper95": 0.18
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "antidopaminergic-antiemetic-eps-antiparkinsonian",
+   "indexDrugs": [
+    {
+     "class": "antidopaminergic antiemetic",
+     "examples": [
+      "metoclopramide",
+      "prochlorperazine",
+      "promethazine"
+     ],
+     "examplesSource": "ThinkCascades 2022 Round 1 (metoclopramide, prochlorperazine)"
+    }
+   ],
+   "adverseEvent": "Drug-induced parkinsonism",
+   "markerDrugs": [
+    {
+     "class": "antiparkinsonian",
+     "examples": [
+      "carbidopa-levodopa",
+      "pramipexole",
+      "ropinirole",
+      "rotigotine",
+      "amantadine",
+      "benztropine",
+      "trihexyphenidyl",
+      "rasagiline",
+      "selegiline"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "falls"
+   ],
+   "plainLanguage": "Metoclopramide (Reglan) and prochlorperazine can cause Parkinson-like stiffness and tremor. A Parkinson's medicine started afterwards may be treating a side effect.",
+   "clinicianNote": "Metoclopramide users ~3x more likely to start levodopa, dose-dependent (Avorn 1995). Ontario 2022-23 aSR 0.50 (no population signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Gastrointestinal system",
+    "level": "Drug Class",
+    "drugA": "Antidopaminergic antiemetic",
+    "adverseEvent": "Extrapyramidal symptoms",
+    "drugB": "Antiparkinsonian agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Antidopaminergic antiemetic to antiparkinsonian agent",
+    "initialBeforeSubsequent": "282",
+    "initialAfterSubsequent": "522",
+    "adjustedSequenceRatio": "0.50 (0.43 to 0.58)",
+    "parsed": {
+     "aSR": 0.5,
+     "lower95": 0.43,
+     "upper95": 0.58
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "avorn1995jama",
+     "finding": "Case-control (NJ Medicaid >=65 y): metoclopramide users ~3 times more likely to start levodopa (OR 3.09, 95% CI 2.25-4.26), with dose-response.",
+     "windowDays": null
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj",
+    "avorn1995jama"
+   ]
+  },
+  {
+   "id": "laxative-diarrhea-antidiarrheal",
+   "indexDrugs": [
+    {
+     "class": "laxative",
+     "examples": [
+      "polyethylene glycol 3350",
+      "sennosides",
+      "docusate",
+      "bisacodyl",
+      "lactulose",
+      "psyllium",
+      "magnesium hydroxide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Diarrhoea",
+   "markerDrugs": [
+    {
+     "class": "antidiarrheal",
+     "examples": [
+      "loperamide",
+      "diphenoxylate-atropine",
+      "bismuth subsalicylate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Too much laxative can cause diarrhoea; anti-diarrhoea medicine on top of a laxative suggests the laxative dose needs review.",
+   "clinicianNote": "Prioritised PIPC with one of the strongest signals (aSR 2.53).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Gastrointestinal system",
+    "level": "Drug Class",
+    "drugA": "Laxative",
+    "adverseEvent": "Diarrhea",
+    "drugB": "Antidiarrheal agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Laxative to antidiarrheal agent",
+    "initialBeforeSubsequent": "7268",
+    "initialAfterSubsequent": "2886",
+    "adjustedSequenceRatio": "2.53 (2.43 to 2.65)",
+    "parsed": {
+     "aSR": 2.53,
+     "lower95": 2.43,
+     "upper95": 2.65
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "12.0",
+     "incidencePct": "2.2 (2.1 to 2.2)",
+     "adjustedSR": "2.53 (2.43 to 2.65)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "ppi-fracture-vitamin",
+   "indexDrugs": [
+    {
+     "class": "ppi",
+     "examples": [
+      "omeprazole",
+      "esomeprazole",
+      "pantoprazole",
+      "lansoprazole",
+      "rabeprazole",
+      "dexlansoprazole"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Osteoporosis / fractures",
+   "markerDrugs": [
+    {
+     "class": "vitamin supplement",
+     "examples": [
+      "cholecalciferol (vitamin D)",
+      "cyanocobalamin (vitamin B12)",
+      "calcium carbonate + vitamin D"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Long-term acid-reducing medicines (PPIs) are linked to weaker bones and low vitamin levels.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.31).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Gastrointestinal system",
+    "level": "Drug Class",
+    "drugA": "Proton pump inhibitor",
+    "adverseEvent": "Osteoporosis, fractures",
+    "drugB": "Vitamin supplement"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Proton pump inhibitor to vitamin supplement",
+    "initialBeforeSubsequent": "5084",
+    "initialAfterSubsequent": "4040",
+    "adjustedSequenceRatio": "1.31 (1.26 to 1.36)",
+    "parsed": {
+     "aSR": 1.31,
+     "lower95": 1.26,
+     "upper95": 1.36
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "30.5",
+     "incidencePct": "1.8 (1.8 to 1.9)",
+     "adjustedSR": "1.31 (1.26 to 1.36)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "ppi-deficiency-supplement",
+   "indexDrugs": [
+    {
+     "class": "ppi",
+     "examples": [
+      "omeprazole",
+      "esomeprazole",
+      "pantoprazole",
+      "lansoprazole",
+      "rabeprazole",
+      "dexlansoprazole"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Vitamin or mineral deficiency (e.g., B12, magnesium)",
+   "markerDrugs": [
+    {
+     "class": "vitamin or mineral supplement",
+     "examples": [
+      "cyanocobalamin (vitamin B12)",
+      "magnesium",
+      "iron",
+      "calcium"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "fatigue"
+   ],
+   "plainLanguage": "Long-term PPIs can lower vitamin B12 and magnesium; supplements started afterwards are a reason to re-check whether the PPI is still needed.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.25). Note: the PIPC table prints 'Vitamin or Mineral Deficiency' in the Drug B column; the BMJ analysis labels Drug B 'vitamin or mineral supplement'.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Gastrointestinal system",
+    "level": "Drug Class",
+    "drugA": "Proton pump inhibitor",
+    "adverseEvent": "Vitamin or Mineral Deficiency",
+    "drugB": "Vitamin or Mineral Deficiency"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Proton pump inhibitor to vitamin or mineral supplement",
+    "initialBeforeSubsequent": "12 902",
+    "initialAfterSubsequent": "10 161",
+    "adjustedSequenceRatio": "1.25 (1.22 to 1.29)",
+    "parsed": {
+     "aSR": 1.25,
+     "lower95": 1.22,
+     "upper95": 1.29
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "(same as previous row)",
+     "incidencePct": "4.6 (4.5 to 4.6)",
+     "adjustedSR": "1.25 (1.22 to 1.29)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "bisphosphonate-gastritis-gastroprotective",
+   "indexDrugs": [
+    {
+     "class": "bisphosphonate",
+     "examples": [
+      "alendronate",
+      "risedronate",
+      "ibandronate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Gastritis / oesophagitis",
+   "markerDrugs": [
+    {
+     "class": "gastroprotective",
+     "examples": [
+      "omeprazole",
+      "pantoprazole",
+      "esomeprazole",
+      "lansoprazole",
+      "famotidine",
+      "sucralfate",
+      "misoprostol"
+     ],
+     "examplesSource": "ThinkCascades 2022 Round 1 (PPIs, H2RAs)"
+    }
+   ],
+   "diarySymptoms": [
+    "appetite_nausea"
+   ],
+   "plainLanguage": "Bone-strengthening tablets like alendronate can irritate the stomach and gullet if not taken correctly.",
+   "clinicianNote": "Ontario aSR 0.91 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Musculoskeletal system",
+    "level": "Drug Class",
+    "drugA": "Bisphosphonate",
+    "adverseEvent": "Gastritis",
+    "drugB": "Gastroprotective agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Bisphosphonate to gastroprotective agent",
+    "initialBeforeSubsequent": "4342",
+    "initialAfterSubsequent": "5112",
+    "adjustedSequenceRatio": "0.91 (0.88 to 0.95)",
+    "parsed": {
+     "aSR": 0.91,
+     "lower95": 0.88,
+     "upper95": 0.95
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "nsaid-gi-gastroprotective",
+   "indexDrugs": [
+    {
+     "class": "nsaid",
+     "examples": [
+      "ibuprofen",
+      "naproxen",
+      "diclofenac",
+      "meloxicam",
+      "celecoxib",
+      "indomethacin",
+      "ketorolac",
+      "etodolac",
+      "nabumetone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Gastritis / ulcer / GI bleeding",
+   "markerDrugs": [
+    {
+     "class": "gastroprotective",
+     "examples": [
+      "omeprazole",
+      "pantoprazole",
+      "esomeprazole",
+      "lansoprazole",
+      "famotidine",
+      "sucralfate",
+      "misoprostol"
+     ],
+     "examplesSource": "ThinkCascades 2022 Round 1 (PPIs, H2RAs)"
+    }
+   ],
+   "diarySymptoms": [
+    "appetite_nausea"
+   ],
+   "plainLanguage": "Anti-inflammatory painkillers can irritate the stomach. Sometimes a stomach-protecting medicine is appropriate; sometimes the painkiller itself should be reconsidered.",
+   "clinicianNote": "On PIPC and prioritised (aSR 1.24), BUT ThinkCascades excluded it as 'usually intentional and appropriate' when the NSAID cannot be deprescribed. Present as a discussion point, not a problem.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Musculoskeletal system",
+    "level": "Drug Class",
+    "drugA": "Nonsteroidal anti-inflammatory drug (NSAID)",
+    "adverseEvent": "Gastritis/gastric ulcer/gastrointestinal bleed",
+    "drugB": "Gastroprotective agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "NSAID to gastroprotective agent",
+    "initialBeforeSubsequent": "22 273",
+    "initialAfterSubsequent": "18 530",
+    "adjustedSequenceRatio": "1.24 (1.21 to 1.26)",
+    "parsed": {
+     "aSR": 1.24,
+     "lower95": 1.21,
+     "upper95": 1.26
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "13.5",
+     "incidencePct": "6.7 (6.6 to 6.8)",
+     "adjustedSR": "1.24 (1.21 to 1.26)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "appropriatenessCaveat": "Often intentional and appropriate (ThinkCascades excluded it for this reason).",
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "nsaid-nausea-antiemetic",
+   "indexDrugs": [
+    {
+     "class": "nsaid",
+     "examples": [
+      "ibuprofen",
+      "naproxen",
+      "diclofenac",
+      "meloxicam",
+      "celecoxib",
+      "indomethacin",
+      "ketorolac",
+      "etodolac",
+      "nabumetone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Nausea",
+   "markerDrugs": [
+    {
+     "class": "antiemetic",
+     "examples": [
+      "ondansetron",
+      "prochlorperazine",
+      "promethazine",
+      "metoclopramide",
+      "meclizine",
+      "trimethobenzamide",
+      "dimenhydrinate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "appetite_nausea"
+   ],
+   "plainLanguage": "Painkillers like ibuprofen or naproxen can cause nausea.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.66).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Musculoskeletal system",
+    "level": "Drug Class",
+    "drugA": "NSAID",
+    "adverseEvent": "Nausea",
+    "drugB": "Antiemetic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "NSAID to antiemetic",
+    "initialBeforeSubsequent": "5627",
+    "initialAfterSubsequent": "3483",
+    "adjustedSequenceRatio": "1.66 (1.59 to 1.73)",
+    "parsed": {
+     "aSR": 1.66,
+     "lower95": 1.59,
+     "upper95": 1.73
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "(same as previous row)",
+     "incidencePct": "1.7 (1.7 to 1.7)",
+     "adjustedSR": "1.66 (1.59 to 1.73)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "nsaid-hypertension-antihypertensive",
+   "indexDrugs": [
+    {
+     "class": "nsaid",
+     "examples": [
+      "ibuprofen",
+      "naproxen",
+      "diclofenac",
+      "meloxicam",
+      "celecoxib",
+      "indomethacin",
+      "ketorolac",
+      "etodolac",
+      "nabumetone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Raised blood pressure",
+   "markerDrugs": [
+    {
+     "class": "antihypertensive",
+     "examples": [
+      "lisinopril",
+      "losartan",
+      "amlodipine",
+      "metoprolol",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "doxazosin",
+      "clonidine",
+      "hydralazine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Anti-inflammatory painkillers (ibuprofen, naproxen) can raise blood pressure. If a blood-pressure medicine was started or increased while taking them, the painkiller may be part of the reason.",
+   "clinicianNote": "Recent NSAID use associated with starting antihypertensives (OR 1.66, dose-response; Gurwitz 1994). ThinkCascades item; prioritised PIPC (aSR 1.10).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "22/31 (71.0%)",
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Musculoskeletal system",
+    "level": "Drug Class",
+    "drugA": "NSAID",
+    "adverseEvent": "Hypertension",
+    "drugB": "Antihypertensive"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "NSAID to antihypertensive",
+    "initialBeforeSubsequent": "10 000",
+    "initialAfterSubsequent": "9052",
+    "adjustedSequenceRatio": "1.10 (1.07 to 1.13)",
+    "parsed": {
+     "aSR": 1.1,
+     "lower95": 1.07,
+     "upper95": 1.13
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "(same as previous row)",
+     "incidencePct": "3.0 (3.0 to 3.1)",
+     "adjustedSR": "1.10 (1.07 to 1.13)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [
+    {
+     "ref": "gurwitz1994",
+     "finding": "Case-control, NJ Medicaid >=65 y: recent NSAID users had higher odds of starting antihypertensive therapy (adjusted OR 1.66, 95% CI 1.54-1.80), rising with NSAID dose (1.55 low, 1.64 medium, 1.82 high).",
+     "windowDays": null
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj",
+    "gurwitz1994"
+   ]
+  },
+  {
+   "id": "nsaid-hf-hf-agent",
+   "indexDrugs": [
+    {
+     "class": "nsaid",
+     "examples": [
+      "ibuprofen",
+      "naproxen",
+      "diclofenac",
+      "meloxicam",
+      "celecoxib",
+      "indomethacin",
+      "ketorolac",
+      "etodolac",
+      "nabumetone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Fluid retention / worsening heart failure",
+   "markerDrugs": [
+    {
+     "class": "heart failure agent",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide",
+      "sacubitril-valsartan",
+      "spironolactone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    },
+    {
+     "class": "loop diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "ankle_swelling"
+   ],
+   "plainLanguage": "Anti-inflammatory painkillers can cause fluid retention and worsen heart failure; water pills or heart-failure medicines started afterwards should prompt a painkiller review.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.17). ThinkCascades Round 1 also listed NSAID -> fluid retention -> new/increased diuretic.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Musculoskeletal system",
+    "level": "Drug Class",
+    "drugA": "NSAID",
+    "adverseEvent": "Worsening of heart failure",
+    "drugB": "Heart failure agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "NSAID to heart failure agent",
+    "initialBeforeSubsequent": "11 908",
+    "initialAfterSubsequent": "10 129",
+    "adjustedSequenceRatio": "1.17 (1.14 to 1.20)",
+    "parsed": {
+     "aSR": 1.17,
+     "lower95": 1.14,
+     "upper95": 1.2
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "(same as previous row)",
+     "incidencePct": "3.6 (3.5 to 3.6)",
+     "adjustedSR": "1.17 (1.14 to 1.20)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "opioid-depression-antidepressant",
+   "indexDrugs": [
+    {
+     "class": "opioid",
+     "examples": [
+      "oxycodone",
+      "hydrocodone",
+      "morphine",
+      "tramadol",
+      "codeine",
+      "hydromorphone",
+      "fentanyl",
+      "tapentadol",
+      "buprenorphine",
+      "methadone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Depression",
+   "markerDrugs": [
+    {
+     "class": "antidepressant",
+     "examples": [
+      "sertraline",
+      "citalopram",
+      "escitalopram",
+      "fluoxetine",
+      "paroxetine",
+      "venlafaxine",
+      "duloxetine",
+      "mirtazapine",
+      "bupropion",
+      "trazodone",
+      "amitriptyline",
+      "nortriptyline"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Long-term opioid painkillers can affect mood.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.29, incidence 6.1%/yr). Opioid + antidepressant combinations add sedation/fall risk; tramadol + SSRI/SNRI adds serotonin-syndrome risk.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Musculoskeletal system",
+    "level": "Drug Class",
+    "drugA": "Opioid",
+    "adverseEvent": "Depression",
+    "drugB": "Antidepressant"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Opioid to antidepressant",
+    "initialBeforeSubsequent": "25 737",
+    "initialAfterSubsequent": "19 731",
+    "adjustedSequenceRatio": "1.29 (1.27 to 1.32)",
+    "parsed": {
+     "aSR": 1.29,
+     "lower95": 1.27,
+     "upper95": 1.32
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "15.2",
+     "incidencePct": "6.1 (6.0 to 6.2)",
+     "adjustedSR": "1.29 (1.27 to 1.32)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "alpha-blocker-dizziness-vestibular-suppressant",
+   "indexDrugs": [
+    {
+     "class": "alpha1 blocker",
+     "examples": [
+      "tamsulosin",
+      "alfuzosin",
+      "silodosin",
+      "doxazosin",
+      "terazosin",
+      "prazosin"
+     ],
+     "examplesSource": "ThinkCascades 2022 Round 1 (doxazosin, terazosin, alfuzosin, tamsulosin)"
+    }
+   ],
+   "adverseEvent": "Orthostatic hypotension / dizziness",
+   "markerDrugs": [
+    {
+     "class": "vestibular suppressant",
+     "examples": [
+      "meclizine",
+      "dimenhydrinate",
+      "betahistine",
+      "promethazine",
+      "scopolamine",
+      "diazepam",
+      "lorazepam"
+     ],
+     "examplesSource": "ThinkCascades 2022 (betahistine, antihistamines, benzodiazepines)"
+    }
+   ],
+   "diarySymptoms": [
+    "dizziness",
+    "falls"
+   ],
+   "plainLanguage": "Prostate or blood-pressure medicines such as tamsulosin or doxazosin can cause dizziness on standing. If a 'dizziness' medicine such as meclizine was started afterwards, ask whether the prostate/blood-pressure medicine could be the cause.",
+   "clinicianNote": "Strongest temporal signal of all 65 PIPCs in Ontario (aSR 8.70, 95% CI 7.12-10.61). ThinkCascades item. Vestibular suppressants (meclizine, benzodiazepines) are anticholinergic/sedating FRIDs.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "23/31 (74.2%)",
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Urogenital system",
+    "level": "Drug Class",
+    "drugA": "Alpha-1 receptor blocker",
+    "adverseEvent": "Orthostatic hypotension, dizziness",
+    "drugB": "Vestibular suppressant"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Alpha-1 receptor blocker to vestibular suppressant",
+    "initialBeforeSubsequent": "904",
+    "initialAfterSubsequent": "110",
+    "adjustedSequenceRatio": "8.70 (7.12 to 10.61)",
+    "parsed": {
+     "aSR": 8.7,
+     "lower95": 7.12,
+     "upper95": 10.61
+    },
+    "populationSignal": true,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "urinary-anticholinergic-dry-mouth-saliva",
+   "indexDrugs": [
+    {
+     "class": "urinary anticholinergic",
+     "examples": [
+      "oxybutynin",
+      "tolterodine",
+      "propiverine",
+      "solifenacin",
+      "darifenacin",
+      "trospium",
+      "fesoterodine"
+     ],
+     "examplesSource": "ThinkCascades 2022"
+    }
+   ],
+   "adverseEvent": "Dry mouth",
+   "markerDrugs": [
+    {
+     "class": "saliva substitute",
+     "examples": [
+      "artificial saliva products",
+      "pilocarpine",
+      "cevimeline"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "dry_mouth"
+   ],
+   "plainLanguage": "Bladder medicines like oxybutynin commonly cause dry mouth; treating the dry mouth instead of reviewing the bladder medicine can miss the cause.",
+   "clinicianNote": "Consensus item; no Ontario dispensing events (saliva substitutes mostly OTC).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Urogenital system",
+    "level": "Drug Class",
+    "drugA": "Urinary anticholinergic",
+    "adverseEvent": "Dry mouth",
+    "drugB": "Saliva substitute"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Urinary anticholinergic to saliva substitute",
+    "initialBeforeSubsequent": "0",
+    "initialAfterSubsequent": "0",
+    "adjustedSequenceRatio": "—",
+    "populationSignal": null,
+    "note": "suppressed/too few events",
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "carbapenem-seizure-anticonvulsant",
+   "indexDrugs": [
+    {
+     "class": "carbapenem",
+     "examples": [
+      "imipenem",
+      "meropenem",
+      "ertapenem"
+     ],
+     "examplesSource": "PIPC 2025"
+    }
+   ],
+   "adverseEvent": "Seizures",
+   "markerDrugs": [
+    {
+     "class": "anticonvulsant",
+     "examples": [
+      "carbamazepine",
+      "oxcarbazepine",
+      "phenytoin",
+      "lamotrigine",
+      "valproate",
+      "levetiracetam",
+      "topiramate",
+      "lacosamide",
+      "gabapentin",
+      "pregabalin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Some hospital antibiotics can lower the seizure threshold.",
+   "clinicianNote": "Consensus item (hospital setting); too few Ontario community events.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Drug Class",
+    "drugA": "Carbapenem (e.g., imipenem, meropenem, ertapenem)",
+    "adverseEvent": "Seizures",
+    "drugB": "Anticonvulsant"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Carbapenem to anticonvulsant",
+    "initialBeforeSubsequent": "≤5",
+    "initialAfterSubsequent": "≤5",
+    "adjustedSequenceRatio": "—",
+    "populationSignal": null,
+    "note": "suppressed/too few events",
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "corticosteroid-insomnia-sleep-agent",
+   "indexDrugs": [
+    {
+     "class": "systemic corticosteroid",
+     "examples": [
+      "prednisone",
+      "prednisolone",
+      "methylprednisolone",
+      "dexamethasone",
+      "hydrocortisone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Insomnia",
+   "markerDrugs": [
+    {
+     "class": "sleep agent",
+     "examples": [
+      "zolpidem",
+      "eszopiclone",
+      "zaleplon",
+      "lorazepam",
+      "temazepam",
+      "trazodone",
+      "mirtazapine",
+      "doxepin",
+      "melatonin",
+      "diphenhydramine"
+     ],
+     "examplesSource": "ThinkCascades 2022 (benzodiazepines, BZRAs, sedating antidepressants, melatonin)"
+    }
+   ],
+   "diarySymptoms": [
+    "poor_sleep"
+   ],
+   "plainLanguage": "Steroid tablets such as prednisone often cause sleeplessness, especially if taken later in the day.",
+   "clinicianNote": "Prioritised PIPC (aSR 1.31, incidence 5.6%/yr). Consider morning dosing before adding hypnotics.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Drug Class",
+    "drugA": "Corticosteroid",
+    "adverseEvent": "Insomnia",
+    "drugB": "Sleep agent"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Corticosteroid to sleep agent",
+    "initialBeforeSubsequent": "29 599",
+    "initialAfterSubsequent": "23 089",
+    "adjustedSequenceRatio": "1.31 (1.29 to 1.34)",
+    "parsed": {
+     "aSR": 1.31,
+     "lower95": 1.29,
+     "upper95": 1.34
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "22.8",
+     "incidencePct": "5.6 (5.5 to 5.6)",
+     "adjustedSR": "1.31 (1.29 to 1.34)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "thinkcascades2022",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "corticosteroid-psychosis-antipsychotic",
+   "indexDrugs": [
+    {
+     "class": "systemic corticosteroid",
+     "examples": [
+      "prednisone",
+      "prednisolone",
+      "methylprednisolone",
+      "dexamethasone",
+      "hydrocortisone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Psychosis / agitation / delirium",
+   "markerDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "confusion"
+   ],
+   "plainLanguage": "Steroids can cause confusion, agitation or hallucinations in older adults.",
+   "clinicianNote": "Prioritised PIPC with the strongest prioritised temporal signal (aSR 2.55).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Drug Class",
+    "drugA": "Corticosteroid",
+    "adverseEvent": "Psychosis",
+    "drugB": "Antipsychotic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Corticosteroid to antipsychotic",
+    "initialBeforeSubsequent": "12 959",
+    "initialAfterSubsequent": "5051",
+    "adjustedSequenceRatio": "2.55 (2.47 to 2.64)",
+    "parsed": {
+     "aSR": 2.55,
+     "lower95": 2.47,
+     "upper95": 2.64
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "(same as previous row)",
+     "incidencePct": "2.4 (2.4 to 2.5)",
+     "adjustedSR": "2.55 (2.47 to 2.64)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "corticosteroid-hypertension-antihypertensive",
+   "indexDrugs": [
+    {
+     "class": "systemic corticosteroid",
+     "examples": [
+      "prednisone",
+      "prednisolone",
+      "methylprednisolone",
+      "dexamethasone",
+      "hydrocortisone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Hypertension",
+   "markerDrugs": [
+    {
+     "class": "antihypertensive",
+     "examples": [
+      "lisinopril",
+      "losartan",
+      "amlodipine",
+      "metoprolol",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "doxazosin",
+      "clonidine",
+      "hydralazine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Steroids can raise blood pressure.",
+   "clinicianNote": "Ontario aSR 0.91 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Drug Class",
+    "drugA": "Corticosteroid",
+    "adverseEvent": "Hypertension",
+    "drugB": "Antihypertensive"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Corticosteroid to antihypertensive",
+    "initialBeforeSubsequent": "14 867",
+    "initialAfterSubsequent": "15 997",
+    "adjustedSequenceRatio": "0.91 (0.89 to 0.93)",
+    "parsed": {
+     "aSR": 0.91,
+     "lower95": 0.89,
+     "upper95": 0.93
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "acitretin-candidiasis-antifungal",
+   "indexDrugs": [
+    {
+     "class": "acitretin",
+     "examples": [
+      "acitretin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Vulvovaginal candidiasis",
+   "markerDrugs": [
+    {
+     "class": "antifungal",
+     "examples": [
+      "fluconazole",
+      "miconazole",
+      "clotrimazole",
+      "terconazole",
+      "nystatin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Acitretin (for psoriasis) can predispose to yeast infections.",
+   "clinicianNote": "Consensus item; Ontario aSR 0.82 (no signal).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Individual Drug",
+    "drugA": "Acitretin",
+    "adverseEvent": "Vulvo-vaginal candidiasis",
+    "drugB": "Antifungal"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Acitretin to antifungal",
+    "initialBeforeSubsequent": "41",
+    "initialAfterSubsequent": "49",
+    "adjustedSequenceRatio": "0.82 (0.54 to 1.24)",
+    "parsed": {
+     "aSR": 0.82,
+     "lower95": 0.54,
+     "upper95": 1.24
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "erythromycin-arrhythmia-antiarrhythmic",
+   "indexDrugs": [
+    {
+     "class": "erythromycin",
+     "examples": [
+      "erythromycin"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Arrhythmia (QT prolongation)",
+   "markerDrugs": [
+    {
+     "class": "antiarrhythmic",
+     "examples": [
+      "amiodarone",
+      "sotalol",
+      "flecainide",
+      "dronedarone",
+      "dofetilide",
+      "propafenone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Erythromycin can affect heart rhythm.",
+   "clinicianNote": "Consensus item; sparse Ontario data.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Individual Drug",
+    "drugA": "Erythromycin",
+    "adverseEvent": "Arrhythmia",
+    "drugB": "Antiarrhythmic"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Erythromycin to antiarrhythmic",
+    "initialBeforeSubsequent": "13",
+    "initialAfterSubsequent": "9",
+    "adjustedSequenceRatio": "0.71 (0.30 to 1.65)",
+    "parsed": {
+     "aSR": 0.71,
+     "lower95": 0.3,
+     "upper95": 1.65
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "fludrocortisone-hypertension-antihypertensive",
+   "indexDrugs": [
+    {
+     "class": "fludrocortisone",
+     "examples": [
+      "fludrocortisone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Hypertension",
+   "markerDrugs": [
+    {
+     "class": "antihypertensive",
+     "examples": [
+      "lisinopril",
+      "losartan",
+      "amlodipine",
+      "metoprolol",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "doxazosin",
+      "clonidine",
+      "hydralazine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "ankle_swelling"
+   ],
+   "plainLanguage": "Fludrocortisone raises blood pressure and can cause fluid retention.",
+   "clinicianNote": "Ontario aSR 1.15 (0.87-1.52).",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Individual Drug",
+    "drugA": "Fludrocortisone",
+    "adverseEvent": "Hypertension",
+    "drugB": "Antihypertensive"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Fludrocortisone to antihypertensive",
+    "initialBeforeSubsequent": "100",
+    "initialAfterSubsequent": "93",
+    "adjustedSequenceRatio": "1.15 (0.87 to 1.52)",
+    "parsed": {
+     "aSR": 1.15,
+     "lower95": 0.87,
+     "upper95": 1.52
+    },
+    "populationSignal": false,
+    "prioritised": false,
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "iron-constipation-laxative",
+   "indexDrugs": [
+    {
+     "class": "iron",
+     "examples": [
+      "ferrous sulfate",
+      "ferrous gluconate",
+      "ferrous fumarate",
+      "polysaccharide-iron complex"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Constipation",
+   "markerDrugs": [
+    {
+     "class": "laxative",
+     "examples": [
+      "polyethylene glycol 3350",
+      "sennosides",
+      "docusate",
+      "bisacodyl",
+      "lactulose",
+      "psyllium",
+      "magnesium hydroxide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "constipation"
+   ],
+   "plainLanguage": "Iron tablets commonly cause constipation.",
+   "clinicianNote": "Prioritised PIPC with the highest incidence of all (11.9%/yr; aSR 1.17). Often an acceptable, intentional combination - discuss dose/formulation.",
+   "lists": {
+    "pipc2025": true,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "pipcRow": {
+    "system": "Miscellaneous system",
+    "level": "Individual Drug",
+    "drugA": "Iron supplement",
+    "adverseEvent": "Constipation",
+    "drugB": "Laxative"
+   },
+   "ontarioPSSA2022_23": {
+    "analysis": "Iron supplement to laxative",
+    "initialBeforeSubsequent": "12 908",
+    "initialAfterSubsequent": "11 233",
+    "adjustedSequenceRatio": "1.17 (1.14 to 1.20)",
+    "parsed": {
+     "aSR": 1.17,
+     "lower95": 1.14,
+     "upper95": 1.2
+    },
+    "populationSignal": true,
+    "prioritised": true,
+    "prioritisedData": {
+     "prevalenceInitialPct": "6.0",
+     "incidencePct": "11.9 (11.7 to 12.1)",
+     "adjustedSR": "1.17 (1.14 to 1.20)"
+    },
+    "windowDays": 365,
+    "source": "rochon2026bmj"
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": 365,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "appropriatenessCaveat": "Marker drug is frequently an appropriate response; present as information, not as a problem.",
+   "sources": [
+    "pipc2025",
+    "rochon2026bmj"
+   ]
+  },
+  {
+   "id": "benzodiazepine-agitation-antipsychotic",
+   "indexDrugs": [
+    {
+     "class": "benzodiazepine",
+     "examples": [
+      "lorazepam",
+      "alprazolam",
+      "diazepam",
+      "clonazepam",
+      "temazepam",
+      "chlordiazepoxide",
+      "oxazepam",
+      "clorazepate"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Paradoxical agitation, or agitation from benzodiazepine withdrawal",
+   "markerDrugs": [
+    {
+     "class": "antipsychotic",
+     "examples": [
+      "haloperidol",
+      "quetiapine",
+      "risperidone",
+      "olanzapine",
+      "aripiprazole",
+      "ziprasidone",
+      "chlorpromazine",
+      "clozapine",
+      "paliperidone",
+      "lurasidone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "confusion"
+   ],
+   "plainLanguage": "Sedatives can occasionally cause agitation instead of calm, and stopping them suddenly can cause agitation too. Treating that agitation with an antipsychotic adds more risk.",
+   "clinicianNote": "ThinkCascades (rated important by 73.3% in Round 3); not on PIPC 2025 and not analysed in the Ontario PSSA.",
+   "lists": {
+    "pipc2025": false,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "22/30 (73.3%)",
+    "thinkCascadesRound1Only": false
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": null,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "thinkcascades2022"
+   ]
+  },
+  {
+   "id": "ssri-snri-insomnia-sleep-agent",
+   "indexDrugs": [
+    {
+     "class": "ssri snri",
+     "examples": [
+      "sertraline",
+      "citalopram",
+      "escitalopram",
+      "fluoxetine",
+      "paroxetine",
+      "fluvoxamine",
+      "venlafaxine",
+      "desvenlafaxine",
+      "duloxetine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Insomnia",
+   "markerDrugs": [
+    {
+     "class": "sleep agent",
+     "examples": [
+      "zolpidem",
+      "eszopiclone",
+      "zaleplon",
+      "lorazepam",
+      "temazepam",
+      "trazodone",
+      "mirtazapine",
+      "doxepin",
+      "melatonin",
+      "diphenhydramine"
+     ],
+     "examplesSource": "ThinkCascades 2022 (benzodiazepines, BZRAs, sedating antidepressants, melatonin)"
+    }
+   ],
+   "diarySymptoms": [
+    "poor_sleep"
+   ],
+   "plainLanguage": "Some antidepressants (e.g., sertraline, fluoxetine, venlafaxine) can cause trouble sleeping. If a sleeping pill was started afterwards, ask whether timing of the antidepressant could be adjusted instead.",
+   "clinicianNote": "ThinkCascades (71.0% Round 3); not on PIPC 2025. Insomnia is a labelled adverse reaction for several SSRIs/SNRIs (see symptom-adr-map).",
+   "lists": {
+    "pipc2025": false,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "22/31 (71.0%)",
+    "thinkCascadesRound1Only": false
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": null,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "thinkcascades2022"
+   ]
+  },
+  {
+   "id": "urinary-anticholinergic-cognition-chei",
+   "indexDrugs": [
+    {
+     "class": "urinary anticholinergic",
+     "examples": [
+      "oxybutynin",
+      "tolterodine",
+      "propiverine",
+      "solifenacin",
+      "darifenacin",
+      "trospium",
+      "fesoterodine"
+     ],
+     "examplesSource": "ThinkCascades 2022"
+    }
+   ],
+   "adverseEvent": "Cognitive impairment",
+   "markerDrugs": [
+    {
+     "class": "chei or memantine",
+     "examples": [
+      "donepezil",
+      "rivastigmine",
+      "galantamine",
+      "memantine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "confusion"
+   ],
+   "plainLanguage": "Bladder medicines like oxybutynin can cause memory problems and confusion. If a dementia medicine was started while taking one, ask whether the bladder medicine could be contributing.",
+   "clinicianNote": "ThinkCascades (80.6% Round 3; consolidated with the 'antimuscarinics for OAB' cascade). Beers 2023: oxybutynin has the best evidence for adverse cognitive effects. Not on PIPC 2025 (which lists urinary anticholinergic -> dry mouth -> saliva substitute).",
+   "lists": {
+    "pipc2025": false,
+    "thinkCascades2022": true,
+    "thinkCascadesRound3Rating": "25/31 (80.6%)",
+    "thinkCascadesRound1Only": false
+   },
+   "evidence": [],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": null,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "thinkcascades2022"
+   ]
+  },
+  {
+   "id": "amiodarone-hypothyroidism-levothyroxine",
+   "indexDrugs": [
+    {
+     "class": "amiodarone",
+     "examples": [
+      "amiodarone"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Hypothyroidism",
+   "markerDrugs": [
+    {
+     "class": "levothyroxine",
+     "examples": [
+      "levothyroxine"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "fatigue"
+   ],
+   "plainLanguage": "Amiodarone can slow the thyroid. Thyroid replacement after amiodarone is often appropriate, but the link is worth knowing.",
+   "clinicianNote": "Among the most-studied cascades (5 studies in Doherty 2022), but levothyroxine is often an appropriate response when amiodarone must continue - treat as informational, not inappropriate.",
+   "lists": {
+    "pipc2025": false,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": true
+   },
+   "evidence": [
+    {
+     "ref": "doherty2022"
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": null,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "appropriatenessCaveat": "Marker drug is frequently an appropriate response; present as information, not as a problem.",
+   "sources": [
+    "thinkcascades2022",
+    "doherty2022"
+   ]
+  },
+  {
+   "id": "ics-thrush-antifungal",
+   "indexDrugs": [
+    {
+     "class": "inhaled corticosteroid",
+     "examples": [
+      "fluticasone (inhaled)",
+      "budesonide (inhaled)",
+      "beclomethasone (inhaled)",
+      "mometasone (inhaled)"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Oral candidiasis (thrush)",
+   "markerDrugs": [
+    {
+     "class": "oral antifungal thrush",
+     "examples": [
+      "nystatin (oral suspension)",
+      "clotrimazole (troche)",
+      "fluconazole"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [],
+   "plainLanguage": "Steroid inhalers can cause mouth thrush; rinsing the mouth after use can help prevent it.",
+   "clinicianNote": "4 studies in Doherty 2022. Often preventable with spacer use/mouth rinsing; antifungal treatment may be appropriate.",
+   "lists": {
+    "pipc2025": false,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "evidence": [
+    {
+     "ref": "doherty2022"
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [],
+    "pssaWindowDays": null,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "appropriatenessCaveat": "Marker drug is frequently an appropriate response; present as information, not as a problem.",
+   "sources": [
+    "doherty2022"
+   ]
+  },
+  {
+   "id": "betablocker-edema-loop-diuretic",
+   "indexDrugs": [
+    {
+     "class": "beta blocker",
+     "examples": [
+      "metoprolol",
+      "atenolol",
+      "carvedilol",
+      "propranolol",
+      "bisoprolol",
+      "nebivolol",
+      "labetalol",
+      "nadolol"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "adverseEvent": "Peripheral edema",
+   "markerDrugs": [
+    {
+     "class": "loop diuretic",
+     "examples": [
+      "furosemide",
+      "bumetanide",
+      "torsemide"
+     ],
+     "examplesSource": "MedWatch-illustrative (class membership, not named by the source)"
+    }
+   ],
+   "diarySymptoms": [
+    "ankle_swelling"
+   ],
+   "plainLanguage": "Some people develop ankle swelling after starting a beta-blocker; a water pill started afterwards may be worth discussing.",
+   "clinicianNote": "Emerging single-study signal (Vouri 2022, PSSA aSR 1.78 within 90 days; confounding by heart-failure progression possible). Not on consensus lists - low confidence.",
+   "lists": {
+    "pipc2025": false,
+    "thinkCascades2022": false,
+    "thinkCascadesRound3Rating": null,
+    "thinkCascadesRound1Only": false
+   },
+   "evidence": [
+    {
+     "ref": "vouri2022",
+     "finding": "988,675 beta-blocker initiators: loop diuretic started within 90 days after vs before, aSR 1.78 (1.72-1.84); higher in older adults (1.97).",
+     "windowDays": 90
+    }
+   ],
+   "timeWindow": {
+    "studyWindowsDays": [
+     90
+    ],
+    "pssaWindowDays": null,
+    "suggestedLookbackDays": 365,
+    "basis": "Marker drug started after the index drug within the lookback is 'timing consistent with a possible cascade' (descriptive only). 365 days follows the BMJ 2026 PSSA primary window and Doherty 2022 (cascades seen 3 months to 1 year after the first drug)."
+   },
+   "sources": [
+    "vouri2022"
+   ]
+  }
+ ]
+}

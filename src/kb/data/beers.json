@@ -1,0 +1,2081 @@
+[
+ {
+  "id": "pim-first-gen-antihistamine",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "brompheniramine",
+    "chlorpheniramine",
+    "cyproheptadine",
+    "dimenhydrinate",
+    "diphenhydramine",
+    "doxylamine",
+    "hydroxyzine",
+    "meclizine",
+    "promethazine",
+    "triprolidine"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: sedating (first-generation) antihistamine",
+  "plain": "This older antihistamine, the sleep ingredient in many “PM” and night-time products, can lead to next-day drowsiness, confusion, constipation and trouble passing urine, and its sleep effect fades with regular use.",
+  "clinician": "Highly anticholinergic; clearance falls with age and tolerance develops to the hypnotic effect. Cumulative anticholinergic exposure is associated with falls, delirium and dementia (acute use for a severe allergic reaction may be appropriate).",
+  "question": "Is the sedating antihistamine in {med} still needed, or is there a gentler option for sleep or allergies?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-first-gen-antihistamines"
+ },
+ {
+  "id": "pim-nitrofurantoin",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "nitrofurantoin"
+   ]
+  },
+  "crclBelow": 30,
+  "minDurationDays": 30,
+  "qualifier": "for long-term use or with low kidney function",
+  "title": "{med}: long-term use or low kidney function",
+  "plain": "Taken for months to prevent bladder infections, this antibiotic has been linked to lung, liver and nerve problems.",
+  "clinician": "Avoid for long-term suppression and when CrCl is below 30 mL/min: pulmonary toxicity, hepatotoxicity and peripheral neuropathy, especially with prolonged use. Kinwise treats 30 days or more as long-term use.",
+  "question": "Is {med} still needed to prevent bladder infections, and are there other ways to prevent them?",
+  "recommendation": "Avoid in people with CrCl < 30 mL/min or for long-term suppression",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-nitrofurantoin"
+ },
+ {
+  "id": "pim-aspirin-primary-prevention",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "aspirin"
+   ]
+  },
+  "reasonKeywords": [
+   "primary prevention",
+   "prevent",
+   "preventive",
+   "just in case",
+   "heart health",
+   "healthy heart",
+   "precaution"
+  ],
+  "excludeReasonKeywords": [
+   "had a",
+   "had heart",
+   "had stroke",
+   "after",
+   "history of",
+   "hx of",
+   "prior",
+   "previous",
+   "past",
+   "another",
+   "again",
+   "recurren",
+   "stent",
+   "bypass",
+   "cabg",
+   "secondary",
+   "angina",
+   "tia",
+   "mini stroke",
+   "mini-stroke",
+   "coronary",
+   "cad",
+   "pad",
+   "peripheral artery",
+   "valve",
+   "carotid"
+  ],
+  "qualifier": "for preventing a first heart attack or stroke",
+  "title": "{med}: aspirin to prevent a first heart attack or stroke",
+  "plain": "For people who have never had a heart attack or stroke, the chance of bleeding from daily aspirin rises with age while the benefit is small; people who have had one usually still need it.",
+  "clinician": "Avoid starting aspirin for primary prevention of cardiovascular disease and consider deprescribing in current users. Does not apply to secondary prevention in established cardiovascular disease.",
+  "question": "Is {med} taken to prevent a first heart attack or stroke, or because of an earlier heart attack, stroke or stent, and is it still recommended for {person}?",
+  "recommendation": "Avoid starting for primary prevention; consider deprescribing",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-aspirin-primary-prevention"
+ },
+ {
+  "id": "pim-warfarin-initial",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "warfarin"
+   ]
+  },
+  "maxDaysSinceStart": 90,
+  "excludeReasonKeywords": [
+   "valve",
+   "mechanical"
+  ],
+  "qualifier": "as the first blood thinner for atrial fibrillation or a blood clot",
+  "title": "{med}: warfarin as the first blood thinner",
+  "plain": "Compared with newer blood thinners such as apixaban, warfarin is linked to more serious bleeding, while people who have been stable on it for a long time can often reasonably stay on it.",
+  "clinician": "Avoid starting warfarin as initial therapy for nonvalvular atrial fibrillation or VTE unless DOACs are contraindicated or there are substantial barriers to their use. Long-term users with well-controlled INR (time in range > 70%) may reasonably continue; Kinwise applies this only to starts in the last 90 days.",
+  "question": "Was a newer blood thinner considered for {person}, and is {med} the best fit?",
+  "recommendation": "Avoid starting as initial therapy for nonvalvular AF or VTE",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-warfarin"
+ },
+ {
+  "id": "pim-rivaroxaban",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "rivaroxaban"
+   ]
+  },
+  "qualifier": "for long-term treatment of atrial fibrillation or blood clots",
+  "title": "{med}: rivaroxaban for long-term use",
+  "plain": "Used long term, rivaroxaban has been linked to more major and stomach bleeding in older adults than some other blood thinners, such as apixaban.",
+  "clinician": "Avoid for long-term treatment of nonvalvular AF or VTE in favor of other anticoagulants (higher major and GI bleeding than other DOACs, particularly apixaban). May be reasonable when once-daily dosing is needed for adherence.",
+  "question": "Is {med} still the best blood thinner for {person}, or would another one fit better?",
+  "recommendation": "Avoid for long-term treatment of AF or VTE",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-rivaroxaban"
+ },
+ {
+  "id": "pim-alpha1-blocker-bp",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "alpha1_blocker_nonselective"
+   ]
+  },
+  "reasonKeywords": [
+   "blood pressure",
+   "hypertension",
+   "htn",
+   "pressure"
+  ],
+  "qualifier": "as a blood-pressure medicine",
+  "title": "{med}: alpha-blocker used for blood pressure",
+  "plain": "Used for blood pressure, these medicines often make blood pressure drop on standing, which can lead to dizziness, fainting and falls.",
+  "clinician": "Avoid as an antihypertensive: high risk of orthostatic hypotension; other classes have a better risk-benefit balance. Use for prostate symptoms is not covered by this criterion.",
+  "question": "Is {med} still the best blood-pressure medicine for {person}, given its effect on blood pressure when standing up?",
+  "recommendation": "Avoid use as an antihypertensive",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-alpha1-blockers-hypertension"
+ },
+ {
+  "id": "pim-central-alpha-agonist-bp",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "clonidine",
+    "guanfacine"
+   ]
+  },
+  "reasonKeywords": [
+   "blood pressure",
+   "hypertension",
+   "htn",
+   "pressure"
+  ],
+  "qualifier": "as a routine blood-pressure medicine",
+  "title": "{med}: central blood-pressure medicine",
+  "plain": "These blood-pressure medicines often bring sleepiness, confusion, a slow pulse and dizziness on standing.",
+  "clinician": "Avoid clonidine as first-line antihypertensive therapy and other central alpha-agonists for hypertension: high risk of CNS effects, bradycardia and orthostatic hypotension.",
+  "question": "Is {med} still the best blood-pressure medicine for {person}?",
+  "recommendation": "Avoid as first-line treatment for hypertension",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-central-alpha-agonists-hypertension"
+ },
+ {
+  "id": "pim-amiodarone",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "amiodarone"
+   ]
+  },
+  "reasonKeywords": [
+   "atrial",
+   "afib",
+   "a fib",
+   "a-fib",
+   "irregular heart",
+   "irregular pulse",
+   "irregular rhythm"
+  ],
+  "excludeReasonKeywords": [
+   "heart failure",
+   "chf",
+   "hfref",
+   "weak heart",
+   "hypertroph",
+   "lvh",
+   "thick heart"
+  ],
+  "qualifier": "as a first-choice medicine for atrial fibrillation",
+  "title": "{med}: amiodarone as a first-choice rhythm medicine",
+  "plain": "Amiodarone works well for heart rhythm but has more serious effects on the thyroid, lungs and liver than other rhythm medicines.",
+  "clinician": "Avoid as first-line therapy for atrial fibrillation unless the patient has heart failure or substantial left ventricular hypertrophy; it is more toxic than other antiarrhythmics.",
+  "question": "Is {med} still the best rhythm medicine for {person}, and are thyroid, liver and lung checks up to date?",
+  "recommendation": "Avoid as first-line therapy for atrial fibrillation unless heart failure or substantial LVH",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-amiodarone"
+ },
+ {
+  "id": "pim-digoxin",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "digoxin"
+   ]
+  },
+  "qualifier": "as a first choice for atrial fibrillation or heart failure",
+  "title": "{med}: digoxin as a first choice",
+  "plain": "Other medicines are usually tried first for atrial fibrillation and heart failure, and doses above 0.125 mg a day add the chance of side effects without extra benefit, especially when the kidneys are slower.",
+  "clinician": "Avoid as first-line therapy for AF rate control or heart failure; if used, avoid doses above 0.125 mg/day. Reduced renal clearance raises the risk of toxicity; use caution withdrawing it in long-term users with HFrEF.",
+  "question": "Is {med} still needed, and is the dose right for {person}'s kidney function?",
+  "recommendation": "Avoid as first-line therapy for AF or heart failure; avoid doses > 0.125 mg/day",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-digoxin"
+ },
+ {
+  "id": "pim-anticholinergic-antidepressant",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "amitriptyline",
+    "amoxapine",
+    "clomipramine",
+    "desipramine",
+    "doxepin",
+    "imipramine",
+    "nortriptyline",
+    "paroxetine"
+   ]
+  },
+  "qualifier": "(low-dose doxepin for sleep is not included)",
+  "title": "{med}: antidepressant with strong anticholinergic effects",
+  "plain": "These antidepressants (older tricyclics and paroxetine) have strong anticholinergic and sedating effects and can make blood pressure drop on standing.",
+  "clinician": "Highly anticholinergic, sedating, and associated with orthostatic hypotension in older adults; doxepin at 6 mg/day or less is excluded.",
+  "question": "Is {med} still the best choice, and is there an option with fewer anticholinergic effects?",
+  "recommendation": "Avoid",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-antidepressants-strong-anticholinergic"
+ },
+ {
+  "id": "pim-antiparkinson-anticholinergic",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "benztropine",
+    "trihexyphenidyl"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: anticholinergic Parkinson medicine",
+  "plain": "These medicines are not recommended for movement side effects of antipsychotics, better options exist for Parkinson disease, and they are strongly anticholinergic.",
+  "clinician": "Not recommended for prevention or treatment of antipsychotic-induced extrapyramidal symptoms; more effective agents are available for Parkinson disease.",
+  "question": "Is {med} still needed, and are there other options for the movement symptoms?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-antiparkinsonian-anticholinergic"
+ },
+ {
+  "id": "pim-antipsychotic",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "antipsychotic"
+   ]
+  },
+  "excludeReasonKeywords": [
+   "schizophren",
+   "schizoaffective",
+   "bipolar",
+   "psychosis",
+   "psychotic",
+   "parkinson",
+   "depression",
+   "nausea",
+   "vomit",
+   "tourette"
+  ],
+  "excludeDrugs": [
+   "pimavanserin"
+  ],
+  "qualifier": "unless used for a condition such as schizophrenia or bipolar disorder",
+  "title": "{med}: antipsychotic medicine",
+  "plain": "Antipsychotic medicines are linked to a higher chance of stroke, faster memory decline and death in people with dementia, and are generally kept for specific mental-health conditions.",
+  "clinician": "Avoid except for FDA-approved indications (schizophrenia, bipolar disorder, Parkinson disease psychosis, adjunctive treatment of depression, short-term antiemetic use). For behavioral symptoms of dementia or delirium, use only after nonpharmacologic options have failed or with substantial threat of harm, with periodic deprescribing attempts.",
+  "question": "What is {med} being used for, and is it still needed at this dose?",
+  "recommendation": "Avoid, except in FDA-approved indications",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-antipsychotics"
+ },
+ {
+  "id": "pim-barbiturate",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "butalbital",
+    "phenobarbital",
+    "primidone"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: barbiturate",
+  "plain": "Barbiturates, including the butalbital in some headache pills, easily lead to dependence and stop helping over time, and an overdose can happen at fairly low doses.",
+  "clinician": "High rate of physical dependence, tolerance to sleep benefit, and greater risk of overdose at low dosages.",
+  "question": "Is {med} still needed, and is there another option for {person}'s headaches or other symptoms?",
+  "recommendation": "Avoid",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-barbiturates"
+ },
+ {
+  "id": "pim-benzodiazepine",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "benzodiazepine"
+   ]
+  },
+  "excludeReasonKeywords": [
+   "seizure",
+   "epilep",
+   "convuls",
+   "alcohol withdrawal",
+   "rem sleep",
+   "procedure"
+  ],
+  "qualifier": null,
+  "title": "{med}: benzodiazepine",
+  "plain": "Older adults are more sensitive to benzodiazepines, which are linked to memory problems, confusion, falls, broken bones and car crashes; if it is ever changed after regular use, that is done gradually with the prescriber rather than stopped suddenly.",
+  "clinician": "Older adults have increased sensitivity and slower metabolism of long-acting agents; any benzodiazepine raises the risk of cognitive impairment, delirium, falls, fractures and motor vehicle crashes, plus abuse, misuse and dependence. Combined with opioids: profound sedation and respiratory depression.",
+  "question": "Is {med} still the best option for sleep or anxiety, and are there alternatives with less effect on balance and memory?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-benzodiazepines"
+ },
+ {
+  "id": "pim-z-drug",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "z_drug"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: Z-drug sleeping pill",
+  "plain": "These sleeping pills carry risks similar to benzodiazepines in older adults, including confusion, falls, broken bones and car crashes, while improving sleep only a little.",
+  "clinician": "Adverse events similar to benzodiazepines (delirium, falls, fractures, ED visits and hospitalizations, motor vehicle crashes) with minimal improvement in sleep latency and duration.",
+  "question": "Is {med} still needed for sleep, and could other approaches for insomnia (such as CBT for insomnia) help?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-z-drugs"
+ },
+ {
+  "id": "pim-meprobamate",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "meprobamate"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: meprobamate",
+  "plain": "This older anxiety medicine is very sedating and easily leads to dependence.",
+  "clinician": "High rate of physical dependence; very sedating.",
+  "question": "Is {med} still needed, and is there another option for anxiety?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-meprobamate"
+ },
+ {
+  "id": "pim-ergoloid",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "ergoloid mesylates"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: ergoloid mesylates",
+  "plain": "This medicine has not been shown to work.",
+  "clinician": "Lack of efficacy.",
+  "question": "Is {med} still needed?",
+  "recommendation": "Avoid",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-ergoloid-mesylates"
+ },
+ {
+  "id": "pim-androgen",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "methyltestosterone",
+    "testosterone"
+   ]
+  },
+  "excludeReasonKeywords": [
+   "hypogonadism"
+  ],
+  "qualifier": "unless for confirmed low testosterone with symptoms",
+  "title": "{med}: testosterone",
+  "plain": "Testosterone products may affect the heart and carry possible risks for men with prostate cancer.",
+  "clinician": "Avoid unless indicated for confirmed hypogonadism with clinical symptoms: potential cardiac problems and potential risks in men with prostate cancer.",
+  "question": "Was low testosterone confirmed with blood tests, and is {med} still needed?",
+  "recommendation": "Avoid unless indicated for confirmed hypogonadism with clinical symptoms",
+  "quality": "moderate",
+  "strength": "weak",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-androgens"
+ },
+ {
+  "id": "pim-estrogen",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "estrogen"
+   ]
+  },
+  "excludeReasonKeywords": [
+   "vaginal"
+  ],
+  "qualifier": "as pills or patches (low-dose vaginal estrogen is not included)",
+  "title": "{med}: estrogen pills or patches",
+  "plain": "Estrogen pills and patches raise the chance of breast and uterine cancer, do not protect the heart or memory, and starting them at 60 or older brings more risk than benefit.",
+  "clinician": "Do not initiate systemic estrogen; consider deprescribing in older women already using it. Low-dose vaginal estrogen is acceptable for vaginal symptoms and recurrent UTIs.",
+  "question": "Is {med} still needed, and would low-dose vaginal estrogen or another option work instead?",
+  "recommendation": "Avoid starting systemic estrogen; consider deprescribing",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-estrogens"
+ },
+ {
+  "id": "pim-sulfonylurea",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "sulfonylurea"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: sulfonylurea diabetes medicine",
+  "plain": "Compared with other diabetes medicines, sulfonylureas bring more episodes of low blood sugar and are linked to more heart problems; if one is used, short-acting glipizide is preferred.",
+  "clinician": "Avoid as first- or second-line monotherapy or add-on therapy unless there are substantial barriers to other agents: higher risk of hypoglycemia (high-quality evidence), cardiovascular events and overall mortality. Long-acting agents (glyburide, glimepiride) lead to more prolonged hypoglycemia than glipizide.",
+  "question": "Is {med} still the best diabetes medicine for {person}, and how often has blood sugar run low?",
+  "recommendation": "Avoid as first- or second-line therapy unless there are substantial barriers to other agents",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-sulfonylureas"
+ },
+ {
+  "id": "pim-desiccated-thyroid",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "desiccated thyroid"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: desiccated (animal) thyroid",
+  "plain": "Animal-derived thyroid tablets raise concerns about effects on the heart, and other thyroid replacement is available.",
+  "clinician": "Concerns about cardiac effects; lower-risk alternatives available.",
+  "question": "Is {med} still the best thyroid medicine for {person}?",
+  "recommendation": "Avoid",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-desiccated-thyroid"
+ },
+ {
+  "id": "pim-megestrol",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "megestrol"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: megestrol for appetite",
+  "plain": "Often used to boost appetite, megestrol adds little weight but raises the chance of blood clots and possibly death in older adults.",
+  "clinician": "Minimal effect on weight; increases risk of thrombotic events and possibly death in older adults.",
+  "question": "Is {med} still needed, and are there other ways to support {person}'s appetite and weight?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-megestrol"
+ },
+ {
+  "id": "pim-growth-hormone",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "somatropin"
+   ]
+  },
+  "excludeReasonKeywords": [
+   "growth hormone deficiency"
+  ],
+  "qualifier": null,
+  "title": "{med}: growth hormone",
+  "plain": "Growth hormone changes body composition only slightly and is linked to swelling, joint pain, carpal tunnel syndrome and higher blood sugar.",
+  "clinician": "Avoid except for rigorously confirmed growth hormone deficiency: small body-composition effect with edema, arthralgia, carpal tunnel syndrome, gynecomastia and impaired fasting glucose.",
+  "question": "Is {med} still needed for {person}?",
+  "recommendation": "Avoid, except for confirmed growth hormone deficiency",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-growth-hormone"
+ },
+ {
+  "id": "pim-ppi",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "ppi"
+   ]
+  },
+  "minDurationDays": 56,
+  "excludeReasonKeywords": [
+   "barrett",
+   "erosive",
+   "zollinger"
+  ],
+  "qualifier": "when taken daily for more than 8 weeks",
+  "title": "{med}: acid reducer (PPI) for more than 8 weeks",
+  "plain": "Taking an acid reducer like this every day for more than 8 weeks is linked to a serious gut infection (Clostridioides difficile), pneumonia, bone loss and fractures.",
+  "clinician": "Avoid scheduled use for more than 8 weeks unless high risk (oral corticosteroids, chronic NSAID use), erosive esophagitis, Barrett's esophagus, a pathologic hypersecretory condition, or demonstrated need for maintenance. Risk of Clostridioides difficile infection, pneumonia, GI malignancy, bone loss and fractures.",
+  "question": "Does {person} still need {med} every day, and could the plan for it be reviewed?",
+  "recommendation": "Avoid scheduled use for more than 8 weeks unless high risk or a demonstrated need",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-ppis"
+ },
+ {
+  "id": "pim-metoclopramide",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "metoclopramide"
+   ]
+  },
+  "qualifier": "unless for gastroparesis for no more than 12 weeks",
+  "title": "{med}: metoclopramide",
+  "plain": "Metoclopramide can lead to movement problems, including involuntary movements (tardive dyskinesia), and the chance is higher in frail older adults and with longer use.",
+  "clinician": "Avoid unless for gastroparesis, for no more than 12 weeks except in rare cases: extrapyramidal effects including tardive dyskinesia, higher risk in frail older adults and with prolonged exposure.",
+  "question": "Is {med} still needed, and how long is it planned for?",
+  "recommendation": "Avoid, unless for gastroparesis for no more than 12 weeks",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-metoclopramide"
+ },
+ {
+  "id": "pim-gi-antispasmodic",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "atropine",
+    "clidinium",
+    "dicyclomine",
+    "hyoscyamine",
+    "scopolamine"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: stomach-cramp medicine (antispasmodic)",
+  "plain": "These stomach-cramp medicines are strongly anticholinergic, and it is unclear how well they work.",
+  "clinician": "Highly anticholinergic, uncertain effectiveness (atropine excludes ophthalmic use).",
+  "question": "Is {med} still needed, and is there another option for the cramps?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-gi-antispasmodics"
+ },
+ {
+  "id": "pim-mineral-oil",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "mineral oil"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: mineral oil taken by mouth",
+  "plain": "Swallowed mineral oil can accidentally get into the lungs, and other laxatives are available.",
+  "clinician": "Potential for aspiration and adverse effects; lower-risk alternatives available.",
+  "question": "Is {med} still needed, and is another laxative a better fit for {person}?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-mineral-oil-oral"
+ },
+ {
+  "id": "pim-desmopressin-nocturia",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "desmopressin"
+   ]
+  },
+  "reasonKeywords": [
+   "nocturia",
+   "night",
+   "urinat",
+   "bathroom",
+   "pee",
+   "bladder",
+   "bedwetting"
+  ],
+  "qualifier": "for getting up at night to pass urine",
+  "title": "{med}: desmopressin for night-time urination",
+  "plain": "Used for getting up at night to pass urine, desmopressin carries a high chance of low blood sodium, which can lead to confusion and falls.",
+  "clinician": "Avoid for treatment of nocturia or nocturnal polyuria: high risk of hyponatremia; other approaches, including nondrug measures, are available.",
+  "question": "Has {person}'s sodium level been checked, and is {med} still the best option for night-time urination?",
+  "recommendation": "Avoid for nocturia or nocturnal polyuria",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-desmopressin-nocturia"
+ },
+ {
+  "id": "pim-nsaid-chronic",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "nsaid_nonselective"
+   ]
+  },
+  "minDurationDays": 90,
+  "excludeDrugs": [
+   "indomethacin",
+   "ketorolac"
+  ],
+  "qualifier": "when taken regularly for 3 months or more",
+  "title": "{med}: regular anti-inflammatory pain reliever (NSAID)",
+  "plain": "Regular use of pain relievers such as ibuprofen and naproxen raises the chance of stomach bleeding and ulcers, and can raise blood pressure and strain the kidneys.",
+  "clinician": "Avoid chronic use unless other alternatives are not effective and the patient can take a gastroprotective agent (PPI or misoprostol): GI bleeding and peptic ulcer risk is higher with age over 75 or with corticosteroids, anticoagulants or antiplatelets. Kinwise treats 90 days or more as chronic use.",
+  "question": "Is {med} still needed every day, and are there other ways to manage the pain?",
+  "recommendation": "Avoid chronic use unless alternatives are not effective and a gastroprotective agent is used",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-nsaids-oral-non-cox2"
+ },
+ {
+  "id": "pim-indomethacin-ketorolac",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "indomethacin",
+    "ketorolac"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: indomethacin or ketorolac",
+  "plain": "These two pain relievers carry an especially high chance of stomach bleeding, ulcers and sudden kidney injury, and indomethacin has more effects on the brain than other NSAIDs.",
+  "clinician": "Increased risk of GI bleeding, peptic ulcer disease and acute kidney injury in older adults; indomethacin has the most adverse effects of the NSAIDs, including CNS effects.",
+  "question": "Is {med} still needed, and is there another option for the pain?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-indomethacin-ketorolac"
+ },
+ {
+  "id": "pim-meperidine",
+  "table": "pim",
+  "appliesTo": {
+   "drugs": [
+    "meperidine"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: meperidine",
+  "plain": "Taken by mouth, meperidine does not relieve pain well at usual doses and is more likely than other opioids to bring on confusion.",
+  "clinician": "Not effective orally at commonly used dosages; may have a higher risk of neurotoxicity, including delirium, than other opioids.",
+  "question": "Is {med} still needed, and is there another option for the pain?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-meperidine"
+ },
+ {
+  "id": "pim-skeletal-muscle-relaxant",
+  "table": "pim",
+  "appliesTo": {
+   "classes": [
+    "skeletal_muscle_relaxant"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: muscle relaxant",
+  "plain": "Muscle relaxants for back or muscle pain are poorly tolerated by older adults, bringing sleepiness, anticholinergic effects and more fractures, and may not work at doses older adults can tolerate.",
+  "clinician": "Poorly tolerated because of anticholinergic effects, sedation and increased fracture risk; effectiveness at tolerated doses is questionable. Does not apply to baclofen or tizanidine for spasticity.",
+  "question": "Is {med} still needed, and are there other ways to manage the muscle pain?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-skeletal-muscle-relaxants"
+ },
+ {
+  "id": "ddi-nsaid-antithrombotic-steroid",
+  "table": "interaction",
+  "appliesTo": {
+   "classes": [
+    "nsaid_nonselective"
+   ]
+  },
+  "with": {
+   "classes": [
+    "anticoagulant",
+    "antiplatelet",
+    "corticosteroid_systemic"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}: stomach bleeding",
+  "plain": "Taking an anti-inflammatory pain reliever together with a blood thinner, an anti-clotting medicine or a steroid raises the chance of stomach bleeding, even for short periods.",
+  "clinician": "Avoid short-term scheduled NSAID use together with oral or parenteral corticosteroids, anticoagulants or antiplatelet agents unless alternatives are not effective and the patient can take a gastroprotective agent.",
+  "question": "Is it intended that {med1} and {med2} are taken together, and is stomach protection needed?",
+  "recommendation": "Avoid short-term scheduled use with corticosteroids, anticoagulants or antiplatelets unless alternatives are not effective and a gastroprotective agent is used",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 2: t2-nsaids-oral-non-cox2"
+ },
+ {
+  "id": "cond-hf-cilostazol",
+  "table": "condition",
+  "appliesTo": {
+   "drugs": [
+    "cilostazol"
+   ]
+  },
+  "conditions": [
+   "heart_failure"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Cilostazol can worsen heart failure.",
+  "clinician": "Potential to promote fluid retention and/or exacerbate heart failure.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-heart-failure-avoid"
+ },
+ {
+  "id": "cond-hf-nondhp-ccb",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "ccb_nondihydropyridine"
+   ]
+  },
+  "conditions": [
+   "heart_failure"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Diltiazem and verapamil can weaken the heart's pumping and are generally avoided when the heart pumps weakly (reduced ejection fraction).",
+  "clinician": "Avoid in heart failure with reduced ejection fraction: potential to promote fluid retention and/or exacerbate heart failure.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid in heart failure with reduced ejection fraction",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-heart-failure-hfref-avoid"
+ },
+ {
+  "id": "cond-hf-nsaid",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "nsaid"
+   ]
+  },
+  "conditions": [
+   "heart_failure"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Anti-inflammatory pain relievers can make the body hold on to fluid, which can worsen heart failure.",
+  "clinician": "Use with caution in asymptomatic heart failure; avoid in symptomatic heart failure: potential to promote fluid retention and exacerbate heart failure (NSAIDs moderate-quality, COX-2 inhibitors low-quality evidence).",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid in symptomatic heart failure; use with caution if asymptomatic",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-heart-failure-caution"
+ },
+ {
+  "id": "cond-hf-tzd-dronedarone",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "thiazolidinedione"
+   ],
+   "drugs": [
+    "dronedarone"
+   ]
+  },
+  "conditions": [
+   "heart_failure"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Medicines like this can make the body hold on to fluid or put extra strain on the heart, which can worsen heart failure.",
+  "clinician": "Use with caution in asymptomatic heart failure; avoid in symptomatic heart failure (thiazolidinediones, dronedarone): potential to promote fluid retention and/or exacerbate heart failure.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid in symptomatic heart failure; use with caution if asymptomatic",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-heart-failure-caution"
+ },
+ {
+  "id": "cond-delirium",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "strong_anticholinergic",
+    "antipsychotic",
+    "benzodiazepine",
+    "z_drug",
+    "corticosteroid_systemic",
+    "opioid"
+   ]
+  },
+  "conditions": [
+   "delirium_history"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Medicines like this can bring on or worsen sudden confusion (delirium) in older adults.",
+  "clinician": "Avoid in older adults with or at high risk of delirium because of the potential to induce or worsen it (opioids added in 2023). Antipsychotics and corticosteroids may be required for specific indications at the lowest dose and shortest duration.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-delirium"
+ },
+ {
+  "id": "cond-delirium-h2ra",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "h2ra"
+   ]
+  },
+  "conditions": [
+   "delirium_history"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Heartburn medicines of this type (H2 blockers) can add to sudden confusion (delirium) in older adults.",
+  "clinician": "Avoid in older adults with or at high risk of delirium because of the potential to induce or worsen it (H2-receptor antagonists: low-quality evidence).",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-delirium"
+ },
+ {
+  "id": "cond-dementia",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "strong_anticholinergic",
+    "antipsychotic",
+    "benzodiazepine",
+    "z_drug"
+   ]
+  },
+  "conditions": [
+   "dementia_or_cognitive_impairment"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Medicines like this can worsen memory and thinking.",
+  "clinician": "Avoid because of adverse CNS effects (anticholinergics, benzodiazepines, Z-drugs); antipsychotics increase stroke risk, cognitive decline and mortality in dementia.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-dementia"
+ },
+ {
+  "id": "cond-falls",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "strong_anticholinergic",
+    "antipsychotic",
+    "benzodiazepine",
+    "z_drug"
+   ]
+  },
+  "conditions": [
+   "history_of_falls"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Medicines like this can affect balance, alertness or blood pressure, which makes another fall more likely.",
+  "clinician": "Avoid unless lower-risk alternatives are not available: associated with ataxia, impaired psychomotor function, syncope and additional falls. Anticholinergics were added to this criterion in 2023.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid unless lower-risk alternatives are not available",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-falls-fractures"
+ },
+ {
+  "id": "cond-falls-antidepressant-opioid",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "ssri",
+    "snri",
+    "tca",
+    "opioid"
+   ]
+  },
+  "conditions": [
+   "history_of_falls"
+  ],
+  "excludeDrugs": [
+   "amitriptyline",
+   "amoxapine",
+   "clomipramine",
+   "desipramine",
+   "doxepin",
+   "imipramine",
+   "nortriptyline",
+   "paroxetine"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Medicines like this can affect balance, alertness or blood pressure, which makes another fall more likely.",
+  "clinician": "Avoid unless lower-risk alternatives are not available (opioids: except for pain management in severe acute pain): associated with ataxia, impaired psychomotor function, syncope and additional falls.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid unless lower-risk alternatives are not available",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-falls-fractures"
+ },
+ {
+  "id": "cond-falls-antiepileptic",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "antiepileptic"
+   ]
+  },
+  "conditions": [
+   "history_of_falls"
+  ],
+  "excludeReasonKeywords": [
+   "seizure",
+   "epilep",
+   "convuls",
+   "bipolar",
+   "mood"
+  ],
+  "excludeDrugs": [
+   "clonazepam",
+   "clobazam"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Seizure and nerve-pain medicines in this group can affect balance and alertness, which makes another fall more likely.",
+  "clinician": "Antiepileptics: avoid in older adults with a history of falls or fractures except for seizure and mood disorders (gabapentinoids are counted here).",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid except for seizure and mood disorders",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-falls-fractures"
+ },
+ {
+  "id": "cond-parkinson",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "dopamine_antagonist_antiemetic",
+    "antipsychotic"
+   ]
+  },
+  "conditions": [
+   "parkinson_disease"
+  ],
+  "excludeDrugs": [
+   "clozapine",
+   "pimavanserin",
+   "quetiapine"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Medicines like this block dopamine and can make Parkinson symptoms such as stiffness and slowness worse.",
+  "clinician": "Avoid dopamine-receptor-blocking antiemetics and antipsychotics (except clozapine, pimavanserin and quetiapine) because of the potential to worsen parkinsonian symptoms.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-parkinson-disease"
+ },
+ {
+  "id": "cond-ulcer",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "nsaid_nonselective"
+   ],
+   "drugs": [
+    "aspirin"
+   ]
+  },
+  "conditions": [
+   "gi_bleeding_or_ulcer_history"
+  ],
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Medicines like this can bring back or worsen stomach ulcers and bleeding.",
+  "clinician": "Avoid unless other alternatives are not effective and the patient can take a gastroprotective agent: may exacerbate existing ulcers or lead to new or additional ulcers.",
+  "question": "For someone with {condition}, is {med} still needed, and is stomach protection in place?",
+  "recommendation": "Avoid unless alternatives are not effective and a gastroprotective agent is used",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-gastric-duodenal-ulcers"
+ },
+ {
+  "id": "cond-urinary-incontinence-women-alpha",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "alpha1_blocker_nonselective"
+   ]
+  },
+  "conditions": [
+   "urinary_incontinence"
+  ],
+  "sex": "female",
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Alpha-blockers relax the bladder outlet and can make bladder leakage worse in women.",
+  "clinician": "Avoid in women with urinary incontinence (all types): aggravation of incontinence (data limited for selective alpha-1 blockers).",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid in women",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-urinary-incontinence-women"
+ },
+ {
+  "id": "cond-urinary-incontinence-women-estrogen",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "estrogen"
+   ]
+  },
+  "conditions": [
+   "urinary_incontinence"
+  ],
+  "excludeReasonKeywords": [
+   "vaginal"
+  ],
+  "sex": "female",
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Estrogen pills and patches do not help bladder leakage and are best avoided for it.",
+  "clinician": "Avoid oral and transdermal estrogen (intravaginal estrogen excluded) in women with urinary incontinence: lack of efficacy.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid in women",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-urinary-incontinence-women"
+ },
+ {
+  "id": "cond-bph-men",
+  "table": "condition",
+  "appliesTo": {
+   "classes": [
+    "strong_anticholinergic"
+   ]
+  },
+  "conditions": [
+   "benign_prostatic_hyperplasia"
+  ],
+  "excludeDrugs": [
+   "darifenacin",
+   "fesoterodine",
+   "flavoxate",
+   "oxybutynin",
+   "solifenacin",
+   "tolterodine",
+   "trospium"
+  ],
+  "sex": "male",
+  "qualifier": null,
+  "title": "{med} with {condition}",
+  "plain": "Strongly anticholinergic medicines can make it harder to pass urine, especially with an enlarged prostate.",
+  "clinician": "Avoid strongly anticholinergic drugs (except antimuscarinics for urinary incontinence) in men with lower urinary tract symptoms or BPH: may decrease urinary flow and lead to urinary retention.",
+  "question": "For someone with {condition}, is {med} still the best choice, or is there an option that fits better?",
+  "recommendation": "Avoid in men",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 3: t3-luts-bph"
+ },
+ {
+  "id": "caution-dabigatran",
+  "table": "caution",
+  "appliesTo": {
+   "drugs": [
+    "dabigatran"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: use with caution",
+  "plain": "Dabigatran has been linked to more major and stomach bleeding in older adults than some other blood thinners, such as apixaban.",
+  "clinician": "Use caution in selecting dabigatran over other DOACs (e.g. apixaban) for long-term treatment of nonvalvular AF or VTE; increased risk of major and GI bleeding.",
+  "question": "Is {med} still the best blood thinner for {person}, and is kidney function checked regularly?",
+  "recommendation": "Use with caution",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 4: t4-dabigatran"
+ },
+ {
+  "id": "caution-prasugrel-ticagrelor",
+  "table": "caution",
+  "appliesTo": {
+   "drugs": [
+    "prasugrel",
+    "ticagrelor"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: use with caution",
+  "plain": "These anti-clotting medicines raise the chance of bleeding, especially at age 75 or older.",
+  "clinician": "Use with caution, particularly in adults 75 or older (higher bleeding risk); if prasugrel is used, consider 5 mg at 75 or older.",
+  "question": "How long is {med} planned for, and what signs of bleeding should prompt a call?",
+  "recommendation": "Use with caution, particularly in adults 75 and older",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 4: t4-prasugrel-ticagrelor"
+ },
+ {
+  "id": "caution-sodium",
+  "table": "caution",
+  "appliesTo": {
+   "classes": [
+    "ssri",
+    "snri",
+    "tca",
+    "antipsychotic",
+    "diuretic"
+   ],
+   "drugs": [
+    "mirtazapine",
+    "carbamazepine",
+    "oxcarbazepine",
+    "tramadol"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: can lower sodium levels",
+  "plain": "This medicine can lower the sodium level in the blood, which can lead to confusion, unsteadiness and falls, especially when it is started or the dose changes.",
+  "clinician": "Use with caution: may exacerbate or contribute to SIADH or hyponatremia; monitor sodium closely when starting or changing dosages.",
+  "question": "Has {person}'s sodium level been checked since {med} was started or the dose last changed?",
+  "recommendation": "Use with caution; monitor sodium when starting or changing dosages",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 4: t4-siadh-hyponatremia"
+ },
+ {
+  "id": "caution-sglt2",
+  "table": "caution",
+  "appliesTo": {
+   "classes": [
+    "sglt2_inhibitor"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med}: use with caution",
+  "plain": "These diabetes medicines can lead to genital and urinary infections and, rarely, a serious acid build-up in the blood (ketoacidosis).",
+  "clinician": "Use with caution; monitor for urogenital infections (particularly women in the first month) and euglycemic diabetic ketoacidosis.",
+  "question": "Which signs of infection or ketoacidosis should we watch for with {med}?",
+  "recommendation": "Use with caution; monitor for urogenital infections and ketoacidosis",
+  "quality": "moderate",
+  "strength": "weak",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 4: t4-sglt2-inhibitors"
+ },
+ {
+  "id": "caution-tmp-smx-ras",
+  "table": "interaction",
+  "appliesTo": {
+   "drugs": [
+    "trimethoprim",
+    "sulfamethoxazole"
+   ]
+  },
+  "with": {
+   "classes": [
+    "acei",
+    "arb",
+    "arni"
+   ]
+  },
+  "conditions": [
+   "chronic_kidney_disease"
+  ],
+  "crclBelow": 60,
+  "qualifier": null,
+  "title": "{med1} with {med2} and reduced kidney function",
+  "plain": "With reduced kidney function, this antibiotic plus an ACE inhibitor or a similar blood-pressure medicine can push potassium up.",
+  "clinician": "Use trimethoprim-sulfamethoxazole with caution in patients on an ACEI, ARB or ARNI with decreased CrCl: increased risk of hyperkalemia (trimethoprim blocks renal potassium excretion). Kinwise applies this with chronic kidney disease or CrCl < 60 mL/min, and also to trimethoprim alone.",
+  "question": "Is a potassium check planned while {med1} is taken with {med2}?",
+  "recommendation": "Use with caution with an ACEI, ARB or ARNI and decreased CrCl",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 4: t4-tmp-smx"
+ },
+ {
+  "id": "ddi-ras-ksparing-ckd",
+  "table": "interaction",
+  "appliesTo": {
+   "classes": [
+    "ras_inhibitor"
+   ],
+   "drugs": [
+    "amiloride",
+    "triamterene"
+   ]
+  },
+  "with": {
+   "classes": [
+    "ras_inhibitor"
+   ],
+   "drugs": [
+    "amiloride",
+    "triamterene"
+   ]
+  },
+  "conditions": [
+   "chronic_kidney_disease"
+  ],
+  "crclBelow": 60,
+  "qualifier": null,
+  "title": "{med1} with {med2} and kidney disease",
+  "plain": "With reduced kidney function, two of these medicines together can push potassium up to harmful levels.",
+  "clinician": "Avoid routine use of two or more RAS inhibitors, or a RAS inhibitor with a potassium-sparing diuretic, in chronic kidney disease stage 3a or worse: increased risk of hyperkalemia. Kinwise applies this with chronic kidney disease or CrCl < 60 mL/min.",
+  "question": "With {person}'s kidney function, is it intended that {med1} and {med2} are taken together, and when is potassium next checked?",
+  "recommendation": "Avoid routine use in chronic kidney disease stage 3a or worse",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-ras-ras-or-k-sparing"
+ },
+ {
+  "id": "ddi-opioid-benzodiazepine",
+  "table": "interaction",
+  "appliesTo": {
+   "classes": [
+    "opioid"
+   ]
+  },
+  "with": {
+   "classes": [
+    "benzodiazepine"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "An opioid pain medicine taken with a benzodiazepine raises the chance of heavy sedation, slowed breathing and overdose.",
+  "clinician": "Avoid: increased risk of overdose and serious sedation-related adverse events.",
+  "question": "Is it intended that {med1} and {med2} are taken together, and are there options that avoid combining them?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-opioids-benzodiazepines"
+ },
+ {
+  "id": "ddi-opioid-gabapentinoid",
+  "table": "interaction",
+  "appliesTo": {
+   "classes": [
+    "opioid"
+   ]
+  },
+  "with": {
+   "classes": [
+    "gabapentinoid"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "An opioid taken with gabapentin or pregabalin raises the chance of severe sleepiness and slowed breathing.",
+  "clinician": "Avoid, except when transitioning from opioids to gabapentinoids or using gabapentinoids to reduce opioid dose (use caution in all cases): increased risk of severe sedation-related adverse events, including respiratory depression and death.",
+  "question": "Is it intended that {med1} and {med2} are taken together, and what signs of over-sedation should we watch for?",
+  "recommendation": "Avoid, except when transitioning between them or reducing the opioid dose",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-opioids-gabapentinoids"
+ },
+ {
+  "id": "ddi-anticholinergic-2",
+  "table": "interaction",
+  "appliesTo": {
+   "classes": [
+    "strong_anticholinergic"
+   ]
+  },
+  "minCount": 2,
+  "qualifier": null,
+  "title": "{count} medicines with strong anticholinergic effects together",
+  "plain": "Each of these medicines blocks acetylcholine, and together the effects (confusion, constipation, dry mouth, falls) add up.",
+  "clinician": "Avoid; minimize the number of anticholinergic drugs: increased risk of cognitive decline, delirium, falls and fractures.",
+  "question": "Are all of these medicines with anticholinergic effects still needed together, and could any be replaced with one that has less anticholinergic effect?",
+  "recommendation": "Avoid; minimize the number of anticholinergic drugs",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-anticholinergic-anticholinergic"
+ },
+ {
+  "id": "ddi-cns-3",
+  "table": "interaction",
+  "appliesTo": {
+   "classes": [
+    "cns_active"
+   ]
+  },
+  "minCount": 3,
+  "qualifier": null,
+  "title": "{count} brain-active (CNS-active) medicines together",
+  "plain": "Taking several medicines that act on the brain together raises the chance of falls and broken bones.",
+  "clinician": "Avoid total of three or more CNS-active drugs (antiepileptics incl. gabapentinoids, antidepressants [TCAs, SSRIs, SNRIs], antipsychotics, benzodiazepines, Z-drugs, opioids, skeletal muscle relaxants); minimize the number of CNS-active drugs: increased risk of falls and fracture. Skeletal muscle relaxants added in 2023.",
+  "question": "Are all {count} of these brain-active medicines still needed together, and could any be reduced?",
+  "recommendation": "Avoid a total of three or more CNS-active drugs; minimize the number",
+  "quality": "high",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-cns-3-or-more"
+ },
+ {
+  "id": "ddi-lithium-ras",
+  "table": "interaction",
+  "appliesTo": {
+   "drugs": [
+    "lithium"
+   ]
+  },
+  "with": {
+   "classes": [
+    "acei",
+    "arb",
+    "arni"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "These blood-pressure medicines can raise the lithium level in the blood to a toxic range.",
+  "clinician": "Avoid; monitor lithium concentrations: increased risk of lithium toxicity.",
+  "question": "Is it intended that {med1} is taken with {med2}, and when is the lithium level next checked?",
+  "recommendation": "Avoid; monitor lithium concentrations",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-lithium-raas"
+ },
+ {
+  "id": "ddi-lithium-loop",
+  "table": "interaction",
+  "appliesTo": {
+   "drugs": [
+    "lithium"
+   ]
+  },
+  "with": {
+   "classes": [
+    "loop_diuretic"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "Loop water pills can raise the lithium level in the blood to a toxic range.",
+  "clinician": "Avoid; monitor lithium concentrations: increased risk of lithium toxicity.",
+  "question": "Is it intended that {med1} is taken with {med2}, and when is the lithium level next checked?",
+  "recommendation": "Avoid; monitor lithium concentrations",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-lithium-loop-diuretics"
+ },
+ {
+  "id": "ddi-alpha1-loop-women",
+  "table": "interaction",
+  "appliesTo": {
+   "classes": [
+    "alpha1_blocker_nonselective"
+   ]
+  },
+  "with": {
+   "classes": [
+    "loop_diuretic"
+   ]
+  },
+  "sex": "female",
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "In older women, this pair raises the chance of bladder leakage.",
+  "clinician": "Avoid in older women unless conditions warrant both drugs: increased risk of urinary incontinence.",
+  "question": "Is it intended that {med1} and {med2} are taken together, given the chance of bladder leakage?",
+  "recommendation": "Avoid in older women, unless conditions warrant both drugs",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-alpha1-loop-diuretics"
+ },
+ {
+  "id": "ddi-phenytoin-tmp-smx",
+  "table": "interaction",
+  "appliesTo": {
+   "drugs": [
+    "phenytoin"
+   ]
+  },
+  "with": {
+   "drugs": [
+    "sulfamethoxazole"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "This antibiotic can push the phenytoin level up into a toxic range.",
+  "clinician": "Avoid: increased risk of phenytoin toxicity.",
+  "question": "Is there another antibiotic option, or should the phenytoin level be checked while {med2} is taken?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-phenytoin-tmp-smx"
+ },
+ {
+  "id": "ddi-theophylline-cimetidine",
+  "table": "interaction",
+  "appliesTo": {
+   "drugs": [
+    "theophylline"
+   ]
+  },
+  "with": {
+   "drugs": [
+    "cimetidine"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "Cimetidine can push the theophylline level up into a toxic range.",
+  "clinician": "Avoid: increased risk of theophylline toxicity.",
+  "question": "Is there another heartburn option that does not affect {med1}?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-theophylline-cimetidine"
+ },
+ {
+  "id": "ddi-theophylline-ciprofloxacin",
+  "table": "interaction",
+  "appliesTo": {
+   "drugs": [
+    "theophylline"
+   ]
+  },
+  "with": {
+   "drugs": [
+    "ciprofloxacin"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}",
+  "plain": "Ciprofloxacin can push the theophylline level up into a toxic range.",
+  "clinician": "Avoid: increased risk of theophylline toxicity.",
+  "question": "Is there another antibiotic option that does not affect {med1}?",
+  "recommendation": "Avoid",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-theophylline-ciprofloxacin"
+ },
+ {
+  "id": "ddi-warfarin",
+  "table": "interaction",
+  "appliesTo": {
+   "drugs": [
+    "warfarin"
+   ]
+  },
+  "with": {
+   "drugs": [
+    "amiodarone",
+    "ciprofloxacin",
+    "clarithromycin",
+    "erythromycin",
+    "sulfamethoxazole"
+   ],
+   "classes": [
+    "ssri"
+   ]
+  },
+  "qualifier": null,
+  "title": "{med1} with {med2}: bleeding",
+  "plain": "This medicine can make warfarin work more strongly and raise the chance of bleeding.",
+  "clinician": "Avoid when possible (amiodarone, ciprofloxacin, macrolides except azithromycin, trimethoprim-sulfamethoxazole, SSRIs); if used together, monitor INR closely: increased risk of bleeding.",
+  "question": "Is it intended that {med1} is taken with {med2}, and when should the INR be checked?",
+  "recommendation": "Avoid when possible; if used together, monitor INR closely",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 5: t5-warfarin-interactions"
+ },
+ {
+  "id": "renal-ciprofloxacin",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "ciprofloxacin"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear this antibiotic more slowly, which raises the chance of nerve, tendon and brain side effects.",
+  "clinician": "CrCl < 30 mL/min: doses used for common infections typically need reduction (increased risk of CNS effects and tendon rupture).",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Doses typically need reduction when CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-ciprofloxacin"
+ },
+ {
+  "id": "renal-nitrofurantoin",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "nitrofurantoin"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function this antibiotic works less well in the bladder and builds up in the body.",
+  "clinician": "Avoid if CrCl < 30 mL/min: potential for toxicity and lack of efficacy.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "low",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-nitrofurantoin"
+ },
+ {
+  "id": "renal-tmp-smx",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "trimethoprim",
+    "sulfamethoxazole"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function this antibiotic can build up and raise potassium.",
+  "clinician": "Reduce dosage if CrCl 15-29 mL/min; avoid if CrCl < 15 mL/min: increased risk of worsening renal function and hyperkalemia.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl 15-29 mL/min; avoid if CrCl < 15 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-tmp-smx"
+ },
+ {
+  "id": "renal-amiloride",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "amiloride"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function this water pill can push potassium up to harmful levels.",
+  "clinician": "Avoid if CrCl < 30 mL/min: increased potassium, decreased sodium.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-amiloride"
+ },
+ {
+  "id": "renal-dabigatran",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "dabigatran"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear this blood thinner more slowly, which raises the chance of bleeding.",
+  "clinician": "Avoid if CrCl < 30 mL/min; adjust dose when CrCl > 30 mL/min with interacting drugs: increased risk of bleeding.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-dabigatran"
+ },
+ {
+  "id": "renal-dofetilide",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "dofetilide"
+   ]
+  },
+  "crclBelow": 60,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear this rhythm medicine more slowly, which can affect the heart's rhythm.",
+  "clinician": "Reduce dose if CrCl 20-59 mL/min; avoid if CrCl < 20 mL/min: QT prolongation and torsades de pointes.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl 20-59 mL/min; avoid if < 20 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-dofetilide"
+ },
+ {
+  "id": "renal-edoxaban",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "edoxaban"
+   ]
+  },
+  "crclBelow": 50,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Kidney function changes how much of this blood thinner stays in the body.",
+  "clinician": "Reduce dose if CrCl 15-50 mL/min; avoid if CrCl < 15 mL/min (and avoid if CrCl > 95 mL/min, lower effectiveness): increased bleeding risk.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl 15-50 mL/min; avoid if < 15 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-edoxaban"
+ },
+ {
+  "id": "renal-enoxaparin",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "enoxaparin"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear this blood-thinning injection more slowly, which raises the chance of bleeding.",
+  "clinician": "Reduce dose if CrCl < 30 mL/min: increased risk of bleeding.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-enoxaparin"
+ },
+ {
+  "id": "renal-fondaparinux",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "fondaparinux"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear this blood-thinning injection more slowly, which raises the chance of bleeding.",
+  "clinician": "Avoid if CrCl < 30 mL/min: increased risk of bleeding.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-fondaparinux"
+ },
+ {
+  "id": "renal-rivaroxaban",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "rivaroxaban"
+   ]
+  },
+  "crclBelow": 50,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Kidney function changes how much of this blood thinner stays in the body.",
+  "clinician": "CrCl 15-50 mL/min: reduce dose per the indication-specific label dosing; avoid if CrCl < 15 mL/min: increased risk of bleeding.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl 15-50 mL/min per label; avoid if < 15 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-rivaroxaban"
+ },
+ {
+  "id": "renal-spironolactone",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "spironolactone"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function this water pill can push potassium up to harmful levels.",
+  "clinician": "Avoid if CrCl < 30 mL/min: increased potassium.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-spironolactone"
+ },
+ {
+  "id": "renal-triamterene",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "triamterene"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function this water pill can push potassium up to harmful levels.",
+  "clinician": "Avoid if CrCl < 30 mL/min: increased potassium, decreased sodium.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-triamterene"
+ },
+ {
+  "id": "renal-baclofen",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "baclofen"
+   ]
+  },
+  "crclBelow": 60,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With reduced kidney function baclofen can build up and lead to confusion and severe sleepiness.",
+  "clinician": "Avoid if eGFR < 60 mL/min/1.73 m²; if unavoidable, use the lowest effective dose and monitor for CNS toxicity including altered mental status (the criterion uses eGFR; Kinwise compares it with the recorded CrCl).",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if eGFR < 60",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-baclofen"
+ },
+ {
+  "id": "renal-duloxetine",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "duloxetine"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function this medicine can build up and upset the stomach more.",
+  "clinician": "Avoid if CrCl < 30 mL/min: increased GI adverse effects (nausea, diarrhea).",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "weak",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-duloxetine"
+ },
+ {
+  "id": "renal-gabapentin",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "gabapentin"
+   ]
+  },
+  "crclBelow": 60,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear gabapentin more slowly, so it can build up and add to sleepiness and unsteadiness.",
+  "clinician": "Reduce dose if CrCl < 60 mL/min: CNS adverse effects.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl < 60 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-gabapentin"
+ },
+ {
+  "id": "renal-levetiracetam",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "levetiracetam"
+   ]
+  },
+  "crclBelow": 80,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear this seizure medicine more slowly, so it can build up and add to sleepiness and mood changes.",
+  "clinician": "Reduce dose if CrCl ≤ 80 mL/min: CNS adverse effects.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl ≤ 80 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-levetiracetam"
+ },
+ {
+  "id": "renal-nsaid",
+  "table": "renal",
+  "appliesTo": {
+   "classes": [
+    "nsaid"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function, anti-inflammatory pain relievers can harm the kidneys further.",
+  "clinician": "Avoid if CrCl < 30 mL/min (non-selective, COX-2-selective and nonacetylated salicylates, oral and parenteral): may increase risk of acute kidney injury and further decline of renal function.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-nsaids"
+ },
+ {
+  "id": "renal-pregabalin",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "pregabalin"
+   ]
+  },
+  "crclBelow": 60,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear pregabalin more slowly, so it can build up and add to sleepiness and unsteadiness.",
+  "clinician": "Reduce dose if CrCl < 60 mL/min: CNS adverse effects.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl < 60 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-pregabalin"
+ },
+ {
+  "id": "renal-tramadol",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "tramadol"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "Slower kidneys clear tramadol more slowly, so it can build up and add to sleepiness and confusion.",
+  "clinician": "CrCl < 30 mL/min: immediate release, reduce dose; extended release, avoid (CNS adverse effects).",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Immediate release: reduce dose; extended release: avoid (CrCl < 30 mL/min)",
+  "quality": "low",
+  "strength": "weak",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-tramadol"
+ },
+ {
+  "id": "renal-cimetidine",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "cimetidine"
+   ]
+  },
+  "crclBelow": 50,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With reduced kidney function this heartburn medicine can build up and add to confusion.",
+  "clinician": "Reduce dose if CrCl < 50 mL/min: mental status changes.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl < 50 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-cimetidine"
+ },
+ {
+  "id": "renal-famotidine",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "famotidine"
+   ]
+  },
+  "crclBelow": 50,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With reduced kidney function this heartburn medicine can build up and add to confusion.",
+  "clinician": "Reduce dose if CrCl < 50 mL/min: mental status changes.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl < 50 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-famotidine"
+ },
+ {
+  "id": "renal-nizatidine",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "nizatidine"
+   ]
+  },
+  "crclBelow": 50,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With reduced kidney function this heartburn medicine can build up and add to confusion.",
+  "clinician": "Reduce dose if CrCl < 50 mL/min: mental status changes.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose if CrCl < 50 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-nizatidine"
+ },
+ {
+  "id": "renal-colchicine",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "colchicine"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function colchicine can build up and upset the stomach, muscles and nerves.",
+  "clinician": "Reduce dose and monitor for adverse effects if CrCl < 30 mL/min: GI, neuromuscular and bone marrow toxicity.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Reduce dose; monitor for adverse effects (CrCl < 30 mL/min)",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-colchicine"
+ },
+ {
+  "id": "renal-probenecid",
+  "table": "renal",
+  "appliesTo": {
+   "drugs": [
+    "probenecid"
+   ]
+  },
+  "crclBelow": 30,
+  "qualifier": null,
+  "title": "{med} and kidney function",
+  "plain": "With low kidney function this gout medicine stops working well.",
+  "clinician": "Avoid if CrCl < 30 mL/min: loss of effectiveness.",
+  "question": "With a creatinine clearance of {crcl} mL/min, is the dose of {med} right, or would another option fit better?",
+  "recommendation": "Avoid if CrCl < 30 mL/min",
+  "quality": "moderate",
+  "strength": "strong",
+  "sourceId": "beers2023",
+  "sourceRef": "AGS Beers 2023 Table 6: t6-probenecid"
+ }
+]

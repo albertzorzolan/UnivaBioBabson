@@ -1,0 +1,800 @@
+{
+  "resourceType": "OperationOutcome",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><h1>Operation Outcome</h1><table border=\"0\"><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.type, Line[57] Col[10]]</td><td>Unable to expand ValueSet because CodeSystem could not be found: http://loinc.org</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.type, Line[57] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#51855-5'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[0].code, Line[86] Col[14]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#29299-5'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[1].code, Line[102] Col[14]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#10187-3'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[4].code, Line[167] Col[14]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#10160-0'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[4].resource/*MedicationStatement/0d05337c-0b55-5619-8c23-1a83df9a1195*/.medication.ofType(CodeableConcept), Line[1129] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#17767'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[5].resource/*MedicationStatement/170e266f-2d66-551e-8fad-b52306441175*/.medication.ofType(CodeableConcept), Line[1202] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#4603'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[6].resource/*MedicationStatement/16c397e1-2e1d-541b-a47e-d75dbe3b1e90*/.medication.ofType(CodeableConcept), Line[1275] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#6809'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[7].resource/*MedicationStatement/0a90aac1-81a4-5306-a74e-3dca8ee51da4*/.medication.ofType(CodeableConcept), Line[1348] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#83367'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[8].resource/*MedicationStatement/10ecfd5e-07c7-5c1c-b014-526034121c3b*/.medication.ofType(CodeableConcept), Line[1421] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#7646'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[9].resource/*MedicationStatement/06c700fe-f1d0-5009-b9a8-2b56889500be*/.medication.ofType(CodeableConcept), Line[1494] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#32675'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[10].resource/*Medication/037fb495-cd35-5415-99f1-5e1f171a13f6*/.ingredient[0].item.ofType(CodeableConcept), Line[1562] Col[14]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#161'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[10].resource/*Medication/037fb495-cd35-5415-99f1-5e1f171a13f6*/.ingredient[1].item.ofType(CodeableConcept), Line[1574] Col[14]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#3498'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[12].resource/*MedicationStatement/1bb80804-0191-5108-ae4a-fcd41bba0f14*/.medication.ofType(CodeableConcept), Line[1691] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#6470'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[30].resource/*Observation/0661c441-924a-5c1f-a436-1ee3317b19c7*/.code, Line[2800] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[84].resource/*Observation/1c2d11d3-48c8-501a-b645-269aa25501ad*/.code, Line[6086] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[123].resource/*Observation/0d6273cc-142e-5513-8a6a-fbba079a0e2c*/.code, Line[8449] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[134].resource/*Observation/15d7262e-2c68-5618-be3e-d372821a001f*/.code, Line[9121] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[144].resource/*Observation/16361eef-7b14-5c07-8fe1-a64619fd0edb*/.code, Line[9762] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[163].resource/*Observation/1d305218-129b-5d1a-b8fb-55c12a2612c9*/.code, Line[10945] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[173].resource/*Observation/17b1985d-7a8b-5818-aee3-b975505f05a6*/.code, Line[11586] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[200].resource/*Observation/0e97ac2d-3c7a-5607-9949-d3c453301538*/.code, Line[13237] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[210].resource/*Observation/0d1eb241-e245-5602-9534-cf8824200dd3*/.code, Line[13873] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[230].resource/*Observation/13a31390-3dee-511d-b477-aa0432821c79*/.code, Line[15140] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">WARNING</td><td>[Bundle.entry[249].resource/*Observation/0757bcf4-6978-5a15-a068-13410af802dc*/.code, Line[16347] Col[10]]</td><td>CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[259].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[260].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[261].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[262].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[263].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[264].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[265].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://www.hii.iu.edu/resources/anticholinergic-cognitive-burden-scale.pdf' in the bundle (Bundle.entry[266].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://www.cdc.gov/steadi/media/pdfs/STEADI-FactSheet-MedsLinkedtoFalls-508.pdf' in the bundle (Bundle.entry[267].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://pubmed.ncbi.nlm.nih.gov/32091538/' in the bundle (Bundle.entry[268].resource.reference)</td></tr><tr><td style=\"font-weight: bold;\">INFORMATION</td><td>[Bundle, Line[1] Col[2]]</td><td>Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[269].resource.reference)</td></tr></table></div>"
+  },
+  "issue": [ {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 57
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "Unable to expand ValueSet because CodeSystem could not be found: http://loinc.org",
+    "location": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.type", "Line[57] Col[10]" ],
+    "expression": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.type" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 57
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#51855-5'",
+    "location": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.type", "Line[57] Col[10]" ],
+    "expression": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.type" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 86
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 14
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#29299-5'",
+    "location": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[0].code", "Line[86] Col[14]" ],
+    "expression": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[0].code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 102
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 14
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#10187-3'",
+    "location": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[1].code", "Line[102] Col[14]" ],
+    "expression": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[1].code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 167
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 14
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#10160-0'",
+    "location": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[4].code", "Line[167] Col[14]" ],
+    "expression": [ "Bundle.entry[0].resource/*Composition/1db996ab-3124-5602-9125-22dc25a706cd*/.section[4].code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1129
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#17767'",
+    "location": [ "Bundle.entry[4].resource/*MedicationStatement/0d05337c-0b55-5619-8c23-1a83df9a1195*/.medication.ofType(CodeableConcept)", "Line[1129] Col[10]" ],
+    "expression": [ "Bundle.entry[4].resource/*MedicationStatement/0d05337c-0b55-5619-8c23-1a83df9a1195*/.medication.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1202
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#4603'",
+    "location": [ "Bundle.entry[5].resource/*MedicationStatement/170e266f-2d66-551e-8fad-b52306441175*/.medication.ofType(CodeableConcept)", "Line[1202] Col[10]" ],
+    "expression": [ "Bundle.entry[5].resource/*MedicationStatement/170e266f-2d66-551e-8fad-b52306441175*/.medication.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1275
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#6809'",
+    "location": [ "Bundle.entry[6].resource/*MedicationStatement/16c397e1-2e1d-541b-a47e-d75dbe3b1e90*/.medication.ofType(CodeableConcept)", "Line[1275] Col[10]" ],
+    "expression": [ "Bundle.entry[6].resource/*MedicationStatement/16c397e1-2e1d-541b-a47e-d75dbe3b1e90*/.medication.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1348
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#83367'",
+    "location": [ "Bundle.entry[7].resource/*MedicationStatement/0a90aac1-81a4-5306-a74e-3dca8ee51da4*/.medication.ofType(CodeableConcept)", "Line[1348] Col[10]" ],
+    "expression": [ "Bundle.entry[7].resource/*MedicationStatement/0a90aac1-81a4-5306-a74e-3dca8ee51da4*/.medication.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1421
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#7646'",
+    "location": [ "Bundle.entry[8].resource/*MedicationStatement/10ecfd5e-07c7-5c1c-b014-526034121c3b*/.medication.ofType(CodeableConcept)", "Line[1421] Col[10]" ],
+    "expression": [ "Bundle.entry[8].resource/*MedicationStatement/10ecfd5e-07c7-5c1c-b014-526034121c3b*/.medication.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1494
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#32675'",
+    "location": [ "Bundle.entry[9].resource/*MedicationStatement/06c700fe-f1d0-5009-b9a8-2b56889500be*/.medication.ofType(CodeableConcept)", "Line[1494] Col[10]" ],
+    "expression": [ "Bundle.entry[9].resource/*MedicationStatement/06c700fe-f1d0-5009-b9a8-2b56889500be*/.medication.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1562
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 14
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#161'",
+    "location": [ "Bundle.entry[10].resource/*Medication/037fb495-cd35-5415-99f1-5e1f171a13f6*/.ingredient[0].item.ofType(CodeableConcept)", "Line[1562] Col[14]" ],
+    "expression": [ "Bundle.entry[10].resource/*Medication/037fb495-cd35-5415-99f1-5e1f171a13f6*/.ingredient[0].item.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1574
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 14
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#3498'",
+    "location": [ "Bundle.entry[10].resource/*Medication/037fb495-cd35-5415-99f1-5e1f171a13f6*/.ingredient[1].item.ofType(CodeableConcept)", "Line[1574] Col[14]" ],
+    "expression": [ "Bundle.entry[10].resource/*Medication/037fb495-cd35-5415-99f1-5e1f171a13f6*/.ingredient[1].item.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1691
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#6470'",
+    "location": [ "Bundle.entry[12].resource/*MedicationStatement/1bb80804-0191-5108-ae4a-fcd41bba0f14*/.medication.ofType(CodeableConcept)", "Line[1691] Col[10]" ],
+    "expression": [ "Bundle.entry[12].resource/*MedicationStatement/1bb80804-0191-5108-ae4a-fcd41bba0f14*/.medication.ofType(CodeableConcept)" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 2800
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[30].resource/*Observation/0661c441-924a-5c1f-a436-1ee3317b19c7*/.code", "Line[2800] Col[10]" ],
+    "expression": [ "Bundle.entry[30].resource/*Observation/0661c441-924a-5c1f-a436-1ee3317b19c7*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 6086
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[84].resource/*Observation/1c2d11d3-48c8-501a-b645-269aa25501ad*/.code", "Line[6086] Col[10]" ],
+    "expression": [ "Bundle.entry[84].resource/*Observation/1c2d11d3-48c8-501a-b645-269aa25501ad*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 8449
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[123].resource/*Observation/0d6273cc-142e-5513-8a6a-fbba079a0e2c*/.code", "Line[8449] Col[10]" ],
+    "expression": [ "Bundle.entry[123].resource/*Observation/0d6273cc-142e-5513-8a6a-fbba079a0e2c*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 9121
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[134].resource/*Observation/15d7262e-2c68-5618-be3e-d372821a001f*/.code", "Line[9121] Col[10]" ],
+    "expression": [ "Bundle.entry[134].resource/*Observation/15d7262e-2c68-5618-be3e-d372821a001f*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 9762
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[144].resource/*Observation/16361eef-7b14-5c07-8fe1-a64619fd0edb*/.code", "Line[9762] Col[10]" ],
+    "expression": [ "Bundle.entry[144].resource/*Observation/16361eef-7b14-5c07-8fe1-a64619fd0edb*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 10945
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[163].resource/*Observation/1d305218-129b-5d1a-b8fb-55c12a2612c9*/.code", "Line[10945] Col[10]" ],
+    "expression": [ "Bundle.entry[163].resource/*Observation/1d305218-129b-5d1a-b8fb-55c12a2612c9*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 11586
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[173].resource/*Observation/17b1985d-7a8b-5818-aee3-b975505f05a6*/.code", "Line[11586] Col[10]" ],
+    "expression": [ "Bundle.entry[173].resource/*Observation/17b1985d-7a8b-5818-aee3-b975505f05a6*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 13237
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[200].resource/*Observation/0e97ac2d-3c7a-5607-9949-d3c453301538*/.code", "Line[13237] Col[10]" ],
+    "expression": [ "Bundle.entry[200].resource/*Observation/0e97ac2d-3c7a-5607-9949-d3c453301538*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 13873
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[210].resource/*Observation/0d1eb241-e245-5602-9534-cf8824200dd3*/.code", "Line[13873] Col[10]" ],
+    "expression": [ "Bundle.entry[210].resource/*Observation/0d1eb241-e245-5602-9534-cf8824200dd3*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 15140
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[230].resource/*Observation/13a31390-3dee-511d-b477-aa0432821c79*/.code", "Line[15140] Col[10]" ],
+    "expression": [ "Bundle.entry[230].resource/*Observation/13a31390-3dee-511d-b477-aa0432821c79*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 16347
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 10
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Terminology_PassThrough_TX_Message"
+    } ],
+    "severity": "warning",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Terminology_PassThrough_TX_Message"
+      } ]
+    },
+    "diagnostics": "CodeSystem is unknown and can't be validated: http://loinc.org for 'http://loinc.org#61150-9'",
+    "location": [ "Bundle.entry[249].resource/*Observation/0757bcf4-6978-5a15-a068-13410af802dc*/.code", "Line[16347] Col[10]" ],
+    "expression": [ "Bundle.entry[249].resource/*Observation/0757bcf4-6978-5a15-a068-13410af802dc*/.code" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[259].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[260].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[261].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[262].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[263].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[264].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[265].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://www.hii.iu.edu/resources/anticholinergic-cognitive-burden-scale.pdf' in the bundle (Bundle.entry[266].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://www.cdc.gov/steadi/media/pdfs/STEADI-FactSheet-MedsLinkedtoFalls-508.pdf' in the bundle (Bundle.entry[267].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://pubmed.ncbi.nlm.nih.gov/32091538/' in the bundle (Bundle.entry[268].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line",
+      "valueInteger": 1
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col",
+      "valueInteger": 2
+    }, {
+      "url": "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+      "valueString": "Bundle_BUNDLE_Entry_NotFound"
+    } ],
+    "severity": "information",
+    "code": "processing",
+    "details": {
+      "coding": [ {
+        "system": "http://hl7.org/fhir/java-core-messageId",
+        "code": "Bundle_BUNDLE_Entry_NotFound"
+      } ]
+    },
+    "diagnostics": "Can't find 'https://doi.org/10.1111/jgs.18372' in the bundle (Bundle.entry[269].resource.reference)",
+    "location": [ "Bundle", "Line[1] Col[2]" ],
+    "expression": [ "Bundle" ]
+  } ]
+}
