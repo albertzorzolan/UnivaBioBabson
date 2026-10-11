@@ -1,0 +1,267 @@
+/* Kinwise design tokens (SPEC §8). Every colour, size and duration in the app comes from here.
+ *
+ * Layers:
+ *   1. Brand palette   — raw values, never used directly by components.
+ *   2. Semantic tokens — surface / ink / line / primary / status … (light + dark).
+ *   3. Scales          — type, spacing, radii, shadows, motion, layout.
+ *
+ * Theme:  <html data-theme="light|dark">. The selector is not limited to :root so a subtree can be
+ *         themed independently (the /dev/ui gallery renders both themes side by side).
+ * Text:   <html data-text-size="standard|large|extra"> scales the root font size; everything is in rem.
+ * Shell:  <html data-shell="patient"> raises the base to 20px for the older-adult view.
+ *
+ * Contrast: every ink-on-surface pair is checked ≥ 4.5:1 by src/ui/tokens.test.ts (both themes).
+ * Chart series colours were validated for colour-vision deficiency (adjacent ΔE ≥ 9) in both themes.
+ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ---- Surfaces ---------------------------------------------------- */
+  --bg: #f7f5ef; /* warm cream page */
+  --surface: #fffdf9; /* cards */
+  --surface-raised: #ffffff; /* popovers, dialogs, inputs */
+  --surface-sunken: #efece3; /* wells, table headers, skeletons */
+  --surface-tint: #eef2ea; /* sage wash for hero / selected rows */
+  --surface-inverse: #1f2a26;
+
+  /* ---- Ink (text) -------------------------------------------------- */
+  --ink: #1f2a26;
+  --ink-muted: #5e6a64; /* 5.2:1 on bg */
+  --ink-subtle: #67726c; /* placeholders, meta — still ≥ 4.5:1 on bg */
+  --ink-inverse: #f7f5ef;
+
+  /* ---- Lines ------------------------------------------------------- */
+  --line: #e3e0d6; /* decorative dividers */
+  --line-strong: #7f8882; /* input borders, ≥ 3:1 (WCAG 1.4.11) */
+
+  /* ---- Brand ------------------------------------------------------- */
+  --primary: #25584a; /* deep green */
+  --primary-hover: #1d4a3d;
+  --primary-active: #163a30;
+  --primary-ink: #ffffff; /* text on primary */
+  --primary-soft: #e3ede7; /* tinted backgrounds */
+  --primary-soft-ink: #1e4a3e;
+  --primary-text: #25584a; /* green text / links on light surfaces (7.5:1) */
+  --hero-surface: #25584a; /* large emphasis panels */
+  --hero-ink: #ffffff;
+  --hero-ink-muted: #d5e4dc;
+
+  --accent: #a9573a; /* terracotta, used sparingly for the main CTA */
+  --accent-hover: #934a30;
+  --accent-ink: #ffffff;
+  --accent-soft: #f6e6dc;
+  --accent-bright: #c8734f; /* decorative only (illustrations), never text */
+
+  /* ---- Status (always paired with an icon + words) ----------------- */
+  --info: #2f5f8a;
+  --info-soft: #e6eef5;
+  --info-ink: #24506f;
+  --caution: #b7791f; /* desaturated amber: icons, bars, borders */
+  --caution-soft: #f8edd8;
+  --caution-ink: #7d5210; /* text */
+  --attention: #b5523b; /* rust — never fire-engine red */
+  --attention-soft: #f6e3dc;
+  --attention-ink: #94402e;
+  --success: #4f7f5e; /* sage */
+  --success-soft: #e5efe6;
+  --success-ink: #33603f;
+
+  --focus: #1f6fb2; /* focus ring, ≥ 3:1 on every surface */
+  --scrim: rgb(20 28 25 / 0.45);
+  --selection: #cfe1d6;
+
+  /* ---- Chart series (fixed entity → colour; never cycled) ---------- */
+  --series-1: #2f6fb8;
+  --series-2: #d0643a;
+  --series-3: #1a9c76;
+  --series-4: #c98a00;
+  --series-5: #c9578a;
+  --series-6: #3b7d23;
+  --series-7: #6a58cf;
+  --series-8: #c2413f;
+  --series-other: #8b938e;
+  --chart-grid: #e6e3da;
+  --chart-axis: #5e6a64;
+  --chart-missing: #dedad0; /* unanswered days: shown as missing, never as "no" */
+  --chart-med-line: #1f2a26;
+
+  /* ---- Shadows (warm, soft) ---------------------------------------- */
+  --shadow-1: 0 1px 2px rgb(45 40 25 / 0.06), 0 1px 1px rgb(45 40 25 / 0.04);
+  --shadow-2: 0 2px 4px rgb(45 40 25 / 0.04), 0 8px 24px -6px rgb(45 40 25 / 0.1);
+  --shadow-3: 0 4px 8px rgb(45 40 25 / 0.06), 0 24px 56px -12px rgb(45 40 25 / 0.22);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #121815;
+  --surface: #1a221e;
+  --surface-raised: #212b26;
+  --surface-sunken: #0e1311;
+  --surface-tint: #1c2a24;
+  --surface-inverse: #ecefe8;
+
+  --ink: #ecefe8;
+  --ink-muted: #a9b4ad;
+  --ink-subtle: #98a49d;
+  --ink-inverse: #121815;
+
+  --line: #2b3631;
+  --line-strong: #6b7a72;
+
+  --primary: #7cc2a6;
+  --primary-hover: #93d0b6;
+  --primary-active: #a6dbc4;
+  --primary-ink: #0e1a15;
+  --primary-soft: #1e3a31;
+  --primary-soft-ink: #bfe3d3;
+  --primary-text: #86c7ac;
+  --hero-surface: #1f4337;
+  --hero-ink: #ecefe8;
+  --hero-ink-muted: #b9d4c7;
+
+  --accent: #e39a78;
+  --accent-hover: #edae91;
+  --accent-ink: #1a0f0a;
+  --accent-soft: #3a261d;
+  --accent-bright: #e39a78;
+
+  --info: #93bde3;
+  --info-soft: #1c2b38;
+  --info-ink: #b4d3ef;
+  --caution: #e5b865;
+  --caution-soft: #33291a;
+  --caution-ink: #f0cd8c;
+  --attention: #f09a80;
+  --attention-soft: #3a2420;
+  --attention-ink: #f6b5a1;
+  --success: #94cba4;
+  --success-soft: #1d3326;
+  --success-ink: #b2dcbe;
+
+  --focus: #8fc3f5;
+  --scrim: rgb(0 0 0 / 0.6);
+  --selection: #2d5446;
+
+  --series-1: #4a8ad6;
+  --series-2: #d9693f;
+  --series-3: #21a57d;
+  --series-4: #c08a10;
+  --series-5: #d5649a;
+  --series-6: #4f9a35;
+  --series-7: #9085e9;
+  --series-8: #e06464;
+  --series-other: #7c8a83;
+  --chart-grid: #2b3631;
+  --chart-axis: #a9b4ad;
+  --chart-missing: #2a332f;
+  --chart-med-line: #ecefe8;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-2: 0 2px 4px rgb(0 0 0 / 0.3), 0 8px 24px -6px rgb(0 0 0 / 0.45);
+  --shadow-3: 0 4px 8px rgb(0 0 0 / 0.35), 0 24px 56px -12px rgb(0 0 0 / 0.6);
+}
+
+/* Diary metric → series colour. Charts reference these so a symptom keeps its colour everywhere. */
+:root,
+[data-theme] {
+  --series-dizziness: var(--series-1);
+  --series-nearFall: var(--series-2);
+  --series-swelling: var(--series-3);
+  --series-sleep: var(--series-4);
+  --series-confusion: var(--series-5);
+  --series-energy: var(--series-6);
+  --series-drowsiness: var(--series-7);
+  --series-fall: var(--series-8);
+  --series-appetiteWorse: var(--series-other);
+}
+
+/* ---- Type, spacing, shape, motion (theme-independent) --------------- */
+:root {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Type scale (rem, so it follows text-size settings). Smallest text is 13px. */
+  --fs-xs: 0.8125rem; /* 13 */
+  --fs-sm: 0.875rem; /* 14 */
+  --fs-md: 1rem; /* 16 */
+  --fs-lg: 1.125rem; /* 18 */
+  --fs-xl: 1.375rem; /* 22 */
+  --fs-2xl: 1.75rem; /* 28 */
+  --fs-3xl: 2.25rem; /* 36 */
+  --fs-display: clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem); /* 36 → 60 */
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.3;
+  --lh-body: 1.55;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* 8-pt spacing (4 for hairline adjustments). */
+  --space-1: 0.25rem; /* 4 */
+  --space-2: 0.5rem; /* 8 */
+  --space-3: 0.75rem; /* 12 */
+  --space-4: 1rem; /* 16 */
+  --space-5: 1.5rem; /* 24 */
+  --space-6: 2rem; /* 32 */
+  --space-7: 3rem; /* 48 */
+  --space-8: 4rem; /* 64 */
+  --space-9: 6rem; /* 96 */
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* Touch targets: WCAG 2.2 asks 24px; we use 44 (caregiver) and 56 (patient). */
+  --target-min: 2.75rem; /* 44 */
+  --target-patient: 3.5rem; /* 56 */
+
+  --dur-fast: 120ms;
+  --dur-med: 200ms;
+  --dur-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout */
+  --sidebar-w: 17.5rem;
+  --content-max: 76rem;
+  --reading-max: 42rem;
+  --topbar-h: 3.75rem;
+  --bottombar-h: 4.25rem;
+
+  /* Text-size multipliers (settings.textSize) and shell base (patient view = 20px). */
+  --text-scale: 1;
+  --shell-scale: 1;
+
+  --z-sticky: 20;
+  --z-nav: 30;
+  --z-toast: 60;
+  --z-tooltip: 70;
+}
+
+[data-text-size="large"] {
+  --text-scale: 1.125;
+}
+[data-text-size="extra"] {
+  --text-scale: 1.25;
+}
+[data-shell="patient"] {
+  --shell-scale: 1.25;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur-med: 0.01ms;
+    --dur-slow: 0.01ms;
+  }
+}

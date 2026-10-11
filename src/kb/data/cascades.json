@@ -1,0 +1,698 @@
+[
+ {
+  "id": "ccb-edema-loop-diuretic",
+  "index": {
+   "classes": [
+    "ccb_dihydropyridine"
+   ]
+  },
+  "adverseEffect": "ankle swelling (peripheral edema)",
+  "reasonKeywords": [
+   "swell",
+   "swollen",
+   "edema",
+   "oedema",
+   "puffy",
+   "fluid",
+   "ankle"
+  ],
+  "marker": {
+   "classes": [
+    "loop_diuretic"
+   ]
+  },
+  "windowDays": 90,
+  "title": "Possible prescribing cascade: {index} → ankle swelling → {marker}",
+  "plain": "Amlodipine-type blood-pressure medicines can lead to ankle swelling, and a water pill started for that swelling often helps little while adding its own effects.",
+  "clinician": "Dihydropyridine CCB edema is driven by arteriolar vasodilation and responds poorly to diuretics; new loop diuretic dispensing after CCB initiation is a documented cascade (Savage 2020).",
+  "question": "Could the ankle swelling be linked to {index}, and is {marker} still the best way to manage it?",
+  "sourceId": "savage2020"
+ },
+ {
+  "id": "gabapentinoid-edema-loop-diuretic",
+  "index": {
+   "classes": [
+    "gabapentinoid"
+   ]
+  },
+  "adverseEffect": "ankle swelling (peripheral edema)",
+  "reasonKeywords": [
+   "swell",
+   "swollen",
+   "edema",
+   "oedema",
+   "puffy",
+   "fluid",
+   "ankle"
+  ],
+  "marker": {
+   "classes": [
+    "loop_diuretic"
+   ]
+  },
+  "windowDays": 90,
+  "title": "Possible prescribing cascade: {index} → ankle swelling → {marker}",
+  "plain": "Gabapentin and pregabalin can lead to ankle swelling, which is sometimes treated with a water pill.",
+  "clinician": "Gabapentinoid-associated peripheral edema followed by new loop diuretic use is a documented cascade (Read 2021).",
+  "question": "Could the ankle swelling be linked to {index}, and is {marker} still the best way to manage it?",
+  "sourceId": "read2021"
+ },
+ {
+  "id": "tzd-edema-loop-diuretic",
+  "index": {
+   "classes": [
+    "thiazolidinedione"
+   ]
+  },
+  "adverseEffect": "fluid retention and swelling",
+  "reasonKeywords": [
+   "swell",
+   "swollen",
+   "edema",
+   "oedema",
+   "puffy",
+   "fluid",
+   "ankle"
+  ],
+  "marker": {
+   "classes": [
+    "loop_diuretic"
+   ]
+  },
+  "windowDays": 180,
+  "title": "Possible prescribing cascade: {index} → fluid retention → {marker}",
+  "plain": "Pioglitazone can make the body hold on to fluid, which is sometimes treated with a water pill.",
+  "clinician": "Thiazolidinedione fluid retention treated with a diuretic is on the international PIPC list (Rochon 2025).",
+  "question": "Could the swelling be linked to {index}, and is {marker} still the best way to manage it?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "nsaid-bp-antihypertensive",
+  "index": {
+   "classes": [
+    "nsaid"
+   ]
+  },
+  "adverseEffect": "raised blood pressure",
+  "reasonKeywords": [],
+  "marker": {
+   "classes": [
+    "bp_lowering",
+    "thiazide_diuretic"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → higher blood pressure → {marker}",
+  "plain": "Anti-inflammatory pain relievers can raise blood pressure, and a blood-pressure medicine started afterwards may be treating that effect.",
+  "clinician": "NSAID-associated hypertension followed by antihypertensive initiation is a documented cascade (Gurwitz 1994) retained in ThinkCascades.",
+  "question": "Could {index} be raising {person}'s blood pressure, and is {marker} still needed if the pain plan changes?",
+  "sourceId": "gurwitz1994"
+ },
+ {
+  "id": "acei-cough-cough-remedy",
+  "index": {
+   "classes": [
+    "acei"
+   ]
+  },
+  "adverseEffect": "dry cough",
+  "reasonKeywords": [
+   "cough"
+  ],
+  "marker": {
+   "classes": [
+    "cough_cold"
+   ]
+  },
+  "windowDays": 183,
+  "title": "Possible prescribing cascade: {index} → cough → {marker}",
+  "plain": "Blood-pressure medicines ending in “-pril” (ACE inhibitors) can lead to a dry, tickly cough that cough medicines do not help.",
+  "clinician": "ACE-inhibitor cough is a labeled adverse reaction; antitussive starts after ACEI initiation exceed starts before (Vegter 2010).",
+  "question": "Could the cough be linked to {index}, and if so, is there another option instead of treating the cough with {marker}?",
+  "sourceId": "vegter2010"
+ },
+ {
+  "id": "chei-incontinence-bladder-medicine",
+  "index": {
+   "classes": [
+    "cholinesterase_inhibitor"
+   ]
+  },
+  "adverseEffect": "bladder leakage (urinary incontinence)",
+  "reasonKeywords": [
+   "leak",
+   "incontinen",
+   "accident",
+   "wetting",
+   "urgen"
+  ],
+  "marker": {
+   "classes": [
+    "bladder_antimuscarinic",
+    "beta3_agonist"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → bladder leakage → {marker}",
+  "plain": "Memory medicines such as donepezil can lead to bladder leakage, and bladder medicines started for it can work against the memory medicine.",
+  "clinician": "Cholinesterase inhibitor users are more likely to start a bladder antimuscarinic (Gill 2005); the combination has opposing mechanisms and adds anticholinergic burden.",
+  "question": "Could the bladder leakage be linked to {index}, and is {marker} still the best way to manage it?",
+  "sourceId": "gill2005"
+ },
+ {
+  "id": "anticholinergic-memory-dementia-medicine",
+  "index": {
+   "classes": [
+    "bladder_antimuscarinic",
+    "benzodiazepine"
+   ]
+  },
+  "adverseEffect": "memory problems or confusion",
+  "reasonKeywords": [
+   "memory",
+   "forget",
+   "confus",
+   "dementia",
+   "cognit",
+   "thinking"
+  ],
+  "marker": {
+   "classes": [
+    "cholinesterase_inhibitor",
+    "nmda_antagonist"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → memory problems → {marker}",
+  "plain": "Some bladder and sleep or anxiety medicines can affect memory, and a memory medicine started afterwards may be treating that effect.",
+  "clinician": "Cognitive impairment from a bladder antimuscarinic or a benzodiazepine followed by a cholinesterase inhibitor (or memantine) is a ThinkCascades cascade.",
+  "question": "Could the memory changes be linked to {index}, and was that considered before starting {marker}?",
+  "sourceId": "thinkcascades"
+ },
+ {
+  "id": "tca-memory-dementia-medicine",
+  "index": {
+   "classes": [
+    "tca"
+   ]
+  },
+  "adverseEffect": "memory problems or confusion",
+  "reasonKeywords": [
+   "memory",
+   "forget",
+   "confus",
+   "dementia",
+   "cognit",
+   "thinking"
+  ],
+  "marker": {
+   "classes": [
+    "cholinesterase_inhibitor",
+    "nmda_antagonist"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → memory problems → {marker}",
+  "plain": "Older (tricyclic) antidepressants can affect memory, and a memory medicine started afterwards may be treating that effect.",
+  "clinician": "Tricyclic-antidepressant-associated cognitive impairment treated with a cholinesterase inhibitor (or memantine) is on the PIPC list (Rochon 2025).",
+  "question": "Could the memory changes be linked to {index}, and was that considered before starting {marker}?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "antiemetic-parkinsonism-antiparkinson",
+  "index": {
+   "classes": [
+    "dopamine_antagonist_antiemetic"
+   ]
+  },
+  "adverseEffect": "tremor, stiffness or slowness (drug-induced parkinsonism)",
+  "reasonKeywords": [
+   "tremor",
+   "shak",
+   "stiff",
+   "parkinson",
+   "shuffl",
+   "movement",
+   "slow walking"
+  ],
+  "marker": {
+   "classes": [
+    "dopaminergic_antiparkinson",
+    "antiparkinson_anticholinergic"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → tremor or stiffness → {marker}",
+  "plain": "Anti-nausea medicines such as metoclopramide can lead to tremor and stiffness that look like Parkinson disease.",
+  "clinician": "Metoclopramide users were more likely to start levodopa (Avorn 1995); drug-induced parkinsonism should be considered before treating with antiparkinsonian drugs.",
+  "question": "Could the tremor or stiffness be linked to {index}, and was that considered before starting {marker}?",
+  "sourceId": "avorn1995jama"
+ },
+ {
+  "id": "antipsychotic-parkinsonism-antiparkinson",
+  "index": {
+   "classes": [
+    "antipsychotic"
+   ]
+  },
+  "adverseEffect": "tremor, stiffness or restlessness (extrapyramidal symptoms)",
+  "reasonKeywords": [
+   "tremor",
+   "shak",
+   "stiff",
+   "parkinson",
+   "shuffl",
+   "movement",
+   "slow walking",
+   "restless"
+  ],
+  "marker": {
+   "classes": [
+    "antiparkinson_anticholinergic",
+    "dopaminergic_antiparkinson"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → tremor or stiffness → {marker}",
+  "plain": "Antipsychotic medicines can lead to tremor, stiffness or restlessness, which is sometimes treated with another medicine.",
+  "clinician": "Antipsychotic exposure followed by antiparkinsonian treatment is a documented cascade (Avorn 1995; Kalish 1995) and is retained in ThinkCascades.",
+  "question": "Could the movement symptoms be linked to {index}, and is {marker} still the best way to manage them?",
+  "sourceId": "avorn1995ajm"
+ },
+ {
+  "id": "diuretic-gout-antigout",
+  "index": {
+   "classes": [
+    "thiazide_diuretic",
+    "loop_diuretic"
+   ]
+  },
+  "adverseEffect": "gout or high uric acid",
+  "reasonKeywords": [
+   "gout",
+   "uric"
+  ],
+  "marker": {
+   "classes": [
+    "antigout"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → gout → {marker}",
+  "plain": "Water pills can raise uric acid and bring on gout, which is then treated with a gout medicine.",
+  "clinician": "Thiazide users have a higher rate of starting anti-gout therapy (Gurwitz 1997).",
+  "question": "Could the gout be linked to {index}, and is {marker} still the best approach?",
+  "sourceId": "gurwitz1997"
+ },
+ {
+  "id": "diuretic-incontinence-bladder-medicine",
+  "index": {
+   "classes": [
+    "diuretic"
+   ]
+  },
+  "adverseEffect": "urgency or bladder leakage",
+  "reasonKeywords": [
+   "leak",
+   "incontinen",
+   "urgen",
+   "frequen",
+   "accident",
+   "wetting"
+  ],
+  "marker": {
+   "classes": [
+    "bladder_antimuscarinic",
+    "beta3_agonist"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → urgency or leakage → {marker}",
+  "plain": "Water pills increase urine and can bring on urgency or leakage, which is sometimes treated with a bladder medicine.",
+  "clinician": "Diuretic-associated urinary incontinence treated with an overactive-bladder drug is a ThinkCascades cascade.",
+  "question": "Could the bladder symptoms be linked to {index} or its timing, and is {marker} still needed?",
+  "sourceId": "thinkcascades"
+ },
+ {
+  "id": "ssri-insomnia-hypnotic",
+  "index": {
+   "classes": [
+    "ssri",
+    "snri"
+   ]
+  },
+  "adverseEffect": "trouble sleeping (insomnia)",
+  "reasonKeywords": [],
+  "marker": {
+   "classes": [
+    "z_drug"
+   ],
+   "drugs": [
+    "temazepam",
+    "triazolam",
+    "estazolam"
+   ]
+  },
+  "windowDays": 180,
+  "title": "Possible prescribing cascade: {index} → trouble sleeping → {marker}",
+  "plain": "Some antidepressants can make it harder to sleep, and a sleeping pill started afterwards may be treating that effect.",
+  "clinician": "SSRI/SNRI-associated insomnia treated with a sedative-hypnotic is a ThinkCascades cascade.",
+  "question": "Could the sleep problems be linked to {index} or the time of day it is taken, and is {marker} still needed?",
+  "sourceId": "thinkcascades"
+ },
+ {
+  "id": "corticosteroid-insomnia-hypnotic",
+  "index": {
+   "classes": [
+    "corticosteroid_systemic"
+   ]
+  },
+  "adverseEffect": "trouble sleeping (insomnia)",
+  "reasonKeywords": [],
+  "marker": {
+   "classes": [
+    "z_drug"
+   ],
+   "drugs": [
+    "temazepam",
+    "triazolam",
+    "estazolam"
+   ]
+  },
+  "windowDays": 90,
+  "title": "Possible prescribing cascade: {index} → trouble sleeping → {marker}",
+  "plain": "Steroid tablets can make it hard to sleep, and a sleeping pill started afterwards may be treating that effect.",
+  "clinician": "Corticosteroid-associated insomnia treated with a sleep agent is on the PIPC list (Rochon 2025).",
+  "question": "Could the sleep problems be linked to {index}, and is {marker} still needed?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "chei-insomnia-hypnotic",
+  "index": {
+   "classes": [
+    "cholinesterase_inhibitor"
+   ]
+  },
+  "adverseEffect": "trouble sleeping or vivid dreams",
+  "reasonKeywords": [],
+  "marker": {
+   "classes": [
+    "z_drug"
+   ],
+   "drugs": [
+    "temazepam",
+    "triazolam",
+    "estazolam"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → trouble sleeping → {marker}",
+  "plain": "Memory medicines such as donepezil can disturb sleep or bring vivid dreams, especially when taken at night.",
+  "clinician": "Cholinesterase-inhibitor-associated insomnia treated with a sleep agent is on the PIPC list (Rochon 2025).",
+  "question": "Could the sleep problems be linked to {index} or the time it is taken, and is {marker} still needed?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "benzodiazepine-agitation-antipsychotic",
+  "index": {
+   "classes": [
+    "benzodiazepine"
+   ]
+  },
+  "adverseEffect": "agitation or restlessness",
+  "reasonKeywords": [
+   "agitat",
+   "restless",
+   "aggress"
+  ],
+  "marker": {
+   "classes": [
+    "antipsychotic"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → agitation → {marker}",
+  "plain": "Benzodiazepines can sometimes lead to agitation (or withdrawal agitation between doses), which may then be treated with an antipsychotic.",
+  "clinician": "Paradoxical or withdrawal agitation from benzodiazepines treated with an antipsychotic is a ThinkCascades cascade.",
+  "question": "Could the agitation be linked to {index}, and is {marker} still needed?",
+  "sourceId": "thinkcascades"
+ },
+ {
+  "id": "dopaminergic-hallucinations-antipsychotic",
+  "index": {
+   "classes": [
+    "dopaminergic_antiparkinson"
+   ]
+  },
+  "adverseEffect": "hallucinations or confusion",
+  "reasonKeywords": [
+   "hallucinat",
+   "seeing things",
+   "psychos",
+   "paranoi",
+   "delusion"
+  ],
+  "marker": {
+   "classes": [
+    "antipsychotic"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → hallucinations → {marker}",
+  "plain": "Parkinson medicines can lead to hallucinations, which are sometimes treated with an antipsychotic.",
+  "clinician": "Dopaminergic-antiparkinsonian-associated psychotic symptoms treated with an antipsychotic are on the PIPC list (Rochon 2025).",
+  "question": "Could the hallucinations be linked to {index}, and is {marker} still the best approach?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "ccb-constipation-laxative",
+  "index": {
+   "classes": [
+    "ccb"
+   ]
+  },
+  "adverseEffect": "constipation",
+  "reasonKeywords": [
+   "constipat"
+  ],
+  "marker": {
+   "classes": [
+    "laxative"
+   ]
+  },
+  "windowDays": 180,
+  "title": "Possible prescribing cascade: {index} → constipation → {marker}",
+  "plain": "Calcium channel blockers, especially verapamil, can lead to constipation that is then treated with a laxative.",
+  "clinician": "Calcium-channel-blocker-associated constipation treated with a laxative is on the PIPC list (Rochon 2025).",
+  "question": "Could the constipation be linked to {index}, and is {marker} still the best way to manage it?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "digoxin-nausea-antiemetic",
+  "index": {
+   "drugs": [
+    "digoxin"
+   ]
+  },
+  "adverseEffect": "nausea or poor appetite",
+  "reasonKeywords": [
+   "nause",
+   "vomit",
+   "appetite"
+  ],
+  "marker": {
+   "drugs": [
+    "ondansetron",
+    "metoclopramide",
+    "prochlorperazine",
+    "promethazine",
+    "meclizine"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → nausea → {marker}",
+  "plain": "Nausea and poor appetite can be early signs of too much digoxin, and an anti-nausea medicine may hide them.",
+  "clinician": "Digoxin-associated nausea treated with an antiemetic is on the PIPC list (Rochon 2025); consider a digoxin level and renal function.",
+  "question": "Could the nausea be linked to {index}, and should the digoxin level be checked?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "alpha-blocker-dizziness-vestibular",
+  "index": {
+   "classes": [
+    "alpha1_blocker"
+   ]
+  },
+  "adverseEffect": "dizziness",
+  "reasonKeywords": [
+   "dizz",
+   "vertigo",
+   "lighthead",
+   "spin",
+   "balance"
+  ],
+  "marker": {
+   "drugs": [
+    "meclizine",
+    "dimenhydrinate"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → dizziness → {marker}",
+  "plain": "Alpha-blockers such as tamsulosin or doxazosin can make blood pressure drop on standing, and the dizziness is sometimes treated with a medicine such as meclizine that adds its own drowsiness.",
+  "clinician": "Alpha-1-blocker-associated orthostatic hypotension or dizziness treated with a vestibular suppressant is a ThinkCascades cascade; check orthostatic blood pressure.",
+  "question": "Could the dizziness be linked to {index}, and could standing blood pressure be checked before continuing {marker}?",
+  "sourceId": "thinkcascades"
+ },
+ {
+  "id": "bp-dizziness-vestibular",
+  "index": {
+   "classes": [
+    "bp_lowering",
+    "central_alpha_agonist",
+    "diuretic"
+   ]
+  },
+  "adverseEffect": "dizziness",
+  "reasonKeywords": [
+   "dizz",
+   "vertigo",
+   "lighthead",
+   "spin",
+   "balance"
+  ],
+  "marker": {
+   "drugs": [
+    "meclizine",
+    "dimenhydrinate"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → dizziness → {marker}",
+  "plain": "Blood-pressure medicines can lead to dizziness on standing, which is sometimes treated with a dizziness medicine such as meclizine that adds its own drowsiness.",
+  "clinician": "Antihypertensive-associated orthostatic hypotension or dizziness treated with an antiemetic or vestibular suppressant is on the PIPC list (Rochon 2025); check orthostatic blood pressure.",
+  "question": "Could the dizziness be linked to {index}, and could standing blood pressure be checked before continuing {marker}?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "statin-muscle-pain-analgesic",
+  "index": {
+   "classes": [
+    "statin"
+   ]
+  },
+  "adverseEffect": "muscle aches",
+  "reasonKeywords": [
+   "muscle",
+   "myalg",
+   "cramp",
+   "ache"
+  ],
+  "marker": {
+   "classes": [
+    "analgesic_nonopioid",
+    "nsaid"
+   ]
+  },
+  "windowDays": 180,
+  "title": "Possible prescribing cascade: {index} → muscle aches → {marker}",
+  "plain": "Statins can lead to muscle aches, which are sometimes treated with a pain reliever.",
+  "clinician": "Statin-associated myalgia treated with a pain reliever is on the PIPC list (Rochon 2025).",
+  "question": "Could the muscle aches be linked to {index}, and is {marker} still the best way to manage them?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "dpp4-joint-pain-nsaid",
+  "index": {
+   "classes": [
+    "dpp4_inhibitor"
+   ]
+  },
+  "adverseEffect": "joint pain",
+  "reasonKeywords": [
+   "joint"
+  ],
+  "marker": {
+   "classes": [
+    "nsaid"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → joint pain → {marker}",
+  "plain": "Some diabetes medicines (DPP-4 inhibitors such as sitagliptin) can lead to joint pain, which may be treated with an anti-inflammatory.",
+  "clinician": "DPP-4 inhibitor arthralgia (labeled warning) treated with an NSAID is on the PIPC list (Rochon 2025).",
+  "question": "Could the joint pain be linked to {index}, and is {marker} still needed?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "sglt2-yeast-antifungal",
+  "index": {
+   "classes": [
+    "sglt2_inhibitor"
+   ]
+  },
+  "adverseEffect": "genital yeast infection",
+  "reasonKeywords": [
+   "yeast",
+   "fungal",
+   "thrush"
+  ],
+  "marker": {
+   "drugs": [
+    "fluconazole",
+    "nystatin"
+   ]
+  },
+  "windowDays": 180,
+  "title": "Possible prescribing cascade: {index} → yeast infection → {marker}",
+  "plain": "Some diabetes medicines (SGLT2 inhibitors) raise the chance of genital yeast infections, which are then treated with an antifungal.",
+  "clinician": "SGLT2 inhibitor genital mycotic infection treated with an antifungal is on the PIPC list (Rochon 2025).",
+  "question": "Could the infection be linked to {index}, and how can it be prevented?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "metformin-diarrhea-antidiarrheal",
+  "index": {
+   "drugs": [
+    "metformin"
+   ]
+  },
+  "adverseEffect": "diarrhea",
+  "reasonKeywords": [
+   "diarrh",
+   "loose"
+  ],
+  "marker": {
+   "classes": [
+    "antidiarrheal"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → diarrhea → {marker}",
+  "plain": "Metformin can lead to diarrhea, which is sometimes treated with an anti-diarrhea medicine.",
+  "clinician": "Metformin-associated diarrhea treated with an antidiarrheal is on the PIPC list (Rochon 2025); formulation or dose timing may be relevant.",
+  "question": "Could the diarrhea be linked to {index}, and is {marker} still the best way to manage it?",
+  "sourceId": "pipc2025"
+ },
+ {
+  "id": "antipsychotic-high-sugar-antidiabetic",
+  "index": {
+   "classes": [
+    "antipsychotic"
+   ]
+  },
+  "adverseEffect": "high blood sugar",
+  "reasonKeywords": [],
+  "marker": {
+   "classes": [
+    "antidiabetic"
+   ]
+  },
+  "windowDays": 365,
+  "title": "Possible prescribing cascade: {index} → high blood sugar → {marker}",
+  "plain": "Some antipsychotic medicines can raise blood sugar, and a diabetes medicine started afterwards may be treating that effect.",
+  "clinician": "Antipsychotic-associated hyperglycemia treated with an antihyperglycemic is on the PIPC list (Rochon 2025).",
+  "question": "Could the higher blood sugar be linked to {index}, and was that considered before starting {marker}?",
+  "sourceId": "pipc2025"
+ }
+]

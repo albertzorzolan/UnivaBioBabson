@@ -1,0 +1,8708 @@
+[
+ {
+  "id": "alprazolam",
+  "display": "Alprazolam",
+  "brands": [
+   "xanax",
+   "xanax xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "596",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Anxiety and panic attacks"
+ },
+ {
+  "id": "chlordiazepoxide",
+  "display": "Chlordiazepoxide",
+  "brands": [
+   "librium"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "2356",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Anxiety; alcohol withdrawal"
+ },
+ {
+  "id": "clobazam",
+  "display": "Clobazam",
+  "brands": [
+   "onfi",
+   "sympazan"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine",
+   "antiepileptic"
+  ],
+  "rxcui": "21241",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures"
+ },
+ {
+  "id": "clonazepam",
+  "display": "Clonazepam",
+  "brands": [
+   "klonopin"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine",
+   "antiepileptic"
+  ],
+  "rxcui": "2598",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Panic disorder and seizures"
+ },
+ {
+  "id": "clorazepate",
+  "display": "Clorazepate",
+  "brands": [
+   "tranxene",
+   "tranxene t-tab"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "2353",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Anxiety; alcohol withdrawal"
+ },
+ {
+  "id": "diazepam",
+  "display": "Diazepam",
+  "brands": [
+   "valium",
+   "valtoco"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "3322",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Anxiety, muscle spasms and alcohol withdrawal"
+ },
+ {
+  "id": "estazolam",
+  "display": "Estazolam",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "4077",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Short-term treatment of insomnia"
+ },
+ {
+  "id": "lorazepam",
+  "display": "Lorazepam",
+  "brands": [
+   "ativan",
+   "loreev xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "6470",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Anxiety; sometimes prescribed for sleep"
+ },
+ {
+  "id": "midazolam",
+  "display": "Midazolam",
+  "brands": [
+   "nayzilam"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "6960",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Sedation for procedures; nasal spray for seizure clusters"
+ },
+ {
+  "id": "oxazepam",
+  "display": "Oxazepam",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "7781",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Anxiety; alcohol withdrawal"
+ },
+ {
+  "id": "temazepam",
+  "display": "Temazepam",
+  "brands": [
+   "restoril"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "10355",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Short-term treatment of insomnia"
+ },
+ {
+  "id": "triazolam",
+  "display": "Triazolam",
+  "brands": [
+   "halcion"
+  ],
+  "aliases": [],
+  "classes": [
+   "benzodiazepine"
+  ],
+  "rxcui": "10767",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Short-term treatment of insomnia"
+ },
+ {
+  "id": "eszopiclone",
+  "display": "Eszopiclone",
+  "brands": [
+   "lunesta"
+  ],
+  "aliases": [],
+  "classes": [
+   "z_drug"
+  ],
+  "rxcui": "461016",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Insomnia"
+ },
+ {
+  "id": "zaleplon",
+  "display": "Zaleplon",
+  "brands": [
+   "sonata"
+  ],
+  "aliases": [],
+  "classes": [
+   "z_drug"
+  ],
+  "rxcui": "74667",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Insomnia (trouble falling asleep)"
+ },
+ {
+  "id": "zolpidem",
+  "display": "Zolpidem",
+  "brands": [
+   "ambien",
+   "ambien cr",
+   "edluar",
+   "zolpimist"
+  ],
+  "aliases": [],
+  "classes": [
+   "z_drug"
+  ],
+  "rxcui": "39993",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Insomnia"
+ },
+ {
+  "id": "butalbital",
+  "display": "Butalbital",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "barbiturate"
+  ],
+  "rxcui": "19860",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion"
+  ],
+  "usedFor": "Tension headaches (in combination products such as Fioricet)"
+ },
+ {
+  "id": "phenobarbital",
+  "display": "Phenobarbital",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "barbiturate",
+   "antiepileptic"
+  ],
+  "rxcui": "8134",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures"
+ },
+ {
+  "id": "primidone",
+  "display": "Primidone",
+  "brands": [
+   "mysoline"
+  ],
+  "aliases": [],
+  "classes": [
+   "barbiturate",
+   "antiepileptic"
+  ],
+  "rxcui": "8691",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Essential tremor and seizures"
+ },
+ {
+  "id": "meprobamate",
+  "display": "Meprobamate",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "sedative_other"
+  ],
+  "rxcui": "6760",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness"
+  ],
+  "usedFor": "Anxiety (an older medicine, now rarely used)"
+ },
+ {
+  "id": "melatonin",
+  "display": "Melatonin",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "sleep_supplement"
+  ],
+  "rxcui": "6711",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness"
+  ],
+  "usedFor": "Sleep (dietary supplement)"
+ },
+ {
+  "id": "aripiprazole",
+  "display": "Aripiprazole",
+  "brands": [
+   "abilify",
+   "abilify maintena",
+   "abilify mycite"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "89013",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder; add-on treatment for depression"
+ },
+ {
+  "id": "asenapine",
+  "display": "Asenapine",
+  "brands": [
+   "saphris",
+   "secuado"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "784649",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder"
+ },
+ {
+  "id": "brexpiprazole",
+  "display": "Brexpiprazole",
+  "brands": [
+   "rexulti"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "1658314",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Add-on for depression; schizophrenia; agitation with Alzheimer dementia"
+ },
+ {
+  "id": "cariprazine",
+  "display": "Cariprazine",
+  "brands": [
+   "vraylar"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "1667655",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder; add-on for depression"
+ },
+ {
+  "id": "chlorpromazine",
+  "display": "Chlorpromazine",
+  "brands": [
+   "thorazine"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "2403",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia; severe nausea and hiccups"
+ },
+ {
+  "id": "clozapine",
+  "display": "Clozapine",
+  "brands": [
+   "clozaril",
+   "versacloz"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "2626",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia that has not responded to other treatment; Parkinson disease psychosis"
+ },
+ {
+  "id": "fluphenazine",
+  "display": "Fluphenazine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "4496",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia"
+ },
+ {
+  "id": "haloperidol",
+  "display": "Haloperidol",
+  "brands": [
+   "haldol"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "5093",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia; Tourette syndrome; severe agitation"
+ },
+ {
+  "id": "iloperidone",
+  "display": "Iloperidone",
+  "brands": [
+   "fanapt"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "73178",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder"
+ },
+ {
+  "id": "loxapine",
+  "display": "Loxapine",
+  "brands": [
+   "adasuve",
+   "loxitane"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "6475",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia; agitation"
+ },
+ {
+  "id": "lurasidone",
+  "display": "Lurasidone",
+  "brands": [
+   "latuda"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "1040028",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and bipolar depression"
+ },
+ {
+  "id": "methotrimeprazine",
+  "display": "Methotrimeprazine (levomepromazine)",
+  "brands": [],
+  "aliases": [
+   "levomepromazine"
+  ],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "6852",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Psychosis, pain and nausea in palliative care (not marketed in the US)"
+ },
+ {
+  "id": "molindone",
+  "display": "Molindone",
+  "brands": [
+   "moban"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "7019",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia"
+ },
+ {
+  "id": "olanzapine",
+  "display": "Olanzapine",
+  "brands": [
+   "zyprexa",
+   "zyprexa zydis",
+   "zyprexa relprevv"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "61381",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder"
+ },
+ {
+  "id": "paliperidone",
+  "display": "Paliperidone",
+  "brands": [
+   "invega",
+   "invega sustenna",
+   "invega trinza",
+   "invega hafyera"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "679314",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and schizoaffective disorder"
+ },
+ {
+  "id": "perphenazine",
+  "display": "Perphenazine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antipsychotic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "8076",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia; severe nausea"
+ },
+ {
+  "id": "pimavanserin",
+  "display": "Pimavanserin",
+  "brands": [
+   "nuplazid"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "1791685",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "Hallucinations and delusions with Parkinson disease psychosis"
+ },
+ {
+  "id": "pimozide",
+  "display": "Pimozide",
+  "brands": [
+   "orap"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "8331",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Tics in Tourette syndrome"
+ },
+ {
+  "id": "quetiapine",
+  "display": "Quetiapine",
+  "brands": [
+   "seroquel",
+   "seroquel xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "51272",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder; add-on for depression (sometimes used off-label for sleep)"
+ },
+ {
+  "id": "risperidone",
+  "display": "Risperidone",
+  "brands": [
+   "risperdal",
+   "risperdal consta",
+   "perseris",
+   "uzedy"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "35636",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder; irritability with autism"
+ },
+ {
+  "id": "thioridazine",
+  "display": "Thioridazine",
+  "brands": [
+   "mellaril"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "10502",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia (rarely used now)"
+ },
+ {
+  "id": "trifluoperazine",
+  "display": "Trifluoperazine",
+  "brands": [
+   "stelazine"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "10800",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia; anxiety (rarely used now)"
+ },
+ {
+  "id": "ziprasidone",
+  "display": "Ziprasidone",
+  "brands": [
+   "geodon"
+  ],
+  "aliases": [],
+  "classes": [
+   "antipsychotic"
+  ],
+  "rxcui": "115698",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Schizophrenia and bipolar disorder"
+ },
+ {
+  "id": "amitriptyline",
+  "display": "Amitriptyline",
+  "brands": [
+   "elavil"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "704",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression; often used for nerve pain, headaches or sleep"
+ },
+ {
+  "id": "amoxapine",
+  "display": "Amoxapine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "tca",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "722",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "clomipramine",
+  "display": "Clomipramine",
+  "brands": [
+   "anafranil"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "2597",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Obsessive-compulsive disorder"
+ },
+ {
+  "id": "desipramine",
+  "display": "Desipramine",
+  "brands": [
+   "norpramin"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "3247",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "doxepin",
+  "display": "Doxepin",
+  "brands": [
+   "sinequan"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "3638",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression and anxiety; low doses (Silenor) for insomnia"
+ },
+ {
+  "id": "doxepin low dose",
+  "display": "Doxepin, low dose for sleep (3 to 6 mg)",
+  "brands": [
+   "silenor"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca"
+  ],
+  "rxcui": "3638",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Insomnia (trouble staying asleep); low-dose tablets of 3 or 6 mg",
+  "variant": {
+   "of": "doxepin",
+   "maxDoseMg": 6
+  }
+ },
+ {
+  "id": "imipramine",
+  "display": "Imipramine",
+  "brands": [
+   "tofranil",
+   "tofranil-pm"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "5691",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression; bedwetting"
+ },
+ {
+  "id": "nortriptyline",
+  "display": "Nortriptyline",
+  "brands": [
+   "pamelor"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "7531",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression; often used for nerve pain"
+ },
+ {
+  "id": "trimipramine",
+  "display": "Trimipramine",
+  "brands": [
+   "surmontil"
+  ],
+  "aliases": [],
+  "classes": [
+   "tca"
+  ],
+  "rxcui": "10834",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "citalopram",
+  "display": "Citalopram",
+  "brands": [
+   "celexa"
+  ],
+  "aliases": [],
+  "classes": [
+   "ssri"
+  ],
+  "rxcui": "2556",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "escitalopram",
+  "display": "Escitalopram",
+  "brands": [
+   "lexapro"
+  ],
+  "aliases": [],
+  "classes": [
+   "ssri"
+  ],
+  "rxcui": "321988",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "energy",
+   "sleep"
+  ],
+  "usedFor": "Depression and anxiety"
+ },
+ {
+  "id": "fluoxetine",
+  "display": "Fluoxetine",
+  "brands": [
+   "prozac"
+  ],
+  "aliases": [],
+  "classes": [
+   "ssri"
+  ],
+  "rxcui": "4493",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep",
+   "appetiteWorse"
+  ],
+  "usedFor": "Depression, anxiety and obsessive-compulsive disorder"
+ },
+ {
+  "id": "fluvoxamine",
+  "display": "Fluvoxamine",
+  "brands": [
+   "luvox"
+  ],
+  "aliases": [],
+  "classes": [
+   "ssri"
+  ],
+  "rxcui": "42355",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep"
+  ],
+  "usedFor": "Obsessive-compulsive disorder"
+ },
+ {
+  "id": "paroxetine",
+  "display": "Paroxetine",
+  "brands": [
+   "paxil",
+   "paxil cr",
+   "pexeva",
+   "brisdelle"
+  ],
+  "aliases": [],
+  "classes": [
+   "ssri",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "32937",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy",
+   "sleep"
+  ],
+  "usedFor": "Depression, anxiety and panic disorder; hot flashes"
+ },
+ {
+  "id": "sertraline",
+  "display": "Sertraline",
+  "brands": [
+   "zoloft"
+  ],
+  "aliases": [],
+  "classes": [
+   "ssri"
+  ],
+  "rxcui": "36437",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "energy",
+   "sleep"
+  ],
+  "usedFor": "Depression, anxiety, panic disorder and PTSD"
+ },
+ {
+  "id": "desvenlafaxine",
+  "display": "Desvenlafaxine",
+  "brands": [
+   "pristiq"
+  ],
+  "aliases": [],
+  "classes": [
+   "snri"
+  ],
+  "rxcui": "734064",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "duloxetine",
+  "display": "Duloxetine",
+  "brands": [
+   "cymbalta",
+   "drizalma sprinkle"
+  ],
+  "aliases": [],
+  "classes": [
+   "snri"
+  ],
+  "rxcui": "72625",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep",
+   "appetiteWorse"
+  ],
+  "usedFor": "Depression and anxiety; nerve pain, fibromyalgia and chronic muscle or joint pain"
+ },
+ {
+  "id": "levomilnacipran",
+  "display": "Levomilnacipran",
+  "brands": [
+   "fetzima"
+  ],
+  "aliases": [],
+  "classes": [
+   "snri"
+  ],
+  "rxcui": "1433212",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "milnacipran",
+  "display": "Milnacipran",
+  "brands": [
+   "savella"
+  ],
+  "aliases": [],
+  "classes": [
+   "snri"
+  ],
+  "rxcui": "588250",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep"
+  ],
+  "usedFor": "Fibromyalgia"
+ },
+ {
+  "id": "venlafaxine",
+  "display": "Venlafaxine",
+  "brands": [
+   "effexor",
+   "effexor xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "snri"
+  ],
+  "rxcui": "39786",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep",
+   "appetiteWorse"
+  ],
+  "usedFor": "Depression and anxiety"
+ },
+ {
+  "id": "bupropion",
+  "display": "Bupropion",
+  "brands": [
+   "wellbutrin",
+   "wellbutrin sr",
+   "wellbutrin xl",
+   "zyban",
+   "aplenzin",
+   "forfivo xl"
+  ],
+  "aliases": [],
+  "classes": [
+   "antidepressant_other"
+  ],
+  "rxcui": "42347",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "sleep",
+   "appetiteWorse"
+  ],
+  "usedFor": "Depression; quitting smoking"
+ },
+ {
+  "id": "mirtazapine",
+  "display": "Mirtazapine",
+  "brands": [
+   "remeron",
+   "remeronsoltab"
+  ],
+  "aliases": [],
+  "classes": [
+   "antidepressant_other"
+  ],
+  "rxcui": "15996",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Depression (also increases appetite and sleepiness)"
+ },
+ {
+  "id": "trazodone",
+  "display": "Trazodone",
+  "brands": [
+   "desyrel"
+  ],
+  "aliases": [],
+  "classes": [
+   "antidepressant_other"
+  ],
+  "rxcui": "10737",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Depression; often used at low doses for sleep"
+ },
+ {
+  "id": "vilazodone",
+  "display": "Vilazodone",
+  "brands": [
+   "viibryd"
+  ],
+  "aliases": [],
+  "classes": [
+   "antidepressant_other"
+  ],
+  "rxcui": "1086769",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "fall",
+   "nearFall",
+   "sleep"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "vortioxetine",
+  "display": "Vortioxetine",
+  "brands": [
+   "trintellix"
+  ],
+  "aliases": [],
+  "classes": [
+   "antidepressant_other"
+  ],
+  "rxcui": "1455099",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Depression"
+ },
+ {
+  "id": "carbamazepine",
+  "display": "Carbamazepine",
+  "brands": [
+   "tegretol",
+   "tegretol xr",
+   "carbatrol",
+   "equetro"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "2002",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures; trigeminal nerve pain; bipolar disorder"
+ },
+ {
+  "id": "divalproex",
+  "display": "Divalproex (valproate)",
+  "brands": [
+   "depakote",
+   "depakote er",
+   "depakene"
+  ],
+  "aliases": [
+   "divalproex sodium",
+   "valproate",
+   "valproic acid"
+  ],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "40254",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures, bipolar disorder and migraine prevention"
+ },
+ {
+  "id": "lacosamide",
+  "display": "Lacosamide",
+  "brands": [
+   "vimpat",
+   "motpoly xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "623400",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures"
+ },
+ {
+  "id": "lamotrigine",
+  "display": "Lamotrigine",
+  "brands": [
+   "lamictal",
+   "lamictal xr",
+   "lamictal odt",
+   "subvenite"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "28439",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures and bipolar disorder"
+ },
+ {
+  "id": "levetiracetam",
+  "display": "Levetiracetam",
+  "brands": [
+   "keppra",
+   "keppra xr",
+   "spritam",
+   "elepsia xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "114477",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Seizures"
+ },
+ {
+  "id": "oxcarbazepine",
+  "display": "Oxcarbazepine",
+  "brands": [
+   "trileptal",
+   "oxtellar xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "32624",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures"
+ },
+ {
+  "id": "phenytoin",
+  "display": "Phenytoin",
+  "brands": [
+   "dilantin"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "8183",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Seizures"
+ },
+ {
+  "id": "topiramate",
+  "display": "Topiramate",
+  "brands": [
+   "topamax",
+   "trokendi xr",
+   "qudexy xr",
+   "eprontia"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "38404",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy",
+   "appetiteWorse"
+  ],
+  "usedFor": "Seizures; migraine prevention"
+ },
+ {
+  "id": "zonisamide",
+  "display": "Zonisamide",
+  "brands": [
+   "zonegran",
+   "zonisade"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiepileptic"
+  ],
+  "rxcui": "39998",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "appetiteWorse"
+  ],
+  "usedFor": "Seizures"
+ },
+ {
+  "id": "gabapentin",
+  "display": "Gabapentin",
+  "brands": [
+   "neurontin",
+   "gralise"
+  ],
+  "aliases": [],
+  "classes": [
+   "gabapentinoid"
+  ],
+  "rxcui": "25480",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "swelling",
+   "energy"
+  ],
+  "usedFor": "Nerve pain (for example after shingles) and seizures"
+ },
+ {
+  "id": "gabapentin enacarbil",
+  "display": "Gabapentin enacarbil",
+  "brands": [
+   "horizant"
+  ],
+  "aliases": [],
+  "classes": [
+   "gabapentinoid"
+  ],
+  "rxcui": "1101333",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "swelling",
+   "energy"
+  ],
+  "usedFor": "Restless legs syndrome; nerve pain after shingles"
+ },
+ {
+  "id": "pregabalin",
+  "display": "Pregabalin",
+  "brands": [
+   "lyrica",
+   "lyrica cr"
+  ],
+  "aliases": [],
+  "classes": [
+   "gabapentinoid"
+  ],
+  "rxcui": "187832",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "swelling",
+   "energy"
+  ],
+  "usedFor": "Nerve pain, fibromyalgia and seizures"
+ },
+ {
+  "id": "buprenorphine",
+  "display": "Buprenorphine",
+  "brands": [
+   "butrans",
+   "belbuca",
+   "sublocade",
+   "subutex"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "1819",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Chronic pain (patch or film); opioid use disorder"
+ },
+ {
+  "id": "codeine",
+  "display": "Codeine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "2670",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Pain and cough (mostly in combination products such as Tylenol with codeine)"
+ },
+ {
+  "id": "fentanyl",
+  "display": "Fentanyl",
+  "brands": [
+   "duragesic",
+   "actiq",
+   "fentora",
+   "subsys"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "4337",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Severe, long-lasting pain (patch)"
+ },
+ {
+  "id": "hydrocodone",
+  "display": "Hydrocodone",
+  "brands": [
+   "hysingla er",
+   "zohydro er"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "5489",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Pain (usually combined with acetaminophen, e.g. Norco)"
+ },
+ {
+  "id": "hydromorphone",
+  "display": "Hydromorphone",
+  "brands": [
+   "dilaudid",
+   "exalgo"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "3423",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Severe pain"
+ },
+ {
+  "id": "meperidine",
+  "display": "Meperidine",
+  "brands": [
+   "demerol"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "6754",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Pain (rarely recommended now)"
+ },
+ {
+  "id": "methadone",
+  "display": "Methadone",
+  "brands": [
+   "dolophine",
+   "methadose"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "6813",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Chronic pain; opioid use disorder"
+ },
+ {
+  "id": "morphine",
+  "display": "Morphine",
+  "brands": [
+   "ms contin",
+   "kadian",
+   "avinza"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "7052",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Severe pain"
+ },
+ {
+  "id": "oxycodone",
+  "display": "Oxycodone",
+  "brands": [
+   "oxycontin",
+   "roxicodone",
+   "oxaydo",
+   "xtampza er",
+   "roxybond"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "7804",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Moderate to severe pain"
+ },
+ {
+  "id": "oxymorphone",
+  "display": "Oxymorphone",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "7814",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Severe pain"
+ },
+ {
+  "id": "tapentadol",
+  "display": "Tapentadol",
+  "brands": [
+   "nucynta",
+   "nucynta er"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "787390",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Moderate to severe pain; diabetic nerve pain"
+ },
+ {
+  "id": "tramadol",
+  "display": "Tramadol",
+  "brands": [
+   "ultram",
+   "conzip",
+   "qdolo"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid"
+  ],
+  "rxcui": "10689",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Moderate pain"
+ },
+ {
+  "id": "naloxone",
+  "display": "Naloxone",
+  "brands": [
+   "narcan",
+   "rivive",
+   "zimhi"
+  ],
+  "aliases": [],
+  "classes": [
+   "opioid_antagonist"
+  ],
+  "rxcui": "7242",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Emergency reversal of an opioid overdose"
+ },
+ {
+  "id": "carisoprodol",
+  "display": "Carisoprodol",
+  "brands": [
+   "soma"
+  ],
+  "aliases": [],
+  "classes": [
+   "skeletal_muscle_relaxant"
+  ],
+  "rxcui": "2101",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Short-term muscle pain"
+ },
+ {
+  "id": "chlorzoxazone",
+  "display": "Chlorzoxazone",
+  "brands": [
+   "lorzone",
+   "parafon forte dsc"
+  ],
+  "aliases": [],
+  "classes": [
+   "skeletal_muscle_relaxant"
+  ],
+  "rxcui": "2410",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Muscle pain and spasms"
+ },
+ {
+  "id": "cyclobenzaprine",
+  "display": "Cyclobenzaprine",
+  "brands": [
+   "flexeril",
+   "amrix",
+   "fexmid"
+  ],
+  "aliases": [],
+  "classes": [
+   "skeletal_muscle_relaxant",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "21949",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Muscle spasms"
+ },
+ {
+  "id": "metaxalone",
+  "display": "Metaxalone",
+  "brands": [
+   "skelaxin",
+   "metaxall"
+  ],
+  "aliases": [],
+  "classes": [
+   "skeletal_muscle_relaxant"
+  ],
+  "rxcui": "59078",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Muscle pain and spasms"
+ },
+ {
+  "id": "methocarbamol",
+  "display": "Methocarbamol",
+  "brands": [
+   "robaxin"
+  ],
+  "aliases": [],
+  "classes": [
+   "skeletal_muscle_relaxant"
+  ],
+  "rxcui": "6845",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Muscle pain and spasms"
+ },
+ {
+  "id": "orphenadrine",
+  "display": "Orphenadrine",
+  "brands": [
+   "norflex"
+  ],
+  "aliases": [],
+  "classes": [
+   "skeletal_muscle_relaxant",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "7715",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Muscle pain and spasms"
+ },
+ {
+  "id": "baclofen",
+  "display": "Baclofen",
+  "brands": [
+   "lioresal",
+   "ozobax",
+   "fleqsuvy",
+   "lyvispah"
+  ],
+  "aliases": [],
+  "classes": [
+   "antispasticity_agent"
+  ],
+  "rxcui": "1292",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Muscle stiffness (spasticity), e.g. after stroke or with multiple sclerosis"
+ },
+ {
+  "id": "tizanidine",
+  "display": "Tizanidine",
+  "brands": [
+   "zanaflex"
+  ],
+  "aliases": [],
+  "classes": [
+   "antispasticity_agent"
+  ],
+  "rxcui": "57258",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Muscle stiffness (spasticity)"
+ },
+ {
+  "id": "buspirone",
+  "display": "Buspirone",
+  "brands": [
+   "buspar"
+  ],
+  "aliases": [],
+  "classes": [
+   "anxiolytic_other"
+  ],
+  "rxcui": "1827",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness"
+  ],
+  "usedFor": "Anxiety"
+ },
+ {
+  "id": "lithium",
+  "display": "Lithium",
+  "brands": [
+   "lithobid"
+  ],
+  "aliases": [],
+  "classes": [
+   "mood_stabilizer"
+  ],
+  "rxcui": "6448",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "drowsiness",
+   "confusion"
+  ],
+  "usedFor": "Bipolar disorder"
+ },
+ {
+  "id": "donepezil",
+  "display": "Donepezil",
+  "brands": [
+   "aricept",
+   "adlarity"
+  ],
+  "aliases": [],
+  "classes": [
+   "cholinesterase_inhibitor"
+  ],
+  "rxcui": "135447",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy",
+   "sleep",
+   "appetiteWorse"
+  ],
+  "usedFor": "Memory and thinking symptoms of Alzheimer disease"
+ },
+ {
+  "id": "galantamine",
+  "display": "Galantamine",
+  "brands": [
+   "razadyne",
+   "razadyne er"
+  ],
+  "aliases": [],
+  "classes": [
+   "cholinesterase_inhibitor"
+  ],
+  "rxcui": "4637",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "sleep",
+   "appetiteWorse"
+  ],
+  "usedFor": "Memory and thinking symptoms of Alzheimer disease"
+ },
+ {
+  "id": "rivastigmine",
+  "display": "Rivastigmine",
+  "brands": [
+   "exelon"
+  ],
+  "aliases": [],
+  "classes": [
+   "cholinesterase_inhibitor"
+  ],
+  "rxcui": "183379",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "sleep",
+   "appetiteWorse"
+  ],
+  "usedFor": "Memory and thinking symptoms of Alzheimer or Parkinson disease dementia"
+ },
+ {
+  "id": "memantine",
+  "display": "Memantine",
+  "brands": [
+   "namenda",
+   "namenda xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "nmda_antagonist"
+  ],
+  "rxcui": "6719",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "confusion"
+  ],
+  "usedFor": "Moderate to severe Alzheimer disease"
+ },
+ {
+  "id": "carbidopa",
+  "display": "Carbidopa",
+  "brands": [
+   "lodosyn"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopaminergic_antiparkinson"
+  ],
+  "rxcui": "2019",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "confusion"
+  ],
+  "usedFor": "Parkinson disease (taken with levodopa)"
+ },
+ {
+  "id": "levodopa",
+  "display": "Levodopa",
+  "brands": [
+   "inbrija"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopaminergic_antiparkinson"
+  ],
+  "rxcui": "6375",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "confusion",
+   "appetiteWorse"
+  ],
+  "usedFor": "Parkinson disease (usually combined with carbidopa, e.g. Sinemet)"
+ },
+ {
+  "id": "pramipexole",
+  "display": "Pramipexole",
+  "brands": [
+   "mirapex",
+   "mirapex er"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopaminergic_antiparkinson"
+  ],
+  "rxcui": "746741",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "Parkinson disease; restless legs syndrome"
+ },
+ {
+  "id": "ropinirole",
+  "display": "Ropinirole",
+  "brands": [
+   "requip",
+   "requip xl"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopaminergic_antiparkinson"
+  ],
+  "rxcui": "72302",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "Parkinson disease; restless legs syndrome"
+ },
+ {
+  "id": "rotigotine",
+  "display": "Rotigotine",
+  "brands": [
+   "neupro"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopaminergic_antiparkinson"
+  ],
+  "rxcui": "616739",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "confusion"
+  ],
+  "usedFor": "Parkinson disease; restless legs syndrome (skin patch)"
+ },
+ {
+  "id": "rasagiline",
+  "display": "Rasagiline",
+  "brands": [
+   "azilect"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopaminergic_antiparkinson"
+  ],
+  "rxcui": "134748",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "confusion"
+  ],
+  "usedFor": "Parkinson disease"
+ },
+ {
+  "id": "amantadine",
+  "display": "Amantadine",
+  "brands": [
+   "gocovri",
+   "osmolex er",
+   "symmetrel"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopaminergic_antiparkinson"
+  ],
+  "rxcui": "620",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "confusion",
+   "swelling",
+   "appetiteWorse"
+  ],
+  "usedFor": "Parkinson disease and its movement side effects"
+ },
+ {
+  "id": "benztropine",
+  "display": "Benztropine",
+  "brands": [
+   "cogentin"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiparkinson_anticholinergic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "1424",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Parkinson disease tremor; movement side effects of antipsychotics"
+ },
+ {
+  "id": "trihexyphenidyl",
+  "display": "Trihexyphenidyl",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antiparkinson_anticholinergic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "10811",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Parkinson disease tremor; movement side effects of antipsychotics"
+ },
+ {
+  "id": "ergoloid mesylates",
+  "display": "Ergoloid mesylates",
+  "brands": [],
+  "aliases": [
+   "dihydroergotoxine",
+   "hydergine"
+  ],
+  "classes": [
+   "ergot_derivative"
+  ],
+  "rxcui": "4024",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Age-related mental decline (an old medicine without proven benefit)"
+ },
+ {
+  "id": "caffeine",
+  "display": "Caffeine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "stimulant"
+  ],
+  "rxcui": "1886",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "sleep"
+  ],
+  "usedFor": "Alertness; an ingredient in some headache products"
+ },
+ {
+  "id": "brompheniramine",
+  "display": "Brompheniramine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "1767",
+  "otc": true,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Allergy and cold symptoms (in many OTC combination products)"
+ },
+ {
+  "id": "carbinoxamine",
+  "display": "Carbinoxamine",
+  "brands": [
+   "karbinal er",
+   "ryvent"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine"
+  ],
+  "rxcui": "20220",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Allergy symptoms"
+ },
+ {
+  "id": "chlorpheniramine",
+  "display": "Chlorpheniramine",
+  "brands": [
+   "chlor-trimeton",
+   "aller-chlor"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "2400",
+  "otc": true,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Allergy and cold symptoms (in many OTC combination products)"
+ },
+ {
+  "id": "clemastine",
+  "display": "Clemastine",
+  "brands": [
+   "tavist",
+   "dayhist"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine"
+  ],
+  "rxcui": "2578",
+  "otc": true,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Allergy symptoms"
+ },
+ {
+  "id": "cyproheptadine",
+  "display": "Cyproheptadine",
+  "brands": [
+   "periactin"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "3013",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Allergy symptoms; sometimes used to increase appetite"
+ },
+ {
+  "id": "dimenhydrinate",
+  "display": "Dimenhydrinate",
+  "brands": [
+   "dramamine",
+   "dramamine original"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "3444",
+  "otc": true,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Motion sickness"
+ },
+ {
+  "id": "diphenhydramine",
+  "display": "Diphenhydramine",
+  "brands": [
+   "benadryl",
+   "zzzquil",
+   "nytol",
+   "sominex",
+   "simply sleep",
+   "unisom sleepgels",
+   "banophen",
+   "diphenhist",
+   "sleep-eze",
+   "compoz",
+   "tylenol simply sleep",
+   "unisom sleepmelts",
+   "unisom sleepminis",
+   "benadryl allergy",
+   "benadryl allergy ultratabs",
+   "benadryl ultratabs"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "3498",
+  "otc": true,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Allergies, itching and sleep (the 'PM' ingredient in many night-time products)"
+ },
+ {
+  "id": "diphenhydramine topical",
+  "display": "Diphenhydramine cream, gel or spray (on the skin)",
+  "brands": [
+   "benadryl cream",
+   "benadryl itch stopping cream",
+   "benadryl itch stopping gel",
+   "benadryl itch relief stick",
+   "benadryl itch cooling spray",
+   "benadryl extra strength itch stopping cream",
+   "benadryl extra strength itch relief"
+  ],
+  "aliases": [],
+  "classes": [
+   "antihistamine_topical"
+  ],
+  "rxcui": "3498",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Itching from bites, rashes and minor skin irritation (applied to the skin)",
+  "variant": {
+   "of": "diphenhydramine",
+   "words": [
+    "cream",
+    "creme",
+    "ointment",
+    "lotion",
+    "topical",
+    "gel",
+    "spray",
+    "stick",
+    "on the skin"
+   ],
+   "baseWords": [
+    "tab",
+    "tabs",
+    "tablet",
+    "tablets",
+    "cap",
+    "caps",
+    "capsule",
+    "capsules",
+    "caplet",
+    "caplets",
+    "pill",
+    "pills",
+    "oral",
+    "po",
+    "by mouth",
+    "er",
+    "xr",
+    "sr",
+    "ec",
+    "dr",
+    "#mg"
+   ]
+  }
+ },
+ {
+  "id": "doxylamine",
+  "display": "Doxylamine",
+  "brands": [
+   "unisom",
+   "unisom sleeptabs",
+   "zzzquil ultra"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "3642",
+  "otc": true,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Sleep (OTC sleep aid); an ingredient in NyQuil"
+ },
+ {
+  "id": "hydroxyzine",
+  "display": "Hydroxyzine",
+  "brands": [
+   "vistaril",
+   "atarax"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "5553",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Itching and anxiety"
+ },
+ {
+  "id": "meclizine",
+  "display": "Meclizine",
+  "brands": [
+   "antivert",
+   "bonine",
+   "dramamine less drowsy",
+   "dramamine all day less drowsy"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "6676",
+  "otc": true,
+  "acb": 3,
+  "effects": [
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Dizziness (vertigo) and motion sickness"
+ },
+ {
+  "id": "promethazine",
+  "display": "Promethazine",
+  "brands": [
+   "phenergan",
+   "promethegan"
+  ],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "dopamine_antagonist_antiemetic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "8745",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Nausea, allergies and cough (in some cough syrups)"
+ },
+ {
+  "id": "triprolidine",
+  "display": "Triprolidine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "10849",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Allergy and cold symptoms"
+ },
+ {
+  "id": "alimemazine",
+  "display": "Alimemazine (trimeprazine)",
+  "brands": [],
+  "aliases": [
+   "trimeprazine"
+  ],
+  "classes": [
+   "first_gen_antihistamine"
+  ],
+  "rxcui": "10825",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Itching and allergy symptoms (not marketed in the US)"
+ },
+ {
+  "id": "cetirizine",
+  "display": "Cetirizine",
+  "brands": [
+   "zyrtec"
+  ],
+  "aliases": [],
+  "classes": [
+   "second_gen_antihistamine"
+  ],
+  "rxcui": "20610",
+  "otc": true,
+  "acb": 1,
+  "effects": [
+   "drowsiness"
+  ],
+  "usedFor": "Allergy symptoms"
+ },
+ {
+  "id": "levocetirizine",
+  "display": "Levocetirizine",
+  "brands": [
+   "xyzal"
+  ],
+  "aliases": [],
+  "classes": [
+   "second_gen_antihistamine"
+  ],
+  "rxcui": "356887",
+  "otc": true,
+  "acb": 1,
+  "effects": [
+   "drowsiness"
+  ],
+  "usedFor": "Allergy symptoms"
+ },
+ {
+  "id": "loratadine",
+  "display": "Loratadine",
+  "brands": [
+   "claritin",
+   "alavert"
+  ],
+  "aliases": [],
+  "classes": [
+   "second_gen_antihistamine"
+  ],
+  "rxcui": "28889",
+  "otc": true,
+  "acb": 1,
+  "effects": [],
+  "usedFor": "Allergy symptoms"
+ },
+ {
+  "id": "desloratadine",
+  "display": "Desloratadine",
+  "brands": [
+   "clarinex"
+  ],
+  "aliases": [],
+  "classes": [
+   "second_gen_antihistamine"
+  ],
+  "rxcui": "275635",
+  "otc": false,
+  "acb": 1,
+  "effects": [],
+  "usedFor": "Allergy symptoms"
+ },
+ {
+  "id": "fexofenadine",
+  "display": "Fexofenadine",
+  "brands": [
+   "allegra",
+   "allegra allergy"
+  ],
+  "aliases": [],
+  "classes": [
+   "second_gen_antihistamine"
+  ],
+  "rxcui": "87636",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Allergy symptoms"
+ },
+ {
+  "id": "darifenacin",
+  "display": "Darifenacin",
+  "brands": [
+   "enablex"
+  ],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "136198",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "fesoterodine",
+  "display": "Fesoterodine",
+  "brands": [
+   "toviaz"
+  ],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "797195",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "flavoxate",
+  "display": "Flavoxate",
+  "brands": [
+   "urispas"
+  ],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "4440",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Bladder spasms and urinary discomfort"
+ },
+ {
+  "id": "oxybutynin",
+  "display": "Oxybutynin",
+  "brands": [
+   "ditropan",
+   "ditropan xl",
+   "oxytrol",
+   "gelnique"
+  ],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "32675",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "solifenacin",
+  "display": "Solifenacin",
+  "brands": [
+   "vesicare",
+   "vesicare ls"
+  ],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "322167",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "tolterodine",
+  "display": "Tolterodine",
+  "brands": [
+   "detrol",
+   "detrol la"
+  ],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "119565",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "trospium",
+  "display": "Trospium",
+  "brands": [
+   "sanctura"
+  ],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "236778",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "propiverine",
+  "display": "Propiverine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "bladder_antimuscarinic"
+  ],
+  "rxcui": "55175",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Overactive bladder (not marketed in the US)"
+ },
+ {
+  "id": "mirabegron",
+  "display": "Mirabegron",
+  "brands": [
+   "myrbetriq"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta3_agonist"
+  ],
+  "rxcui": "1300786",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "vibegron",
+  "display": "Vibegron",
+  "brands": [
+   "gemtesa"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta3_agonist"
+  ],
+  "rxcui": "2472254",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Overactive bladder"
+ },
+ {
+  "id": "atropine",
+  "display": "Atropine",
+  "brands": [
+   "sal-tropine",
+   "atropen"
+  ],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "1223",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Slow heart rate and other uses; eye drops (eye drops are not counted in Beers)"
+ },
+ {
+  "id": "atropine ophthalmic",
+  "display": "Atropine eye drops",
+  "brands": [
+   "isopto atropine",
+   "atropine care"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_other"
+  ],
+  "rxcui": "1223",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Eye drops that widen the pupil (eye exams, eye inflammation, lazy eye)",
+  "variant": {
+   "of": "atropine",
+   "words": [
+    "eye",
+    "eyes",
+    "ophthalmic",
+    "ophth",
+    "eye drop",
+    "eye drops",
+    "eyedrop",
+    "eyedrops",
+    "drop",
+    "drops",
+    "gtt",
+    "gtts"
+   ]
+  }
+ },
+ {
+  "id": "belladonna alkaloids",
+  "display": "Belladonna alkaloids",
+  "brands": [],
+  "aliases": [
+   "belladonna"
+  ],
+  "classes": [
+   "gi_antispasmodic"
+  ],
+  "rxcui": "1359",
+  "otc": false,
+  "acb": 2,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion"
+  ],
+  "usedFor": "Stomach and bowel cramps (in combination products such as Donnatal)"
+ },
+ {
+  "id": "clidinium",
+  "display": "Clidinium",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "21232",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Stomach cramps and irritable bowel (with chlordiazepoxide as Librax)"
+ },
+ {
+  "id": "dicyclomine",
+  "display": "Dicyclomine",
+  "brands": [
+   "bentyl"
+  ],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "3361",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Irritable bowel syndrome cramps"
+ },
+ {
+  "id": "homatropine",
+  "display": "Homatropine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "27084",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Cough (with hydrocodone in some syrups); eye drops"
+ },
+ {
+  "id": "hyoscyamine",
+  "display": "Hyoscyamine",
+  "brands": [
+   "levsin",
+   "levbid",
+   "anaspaz",
+   "levsin sl",
+   "symax",
+   "oscimin"
+  ],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "153970",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Stomach and bladder cramps; irritable bowel"
+ },
+ {
+  "id": "propantheline",
+  "display": "Propantheline",
+  "brands": [
+   "pro-banthine"
+  ],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic"
+  ],
+  "rxcui": "8761",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion"
+  ],
+  "usedFor": "Stomach ulcers and cramps (rarely used now)"
+ },
+ {
+  "id": "scopolamine",
+  "display": "Scopolamine",
+  "brands": [
+   "transderm scop"
+  ],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "9601",
+  "otc": false,
+  "acb": 3,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Motion sickness and nausea (skin patch)"
+ },
+ {
+  "id": "alverine",
+  "display": "Alverine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "gi_antispasmodic"
+  ],
+  "rxcui": "17627",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion"
+  ],
+  "usedFor": "Irritable bowel cramps (not marketed in the US)"
+ },
+ {
+  "id": "metoclopramide",
+  "display": "Metoclopramide",
+  "brands": [
+   "reglan",
+   "gimoti"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopamine_antagonist_antiemetic"
+  ],
+  "rxcui": "6915",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "drowsiness",
+   "energy"
+  ],
+  "usedFor": "Slow stomach emptying (gastroparesis), reflux and nausea"
+ },
+ {
+  "id": "prochlorperazine",
+  "display": "Prochlorperazine",
+  "brands": [
+   "compro",
+   "compazine"
+  ],
+  "aliases": [],
+  "classes": [
+   "dopamine_antagonist_antiemetic",
+   "strong_anticholinergic"
+  ],
+  "rxcui": "8704",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Severe nausea and vomiting; dizziness"
+ },
+ {
+  "id": "ondansetron",
+  "display": "Ondansetron",
+  "brands": [
+   "zofran",
+   "zofran odt"
+  ],
+  "aliases": [],
+  "classes": [
+   "serotonin_antagonist_antiemetic"
+  ],
+  "rxcui": "26225",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "energy"
+  ],
+  "usedFor": "Nausea and vomiting"
+ },
+ {
+  "id": "benazepril",
+  "display": "Benazepril",
+  "brands": [
+   "lotensin"
+  ],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "18867",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "captopril",
+  "display": "Captopril",
+  "brands": [
+   "capoten"
+  ],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "1998",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and heart failure"
+ },
+ {
+  "id": "enalapril",
+  "display": "Enalapril",
+  "brands": [
+   "vasotec",
+   "epaned"
+  ],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "3827",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and heart failure"
+ },
+ {
+  "id": "fosinopril",
+  "display": "Fosinopril",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "50166",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and heart failure"
+ },
+ {
+  "id": "lisinopril",
+  "display": "Lisinopril",
+  "brands": [
+   "zestril",
+   "prinivil",
+   "qbrelis"
+  ],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "29046",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure, heart failure, and protection after a heart attack"
+ },
+ {
+  "id": "moexipril",
+  "display": "Moexipril",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "30131",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "perindopril",
+  "display": "Perindopril",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "54552",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure; heart disease"
+ },
+ {
+  "id": "quinapril",
+  "display": "Quinapril",
+  "brands": [
+   "accupril"
+  ],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "35208",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and heart failure"
+ },
+ {
+  "id": "ramipril",
+  "display": "Ramipril",
+  "brands": [
+   "altace"
+  ],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "35296",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure; lowering heart attack and stroke risk"
+ },
+ {
+  "id": "trandolapril",
+  "display": "Trandolapril",
+  "brands": [
+   "mavik"
+  ],
+  "aliases": [],
+  "classes": [
+   "acei"
+  ],
+  "rxcui": "38454",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure; after a heart attack"
+ },
+ {
+  "id": "azilsartan",
+  "display": "Azilsartan",
+  "brands": [
+   "edarbi"
+  ],
+  "aliases": [],
+  "classes": [
+   "arb"
+  ],
+  "rxcui": "1091643",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "candesartan",
+  "display": "Candesartan",
+  "brands": [
+   "atacand"
+  ],
+  "aliases": [],
+  "classes": [
+   "arb"
+  ],
+  "rxcui": "214354",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and heart failure"
+ },
+ {
+  "id": "irbesartan",
+  "display": "Irbesartan",
+  "brands": [
+   "avapro"
+  ],
+  "aliases": [],
+  "classes": [
+   "arb"
+  ],
+  "rxcui": "83818",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure; kidney protection in diabetes"
+ },
+ {
+  "id": "losartan",
+  "display": "Losartan",
+  "brands": [
+   "cozaar"
+  ],
+  "aliases": [],
+  "classes": [
+   "arb"
+  ],
+  "rxcui": "52175",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure; kidney protection in diabetes"
+ },
+ {
+  "id": "olmesartan",
+  "display": "Olmesartan",
+  "brands": [
+   "benicar"
+  ],
+  "aliases": [],
+  "classes": [
+   "arb"
+  ],
+  "rxcui": "321064",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "telmisartan",
+  "display": "Telmisartan",
+  "brands": [
+   "micardis"
+  ],
+  "aliases": [],
+  "classes": [
+   "arb"
+  ],
+  "rxcui": "73494",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "valsartan",
+  "display": "Valsartan",
+  "brands": [
+   "diovan"
+  ],
+  "aliases": [],
+  "classes": [
+   "arb"
+  ],
+  "rxcui": "69749",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and heart failure"
+ },
+ {
+  "id": "sacubitril",
+  "display": "Sacubitril",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "arni"
+  ],
+  "rxcui": "1656328",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Heart failure (only available with valsartan, as Entresto)"
+ },
+ {
+  "id": "aliskiren",
+  "display": "Aliskiren",
+  "brands": [
+   "tekturna"
+  ],
+  "aliases": [],
+  "classes": [
+   "direct_renin_inhibitor"
+  ],
+  "rxcui": "325646",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "amlodipine",
+  "display": "Amlodipine",
+  "brands": [
+   "norvasc",
+   "katerzia",
+   "norliqva"
+  ],
+  "aliases": [],
+  "classes": [
+   "ccb_dihydropyridine"
+  ],
+  "rxcui": "17767",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling",
+   "energy"
+  ],
+  "usedFor": "High blood pressure and chest pain (angina)"
+ },
+ {
+  "id": "felodipine",
+  "display": "Felodipine",
+  "brands": [
+   "plendil"
+  ],
+  "aliases": [],
+  "classes": [
+   "ccb_dihydropyridine"
+  ],
+  "rxcui": "4316",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "nicardipine",
+  "display": "Nicardipine",
+  "brands": [
+   "cardene"
+  ],
+  "aliases": [],
+  "classes": [
+   "ccb_dihydropyridine"
+  ],
+  "rxcui": "7396",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "High blood pressure and angina"
+ },
+ {
+  "id": "nifedipine",
+  "display": "Nifedipine",
+  "brands": [
+   "procardia",
+   "procardia xl",
+   "adalat cc"
+  ],
+  "aliases": [],
+  "classes": [
+   "ccb_dihydropyridine"
+  ],
+  "rxcui": "7417",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "High blood pressure and angina"
+ },
+ {
+  "id": "diltiazem",
+  "display": "Diltiazem",
+  "brands": [
+   "cardizem",
+   "cardizem cd",
+   "cardizem la",
+   "tiazac",
+   "cartia xt",
+   "taztia xt",
+   "matzim la"
+  ],
+  "aliases": [],
+  "classes": [
+   "ccb_nondihydropyridine"
+  ],
+  "rxcui": "3443",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling",
+   "energy"
+  ],
+  "usedFor": "High blood pressure, angina and fast heart rhythms (atrial fibrillation)"
+ },
+ {
+  "id": "verapamil",
+  "display": "Verapamil",
+  "brands": [
+   "calan",
+   "calan sr",
+   "verelan",
+   "verelan pm"
+  ],
+  "aliases": [],
+  "classes": [
+   "ccb_nondihydropyridine"
+  ],
+  "rxcui": "11170",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "High blood pressure, angina and fast heart rhythms"
+ },
+ {
+  "id": "hydralazine",
+  "display": "Hydralazine",
+  "brands": [
+   "apresoline"
+  ],
+  "aliases": [],
+  "classes": [
+   "vasodilator"
+  ],
+  "rxcui": "5470",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "High blood pressure; heart failure (with isosorbide dinitrate)"
+ },
+ {
+  "id": "minoxidil",
+  "display": "Minoxidil (tablets)",
+  "brands": [
+   "loniten"
+  ],
+  "aliases": [],
+  "classes": [
+   "vasodilator"
+  ],
+  "rxcui": "6984",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall",
+   "swelling"
+  ],
+  "usedFor": "Severe high blood pressure (tablets; the hair-loss foam is a different product)"
+ },
+ {
+  "id": "atenolol",
+  "display": "Atenolol",
+  "brands": [
+   "tenormin"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "1202",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "High blood pressure and angina"
+ },
+ {
+  "id": "bisoprolol",
+  "display": "Bisoprolol",
+  "brands": [
+   "zebeta"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "19484",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "High blood pressure and heart failure"
+ },
+ {
+  "id": "carvedilol",
+  "display": "Carvedilol",
+  "brands": [
+   "coreg",
+   "coreg cr"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "20352",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "Heart failure and high blood pressure"
+ },
+ {
+  "id": "labetalol",
+  "display": "Labetalol",
+  "brands": [
+   "trandate"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "6185",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "metoprolol",
+  "display": "Metoprolol",
+  "brands": [
+   "lopressor",
+   "toprol xl",
+   "toprol",
+   "kapspargo sprinkle"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "6918",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "energy",
+   "sleep"
+  ],
+  "usedFor": "High blood pressure, angina, heart failure and fast heart rhythms"
+ },
+ {
+  "id": "nadolol",
+  "display": "Nadolol",
+  "brands": [
+   "corgard"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "7226",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "High blood pressure and angina"
+ },
+ {
+  "id": "nebivolol",
+  "display": "Nebivolol",
+  "brands": [
+   "bystolic"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "31555",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "propranolol",
+  "display": "Propranolol",
+  "brands": [
+   "inderal la",
+   "inderal xl",
+   "innopran xl",
+   "hemangeol"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker"
+  ],
+  "rxcui": "8787",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy",
+   "sleep"
+  ],
+  "usedFor": "High blood pressure, tremor, migraine prevention and fast heart rhythms"
+ },
+ {
+  "id": "sotalol",
+  "display": "Sotalol",
+  "brands": [
+   "betapace",
+   "betapace af",
+   "sotylize"
+  ],
+  "aliases": [],
+  "classes": [
+   "beta_blocker",
+   "antiarrhythmic"
+  ],
+  "rxcui": "9947",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "Irregular heart rhythms"
+ },
+ {
+  "id": "bumetanide",
+  "display": "Bumetanide",
+  "brands": [
+   "bumex"
+  ],
+  "aliases": [],
+  "classes": [
+   "loop_diuretic"
+  ],
+  "rxcui": "1808",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Fluid build-up (edema) from heart, kidney or liver disease"
+ },
+ {
+  "id": "ethacrynic acid",
+  "display": "Ethacrynic acid",
+  "brands": [
+   "edecrin"
+  ],
+  "aliases": [],
+  "classes": [
+   "loop_diuretic"
+  ],
+  "rxcui": "4109",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Fluid build-up (edema)"
+ },
+ {
+  "id": "furosemide",
+  "display": "Furosemide",
+  "brands": [
+   "lasix",
+   "furoscix"
+  ],
+  "aliases": [],
+  "classes": [
+   "loop_diuretic"
+  ],
+  "rxcui": "4603",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Fluid build-up (edema) and swelling; high blood pressure"
+ },
+ {
+  "id": "torsemide",
+  "display": "Torsemide",
+  "brands": [
+   "soaanz",
+   "demadex"
+  ],
+  "aliases": [],
+  "classes": [
+   "loop_diuretic"
+  ],
+  "rxcui": "38413",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Fluid build-up (edema) and high blood pressure"
+ },
+ {
+  "id": "chlorothiazide",
+  "display": "Chlorothiazide",
+  "brands": [
+   "diuril"
+  ],
+  "aliases": [],
+  "classes": [
+   "thiazide_diuretic"
+  ],
+  "rxcui": "2396",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and fluid build-up"
+ },
+ {
+  "id": "chlorthalidone",
+  "display": "Chlorthalidone",
+  "brands": [
+   "thalitone",
+   "hygroton"
+  ],
+  "aliases": [],
+  "classes": [
+   "thiazide_diuretic"
+  ],
+  "rxcui": "2409",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and fluid build-up"
+ },
+ {
+  "id": "hydrochlorothiazide",
+  "display": "Hydrochlorothiazide",
+  "brands": [
+   "microzide"
+  ],
+  "aliases": [
+   "hctz"
+  ],
+  "classes": [
+   "thiazide_diuretic"
+  ],
+  "rxcui": "5487",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and fluid build-up"
+ },
+ {
+  "id": "indapamide",
+  "display": "Indapamide",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "thiazide_diuretic"
+  ],
+  "rxcui": "5764",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure and fluid build-up"
+ },
+ {
+  "id": "metolazone",
+  "display": "Metolazone",
+  "brands": [
+   "zaroxolyn"
+  ],
+  "aliases": [],
+  "classes": [
+   "thiazide_diuretic"
+  ],
+  "rxcui": "6916",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Fluid build-up in heart failure or kidney disease"
+ },
+ {
+  "id": "amiloride",
+  "display": "Amiloride",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "potassium_sparing_diuretic"
+  ],
+  "rxcui": "644",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure or heart failure, usually with another diuretic to keep potassium up"
+ },
+ {
+  "id": "triamterene",
+  "display": "Triamterene",
+  "brands": [
+   "dyrenium"
+  ],
+  "aliases": [],
+  "classes": [
+   "potassium_sparing_diuretic"
+  ],
+  "rxcui": "10763",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Fluid build-up; often combined with hydrochlorothiazide (Maxzide, Dyazide)"
+ },
+ {
+  "id": "eplerenone",
+  "display": "Eplerenone",
+  "brands": [
+   "inspra"
+  ],
+  "aliases": [],
+  "classes": [
+   "mineralocorticoid_antagonist"
+  ],
+  "rxcui": "298869",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Heart failure and high blood pressure"
+ },
+ {
+  "id": "spironolactone",
+  "display": "Spironolactone",
+  "brands": [
+   "aldactone",
+   "carospir"
+  ],
+  "aliases": [],
+  "classes": [
+   "mineralocorticoid_antagonist"
+  ],
+  "rxcui": "9997",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Heart failure, high blood pressure and fluid build-up"
+ },
+ {
+  "id": "doxazosin",
+  "display": "Doxazosin",
+  "brands": [
+   "cardura",
+   "cardura xl"
+  ],
+  "aliases": [],
+  "classes": [
+   "alpha1_blocker_nonselective"
+  ],
+  "rxcui": "49276",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Enlarged prostate symptoms; high blood pressure"
+ },
+ {
+  "id": "prazosin",
+  "display": "Prazosin",
+  "brands": [
+   "minipress"
+  ],
+  "aliases": [],
+  "classes": [
+   "alpha1_blocker_nonselective"
+  ],
+  "rxcui": "8629",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "High blood pressure; sometimes nightmares with PTSD"
+ },
+ {
+  "id": "terazosin",
+  "display": "Terazosin",
+  "brands": [
+   "hytrin",
+   "tezruly"
+  ],
+  "aliases": [],
+  "classes": [
+   "alpha1_blocker_nonselective"
+  ],
+  "rxcui": "37798",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Enlarged prostate symptoms; high blood pressure"
+ },
+ {
+  "id": "alfuzosin",
+  "display": "Alfuzosin",
+  "brands": [
+   "uroxatral"
+  ],
+  "aliases": [],
+  "classes": [
+   "alpha1_blocker_selective"
+  ],
+  "rxcui": "17300",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Enlarged prostate symptoms"
+ },
+ {
+  "id": "silodosin",
+  "display": "Silodosin",
+  "brands": [
+   "rapaflo"
+  ],
+  "aliases": [],
+  "classes": [
+   "alpha1_blocker_selective"
+  ],
+  "rxcui": "720825",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Enlarged prostate symptoms"
+ },
+ {
+  "id": "tamsulosin",
+  "display": "Tamsulosin",
+  "brands": [
+   "flomax"
+  ],
+  "aliases": [],
+  "classes": [
+   "alpha1_blocker_selective"
+  ],
+  "rxcui": "77492",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Enlarged prostate symptoms"
+ },
+ {
+  "id": "clonidine",
+  "display": "Clonidine",
+  "brands": [
+   "catapres",
+   "catapres-tts",
+   "kapvay",
+   "onyda xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "central_alpha_agonist"
+  ],
+  "rxcui": "2599",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "High blood pressure; also hot flashes, ADHD and withdrawal symptoms"
+ },
+ {
+  "id": "guanfacine",
+  "display": "Guanfacine",
+  "brands": [
+   "intuniv",
+   "tenex"
+  ],
+  "aliases": [],
+  "classes": [
+   "central_alpha_agonist"
+  ],
+  "rxcui": "40114",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "High blood pressure; ADHD"
+ },
+ {
+  "id": "methyldopa",
+  "display": "Methyldopa",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "central_alpha_agonist"
+  ],
+  "rxcui": "6876",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "fall",
+   "nearFall",
+   "energy"
+  ],
+  "usedFor": "High blood pressure"
+ },
+ {
+  "id": "isosorbide mononitrate",
+  "display": "Isosorbide mononitrate",
+  "brands": [
+   "monoket",
+   "imdur"
+  ],
+  "aliases": [
+   "ismn"
+  ],
+  "classes": [
+   "nitrate"
+  ],
+  "rxcui": "28004",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Preventing chest pain (angina)"
+ },
+ {
+  "id": "isosorbide dinitrate",
+  "display": "Isosorbide dinitrate",
+  "brands": [
+   "isordil",
+   "isordil titradose"
+  ],
+  "aliases": [],
+  "classes": [
+   "nitrate"
+  ],
+  "rxcui": "6058",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Preventing chest pain (angina); heart failure (with hydralazine)"
+ },
+ {
+  "id": "nitroglycerin",
+  "display": "Nitroglycerin",
+  "brands": [
+   "nitrostat",
+   "nitrolingual",
+   "nitromist",
+   "nitro-dur",
+   "minitran"
+  ],
+  "aliases": [],
+  "classes": [
+   "nitrate"
+  ],
+  "rxcui": "4917",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Chest pain (angina): treating or preventing attacks"
+ },
+ {
+  "id": "amiodarone",
+  "display": "Amiodarone",
+  "brands": [
+   "pacerone",
+   "nexterone",
+   "cordarone"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiarrhythmic"
+  ],
+  "rxcui": "703",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "energy"
+  ],
+  "usedFor": "Irregular heart rhythms (atrial fibrillation, ventricular arrhythmias)"
+ },
+ {
+  "id": "dronedarone",
+  "display": "Dronedarone",
+  "brands": [
+   "multaq"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiarrhythmic"
+  ],
+  "rxcui": "233698",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "energy"
+  ],
+  "usedFor": "Atrial fibrillation"
+ },
+ {
+  "id": "dofetilide",
+  "display": "Dofetilide",
+  "brands": [
+   "tikosyn"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiarrhythmic"
+  ],
+  "rxcui": "49247",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Atrial fibrillation"
+ },
+ {
+  "id": "flecainide",
+  "display": "Flecainide",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antiarrhythmic"
+  ],
+  "rxcui": "4441",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Irregular heart rhythms"
+ },
+ {
+  "id": "disopyramide",
+  "display": "Disopyramide",
+  "brands": [
+   "norpace",
+   "norpace cr"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiarrhythmic"
+  ],
+  "rxcui": "3541",
+  "otc": false,
+  "acb": 1,
+  "effects": [],
+  "usedFor": "Irregular heart rhythms"
+ },
+ {
+  "id": "quinidine",
+  "display": "Quinidine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antiarrhythmic"
+  ],
+  "rxcui": "9068",
+  "otc": false,
+  "acb": 1,
+  "effects": [],
+  "usedFor": "Irregular heart rhythms; with dextromethorphan (Nuedexta) for sudden laughing or crying"
+ },
+ {
+  "id": "digoxin",
+  "display": "Digoxin",
+  "brands": [
+   "lanoxin",
+   "digitek",
+   "digox"
+  ],
+  "aliases": [],
+  "classes": [
+   "cardiac_glycoside"
+  ],
+  "rxcui": "3407",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "dizziness",
+   "confusion",
+   "appetiteWorse"
+  ],
+  "usedFor": "Heart failure and atrial fibrillation (heart-rate control)"
+ },
+ {
+  "id": "atorvastatin",
+  "display": "Atorvastatin",
+  "brands": [
+   "lipitor"
+  ],
+  "aliases": [],
+  "classes": [
+   "statin"
+  ],
+  "rxcui": "83367",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol; lowering heart attack and stroke risk"
+ },
+ {
+  "id": "lovastatin",
+  "display": "Lovastatin",
+  "brands": [
+   "altoprev"
+  ],
+  "aliases": [],
+  "classes": [
+   "statin"
+  ],
+  "rxcui": "6472",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol"
+ },
+ {
+  "id": "pitavastatin",
+  "display": "Pitavastatin",
+  "brands": [
+   "livalo",
+   "zypitamag"
+  ],
+  "aliases": [],
+  "classes": [
+   "statin"
+  ],
+  "rxcui": "861634",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol"
+ },
+ {
+  "id": "pravastatin",
+  "display": "Pravastatin",
+  "brands": [
+   "pravachol"
+  ],
+  "aliases": [],
+  "classes": [
+   "statin"
+  ],
+  "rxcui": "42463",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol"
+ },
+ {
+  "id": "rosuvastatin",
+  "display": "Rosuvastatin",
+  "brands": [
+   "crestor",
+   "ezallor"
+  ],
+  "aliases": [],
+  "classes": [
+   "statin"
+  ],
+  "rxcui": "301542",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol"
+ },
+ {
+  "id": "simvastatin",
+  "display": "Simvastatin",
+  "brands": [
+   "zocor",
+   "flolipid"
+  ],
+  "aliases": [],
+  "classes": [
+   "statin"
+  ],
+  "rxcui": "36567",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol"
+ },
+ {
+  "id": "ezetimibe",
+  "display": "Ezetimibe",
+  "brands": [
+   "zetia"
+  ],
+  "aliases": [],
+  "classes": [
+   "lipid_lowering_other"
+  ],
+  "rxcui": "341248",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol"
+ },
+ {
+  "id": "fenofibrate",
+  "display": "Fenofibrate",
+  "brands": [
+   "tricor",
+   "fenoglide",
+   "triglide",
+   "lipofen"
+  ],
+  "aliases": [],
+  "classes": [
+   "lipid_lowering_other"
+  ],
+  "rxcui": "8703",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High triglycerides and cholesterol"
+ },
+ {
+  "id": "omega-3 fatty acids",
+  "display": "Omega-3 fatty acids (fish oil)",
+  "brands": [
+   "lovaza"
+  ],
+  "aliases": [
+   "fish oil",
+   "omega 3",
+   "omega-3"
+  ],
+  "classes": [
+   "lipid_lowering_other"
+  ],
+  "rxcui": "484348",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High triglycerides; dietary supplement"
+ },
+ {
+  "id": "apixaban",
+  "display": "Apixaban",
+  "brands": [
+   "eliquis"
+  ],
+  "aliases": [],
+  "classes": [
+   "doac"
+  ],
+  "rxcui": "1364430",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing stroke in atrial fibrillation; treating or preventing blood clots"
+ },
+ {
+  "id": "dabigatran",
+  "display": "Dabigatran",
+  "brands": [
+   "pradaxa"
+  ],
+  "aliases": [],
+  "classes": [
+   "doac"
+  ],
+  "rxcui": "1546356",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing stroke in atrial fibrillation; treating or preventing blood clots"
+ },
+ {
+  "id": "edoxaban",
+  "display": "Edoxaban",
+  "brands": [
+   "savaysa"
+  ],
+  "aliases": [],
+  "classes": [
+   "doac"
+  ],
+  "rxcui": "1599538",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing stroke in atrial fibrillation; treating blood clots"
+ },
+ {
+  "id": "rivaroxaban",
+  "display": "Rivaroxaban",
+  "brands": [
+   "xarelto"
+  ],
+  "aliases": [],
+  "classes": [
+   "doac"
+  ],
+  "rxcui": "1114195",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing stroke in atrial fibrillation; treating or preventing blood clots"
+ },
+ {
+  "id": "warfarin",
+  "display": "Warfarin",
+  "brands": [
+   "coumadin",
+   "jantoven"
+  ],
+  "aliases": [],
+  "classes": [
+   "vitamin_k_antagonist"
+  ],
+  "rxcui": "11289",
+  "otc": false,
+  "acb": 1,
+  "effects": [],
+  "usedFor": "Preventing and treating blood clots; stroke prevention in atrial fibrillation"
+ },
+ {
+  "id": "enoxaparin",
+  "display": "Enoxaparin",
+  "brands": [
+   "lovenox"
+  ],
+  "aliases": [],
+  "classes": [
+   "injectable_anticoagulant"
+  ],
+  "rxcui": "67108",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing and treating blood clots (injection)"
+ },
+ {
+  "id": "fondaparinux",
+  "display": "Fondaparinux",
+  "brands": [
+   "arixtra"
+  ],
+  "aliases": [],
+  "classes": [
+   "injectable_anticoagulant"
+  ],
+  "rxcui": "321208",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing and treating blood clots (injection)"
+ },
+ {
+  "id": "aspirin",
+  "display": "Aspirin",
+  "brands": [
+   "bayer aspirin",
+   "bayer",
+   "bayer low dose",
+   "ecotrin",
+   "bufferin",
+   "st. joseph aspirin",
+   "durlaza",
+   "vazalore"
+  ],
+  "aliases": [
+   "acetylsalicylic acid",
+   "asa",
+   "baby aspirin",
+   "low dose aspirin",
+   "low-dose aspirin"
+  ],
+  "classes": [
+   "antiplatelet",
+   "salicylate"
+  ],
+  "rxcui": "1191",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing heart attack and stroke (low dose); pain and fever (higher doses)"
+ },
+ {
+  "id": "clopidogrel",
+  "display": "Clopidogrel",
+  "brands": [
+   "plavix"
+  ],
+  "aliases": [],
+  "classes": [
+   "p2y12_inhibitor"
+  ],
+  "rxcui": "32968",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing heart attack and stroke, e.g. after a stent"
+ },
+ {
+  "id": "prasugrel",
+  "display": "Prasugrel",
+  "brands": [
+   "effient"
+  ],
+  "aliases": [],
+  "classes": [
+   "p2y12_inhibitor"
+  ],
+  "rxcui": "613391",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing heart attack and stroke after a stent"
+ },
+ {
+  "id": "ticagrelor",
+  "display": "Ticagrelor",
+  "brands": [
+   "brilinta"
+  ],
+  "aliases": [],
+  "classes": [
+   "p2y12_inhibitor"
+  ],
+  "rxcui": "1116632",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Preventing heart attack and stroke after a heart attack or stent"
+ },
+ {
+  "id": "dipyridamole",
+  "display": "Dipyridamole",
+  "brands": [
+   "persantine"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiplatelet"
+  ],
+  "rxcui": "3521",
+  "otc": false,
+  "acb": 1,
+  "effects": [],
+  "usedFor": "Preventing clots (with aspirin as Aggrenox after a stroke)"
+ },
+ {
+  "id": "cilostazol",
+  "display": "Cilostazol",
+  "brands": [
+   "pletal"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiplatelet"
+  ],
+  "rxcui": "21107",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Leg pain when walking (intermittent claudication)"
+ },
+ {
+  "id": "sildenafil",
+  "display": "Sildenafil",
+  "brands": [
+   "viagra",
+   "revatio",
+   "liqrev"
+  ],
+  "aliases": [],
+  "classes": [
+   "pde5_inhibitor"
+  ],
+  "rxcui": "136411",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Erectile dysfunction; pulmonary hypertension"
+ },
+ {
+  "id": "tadalafil",
+  "display": "Tadalafil",
+  "brands": [
+   "cialis",
+   "adcirca",
+   "alyq",
+   "tadliq"
+  ],
+  "aliases": [],
+  "classes": [
+   "pde5_inhibitor"
+  ],
+  "rxcui": "358263",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Erectile dysfunction, enlarged prostate symptoms; pulmonary hypertension"
+ },
+ {
+  "id": "potassium chloride",
+  "display": "Potassium chloride",
+  "brands": [
+   "klor-con",
+   "k-tab",
+   "micro-k",
+   "k-dur"
+  ],
+  "aliases": [
+   "kcl",
+   "potassium"
+  ],
+  "classes": [
+   "electrolyte"
+  ],
+  "rxcui": "8591",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Low potassium (often with water pills)"
+ },
+ {
+  "id": "metformin",
+  "display": "Metformin",
+  "brands": [
+   "glucophage",
+   "glumetza",
+   "fortamet",
+   "riomet"
+  ],
+  "aliases": [],
+  "classes": [
+   "biguanide"
+  ],
+  "rxcui": "6809",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "gliclazide",
+  "display": "Gliclazide",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "sulfonylurea"
+  ],
+  "rxcui": "4816",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Type 2 diabetes (not marketed in the US)"
+ },
+ {
+  "id": "glimepiride",
+  "display": "Glimepiride",
+  "brands": [
+   "amaryl"
+  ],
+  "aliases": [],
+  "classes": [
+   "sulfonylurea"
+  ],
+  "rxcui": "25789",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "glipizide",
+  "display": "Glipizide",
+  "brands": [
+   "glucotrol",
+   "glucotrol xl"
+  ],
+  "aliases": [],
+  "classes": [
+   "sulfonylurea"
+  ],
+  "rxcui": "4821",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "glyburide",
+  "display": "Glyburide",
+  "brands": [
+   "diabeta",
+   "glynase",
+   "micronase"
+  ],
+  "aliases": [
+   "glibenclamide"
+  ],
+  "classes": [
+   "sulfonylurea"
+  ],
+  "rxcui": "4815",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "alogliptin",
+  "display": "Alogliptin",
+  "brands": [
+   "nesina"
+  ],
+  "aliases": [],
+  "classes": [
+   "dpp4_inhibitor"
+  ],
+  "rxcui": "1368001",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "linagliptin",
+  "display": "Linagliptin",
+  "brands": [
+   "tradjenta"
+  ],
+  "aliases": [],
+  "classes": [
+   "dpp4_inhibitor"
+  ],
+  "rxcui": "1100699",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "saxagliptin",
+  "display": "Saxagliptin",
+  "brands": [
+   "onglyza"
+  ],
+  "aliases": [],
+  "classes": [
+   "dpp4_inhibitor"
+  ],
+  "rxcui": "857974",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "sitagliptin",
+  "display": "Sitagliptin",
+  "brands": [
+   "januvia",
+   "zituvio"
+  ],
+  "aliases": [],
+  "classes": [
+   "dpp4_inhibitor"
+  ],
+  "rxcui": "593411",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "canagliflozin",
+  "display": "Canagliflozin",
+  "brands": [
+   "invokana"
+  ],
+  "aliases": [],
+  "classes": [
+   "sglt2_inhibitor"
+  ],
+  "rxcui": "1373458",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes; heart and kidney protection"
+ },
+ {
+  "id": "dapagliflozin",
+  "display": "Dapagliflozin",
+  "brands": [
+   "farxiga"
+  ],
+  "aliases": [],
+  "classes": [
+   "sglt2_inhibitor"
+  ],
+  "rxcui": "1488564",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes, heart failure and chronic kidney disease"
+ },
+ {
+  "id": "empagliflozin",
+  "display": "Empagliflozin",
+  "brands": [
+   "jardiance"
+  ],
+  "aliases": [],
+  "classes": [
+   "sglt2_inhibitor"
+  ],
+  "rxcui": "1545653",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes, heart failure and chronic kidney disease"
+ },
+ {
+  "id": "ertugliflozin",
+  "display": "Ertugliflozin",
+  "brands": [
+   "steglatro"
+  ],
+  "aliases": [],
+  "classes": [
+   "sglt2_inhibitor"
+  ],
+  "rxcui": "1992672",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "dulaglutide",
+  "display": "Dulaglutide",
+  "brands": [
+   "trulicity"
+  ],
+  "aliases": [],
+  "classes": [
+   "glp1_agonist"
+  ],
+  "rxcui": "1551291",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "appetiteWorse"
+  ],
+  "usedFor": "Type 2 diabetes (weekly injection)"
+ },
+ {
+  "id": "liraglutide",
+  "display": "Liraglutide",
+  "brands": [
+   "victoza",
+   "saxenda"
+  ],
+  "aliases": [],
+  "classes": [
+   "glp1_agonist"
+  ],
+  "rxcui": "475968",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "appetiteWorse"
+  ],
+  "usedFor": "Type 2 diabetes; weight management"
+ },
+ {
+  "id": "semaglutide",
+  "display": "Semaglutide",
+  "brands": [
+   "ozempic",
+   "rybelsus",
+   "wegovy"
+  ],
+  "aliases": [],
+  "classes": [
+   "glp1_agonist"
+  ],
+  "rxcui": "1991302",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "energy",
+   "appetiteWorse"
+  ],
+  "usedFor": "Type 2 diabetes; weight management"
+ },
+ {
+  "id": "tirzepatide",
+  "display": "Tirzepatide",
+  "brands": [
+   "mounjaro",
+   "zepbound"
+  ],
+  "aliases": [],
+  "classes": [
+   "glp1_agonist"
+  ],
+  "rxcui": "2601723",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "appetiteWorse"
+  ],
+  "usedFor": "Type 2 diabetes; weight management"
+ },
+ {
+  "id": "pioglitazone",
+  "display": "Pioglitazone",
+  "brands": [
+   "actos"
+  ],
+  "aliases": [],
+  "classes": [
+   "thiazolidinedione"
+  ],
+  "rxcui": "33738",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Type 2 diabetes"
+ },
+ {
+  "id": "insulin glargine",
+  "display": "Insulin glargine",
+  "brands": [
+   "lantus",
+   "basaglar",
+   "toujeo",
+   "semglee",
+   "rezvoglar"
+  ],
+  "aliases": [],
+  "classes": [
+   "insulin_basal"
+  ],
+  "rxcui": "274783",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (long-acting, once-daily insulin)"
+ },
+ {
+  "id": "insulin detemir",
+  "display": "Insulin detemir",
+  "brands": [
+   "levemir"
+  ],
+  "aliases": [],
+  "classes": [
+   "insulin_basal"
+  ],
+  "rxcui": "139825",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (long-acting insulin)"
+ },
+ {
+  "id": "insulin degludec",
+  "display": "Insulin degludec",
+  "brands": [
+   "tresiba"
+  ],
+  "aliases": [],
+  "classes": [
+   "insulin_basal"
+  ],
+  "rxcui": "1670007",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (long-acting insulin)"
+ },
+ {
+  "id": "insulin nph",
+  "display": "Insulin NPH (isophane)",
+  "brands": [
+   "humulin n",
+   "novolin n"
+  ],
+  "aliases": [
+   "insulin isophane",
+   "nph",
+   "nph insulin"
+  ],
+  "classes": [
+   "insulin_basal"
+  ],
+  "rxcui": "1605101",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (intermediate-acting insulin)"
+ },
+ {
+  "id": "insulin lispro",
+  "display": "Insulin lispro",
+  "brands": [
+   "humalog",
+   "admelog",
+   "lyumjev"
+  ],
+  "aliases": [],
+  "classes": [
+   "insulin_rapid"
+  ],
+  "rxcui": "86009",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (rapid-acting, mealtime insulin)"
+ },
+ {
+  "id": "insulin aspart",
+  "display": "Insulin aspart",
+  "brands": [
+   "novolog",
+   "fiasp"
+  ],
+  "aliases": [],
+  "classes": [
+   "insulin_rapid"
+  ],
+  "rxcui": "51428",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (rapid-acting, mealtime insulin)"
+ },
+ {
+  "id": "insulin glulisine",
+  "display": "Insulin glulisine",
+  "brands": [
+   "apidra"
+  ],
+  "aliases": [],
+  "classes": [
+   "insulin_rapid"
+  ],
+  "rxcui": "400008",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (rapid-acting, mealtime insulin)"
+ },
+ {
+  "id": "insulin regular",
+  "display": "Insulin regular (human)",
+  "brands": [
+   "humulin r",
+   "novolin r"
+  ],
+  "aliases": [
+   "regular insulin"
+  ],
+  "classes": [
+   "insulin_rapid"
+  ],
+  "rxcui": "253182",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (short-acting insulin)"
+ },
+ {
+  "id": "dexlansoprazole",
+  "display": "Dexlansoprazole",
+  "brands": [
+   "dexilant"
+  ],
+  "aliases": [],
+  "classes": [
+   "ppi"
+  ],
+  "rxcui": "816346",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Heartburn, acid reflux (GERD) and esophagus healing"
+ },
+ {
+  "id": "esomeprazole",
+  "display": "Esomeprazole",
+  "brands": [
+   "nexium",
+   "nexium 24hr"
+  ],
+  "aliases": [],
+  "classes": [
+   "ppi"
+  ],
+  "rxcui": "283742",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Heartburn, acid reflux (GERD) and stomach ulcers"
+ },
+ {
+  "id": "lansoprazole",
+  "display": "Lansoprazole",
+  "brands": [
+   "prevacid",
+   "prevacid 24hr",
+   "prevacid solutab"
+  ],
+  "aliases": [],
+  "classes": [
+   "ppi"
+  ],
+  "rxcui": "17128",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Heartburn, acid reflux (GERD) and stomach ulcers"
+ },
+ {
+  "id": "omeprazole",
+  "display": "Omeprazole",
+  "brands": [
+   "prilosec",
+   "prilosec otc"
+  ],
+  "aliases": [],
+  "classes": [
+   "ppi"
+  ],
+  "rxcui": "7646",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Heartburn, acid reflux (GERD) and stomach ulcers"
+ },
+ {
+  "id": "pantoprazole",
+  "display": "Pantoprazole",
+  "brands": [
+   "protonix"
+  ],
+  "aliases": [],
+  "classes": [
+   "ppi"
+  ],
+  "rxcui": "40790",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Acid reflux (GERD) and esophagus healing"
+ },
+ {
+  "id": "rabeprazole",
+  "display": "Rabeprazole",
+  "brands": [
+   "aciphex"
+  ],
+  "aliases": [],
+  "classes": [
+   "ppi"
+  ],
+  "rxcui": "114979",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Acid reflux (GERD) and stomach ulcers"
+ },
+ {
+  "id": "cimetidine",
+  "display": "Cimetidine",
+  "brands": [
+   "tagamet",
+   "tagamet hb"
+  ],
+  "aliases": [],
+  "classes": [
+   "h2ra"
+  ],
+  "rxcui": "2541",
+  "otc": true,
+  "acb": 1,
+  "effects": [
+   "confusion"
+  ],
+  "usedFor": "Heartburn and stomach ulcers"
+ },
+ {
+  "id": "famotidine",
+  "display": "Famotidine",
+  "brands": [
+   "pepcid",
+   "pepcid ac",
+   "zantac 360"
+  ],
+  "aliases": [],
+  "classes": [
+   "h2ra"
+  ],
+  "rxcui": "4278",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "confusion"
+  ],
+  "usedFor": "Heartburn, acid reflux and stomach ulcers"
+ },
+ {
+  "id": "nizatidine",
+  "display": "Nizatidine",
+  "brands": [
+   "axid"
+  ],
+  "aliases": [],
+  "classes": [
+   "h2ra"
+  ],
+  "rxcui": "42319",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Heartburn and stomach ulcers"
+ },
+ {
+  "id": "ranitidine",
+  "display": "Ranitidine",
+  "brands": [
+   "zantac"
+  ],
+  "aliases": [],
+  "classes": [
+   "h2ra"
+  ],
+  "rxcui": "9143",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "confusion"
+  ],
+  "usedFor": "Heartburn and stomach ulcers (withdrawn from the US market in 2020; 'Zantac 360' is now famotidine)"
+ },
+ {
+  "id": "sucralfate",
+  "display": "Sucralfate",
+  "brands": [
+   "carafate"
+  ],
+  "aliases": [],
+  "classes": [
+   "gi_protectant"
+  ],
+  "rxcui": "10156",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Stomach and duodenal ulcers"
+ },
+ {
+  "id": "misoprostol",
+  "display": "Misoprostol",
+  "brands": [
+   "cytotec"
+  ],
+  "aliases": [],
+  "classes": [
+   "gi_protectant"
+  ],
+  "rxcui": "42331",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Protecting the stomach from NSAID ulcers"
+ },
+ {
+  "id": "bisacodyl",
+  "display": "Bisacodyl",
+  "brands": [
+   "dulcolax"
+  ],
+  "aliases": [],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "1596",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation"
+ },
+ {
+  "id": "docusate",
+  "display": "Docusate",
+  "brands": [
+   "colace",
+   "surfak"
+  ],
+  "aliases": [
+   "stool softener"
+  ],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "82003",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation (stool softener)"
+ },
+ {
+  "id": "lactulose",
+  "display": "Lactulose",
+  "brands": [
+   "kristalose",
+   "enulose"
+  ],
+  "aliases": [],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "6218",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation; liver disease"
+ },
+ {
+  "id": "magnesium hydroxide",
+  "display": "Magnesium hydroxide",
+  "brands": [
+   "phillips milk of magnesia"
+  ],
+  "aliases": [
+   "milk of magnesia"
+  ],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "6581",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation; heartburn"
+ },
+ {
+  "id": "mineral oil",
+  "display": "Mineral oil",
+  "brands": [],
+  "aliases": [
+   "liquid paraffin"
+  ],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "6972",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation (taken by mouth or as an enema)"
+ },
+ {
+  "id": "polyethylene glycol 3350",
+  "display": "Polyethylene glycol 3350",
+  "brands": [
+   "miralax",
+   "glycolax",
+   "gavilax"
+  ],
+  "aliases": [
+   "peg 3350",
+   "polyethylene glycol"
+  ],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "221147",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation"
+ },
+ {
+  "id": "psyllium",
+  "display": "Psyllium",
+  "brands": [
+   "metamucil",
+   "konsyl"
+  ],
+  "aliases": [
+   "fiber supplement"
+  ],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "8928",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation; fiber supplement"
+ },
+ {
+  "id": "sennosides",
+  "display": "Senna (sennosides)",
+  "brands": [
+   "senokot",
+   "ex-lax"
+  ],
+  "aliases": [
+   "senna"
+  ],
+  "classes": [
+   "laxative"
+  ],
+  "rxcui": "36387",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Constipation"
+ },
+ {
+  "id": "loperamide",
+  "display": "Loperamide",
+  "brands": [
+   "imodium",
+   "imodium a-d"
+  ],
+  "aliases": [],
+  "classes": [
+   "antidiarrheal"
+  ],
+  "rxcui": "6468",
+  "otc": true,
+  "acb": 1,
+  "effects": [
+   "drowsiness"
+  ],
+  "usedFor": "Diarrhea"
+ },
+ {
+  "id": "diphenoxylate",
+  "display": "Diphenoxylate",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antidiarrheal"
+  ],
+  "rxcui": "3500",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diarrhea (with atropine as Lomotil)"
+ },
+ {
+  "id": "bismuth subsalicylate",
+  "display": "Bismuth subsalicylate",
+  "brands": [
+   "pepto-bismol",
+   "kaopectate"
+  ],
+  "aliases": [],
+  "classes": [
+   "antidiarrheal",
+   "salicylate"
+  ],
+  "rxcui": "19478",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Upset stomach, heartburn and diarrhea"
+ },
+ {
+  "id": "acetaminophen",
+  "display": "Acetaminophen",
+  "brands": [
+   "tylenol",
+   "tylenol extra strength",
+   "tylenol 8 hr arthritis pain",
+   "mapap",
+   "ofirmev"
+  ],
+  "aliases": [
+   "apap",
+   "paracetamol"
+  ],
+  "classes": [
+   "analgesic_nonopioid"
+  ],
+  "rxcui": "161",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Pain and fever"
+ },
+ {
+  "id": "celecoxib",
+  "display": "Celecoxib",
+  "brands": [
+   "celebrex",
+   "elyxyb"
+  ],
+  "aliases": [],
+  "classes": [
+   "cox2_inhibitor"
+  ],
+  "rxcui": "140587",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain and other pain"
+ },
+ {
+  "id": "diclofenac",
+  "display": "Diclofenac",
+  "brands": [
+   "cataflam",
+   "zipsor",
+   "zorvolex",
+   "cambia",
+   "lofena",
+   "voltaren-xr"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "3355",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis and other pain (tablets and capsules; the skin gel is a separate entry)"
+ },
+ {
+  "id": "diclofenac topical",
+  "display": "Diclofenac gel, solution or patch (on the skin)",
+  "brands": [
+   "voltaren",
+   "voltaren gel",
+   "voltaren arthritis pain",
+   "voltaren arthritis pain gel",
+   "pennsaid",
+   "flector",
+   "flector patch",
+   "solaraze"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_topical"
+  ],
+  "rxcui": "3355",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Joint pain from arthritis and sprains (applied to the skin)",
+  "variant": {
+   "of": "diclofenac",
+   "words": [
+    "gel",
+    "cream",
+    "topical",
+    "patch",
+    "lotion",
+    "on the skin",
+    "1%",
+    "1.3%",
+    "1.5%",
+    "2%",
+    "3%"
+   ],
+   "baseWords": [
+    "tab",
+    "tabs",
+    "tablet",
+    "tablets",
+    "cap",
+    "caps",
+    "capsule",
+    "capsules",
+    "caplet",
+    "caplets",
+    "pill",
+    "pills",
+    "oral",
+    "po",
+    "by mouth",
+    "er",
+    "xr",
+    "sr",
+    "ec",
+    "dr",
+    "#mg"
+   ]
+  }
+ },
+ {
+  "id": "diflunisal",
+  "display": "Diflunisal",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective",
+   "nonacetylated_salicylate"
+  ],
+  "rxcui": "3393",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis and other pain"
+ },
+ {
+  "id": "etodolac",
+  "display": "Etodolac",
+  "brands": [
+   "lodine"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "24605",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "flurbiprofen",
+  "display": "Flurbiprofen",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "4502",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "ibuprofen",
+  "display": "Ibuprofen",
+  "brands": [
+   "advil",
+   "motrin",
+   "motrin ib"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "5640",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Pain, fever and inflammation"
+ },
+ {
+  "id": "indomethacin",
+  "display": "Indomethacin",
+  "brands": [
+   "indocin",
+   "tivorbex"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "5781",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Gout flares and arthritis pain"
+ },
+ {
+  "id": "ketorolac",
+  "display": "Ketorolac",
+  "brands": [
+   "toradol",
+   "sprix"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "35827",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Short-term moderate to severe pain"
+ },
+ {
+  "id": "ketorolac ophthalmic",
+  "display": "Ketorolac eye drops",
+  "brands": [
+   "acular",
+   "acular ls",
+   "acuvail"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_other"
+  ],
+  "rxcui": "35827",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Eye pain and inflammation after eye surgery; itchy eyes from allergies",
+  "variant": {
+   "of": "ketorolac",
+   "words": [
+    "eye",
+    "eyes",
+    "ophthalmic",
+    "ophth",
+    "eye drop",
+    "eye drops",
+    "eyedrop",
+    "eyedrops",
+    "drop",
+    "drops",
+    "gtt",
+    "gtts"
+   ],
+   "baseWords": [
+    "tab",
+    "tabs",
+    "tablet",
+    "tablets",
+    "injection",
+    "nasal",
+    "#mg"
+   ]
+  }
+ },
+ {
+  "id": "meloxicam",
+  "display": "Meloxicam",
+  "brands": [
+   "mobic",
+   "vivlodex",
+   "qmiiz odt",
+   "anjeso"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "41493",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "nabumetone",
+  "display": "Nabumetone",
+  "brands": [
+   "relafen"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "31448",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "naproxen",
+  "display": "Naproxen",
+  "brands": [
+   "aleve",
+   "naprosyn",
+   "anaprox ds",
+   "naprelan",
+   "ec-naprosyn"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "7258",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "drowsiness",
+   "swelling"
+  ],
+  "usedFor": "Pain, arthritis and inflammation"
+ },
+ {
+  "id": "oxaprozin",
+  "display": "Oxaprozin",
+  "brands": [
+   "daypro"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "32613",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "piroxicam",
+  "display": "Piroxicam",
+  "brands": [
+   "feldene"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "8356",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "sulindac",
+  "display": "Sulindac",
+  "brands": [
+   "clinoril"
+  ],
+  "aliases": [],
+  "classes": [
+   "nsaid_nonselective"
+  ],
+  "rxcui": "10237",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "magnesium salicylate",
+  "display": "Magnesium salicylate",
+  "brands": [
+   "doan's"
+  ],
+  "aliases": [],
+  "classes": [
+   "nonacetylated_salicylate"
+  ],
+  "rxcui": "52364",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Back pain (OTC)"
+ },
+ {
+  "id": "salsalate",
+  "display": "Salsalate",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "nonacetylated_salicylate"
+  ],
+  "rxcui": "36108",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Arthritis pain"
+ },
+ {
+  "id": "allopurinol",
+  "display": "Allopurinol",
+  "brands": [
+   "zyloprim",
+   "aloprim"
+  ],
+  "aliases": [],
+  "classes": [
+   "antigout"
+  ],
+  "rxcui": "519",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Gout prevention (lowers uric acid)"
+ },
+ {
+  "id": "colchicine",
+  "display": "Colchicine",
+  "brands": [
+   "colcrys",
+   "mitigare",
+   "gloperba",
+   "lodoco"
+  ],
+  "aliases": [],
+  "classes": [
+   "antigout"
+  ],
+  "rxcui": "2683",
+  "otc": false,
+  "acb": 1,
+  "effects": [],
+  "usedFor": "Gout flares and prevention"
+ },
+ {
+  "id": "febuxostat",
+  "display": "Febuxostat",
+  "brands": [
+   "uloric"
+  ],
+  "aliases": [],
+  "classes": [
+   "antigout"
+  ],
+  "rxcui": "73689",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Gout prevention (lowers uric acid)"
+ },
+ {
+  "id": "probenecid",
+  "display": "Probenecid",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antigout"
+  ],
+  "rxcui": "8698",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Gout prevention (helps the kidneys remove uric acid)"
+ },
+ {
+  "id": "methotrexate",
+  "display": "Methotrexate",
+  "brands": [
+   "trexall",
+   "otrexup",
+   "rasuvo",
+   "xatmep",
+   "jylamvo"
+  ],
+  "aliases": [],
+  "classes": [
+   "dmard"
+  ],
+  "rxcui": "6851",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Rheumatoid arthritis and psoriasis (weekly dose)"
+ },
+ {
+  "id": "hydroxychloroquine",
+  "display": "Hydroxychloroquine",
+  "brands": [
+   "plaquenil",
+   "sovuna"
+  ],
+  "aliases": [],
+  "classes": [
+   "dmard"
+  ],
+  "rxcui": "5521",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Rheumatoid arthritis and lupus"
+ },
+ {
+  "id": "albuterol",
+  "display": "Albuterol",
+  "brands": [
+   "proair hfa",
+   "proair respiclick",
+   "ventolin hfa",
+   "proventil hfa",
+   "proair",
+   "ventolin",
+   "proventil",
+   "proair digihaler"
+  ],
+  "aliases": [
+   "salbutamol"
+  ],
+  "classes": [
+   "bronchodilator"
+  ],
+  "rxcui": "435",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Asthma and COPD (rescue inhaler)"
+ },
+ {
+  "id": "formoterol",
+  "display": "Formoterol",
+  "brands": [
+   "perforomist"
+  ],
+  "aliases": [],
+  "classes": [
+   "bronchodilator"
+  ],
+  "rxcui": "25255",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "COPD (long-acting inhaled bronchodilator)"
+ },
+ {
+  "id": "salmeterol",
+  "display": "Salmeterol",
+  "brands": [
+   "serevent"
+  ],
+  "aliases": [],
+  "classes": [
+   "bronchodilator"
+  ],
+  "rxcui": "36117",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Asthma and COPD (long-acting inhaled bronchodilator)"
+ },
+ {
+  "id": "ipratropium",
+  "display": "Ipratropium",
+  "brands": [
+   "atrovent",
+   "atrovent hfa"
+  ],
+  "aliases": [],
+  "classes": [
+   "inhaled_antimuscarinic"
+  ],
+  "rxcui": "7213",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "COPD (inhaled); runny nose (nasal spray)"
+ },
+ {
+  "id": "tiotropium",
+  "display": "Tiotropium",
+  "brands": [
+   "spiriva",
+   "spiriva respimat",
+   "spiriva handihaler"
+  ],
+  "aliases": [],
+  "classes": [
+   "inhaled_antimuscarinic"
+  ],
+  "rxcui": "69120",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "COPD and asthma (long-acting inhaler)"
+ },
+ {
+  "id": "umeclidinium",
+  "display": "Umeclidinium",
+  "brands": [
+   "incruse ellipta"
+  ],
+  "aliases": [],
+  "classes": [
+   "inhaled_antimuscarinic"
+  ],
+  "rxcui": "1487514",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "COPD (long-acting inhaler)"
+ },
+ {
+  "id": "budesonide",
+  "display": "Budesonide",
+  "brands": [
+   "pulmicort",
+   "pulmicort flexhaler",
+   "rhinocort"
+  ],
+  "aliases": [],
+  "classes": [
+   "inhaled_or_nasal_corticosteroid"
+  ],
+  "rxcui": "19831",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Asthma (inhaled); nasal allergies (spray)"
+ },
+ {
+  "id": "fluticasone",
+  "display": "Fluticasone",
+  "brands": [
+   "flonase",
+   "flovent hfa",
+   "flovent diskus",
+   "arnuity ellipta",
+   "armonair"
+  ],
+  "aliases": [],
+  "classes": [
+   "inhaled_or_nasal_corticosteroid"
+  ],
+  "rxcui": "41126",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Nasal allergies (spray); asthma (inhaler)"
+ },
+ {
+  "id": "montelukast",
+  "display": "Montelukast",
+  "brands": [
+   "singulair"
+  ],
+  "aliases": [],
+  "classes": [
+   "leukotriene_antagonist"
+  ],
+  "rxcui": "88249",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "sleep"
+  ],
+  "usedFor": "Asthma and allergies"
+ },
+ {
+  "id": "theophylline",
+  "display": "Theophylline",
+  "brands": [
+   "theo-24",
+   "elixophyllin",
+   "uniphyl",
+   "theochron"
+  ],
+  "aliases": [],
+  "classes": [
+   "methylxanthine"
+  ],
+  "rxcui": "10438",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "sleep"
+  ],
+  "usedFor": "Asthma and COPD (older medicine)"
+ },
+ {
+  "id": "benzonatate",
+  "display": "Benzonatate",
+  "brands": [
+   "tessalon",
+   "tessalon perles"
+  ],
+  "aliases": [],
+  "classes": [
+   "cough_cold"
+  ],
+  "rxcui": "18993",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness"
+  ],
+  "usedFor": "Cough"
+ },
+ {
+  "id": "dextromethorphan",
+  "display": "Dextromethorphan",
+  "brands": [
+   "delsym",
+   "robafen cough"
+  ],
+  "aliases": [],
+  "classes": [
+   "cough_cold"
+  ],
+  "rxcui": "3289",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Cough (in many OTC cough and cold products)"
+ },
+ {
+  "id": "guaifenesin",
+  "display": "Guaifenesin",
+  "brands": [
+   "mucinex",
+   "robitussin chest congestion"
+  ],
+  "aliases": [],
+  "classes": [
+   "cough_cold"
+  ],
+  "rxcui": "5032",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Chest congestion (loosens mucus)"
+ },
+ {
+  "id": "phenylephrine",
+  "display": "Phenylephrine",
+  "brands": [
+   "sudafed pe"
+  ],
+  "aliases": [],
+  "classes": [
+   "decongestant"
+  ],
+  "rxcui": "8163",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "sleep"
+  ],
+  "usedFor": "Nasal congestion (in many cold products)"
+ },
+ {
+  "id": "pseudoephedrine",
+  "display": "Pseudoephedrine",
+  "brands": [
+   "sudafed",
+   "sudafed 12 hour"
+  ],
+  "aliases": [],
+  "classes": [
+   "decongestant"
+  ],
+  "rxcui": "8896",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "sleep"
+  ],
+  "usedFor": "Nasal congestion"
+ },
+ {
+  "id": "amoxicillin",
+  "display": "Amoxicillin",
+  "brands": [
+   "amoxil"
+  ],
+  "aliases": [],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "723",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections"
+ },
+ {
+  "id": "clavulanate",
+  "display": "Clavulanate",
+  "brands": [],
+  "aliases": [
+   "clavulanic acid"
+  ],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "48203",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Added to amoxicillin (Augmentin) so it works against more bacteria"
+ },
+ {
+  "id": "azithromycin",
+  "display": "Azithromycin",
+  "brands": [
+   "zithromax",
+   "z-pak",
+   "zmax"
+  ],
+  "aliases": [],
+  "classes": [
+   "macrolide"
+  ],
+  "rxcui": "18631",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections"
+ },
+ {
+  "id": "clarithromycin",
+  "display": "Clarithromycin",
+  "brands": [
+   "biaxin"
+  ],
+  "aliases": [],
+  "classes": [
+   "macrolide"
+  ],
+  "rxcui": "21212",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections; stomach ulcer (Helicobacter pylori) treatment"
+ },
+ {
+  "id": "erythromycin",
+  "display": "Erythromycin",
+  "brands": [
+   "ery-tab",
+   "erythrocin",
+   "eryped"
+  ],
+  "aliases": [],
+  "classes": [
+   "macrolide"
+  ],
+  "rxcui": "4053",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections"
+ },
+ {
+  "id": "cephalexin",
+  "display": "Cephalexin",
+  "brands": [
+   "keflex"
+  ],
+  "aliases": [],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "2231",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections"
+ },
+ {
+  "id": "ciprofloxacin",
+  "display": "Ciprofloxacin",
+  "brands": [
+   "cipro"
+  ],
+  "aliases": [],
+  "classes": [
+   "fluoroquinolone"
+  ],
+  "rxcui": "2551",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections (including urinary infections)"
+ },
+ {
+  "id": "levofloxacin",
+  "display": "Levofloxacin",
+  "brands": [
+   "levaquin"
+  ],
+  "aliases": [],
+  "classes": [
+   "fluoroquinolone"
+  ],
+  "rxcui": "82122",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections (including pneumonia)"
+ },
+ {
+  "id": "doxycycline",
+  "display": "Doxycycline",
+  "brands": [
+   "vibramycin",
+   "doryx",
+   "acticlate",
+   "oracea"
+  ],
+  "aliases": [],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "3640",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial infections; rosacea"
+ },
+ {
+  "id": "metronidazole",
+  "display": "Metronidazole",
+  "brands": [
+   "flagyl"
+  ],
+  "aliases": [],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "6922",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Bacterial and parasite infections"
+ },
+ {
+  "id": "nitrofurantoin",
+  "display": "Nitrofurantoin",
+  "brands": [
+   "macrobid",
+   "macrodantin",
+   "furadantin"
+  ],
+  "aliases": [],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "7454",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "appetiteWorse"
+  ],
+  "usedFor": "Urinary tract infections (treatment or prevention)"
+ },
+ {
+  "id": "sulfamethoxazole",
+  "display": "Sulfamethoxazole",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "10180",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "appetiteWorse"
+  ],
+  "usedFor": "Bacterial infections (with trimethoprim as Bactrim)"
+ },
+ {
+  "id": "trimethoprim",
+  "display": "Trimethoprim",
+  "brands": [
+   "primsol"
+  ],
+  "aliases": [],
+  "classes": [
+   "antibiotic"
+  ],
+  "rxcui": "10829",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Urinary tract infections; with sulfamethoxazole as Bactrim"
+ },
+ {
+  "id": "fluconazole",
+  "display": "Fluconazole",
+  "brands": [
+   "diflucan"
+  ],
+  "aliases": [],
+  "classes": [
+   "antifungal"
+  ],
+  "rxcui": "4450",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Yeast and fungal infections"
+ },
+ {
+  "id": "finasteride",
+  "display": "Finasteride",
+  "brands": [
+   "proscar",
+   "propecia"
+  ],
+  "aliases": [],
+  "classes": [
+   "five_alpha_reductase_inhibitor"
+  ],
+  "rxcui": "25025",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Enlarged prostate; hair loss"
+ },
+ {
+  "id": "dutasteride",
+  "display": "Dutasteride",
+  "brands": [
+   "avodart"
+  ],
+  "aliases": [],
+  "classes": [
+   "five_alpha_reductase_inhibitor"
+  ],
+  "rxcui": "228790",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Enlarged prostate"
+ },
+ {
+  "id": "desmopressin",
+  "display": "Desmopressin",
+  "brands": [
+   "ddavp",
+   "nocdurna",
+   "noctiva"
+  ],
+  "aliases": [],
+  "classes": [
+   "vasopressin_analog"
+  ],
+  "rxcui": "3251",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Night-time urination (nocturia); diabetes insipidus; bedwetting"
+ },
+ {
+  "id": "alendronate",
+  "display": "Alendronate",
+  "brands": [
+   "fosamax",
+   "binosto"
+  ],
+  "aliases": [],
+  "classes": [
+   "bisphosphonate"
+  ],
+  "rxcui": "46041",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Osteoporosis"
+ },
+ {
+  "id": "ibandronate",
+  "display": "Ibandronate",
+  "brands": [
+   "boniva"
+  ],
+  "aliases": [],
+  "classes": [
+   "bisphosphonate"
+  ],
+  "rxcui": "115264",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Osteoporosis"
+ },
+ {
+  "id": "risedronate",
+  "display": "Risedronate",
+  "brands": [
+   "actonel",
+   "atelvia"
+  ],
+  "aliases": [],
+  "classes": [
+   "bisphosphonate"
+  ],
+  "rxcui": "73056",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Osteoporosis"
+ },
+ {
+  "id": "raloxifene",
+  "display": "Raloxifene",
+  "brands": [
+   "evista"
+  ],
+  "aliases": [],
+  "classes": [
+   "serm"
+  ],
+  "rxcui": "72143",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Osteoporosis; lowering breast cancer risk"
+ },
+ {
+  "id": "calcium carbonate",
+  "display": "Calcium carbonate",
+  "brands": [
+   "tums",
+   "os-cal",
+   "caltrate",
+   "viactiv"
+  ],
+  "aliases": [
+   "calcium",
+   "calcium supplement"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "1897",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Calcium supplement; heartburn (antacid)"
+ },
+ {
+  "id": "calcium citrate",
+  "display": "Calcium citrate",
+  "brands": [
+   "citracal"
+  ],
+  "aliases": [],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "47613",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Calcium supplement"
+ },
+ {
+  "id": "cholecalciferol",
+  "display": "Vitamin D3 (cholecalciferol)",
+  "brands": [],
+  "aliases": [
+   "vit d",
+   "vit d3",
+   "vitamin d",
+   "vitamin d3"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "2418",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Vitamin D supplement (bone health)"
+ },
+ {
+  "id": "ergocalciferol",
+  "display": "Vitamin D2 (ergocalciferol)",
+  "brands": [
+   "drisdol"
+  ],
+  "aliases": [
+   "vitamin d2"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "4018",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Vitamin D deficiency"
+ },
+ {
+  "id": "cyanocobalamin",
+  "display": "Vitamin B12 (cyanocobalamin)",
+  "brands": [
+   "nascobal"
+  ],
+  "aliases": [
+   "b-12",
+   "b12",
+   "vit b-12",
+   "vit b12",
+   "vitamin b 12",
+   "vitamin b-12",
+   "vitamin b12"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "11248",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Vitamin B12 deficiency"
+ },
+ {
+  "id": "ferrous sulfate",
+  "display": "Ferrous sulfate (iron)",
+  "brands": [
+   "feosol",
+   "slow fe",
+   "fer-in-sol"
+  ],
+  "aliases": [
+   "iron",
+   "iron pill",
+   "iron supplement"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "24947",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Iron-deficiency anemia"
+ },
+ {
+  "id": "magnesium oxide",
+  "display": "Magnesium oxide",
+  "brands": [
+   "mag-ox"
+  ],
+  "aliases": [],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "6582",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Low magnesium; heartburn; constipation"
+ },
+ {
+  "id": "levothyroxine",
+  "display": "Levothyroxine",
+  "brands": [
+   "synthroid",
+   "levoxyl",
+   "unithroid",
+   "euthyrox",
+   "tirosint",
+   "levo-t"
+  ],
+  "aliases": [],
+  "classes": [
+   "thyroid_hormone"
+  ],
+  "rxcui": "10582",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "sleep"
+  ],
+  "usedFor": "Underactive thyroid (hypothyroidism)"
+ },
+ {
+  "id": "desiccated thyroid",
+  "display": "Desiccated thyroid",
+  "brands": [
+   "armour thyroid",
+   "np thyroid",
+   "nature-throid",
+   "adthyza"
+  ],
+  "aliases": [
+   "porcine thyroid",
+   "thyroid tablets"
+  ],
+  "classes": [
+   "thyroid_hormone"
+  ],
+  "rxcui": "10572",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "sleep"
+  ],
+  "usedFor": "Underactive thyroid (made from animal thyroid glands)"
+ },
+ {
+  "id": "conjugated estrogens",
+  "display": "Conjugated estrogens",
+  "brands": [
+   "premarin"
+  ],
+  "aliases": [],
+  "classes": [
+   "estrogen"
+  ],
+  "rxcui": "4099",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Menopause symptoms"
+ },
+ {
+  "id": "conjugated estrogens vaginal",
+  "display": "Conjugated estrogens vaginal cream",
+  "brands": [
+   "premarin vaginal cream",
+   "premarin vaginal",
+   "premarin cream"
+  ],
+  "aliases": [],
+  "classes": [
+   "estrogen_vaginal"
+  ],
+  "rxcui": "4099",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Vaginal dryness and irritation after menopause (low-dose cream used in the vagina)",
+  "variant": {
+   "of": "conjugated estrogens",
+   "words": [
+    "vaginal",
+    "vaginally",
+    "vag",
+    "intravaginal",
+    "cream",
+    "pv"
+   ]
+  }
+ },
+ {
+  "id": "esterified estrogens",
+  "display": "Esterified estrogens",
+  "brands": [
+   "menest"
+  ],
+  "aliases": [],
+  "classes": [
+   "estrogen"
+  ],
+  "rxcui": "214549",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Menopause symptoms"
+ },
+ {
+  "id": "estradiol",
+  "display": "Estradiol",
+  "brands": [
+   "estrace",
+   "vivelle-dot",
+   "climara",
+   "minivelle",
+   "divigel",
+   "evamist",
+   "dotti",
+   "lyllana"
+  ],
+  "aliases": [],
+  "classes": [
+   "estrogen"
+  ],
+  "rxcui": "4083",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Menopause symptoms (pills, patches, gels and sprays; low-dose vaginal forms are a separate entry)"
+ },
+ {
+  "id": "estradiol vaginal",
+  "display": "Estradiol, low-dose vaginal (cream, tablet, insert or ring)",
+  "brands": [
+   "vagifem",
+   "yuvafem",
+   "estring",
+   "imvexxy",
+   "estrace cream",
+   "estrace vaginal cream"
+  ],
+  "aliases": [],
+  "classes": [
+   "estrogen_vaginal"
+  ],
+  "rxcui": "4083",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Vaginal dryness, painful intercourse and repeat bladder infections after menopause (used in the vagina)",
+  "variant": {
+   "of": "estradiol",
+   "words": [
+    "vaginal",
+    "vaginally",
+    "vag",
+    "intravaginal",
+    "cream",
+    "insert",
+    "inserts",
+    "ring",
+    "pv"
+   ]
+  }
+ },
+ {
+  "id": "estropipate",
+  "display": "Estropipate",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "estrogen"
+  ],
+  "rxcui": "33747",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Menopause symptoms"
+ },
+ {
+  "id": "methyltestosterone",
+  "display": "Methyltestosterone",
+  "brands": [
+   "methitest",
+   "android"
+  ],
+  "aliases": [],
+  "classes": [
+   "androgen"
+  ],
+  "rxcui": "6904",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Low testosterone"
+ },
+ {
+  "id": "testosterone",
+  "display": "Testosterone",
+  "brands": [
+   "androgel",
+   "testim",
+   "depo-testosterone",
+   "xyosted",
+   "jatenzo",
+   "tlando",
+   "kyzatrex",
+   "aveed",
+   "natesto",
+   "vogelxo"
+  ],
+  "aliases": [],
+  "classes": [
+   "androgen"
+  ],
+  "rxcui": "10379",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Low testosterone (hypogonadism)"
+ },
+ {
+  "id": "megestrol",
+  "display": "Megestrol",
+  "brands": [
+   "megace",
+   "megace es"
+  ],
+  "aliases": [],
+  "classes": [
+   "progestin"
+  ],
+  "rxcui": "6703",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Poor appetite and weight loss; some cancers"
+ },
+ {
+  "id": "somatropin",
+  "display": "Somatropin (growth hormone)",
+  "brands": [
+   "genotropin",
+   "humatrope",
+   "norditropin",
+   "omnitrope",
+   "nutropin aq",
+   "saizen",
+   "zomacton"
+  ],
+  "aliases": [
+   "growth hormone"
+  ],
+  "classes": [
+   "growth_hormone"
+  ],
+  "rxcui": "61148",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Growth hormone deficiency"
+ },
+ {
+  "id": "prednisone",
+  "display": "Prednisone",
+  "brands": [
+   "rayos",
+   "deltasone"
+  ],
+  "aliases": [],
+  "classes": [
+   "corticosteroid_systemic"
+  ],
+  "rxcui": "8640",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "swelling",
+   "sleep"
+  ],
+  "usedFor": "Inflammation: flares of arthritis, asthma, COPD and many other conditions"
+ },
+ {
+  "id": "prednisolone",
+  "display": "Prednisolone",
+  "brands": [
+   "orapred",
+   "millipred",
+   "pediapred"
+  ],
+  "aliases": [],
+  "classes": [
+   "corticosteroid_systemic"
+  ],
+  "rxcui": "8638",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling",
+   "sleep"
+  ],
+  "usedFor": "Inflammation: asthma, arthritis and other conditions"
+ },
+ {
+  "id": "prednisolone ophthalmic",
+  "display": "Prednisolone eye drops",
+  "brands": [
+   "pred forte",
+   "pred mild",
+   "omnipred"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_other"
+  ],
+  "rxcui": "8638",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Eye inflammation, including after eye surgery",
+  "variant": {
+   "of": "prednisolone",
+   "words": [
+    "eye",
+    "eyes",
+    "ophthalmic",
+    "ophth",
+    "eye drop",
+    "eye drops",
+    "eyedrop",
+    "eyedrops",
+    "drop",
+    "drops",
+    "gtt",
+    "gtts"
+   ]
+  }
+ },
+ {
+  "id": "methylprednisolone",
+  "display": "Methylprednisolone",
+  "brands": [
+   "medrol",
+   "solu-medrol",
+   "depo-medrol"
+  ],
+  "aliases": [],
+  "classes": [
+   "corticosteroid_systemic"
+  ],
+  "rxcui": "6902",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling",
+   "sleep"
+  ],
+  "usedFor": "Inflammation (including short 'dose packs')"
+ },
+ {
+  "id": "dexamethasone",
+  "display": "Dexamethasone",
+  "brands": [
+   "decadron",
+   "hemady",
+   "dexpak"
+  ],
+  "aliases": [],
+  "classes": [
+   "corticosteroid_systemic"
+  ],
+  "rxcui": "3264",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling",
+   "sleep"
+  ],
+  "usedFor": "Inflammation, swelling and some cancers"
+ },
+ {
+  "id": "dexamethasone ophthalmic",
+  "display": "Dexamethasone eye drops",
+  "brands": [
+   "maxidex"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_other"
+  ],
+  "rxcui": "3264",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Eye inflammation, including after eye surgery",
+  "variant": {
+   "of": "dexamethasone",
+   "words": [
+    "eye",
+    "eyes",
+    "ophthalmic",
+    "ophth",
+    "eye drop",
+    "eye drops",
+    "eyedrop",
+    "eyedrops",
+    "drop",
+    "drops",
+    "gtt",
+    "gtts"
+   ]
+  }
+ },
+ {
+  "id": "hydrocortisone",
+  "display": "Hydrocortisone (tablets)",
+  "brands": [
+   "cortef",
+   "alkindi sprinkle"
+  ],
+  "aliases": [],
+  "classes": [
+   "corticosteroid_systemic"
+  ],
+  "rxcui": "5492",
+  "otc": false,
+  "acb": 1,
+  "effects": [
+   "swelling",
+   "sleep"
+  ],
+  "usedFor": "Adrenal insufficiency (tablets); creams are a different product"
+ },
+ {
+  "id": "hydrocortisone topical",
+  "display": "Hydrocortisone cream or ointment (on the skin)",
+  "brands": [
+   "cortaid",
+   "cortizone-10",
+   "cortizone 10",
+   "cortizone",
+   "preparation h hydrocortisone"
+  ],
+  "aliases": [],
+  "classes": [
+   "corticosteroid_topical"
+  ],
+  "rxcui": "5492",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Itching, rashes and eczema (applied to the skin)",
+  "variant": {
+   "of": "hydrocortisone",
+   "words": [
+    "cream",
+    "creme",
+    "ointment",
+    "lotion",
+    "topical",
+    "gel",
+    "spray",
+    "roll-on",
+    "rollerball",
+    "on the skin",
+    "1%",
+    "2.5%",
+    "0.5%",
+    "itch"
+   ],
+   "baseWords": [
+    "tab",
+    "tabs",
+    "tablet",
+    "tablets",
+    "cap",
+    "caps",
+    "capsule",
+    "capsules",
+    "caplet",
+    "caplets",
+    "pill",
+    "pills",
+    "oral",
+    "po",
+    "by mouth",
+    "er",
+    "xr",
+    "sr",
+    "ec",
+    "dr",
+    "#mg"
+   ]
+  }
+ },
+ {
+  "id": "norethindrone",
+  "display": "Norethindrone",
+  "brands": [
+   "aygestin"
+  ],
+  "aliases": [],
+  "classes": [
+   "progestin"
+  ],
+  "rxcui": "7514",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Hormone therapy (with estrogen) and other gynecologic uses"
+ },
+ {
+  "id": "medroxyprogesterone",
+  "display": "Medroxyprogesterone",
+  "brands": [
+   "provera",
+   "depo-provera",
+   "depo-subq provera 104"
+  ],
+  "aliases": [],
+  "classes": [
+   "progestin"
+  ],
+  "rxcui": "6691",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Hormone therapy (with estrogen) and other gynecologic uses"
+ },
+ {
+  "id": "latanoprost",
+  "display": "Latanoprost (eye drops)",
+  "brands": [
+   "xalatan",
+   "xelpros"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_glaucoma"
+  ],
+  "rxcui": "43611",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Glaucoma (eye drops)"
+ },
+ {
+  "id": "timolol",
+  "display": "Timolol (eye drops)",
+  "brands": [
+   "timoptic",
+   "timoptic-xe",
+   "istalol"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_glaucoma"
+  ],
+  "rxcui": "10600",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Glaucoma (eye drops); tablets are rarely used now"
+ },
+ {
+  "id": "brimonidine",
+  "display": "Brimonidine (eye drops)",
+  "brands": [
+   "alphagan p",
+   "lumify"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_glaucoma"
+  ],
+  "rxcui": "134615",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Glaucoma (eye drops); eye redness"
+ },
+ {
+  "id": "bimatoprost",
+  "display": "Bimatoprost (eye drops)",
+  "brands": [
+   "lumigan"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_glaucoma"
+  ],
+  "rxcui": "283810",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Glaucoma (eye drops)"
+ },
+ {
+  "id": "dorzolamide",
+  "display": "Dorzolamide (eye drops)",
+  "brands": [
+   "trusopt"
+  ],
+  "aliases": [],
+  "classes": [
+   "ophthalmic_glaucoma"
+  ],
+  "rxcui": "60207",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Glaucoma (eye drops)"
+ },
+ {
+  "id": "ranolazine",
+  "display": "Ranolazine",
+  "brands": [
+   "ranexa",
+   "aspruzyo sprinkle"
+  ],
+  "aliases": [],
+  "classes": [
+   "antianginal_other"
+  ],
+  "rxcui": "35829",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Long-term chest pain (angina)"
+ },
+ {
+  "id": "propafenone",
+  "display": "Propafenone",
+  "brands": [
+   "rythmol sr"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiarrhythmic"
+  ],
+  "rxcui": "8754",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness"
+  ],
+  "usedFor": "Irregular heart rhythms"
+ },
+ {
+  "id": "midodrine",
+  "display": "Midodrine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antihypotensive"
+  ],
+  "rxcui": "6963",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Low blood pressure on standing (orthostatic hypotension)"
+ },
+ {
+  "id": "fludrocortisone",
+  "display": "Fludrocortisone",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "mineralocorticoid"
+  ],
+  "rxcui": "4452",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "swelling"
+  ],
+  "usedFor": "Low blood pressure on standing; adrenal insufficiency"
+ },
+ {
+  "id": "insulin",
+  "display": "Insulin (type not specified)",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "insulin"
+  ],
+  "rxcui": null,
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Diabetes (check the label for the insulin type)"
+ },
+ {
+  "id": "denosumab",
+  "display": "Denosumab",
+  "brands": [
+   "prolia",
+   "xgeva"
+  ],
+  "aliases": [],
+  "classes": [
+   "bone_antiresorptive"
+  ],
+  "rxcui": "993449",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Osteoporosis (injection every 6 months)"
+ },
+ {
+  "id": "zoledronic acid",
+  "display": "Zoledronic acid",
+  "brands": [
+   "reclast",
+   "zometa"
+  ],
+  "aliases": [],
+  "classes": [
+   "bisphosphonate"
+  ],
+  "rxcui": "77655",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Osteoporosis (yearly infusion)"
+ },
+ {
+  "id": "sevelamer",
+  "display": "Sevelamer",
+  "brands": [
+   "renvela",
+   "renagel"
+  ],
+  "aliases": [],
+  "classes": [
+   "phosphate_binder"
+  ],
+  "rxcui": "214824",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High phosphate with kidney disease"
+ },
+ {
+  "id": "calcitriol",
+  "display": "Calcitriol",
+  "brands": [
+   "rocaltrol"
+  ],
+  "aliases": [],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "1894",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Active vitamin D for kidney disease or low calcium"
+ },
+ {
+  "id": "folic acid",
+  "display": "Folic acid",
+  "brands": [],
+  "aliases": [
+   "folate"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "4511",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Folate supplement"
+ },
+ {
+  "id": "ascorbic acid",
+  "display": "Vitamin C (ascorbic acid)",
+  "brands": [],
+  "aliases": [
+   "vit c",
+   "vitamin c"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": "1151",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Vitamin C supplement"
+ },
+ {
+  "id": "multivitamin",
+  "display": "Multivitamin",
+  "brands": [
+   "centrum",
+   "centrum silver",
+   "one a day"
+  ],
+  "aliases": [
+   "multi vitamin",
+   "multi-vitamin",
+   "multivitamins",
+   "mvi"
+  ],
+  "classes": [
+   "vitamin_mineral"
+  ],
+  "rxcui": null,
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Vitamin and mineral supplement"
+ },
+ {
+  "id": "sumatriptan",
+  "display": "Sumatriptan",
+  "brands": [
+   "imitrex",
+   "tosymra",
+   "zembrace symtouch",
+   "onzetra xsail"
+  ],
+  "aliases": [],
+  "classes": [
+   "triptan"
+  ],
+  "rxcui": "37418",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness"
+  ],
+  "usedFor": "Migraine attacks"
+ },
+ {
+  "id": "valacyclovir",
+  "display": "Valacyclovir",
+  "brands": [
+   "valtrex"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiviral"
+  ],
+  "rxcui": "73645",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Shingles, cold sores and herpes infections"
+ },
+ {
+  "id": "acyclovir",
+  "display": "Acyclovir",
+  "brands": [
+   "zovirax",
+   "sitavig"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiviral"
+  ],
+  "rxcui": "281",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Shingles, cold sores and herpes infections"
+ },
+ {
+  "id": "oseltamivir",
+  "display": "Oseltamivir",
+  "brands": [
+   "tamiflu"
+  ],
+  "aliases": [],
+  "classes": [
+   "antiviral"
+  ],
+  "rxcui": "260101",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Flu (influenza) treatment or prevention"
+ },
+ {
+  "id": "cholestyramine",
+  "display": "Cholestyramine",
+  "brands": [
+   "prevalite",
+   "questran",
+   "questran light"
+  ],
+  "aliases": [],
+  "classes": [
+   "bile_acid_sequestrant"
+  ],
+  "rxcui": "2447",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "High cholesterol; diarrhea from bile acids; itching"
+ },
+ {
+  "id": "methimazole",
+  "display": "Methimazole",
+  "brands": [
+   "tapazole"
+  ],
+  "aliases": [],
+  "classes": [
+   "antithyroid"
+  ],
+  "rxcui": "6835",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Overactive thyroid (hyperthyroidism)"
+ },
+ {
+  "id": "nystatin",
+  "display": "Nystatin",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "antifungal"
+  ],
+  "rxcui": "7597",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Thrush and other yeast infections (mouth rinse or cream)"
+ },
+ {
+  "id": "tamoxifen",
+  "display": "Tamoxifen",
+  "brands": [
+   "soltamox"
+  ],
+  "aliases": [],
+  "classes": [
+   "hormonal_cancer_therapy"
+  ],
+  "rxcui": "10324",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Breast cancer treatment and prevention"
+ },
+ {
+  "id": "anastrozole",
+  "display": "Anastrozole",
+  "brands": [
+   "arimidex"
+  ],
+  "aliases": [],
+  "classes": [
+   "hormonal_cancer_therapy"
+  ],
+  "rxcui": "84857",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Breast cancer treatment after menopause"
+ },
+ {
+  "id": "letrozole",
+  "display": "Letrozole",
+  "brands": [
+   "femara"
+  ],
+  "aliases": [],
+  "classes": [
+   "hormonal_cancer_therapy"
+  ],
+  "rxcui": "72965",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Breast cancer treatment after menopause"
+ },
+ {
+  "id": "lidocaine",
+  "display": "Lidocaine (skin patch)",
+  "brands": [
+   "lidoderm",
+   "ztlido"
+  ],
+  "aliases": [],
+  "classes": [
+   "local_anesthetic"
+  ],
+  "rxcui": "6387",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Nerve pain after shingles; local pain relief (patch or cream)"
+ },
+ {
+  "id": "nefopam",
+  "display": "Nefopam",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "analgesic_other"
+  ],
+  "rxcui": "7285",
+  "otc": false,
+  "acb": 2,
+  "effects": [],
+  "usedFor": "Pain (not marketed in the US)"
+ },
+ {
+  "id": "pyrilamine",
+  "display": "Pyrilamine",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "first_gen_antihistamine"
+  ],
+  "rxcui": "9009",
+  "otc": true,
+  "acb": 0,
+  "effects": [
+   "dizziness",
+   "drowsiness",
+   "confusion",
+   "fall",
+   "nearFall"
+  ],
+  "usedFor": "Sedating antihistamine in menstrual-symptom products (Midol Complete, Pamprin)"
+ },
+ {
+  "id": "pamabrom",
+  "display": "Pamabrom",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "other"
+  ],
+  "rxcui": "54365",
+  "otc": true,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "Mild water pill in menstrual-symptom products (Pamprin)"
+ },
+ {
+  "id": "vilanterol",
+  "display": "Vilanterol",
+  "brands": [],
+  "aliases": [],
+  "classes": [
+   "bronchodilator"
+  ],
+  "rxcui": "1424884",
+  "otc": false,
+  "acb": 0,
+  "effects": [],
+  "usedFor": "COPD and asthma (long-acting inhaled bronchodilator, in Breo, Anoro and Trelegy)"
+ },
+ {
+  "id": "suvorexant",
+  "display": "Suvorexant",
+  "brands": [
+   "belsomra"
+  ],
+  "aliases": [],
+  "classes": [
+   "orexin_antagonist"
+  ],
+  "rxcui": "1547099",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "drowsiness"
+  ],
+  "usedFor": "Insomnia"
+ },
+ {
+  "id": "lemborexant",
+  "display": "Lemborexant",
+  "brands": [
+   "dayvigo"
+  ],
+  "aliases": [],
+  "classes": [
+   "orexin_antagonist"
+  ],
+  "rxcui": "2272403",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "drowsiness"
+  ],
+  "usedFor": "Insomnia"
+ },
+ {
+  "id": "daridorexant",
+  "display": "Daridorexant",
+  "brands": [
+   "quviviq"
+  ],
+  "aliases": [],
+  "classes": [
+   "orexin_antagonist"
+  ],
+  "rxcui": "2591497",
+  "otc": false,
+  "acb": 0,
+  "effects": [
+   "drowsiness"
+  ],
+  "usedFor": "Insomnia"
+ }
+]

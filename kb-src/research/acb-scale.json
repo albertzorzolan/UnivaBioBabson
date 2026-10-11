@@ -1,0 +1,5547 @@
+{
+ "id": "acb-scale",
+ "title": "Anticholinergic Cognitive Burden (ACB) scale - 2012 update, machine-readable",
+ "version": "ACB 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); compiled 2026-10-10",
+ "compiledBy": "MedWatch research (UnivaBio hackathon). Drug names, brands-as-printed and scores transcribed from the official card; RxNorm, brand verification and MedlinePlus links added programmatically.",
+ "license": {
+  "statement": "ACB scale: Copyright (c) 2008, 2012 Regenstrief Institute, Inc. All rights reserved. The card states use may only be in accordance with its Terms of Use (formerly http://www.agingbraincare.org/tools/abc-anticholinergic-cognitive-burden-scale; the agingbraincare.org domain did not respond on 2026-10-10) and permission requests go to acb@agingbraincare.org.",
+  "medwatchUse": "Non-commercial hackathon prototype; attribute the scale on every screen/printout that shows ACB scores. Seek permission before any commercial use. (Our interpretation, not legal advice.)"
+ },
+ "sources": [
+  {
+   "id": "acb2012card",
+   "citation": "Aging Brain Care. Anticholinergic Cognitive Burden Scale, 2012 Update. Indiana University Center for Aging Research / Regenstrief Institute.",
+   "url": "https://www.hii.iu.edu/resources/anticholinergic-cognitive-burden-scale.pdf",
+   "accessed": "2026-10-10"
+  },
+  {
+   "id": "boustani2008",
+   "citation": "Boustani M, Campbell N, Munger S, Maidment I, Fox C. Impact of anticholinergics on the aging brain: a review and practical application. Aging Health. 2008;4(3):311-320.",
+   "doi": "10.2217/1745509X.4.3.311",
+   "note": "Original ACB publication (cited on the card). Title, journal, volume, pages and DOI verified via the Crossref API on 2026-10-10 (not indexed in PubMed)."
+  },
+  {
+   "id": "campbell2013",
+   "citation": "Campbell NL, Maidment I, Fox C, Khan B, Boustani M. The 2012 update to the anticholinergic cognitive burden scale. J Am Geriatr Soc. 2013;61(S1):S142-S143 (abstract C46).",
+   "url": "https://research.aston.ac.uk/en/publications/the-2012-update-to-the-anticholinergic-cognitive-burden-scale/",
+   "summary": "23 medications reviewed; 7 excluded; 10 added with score 1, 1 with score 2, 5 with score 3."
+  },
+  {
+   "id": "campbell2010",
+   "citation": "Campbell NL, Boustani MA, Lane KA, et al. Use of anticholinergics and the risk of cognitive impairment in an African American population. Neurology. 2010;75(2):152-159.",
+   "pmid": "20625168",
+   "doi": "10.1212/WNL.0b013e3181e7f2ab",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/20625168/"
+  },
+  {
+   "id": "fox2011",
+   "citation": "Fox C, Richardson K, Maidment ID, et al. Anticholinergic medication use and cognitive impairment in the older population: the Medical Research Council Cognitive Function and Ageing Study. J Am Geriatr Soc. 2011;59(8):1477-1483.",
+   "pmid": "21707557",
+   "doi": "10.1111/j.1532-5415.2011.03491.x",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/21707557/"
+  },
+  {
+   "id": "myint2015",
+   "citation": "Myint PK, Fox C, Kwok CS, et al. Total anticholinergic burden and risk of mortality and cardiovascular disease over 10 years in 21,636 middle-aged and older men and women of EPIC-Norfolk prospective population study. Age Ageing. 2015;44(2):219-225.",
+   "pmid": "25430550",
+   "doi": "10.1093/ageing/afu185",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/25430550/"
+  },
+  {
+   "id": "pasina2013",
+   "citation": "Pasina L, Djade CD, Lucca U, et al. Association of anticholinergic burden with cognitive and functional status in a cohort of hospitalized elderly: comparison of the ACB scale and ARS (REPOSI). Drugs Aging. 2013;30(2):103-112.",
+   "pmid": "23239364",
+   "doi": "10.1007/s40266-012-0044-x",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/23239364/"
+  },
+  {
+   "id": "coupland2019",
+   "citation": "Coupland CAC, Hill T, Dening T, et al. Anticholinergic drug exposure and the risk of dementia: a nested case-control study. JAMA Intern Med. 2019;179(8):1084-1093.",
+   "pmid": "31233095",
+   "doi": "10.1001/jamainternmed.2019.0677",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/31233095/"
+  },
+  {
+   "id": "acbcalc",
+   "citation": "ACB Calculator (acbcalc.com).",
+   "url": "https://www.acbcalc.com/",
+   "accessed": "2026-10-10"
+  },
+  {
+   "id": "beers2023",
+   "citation": "2023 American Geriatrics Society Beers Criteria Update Expert Panel. American Geriatrics Society 2023 updated AGS Beers Criteria for potentially inappropriate medication use in older adults. J Am Geriatr Soc. 2023;71(7):2052-2081.",
+   "pmid": "37139824",
+   "doi": "10.1111/jgs.18372",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12478568/"
+  },
+  {
+   "id": "fdaRanitidine2020",
+   "citation": "FDA. FDA Requests Removal of All Ranitidine Products (Zantac) from the Market. Press release, April 1, 2020.",
+   "url": "https://www.fda.gov/news-events/press-announcements/fda-requests-removal-all-ranitidine-products-zantac-market"
+  },
+  {
+   "id": "openfda",
+   "citation": "openFDA drug label API (FDA Structured Product Labeling), queried 2026-10-10; used as fallback evidence that a brand appears in an SPL with the ingredient (splEvidence gives the SPL set id and its latest effective date, which may be old for discontinued products).",
+   "url": "https://open.fda.gov/apis/drug/label/"
+  },
+  {
+   "id": "rxnav",
+   "citation": "NLM RxNav REST API (RxNorm), queried 2026-10-10. Brand verification = RxNorm brand-name (BN) concept whose related ingredient (IN/MIN) includes the generic.",
+   "url": "https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html"
+  },
+  {
+   "id": "medlineplusConnect",
+   "citation": "NLM MedlinePlus Connect web service, queried 2026-10-10 for consumer drug-information links.",
+   "url": "https://medlineplus.gov/medlineplus-connect/web-service/"
+  }
+ ],
+ "scoringRules": {
+  "categoryCriteria": {
+   "1": "Possible anticholinergic: in-vitro evidence that the chemical entity has antagonist activity at muscarinic receptors.",
+   "2": "Definite anticholinergic: evidence from literature, prescribing information or expert opinion of a clinical anticholinergic effect.",
+   "3": "Definite anticholinergic: evidence from literature, expert opinion or prescribing information that the medication may cause delirium."
+  },
+  "categoricalScoring": "Score 1 = 'possible' anticholinergic; score 2 or 3 = 'definite' anticholinergic.",
+  "numericScoring": "Total ACB = sum of the scores of every medication the person takes; also count the number of possible and definite anticholinergic medications.",
+  "doseAndRoute": "The scale is dose-independent and the card does not specify route; MedWatch scores systemic (oral/patch/injected) products only and lists topical/ophthalmic products as 'not scored' (MedWatch assumption).",
+  "combinationProducts": "Score each anticholinergic ingredient of a combination product separately (e.g. Tylenol PM -> diphenhydramine 3).",
+  "duplicateIngredient": "Count an ingredient once even if it appears in two products (MedWatch rule to avoid double counting; UNVERIFIED as an official ACB rule).",
+  "medwatchDisplayThreshold": 3,
+  "interpretation": [
+   {
+    "claim": "A total ACB score of 3 or more is associated with increased cognitive impairment and mortality; review risks, benefits and alternatives.",
+    "source": "acbcalc"
+   },
+   {
+    "claim": "Compared with ACB = 0, people with total ACB >= 3 had adjusted hazard ratios of 1.83 (95% CI 1.53-2.20) for all-cause mortality and 2.17 (1.87-2.52) for incident cardiovascular disease over ~10+ years (EPIC-Norfolk, n=21,636).",
+    "source": "myint2015"
+   },
+   {
+    "claim": "Each additional definite anticholinergic (ACB 2-3) was associated with higher odds of incident cognitive impairment over 6 years (OR 1.46, 95% CI 1.07-1.99); possible anticholinergics (ACB 1) were not (OR 0.96).",
+    "source": "campbell2010"
+   },
+   {
+    "claim": "Use of definite anticholinergics was associated with a 0.33-point greater 2-year MMSE decline (95% CI 0.03-0.64); 2-year mortality was higher with definite (OR 1.68) and possible (OR 1.56) anticholinergics.",
+    "source": "fox2011"
+   },
+   {
+    "claim": "The ACB card additionally states that each 1-point increase in total ACB has been correlated with a 26% increase in risk of death (citing Fox 2011); this figure is not in the Fox 2011 abstract and is UNVERIFIED against the full text in this session.",
+    "source": "acb2012card"
+   },
+   {
+    "claim": "In hospitalised older adults, a dose-response relationship was seen between total ACB and cognitive impairment (Short Blessed Test).",
+    "source": "pasina2013"
+   },
+   {
+    "claim": "Cumulative exposure to strong anticholinergics (antidepressant, antiparkinson, antipsychotic, bladder antimuscarinic, antiepileptic classes) was associated with increased dementia risk (highest exposure AOR about 1.49).",
+    "source": "coupland2019",
+    "caveat": "Observational; confounding by indication possible."
+   }
+  ],
+  "caveats": [
+   "Associations are observational; a high ACB score is a prompt for medication review, not proof of harm in an individual.",
+   "The scale is dose-independent and does not capture newer drugs approved after 2012.",
+   "Different anticholinergic scales disagree on which drugs score and by how much (see alternativeScales)."
+  ]
+ },
+ "alternativeScales": [
+  {
+   "name": "Anticholinergic Risk Scale (ARS)",
+   "citation": "Rudolph JL, Salow MJ, Angelini MC, McGlinchey RE. The anticholinergic risk scale and anticholinergic adverse effects in older persons. Arch Intern Med. 2008;168(5):508-513.",
+   "pmid": "18332297",
+   "doi": "10.1001/archinternmed.2007.106",
+   "summary": "Ranked 0-3 categorical list; higher ARS scores were associated with more anticholinergic adverse effects in geriatric and primary-care cohorts."
+  },
+  {
+   "name": "Anticholinergic Drug Scale (ADS)",
+   "citation": "Carnahan RM, Lund BC, Perry PJ, Pollock BG, Culp KR. The Anticholinergic Drug Scale as a measure of drug-related anticholinergic burden: associations with serum anticholinergic activity. J Clin Pharmacol. 2006;46(12):1481-1486.",
+   "pmid": "17101747",
+   "doi": "10.1177/0091270006292126",
+   "summary": "0-3 scale; scores associated with serum anticholinergic activity in long-term-care residents."
+  },
+  {
+   "name": "CRIDECO Anticholinergic Load Scale (CALS)",
+   "citation": "Ramos H, Moreno L, Perez-Tur J, et al. CRIDECO Anticholinergic Load Scale: an updated anticholinergic burden scale. Comparison with the ACB scale in Spanish individuals with subjective memory complaints. J Pers Med. 2022;12(2):207.",
+   "pmid": "35207695",
+   "doi": "10.3390/jpm12020207",
+   "summary": "217 drugs (129 more than ACB); associated with cognitive impairment in a Spanish cohort where ACB was not."
+  },
+  {
+   "name": "German Anticholinergic Burden Scale (GABS)",
+   "citation": "Kiesel EK, Hopf YM, Drey M. An anticholinergic burden score for German prescribers: score development. BMC Geriatr. 2018;18(1):239.",
+   "pmid": "30305048",
+   "doi": "10.1186/s12877-018-0929-6"
+  },
+  {
+   "name": "Systematic review of 19 scales",
+   "citation": "Lisibach A, Benelli V, Ceppi MG, et al. Quality of anticholinergic burden scales and their impact on clinical outcomes: a systematic review. Eur J Clin Pharmacol. 2021;77(2):147-162.",
+   "pmid": "33011824",
+   "doi": "10.1007/s00228-020-02994-x",
+   "summary": "19 scales identified; ACB and GABS rated highest quality; findings for delirium, cognition, mortality and falls were contradictory across studies."
+  },
+  {
+   "name": "AGS Beers Criteria 2023 Table 7",
+   "citation": "see source beers2023",
+   "summary": "Not a score: a list of drugs with strong anticholinergic properties; Beers recommends avoiding combinations of >=2 anticholinergic drugs (risk of cognitive decline, delirium, falls/fractures)."
+  }
+ ],
+ "counts": {
+  "score1": 44,
+  "score2": 12,
+  "score3": 43,
+  "total": 99
+ },
+ "drugs": [
+  {
+   "generic": "alimemazine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "phenothiazine antihistamine",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "10825",
+     "rxnormName": "trimeprazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Theralen",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "alimemazine",
+    "trimeprazine"
+   ],
+   "note": "Also called trimeprazine; not marketed in the US (UNVERIFIED current status)."
+  },
+  {
+   "generic": "alverine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "GI antispasmodic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "17627",
+     "rxnormName": "alverine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Spasmonal",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "alverine"
+   ],
+   "note": "UK/EU product; not marketed in the US (UNVERIFIED)."
+  },
+  {
+   "generic": "alprazolam",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "benzodiazepine",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "596",
+     "rxnormName": "alprazolam",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Xanax",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202363",
+      "name": "Xanax",
+      "tty": "BN",
+      "ingredients": [
+       "alprazolam"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "3450f9b0-2f7f-73ff-e054-00144ff88e88",
+      "splEffective": "20160602",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3450f9b0-2f7f-73ff-e054-00144ff88e88"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Xanax XR",
+     "splEvidence": {
+      "splSetId": "aa58fff3-c297-49be-838b-599c32ad9835",
+      "splEffective": "20230118",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=aa58fff3-c297-49be-838b-599c32ad9835"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Alprazolam",
+    "url": "https://medlineplus.gov/druginfo/meds/a684001.html"
+   },
+   "matchTerms": [
+    "alprazolam",
+    "xanax",
+    "xanax xr"
+   ]
+  },
+  {
+   "generic": "aripiprazole",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "89013",
+     "rxnormName": "aripiprazole",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Abilify",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "352393",
+      "name": "Abilify",
+      "tty": "BN",
+      "ingredients": [
+       "aripiprazole"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0424faf3-202f-438a-b65e-2a228790b8f9",
+      "splEffective": "20181026",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0424faf3-202f-438a-b65e-2a228790b8f9"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Abilify Maintena",
+     "splEvidence": {
+      "splSetId": "e3e1c5e2-e038-4220-8900-0cf8935916f9",
+      "splEffective": "20130405",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e3e1c5e2-e038-4220-8900-0cf8935916f9"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Aripiprazole",
+    "url": "https://medlineplus.gov/druginfo/meds/a603012.html"
+   },
+   "matchTerms": [
+    "abilify",
+    "abilify maintena",
+    "aripiprazole"
+   ]
+  },
+  {
+   "generic": "asenapine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "784649",
+     "rxnormName": "asenapine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Saphris",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "859976",
+      "name": "Saphris",
+      "tty": "BN",
+      "ingredients": [
+       "asenapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "03c696e9-0e6b-4e5c-be0a-41416f8019be",
+      "splEffective": "20110216",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03c696e9-0e6b-4e5c-be0a-41416f8019be"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Secuado",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "2265724",
+      "name": "Secuado",
+      "tty": "BN",
+      "ingredients": [
+       "asenapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "685eaf44-5944-4f38-afba-0a4fc0b3462b",
+      "splEffective": "20250130",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=685eaf44-5944-4f38-afba-0a4fc0b3462b"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Asenapine",
+    "url": "https://medlineplus.gov/druginfo/meds/a610015.html"
+   },
+   "matchTerms": [
+    "asenapine",
+    "saphris",
+    "secuado"
+   ]
+  },
+  {
+   "generic": "atenolol",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "beta-blocker",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "1202",
+     "rxnormName": "atenolol",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Tenormin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "152413",
+      "name": "Tenormin",
+      "tty": "BN",
+      "ingredients": [
+       "atenolol"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "3afef3f3-3889-6e39-e054-00144ff8d46c",
+      "splEffective": "20160620",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3afef3f3-3889-6e39-e054-00144ff8d46c"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Tenoretic",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "37789",
+      "name": "Tenoretic",
+      "tty": "BN",
+      "ingredients": [
+       "atenolol",
+       "atenolol / chlorthalidone",
+       "chlorthalidone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0ebcca1e-ca16-4483-429a-aec5dcacd1dc",
+      "splEffective": "20170118",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0ebcca1e-ca16-4483-429a-aec5dcacd1dc"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Atenolol",
+    "url": "https://medlineplus.gov/druginfo/meds/a684031.html"
+   },
+   "matchTerms": [
+    "atenolol",
+    "tenoretic",
+    "tenormin"
+   ],
+   "note": "Tenoretic = atenolol + chlorthalidone (two ACB-1 ingredients)."
+  },
+  {
+   "generic": "bupropion",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antidepressant (NDRI)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "42347",
+     "rxnormName": "bupropion",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Wellbutrin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "42568",
+      "name": "Wellbutrin",
+      "tty": "BN",
+      "ingredients": [
+       "bupropion"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "111222d2-bdc5-40ec-b9d8-0b2eda72737a",
+      "splEffective": "20181120",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=111222d2-bdc5-40ec-b9d8-0b2eda72737a"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Zyban",
+     "splEvidence": {
+      "splSetId": "a3327c31-d987-40ec-b3b5-097bbf2f4f8c",
+      "splEffective": "20210310",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a3327c31-d987-40ec-b3b5-097bbf2f4f8c"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Wellbutrin XL",
+     "splEvidence": {
+      "splSetId": "111222d2-bdc5-40ec-b9d8-0b2eda72737a",
+      "splEffective": "20181120",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=111222d2-bdc5-40ec-b9d8-0b2eda72737a"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Wellbutrin SR",
+     "splEvidence": {
+      "splSetId": "18aae35b-d55e-4fc1-a809-0ee1b135d7cf",
+      "splEffective": "20200407",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=18aae35b-d55e-4fc1-a809-0ee1b135d7cf"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Aplenzin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "835486",
+      "name": "Aplenzin",
+      "tty": "BN",
+      "ingredients": [
+       "bupropion"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "2315d6e5-144d-4163-9711-f855c759cf8e",
+      "splEffective": "20110210",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2315d6e5-144d-4163-9711-f855c759cf8e"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Bupropion",
+    "url": "https://medlineplus.gov/druginfo/meds/a695033.html"
+   },
+   "matchTerms": [
+    "aplenzin",
+    "bupropion",
+    "wellbutrin",
+    "wellbutrin sr",
+    "wellbutrin xl",
+    "zyban"
+   ]
+  },
+  {
+   "generic": "captopril",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "ACE inhibitor",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "1998",
+     "rxnormName": "captopril",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Capoten",
+     "splEvidence": {
+      "splSetId": "2e221a6e-005b-4ae6-840c-835865d7cbcd",
+      "splEffective": "20111027",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2e221a6e-005b-4ae6-840c-835865d7cbcd"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Captopril",
+    "url": "https://medlineplus.gov/druginfo/meds/a682823.html"
+   },
+   "matchTerms": [
+    "capoten",
+    "captopril"
+   ]
+  },
+  {
+   "generic": "cetirizine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antihistamine (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "20610",
+     "rxnormName": "cetirizine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Zyrtec",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "58930",
+      "name": "Zyrtec",
+      "tty": "BN",
+      "ingredients": [
+       "cetirizine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "013ce40e-37c9-4b84-b530-ed895f60ce0e",
+      "splEffective": "20250407",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=013ce40e-37c9-4b84-b530-ed895f60ce0e"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Zyrtec-D",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "353102",
+      "name": "Zyrtec-D",
+      "tty": "BN",
+      "ingredients": [
+       "cetirizine",
+       "cetirizine / pseudoephedrine",
+       "pseudoephedrine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1e8eb279-3522-40e4-8062-06b5354f0d29",
+      "splEffective": "20250612",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1e8eb279-3522-40e4-8062-06b5354f0d29"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Cetirizine",
+    "url": "https://medlineplus.gov/druginfo/meds/a623043.html"
+   },
+   "matchTerms": [
+    "cetirizine",
+    "zyrtec",
+    "zyrtec-d"
+   ]
+  },
+  {
+   "generic": "chlorthalidone",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "thiazide-like diuretic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "2409",
+     "rxnormName": "chlorthalidone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Hygroton",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Thalitone",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203477",
+      "name": "Thalitone",
+      "tty": "BN",
+      "ingredients": [
+       "chlorthalidone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "bc5a0299-115b-4e60-bb3f-c75a95c51c15",
+      "splEffective": "20260625",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=bc5a0299-115b-4e60-bb3f-c75a95c51c15"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Tenoretic",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "37789",
+      "name": "Tenoretic",
+      "tty": "BN",
+      "ingredients": [
+       "atenolol",
+       "atenolol / chlorthalidone",
+       "chlorthalidone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0ebcca1e-ca16-4483-429a-aec5dcacd1dc",
+      "splEffective": "20170118",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0ebcca1e-ca16-4483-429a-aec5dcacd1dc"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Edarbyclor",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1372759",
+      "name": "Edarbyclor",
+      "tty": "BN",
+      "ingredients": [
+       "azilsartan",
+       "azilsartan / chlorthalidone",
+       "chlorthalidone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "10566939-c8b1-18a1-e063-6294a90a7601",
+      "splEffective": "20260727",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10566939-c8b1-18a1-e063-6294a90a7601"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Chlorthalidone",
+    "url": "https://medlineplus.gov/druginfo/meds/a682342.html"
+   },
+   "matchTerms": [
+    "chlorthalidone",
+    "edarbyclor",
+    "tenoretic",
+    "thalitone"
+   ],
+   "note": "The ACB card also prints 'Diuril' for chlorthalidone; Diuril is a chlorothiazide brand, so it is excluded here as a likely card error."
+  },
+  {
+   "generic": "cimetidine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "H2 receptor antagonist",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "2541",
+     "rxnormName": "cimetidine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Tagamet",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "152402",
+      "name": "Tagamet",
+      "tty": "BN",
+      "ingredients": [
+       "cimetidine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "c8ba8815-9d99-439f-b397-3869f729d9f4",
+      "splEffective": "20230120",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c8ba8815-9d99-439f-b397-3869f729d9f4"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Tagamet HB",
+     "splEvidence": {
+      "splSetId": "fadb8d58-210e-44f8-9ec1-d94290091596",
+      "splEffective": "20110119",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=fadb8d58-210e-44f8-9ec1-d94290091596"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Cimetidine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682256.html"
+   },
+   "matchTerms": [
+    "cimetidine",
+    "tagamet",
+    "tagamet hb"
+   ]
+  },
+  {
+   "generic": "clidinium",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "GI antispasmodic (antimuscarinic)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "21232",
+     "rxnormName": "clidinium",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Librax",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "28697",
+      "name": "Librax",
+      "tty": "BN",
+      "ingredients": [
+       "chlordiazepoxide",
+       "chlordiazepoxide / clidinium",
+       "clidinium"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "4ec9c0fe-b039-498b-921a-61d5896192e8",
+      "splEffective": "20240119",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4ec9c0fe-b039-498b-921a-61d5896192e8"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "clidinium",
+    "librax"
+   ],
+   "note": "Librax = chlordiazepoxide + clidinium. AGS Beers 2023 Table 7 lists clidinium-chlordiazepoxide among drugs with STRONG anticholinergic properties, so the ACB score of 1 may understate burden."
+  },
+  {
+   "generic": "clorazepate",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "benzodiazepine",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "2353",
+     "rxnormName": "clorazepate",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Tranxene",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202966",
+      "name": "Tranxene",
+      "tty": "BN",
+      "ingredients": [
+       "clorazepate"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "9c7ab45c-7461-6e4e-ee6d-f0ebe3eb4a28",
+      "splEffective": "20221212",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9c7ab45c-7461-6e4e-ee6d-f0ebe3eb4a28"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Tranxene T-Tab",
+     "splEvidence": {
+      "splSetId": "9c7ab45c-7461-6e4e-ee6d-f0ebe3eb4a28",
+      "splEffective": "20221212",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9c7ab45c-7461-6e4e-ee6d-f0ebe3eb4a28"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Clorazepate",
+    "url": "https://medlineplus.gov/druginfo/meds/a682052.html"
+   },
+   "matchTerms": [
+    "clorazepate",
+    "tranxene",
+    "tranxene t-tab"
+   ]
+  },
+  {
+   "generic": "codeine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "opioid",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "2670",
+     "rxnormName": "codeine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Codeine Contin",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Tylenol with Codeine",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "220586",
+      "name": "Tylenol with Codeine",
+      "tty": "BN",
+      "ingredients": [
+       "acetaminophen",
+       "acetaminophen / codeine",
+       "codeine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "160cd55a-a8ed-43f2-baf7-046d3c3b317f",
+      "splEffective": "20190401",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=160cd55a-a8ed-43f2-baf7-046d3c3b317f"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Codeine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682065.html"
+   },
+   "matchTerms": [
+    "codeine",
+    "tylenol with codeine"
+   ],
+   "note": "Card prints 'Contin' (Codeine Contin is a Canadian brand). Codeine is common in combination analgesics and cough syrups."
+  },
+  {
+   "generic": "colchicine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "anti-gout",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "2683",
+     "rxnormName": "colchicine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Colcrys",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "858068",
+      "name": "Colcrys",
+      "tty": "BN",
+      "ingredients": [
+       "colchicine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "22882f81-84de-456a-8f65-a60b0f3d8062",
+      "splEffective": "20180608",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=22882f81-84de-456a-8f65-a60b0f3d8062"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Mitigare",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1550941",
+      "name": "Mitigare",
+      "tty": "BN",
+      "ingredients": [
+       "colchicine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "cb5f9d85-6b81-49f8-bcd6-17b7bfbc10f2",
+      "splEffective": "20240516",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=cb5f9d85-6b81-49f8-bcd6-17b7bfbc10f2"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Gloperba",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "2180553",
+      "name": "Gloperba",
+      "tty": "BN",
+      "ingredients": [
+       "colchicine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "467cd83f-d695-4040-9434-10e80b4271da",
+      "splEffective": "20241101",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=467cd83f-d695-4040-9434-10e80b4271da"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Colchicine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682711.html"
+   },
+   "matchTerms": [
+    "colchicine",
+    "colcrys",
+    "gloperba",
+    "mitigare"
+   ]
+  },
+  {
+   "generic": "desloratadine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antihistamine (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "275635",
+     "rxnormName": "desloratadine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Clarinex",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "323342",
+      "name": "Clarinex",
+      "tty": "BN",
+      "ingredients": [
+       "desloratadine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1af66b7a-4ab8-40d8-abdd-22d3310228a8",
+      "splEffective": "20251112",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1af66b7a-4ab8-40d8-abdd-22d3310228a8"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Desloratadine",
+    "url": "https://medlineplus.gov/druginfo/meds/a602002.html"
+   },
+   "matchTerms": [
+    "clarinex",
+    "desloratadine"
+   ]
+  },
+  {
+   "generic": "diazepam",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "benzodiazepine",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "3322",
+     "rxnormName": "diazepam",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Valium",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202472",
+      "name": "Valium",
+      "tty": "BN",
+      "ingredients": [
+       "diazepam"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "14d5d1d9-b569-4382-805c-dcc173811106",
+      "splEffective": "20180417",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=14d5d1d9-b569-4382-805c-dcc173811106"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Diazepam",
+    "url": "https://medlineplus.gov/druginfo/meds/a682047.html"
+   },
+   "matchTerms": [
+    "diazepam",
+    "valium"
+   ]
+  },
+  {
+   "generic": "digoxin",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "cardiac glycoside",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "3407",
+     "rxnormName": "digoxin",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Lanoxin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202988",
+      "name": "Lanoxin",
+      "tty": "BN",
+      "ingredients": [
+       "digoxin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "021a1574-2171-41c1-9c97-a7f261c328fc",
+      "splEffective": "20160328",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=021a1574-2171-41c1-9c97-a7f261c328fc"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Digoxin",
+    "url": "https://medlineplus.gov/druginfo/meds/a682301.html"
+   },
+   "matchTerms": [
+    "digoxin",
+    "lanoxin"
+   ]
+  },
+  {
+   "generic": "dipyridamole",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antiplatelet",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "3521",
+     "rxnormName": "dipyridamole",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Persantine",
+     "splEvidence": {
+      "splSetId": "10100b5a-f808-4002-9068-beca6497598b",
+      "splEffective": "20111209",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10100b5a-f808-4002-9068-beca6497598b"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Aggrenox",
+     "splEvidence": {
+      "splSetId": "6473563d-b4df-4434-a74e-f8fa3cb9994f",
+      "splEffective": "20100901",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=6473563d-b4df-4434-a74e-f8fa3cb9994f"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Dipyridamole",
+    "url": "https://medlineplus.gov/druginfo/meds/a682830.html"
+   },
+   "matchTerms": [
+    "aggrenox",
+    "dipyridamole",
+    "persantine"
+   ],
+   "note": "Aggrenox = aspirin + extended-release dipyridamole."
+  },
+  {
+   "generic": "disopyramide",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antiarrhythmic (class Ia)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "3541",
+     "rxnormName": "disopyramide",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Norpace",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203631",
+      "name": "Norpace",
+      "tty": "BN",
+      "ingredients": [
+       "disopyramide"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "31e79459-107f-4d69-a163-90014f1c4772",
+      "splEffective": "20260318",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=31e79459-107f-4d69-a163-90014f1c4772"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Norpace CR",
+     "splEvidence": {
+      "splSetId": "46fc2ca1-c4a0-403d-8c8a-9f04164554f4",
+      "splEffective": "20130228",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=46fc2ca1-c4a0-403d-8c8a-9f04164554f4"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Disopyramide",
+    "url": "https://medlineplus.gov/druginfo/meds/a682408.html"
+   },
+   "matchTerms": [
+    "disopyramide",
+    "norpace",
+    "norpace cr"
+   ]
+  },
+  {
+   "generic": "fentanyl",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "opioid",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "4337",
+     "rxnormName": "fentanyl",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Duragesic",
+     "splEvidence": {
+      "splSetId": "4c3a6171-19e4-40c2-83f3-fb54d4736e4b",
+      "splEffective": "20220816",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4c3a6171-19e4-40c2-83f3-fb54d4736e4b"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Actiq",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "215008",
+      "name": "Actiq",
+      "tty": "BN",
+      "ingredients": [
+       "fentanyl"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "90b94524-f913-48b3-3771-7b2fcffd888a",
+      "splEffective": "20231231",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=90b94524-f913-48b3-3771-7b2fcffd888a"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Fentanyl",
+    "url": "https://medlineplus.gov/druginfo/meds/a605043.html"
+   },
+   "matchTerms": [
+    "actiq",
+    "duragesic",
+    "fentanyl"
+   ]
+  },
+  {
+   "generic": "furosemide",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "loop diuretic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "4603",
+     "rxnormName": "furosemide",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Lasix",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202991",
+      "name": "Lasix",
+      "tty": "BN",
+      "ingredients": [
+       "furosemide"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "26959e10-7baa-467f-9ef6-65d181ddfc75",
+      "splEffective": "20180313",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=26959e10-7baa-467f-9ef6-65d181ddfc75"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Furosemide",
+    "url": "https://medlineplus.gov/druginfo/meds/a682858.html"
+   },
+   "matchTerms": [
+    "furosemide",
+    "lasix"
+   ]
+  },
+  {
+   "generic": "fluvoxamine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antidepressant (SSRI)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "42355",
+     "rxnormName": "fluvoxamine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Luvox",
+     "splEvidence": {
+      "splSetId": "e57814e3-9507-4a2f-858f-a845ad18f029",
+      "splEffective": "20190128",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e57814e3-9507-4a2f-858f-a845ad18f029"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Fluvoxamine",
+    "url": "https://medlineplus.gov/druginfo/meds/a695004.html"
+   },
+   "matchTerms": [
+    "fluvoxamine",
+    "luvox"
+   ]
+  },
+  {
+   "generic": "haloperidol",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "5093",
+     "rxnormName": "haloperidol",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Haldol",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "151839",
+      "name": "Haldol",
+      "tty": "BN",
+      "ingredients": [
+       "haloperidol"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "27cfe684-7d11-4f37-9c8b-b2bdd6b5348e",
+      "splEffective": "20221110",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=27cfe684-7d11-4f37-9c8b-b2bdd6b5348e"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Haloperidol",
+    "url": "https://medlineplus.gov/druginfo/meds/a682180.html"
+   },
+   "matchTerms": [
+    "haldol",
+    "haloperidol"
+   ]
+  },
+  {
+   "generic": "hydralazine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "vasodilator",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "5470",
+     "rxnormName": "hydralazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Apresoline",
+     "splEvidence": {
+      "splSetId": "59f748ca-89ab-4520-8969-2c47a7a26f16",
+      "splEffective": "20101008",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=59f748ca-89ab-4520-8969-2c47a7a26f16"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "BiDil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "303838",
+      "name": "Bidil",
+      "tty": "BN",
+      "ingredients": [
+       "hydralazine",
+       "hydralazine / isosorbide dinitrate",
+       "isosorbide dinitrate"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1a823d4f-8838-4990-a4b7-5f11ebd01ea3",
+      "splEffective": "20160421",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1a823d4f-8838-4990-a4b7-5f11ebd01ea3"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Hydralazine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682246.html"
+   },
+   "matchTerms": [
+    "apresoline",
+    "bidil",
+    "hydralazine"
+   ],
+   "note": "BiDil = isosorbide dinitrate + hydralazine (two ACB-1 ingredients)."
+  },
+  {
+   "generic": "hydrocortisone",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "corticosteroid",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "5492",
+     "rxnormName": "hydrocortisone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Cortef",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202645",
+      "name": "Cortef",
+      "tty": "BN",
+      "ingredients": [
+       "hydrocortisone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0969e368-9a06-4c7a-82e1-e3ee449b9b7d",
+      "splEffective": "20130607",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0969e368-9a06-4c7a-82e1-e3ee449b9b7d"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Cortaid",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "216234",
+      "name": "Cortaid",
+      "tty": "BN",
+      "ingredients": [
+       "hydrocortisone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "41da4cd5-f7a8-4268-a93e-9e8e34ef8577",
+      "splEffective": "20150120",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=41da4cd5-f7a8-4268-a93e-9e8e34ef8577"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Hydrocortisone",
+    "url": "https://medlineplus.gov/druginfo/meds/a682206.html"
+   },
+   "matchTerms": [
+    "cortaid",
+    "cortef",
+    "hydrocortisone"
+   ],
+   "note": "Card lists Cortaid (an OTC topical brand) without specifying route; the scale is normally applied to systemic medicines (MedWatch assumption, UNVERIFIED)."
+  },
+  {
+   "generic": "iloperidone",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "73178",
+     "rxnormName": "iloperidone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Fanapt",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "848723",
+      "name": "Fanapt",
+      "tty": "BN",
+      "ingredients": [
+       "iloperidone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "33f60b40-3fca-11de-8f56-0002a5d5c51b",
+      "splEffective": "20260506",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=33f60b40-3fca-11de-8f56-0002a5d5c51b"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Iloperidone",
+    "url": "https://medlineplus.gov/druginfo/meds/a609026.html"
+   },
+   "matchTerms": [
+    "fanapt",
+    "iloperidone"
+   ]
+  },
+  {
+   "generic": "isosorbide",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "nitrate (vasodilator)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "6058",
+     "rxnormName": "isosorbide dinitrate",
+     "tty": "IN"
+    },
+    {
+     "rxcui": "28004",
+     "rxnormName": "isosorbide mononitrate",
+     "tty": "PIN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Isordil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "151187",
+      "name": "Isordil",
+      "tty": "BN",
+      "ingredients": [
+       "isosorbide dinitrate"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0e5bc1a3-6e3c-4ab9-856f-fd953eacf867",
+      "splEffective": "20151221",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0e5bc1a3-6e3c-4ab9-856f-fd953eacf867"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Ismo",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Monoket",
+     "splEvidence": {
+      "splSetId": "b8e0d977-6eb7-4b14-9176-64e5738d14da",
+      "splEffective": "20131023",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=b8e0d977-6eb7-4b14-9176-64e5738d14da"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "BiDil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "303838",
+      "name": "Bidil",
+      "tty": "BN",
+      "ingredients": [
+       "hydralazine",
+       "hydralazine / isosorbide dinitrate",
+       "isosorbide dinitrate"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1a823d4f-8838-4990-a4b7-5f11ebd01ea3",
+      "splEffective": "20160421",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1a823d4f-8838-4990-a4b7-5f11ebd01ea3"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Isosorbide",
+    "url": "https://medlineplus.gov/druginfo/meds/a682348.html"
+   },
+   "matchTerms": [
+    "bidil",
+    "isordil",
+    "isosorbide",
+    "isosorbide dinitrate",
+    "isosorbide mononitrate",
+    "monoket"
+   ],
+   "note": "Card lists 'isosorbide' generically; Isordil = isosorbide dinitrate, Ismo/Monoket = isosorbide mononitrate. MedWatch matches both salts."
+  },
+  {
+   "generic": "levocetirizine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antihistamine (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "356887",
+     "rxnormName": "levocetirizine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Xyzal",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "398335",
+      "name": "Xyzal",
+      "tty": "BN",
+      "ingredients": [
+       "levocetirizine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1673f7ff-0c7c-4403-86cf-c05eb1475222",
+      "splEffective": "20250722",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1673f7ff-0c7c-4403-86cf-c05eb1475222"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Levocetirizine",
+    "url": "https://medlineplus.gov/druginfo/meds/a607056.html"
+   },
+   "matchTerms": [
+    "levocetirizine",
+    "xyzal"
+   ]
+  },
+  {
+   "generic": "loperamide",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antidiarrheal (opioid receptor agonist)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "6468",
+     "rxnormName": "loperamide",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Imodium",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "151889",
+      "name": "Imodium",
+      "tty": "BN",
+      "ingredients": [
+       "loperamide"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "01da76d0-1979-4c45-9d39-c72ae4e4ffe2",
+      "splEffective": "20250923",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01da76d0-1979-4c45-9d39-c72ae4e4ffe2"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Imodium A-D",
+     "splEvidence": {
+      "splSetId": "01da76d0-1979-4c45-9d39-c72ae4e4ffe2",
+      "splEffective": "20250923",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01da76d0-1979-4c45-9d39-c72ae4e4ffe2"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Loperamide",
+    "url": "https://medlineplus.gov/druginfo/meds/a682280.html"
+   },
+   "matchTerms": [
+    "imodium",
+    "imodium a-d",
+    "loperamide"
+   ],
+   "note": "Card spells 'Immodium'."
+  },
+  {
+   "generic": "loratadine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antihistamine (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "28889",
+     "rxnormName": "loratadine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Claritin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203576",
+      "name": "Claritin",
+      "tty": "BN",
+      "ingredients": [
+       "loratadine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0371368b-dca6-af2f-e063-6394a90a0ac0",
+      "splEffective": "20251204",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0371368b-dca6-af2f-e063-6394a90a0ac0"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Claritin-D",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "216076",
+      "name": "Claritin-D",
+      "tty": "BN",
+      "ingredients": [
+       "loratadine",
+       "loratadine / pseudoephedrine",
+       "pseudoephedrine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "13456659-262f-42fc-8761-0b6a61a1c57c",
+      "splEffective": "20170720",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=13456659-262f-42fc-8761-0b6a61a1c57c"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Alavert",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "352401",
+      "name": "Alavert",
+      "tty": "BN",
+      "ingredients": [
+       "loratadine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "039ea563-9796-4270-b84a-50dd25a9d976",
+      "splEffective": "20260223",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=039ea563-9796-4270-b84a-50dd25a9d976"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Loratadine",
+    "url": "https://medlineplus.gov/druginfo/meds/a697038.html"
+   },
+   "matchTerms": [
+    "alavert",
+    "claritin",
+    "claritin-d",
+    "loratadine"
+   ]
+  },
+  {
+   "generic": "metoprolol",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "beta-blocker",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "6918",
+     "rxnormName": "metoprolol",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Lopressor",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203344",
+      "name": "Lopressor",
+      "tty": "BN",
+      "ingredients": [
+       "metoprolol"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0283bc9d-6998-493a-824a-d4c85f704111",
+      "splEffective": "20230914",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0283bc9d-6998-493a-824a-d4c85f704111"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Toprol",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "865575",
+      "name": "Toprol",
+      "tty": "BN",
+      "ingredients": [
+       "metoprolol"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "01038198-b4f0-41f3-9a9c-5c84e5a0d3b9",
+      "splEffective": "20181126",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01038198-b4f0-41f3-9a9c-5c84e5a0d3b9"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Toprol XL",
+     "splEvidence": {
+      "splSetId": "01038198-b4f0-41f3-9a9c-5c84e5a0d3b9",
+      "splEffective": "20181126",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01038198-b4f0-41f3-9a9c-5c84e5a0d3b9"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Metoprolol",
+    "url": "https://medlineplus.gov/druginfo/meds/a682864.html"
+   },
+   "matchTerms": [
+    "lopressor",
+    "metoprolol",
+    "toprol",
+    "toprol xl"
+   ]
+  },
+  {
+   "generic": "morphine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "opioid",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "7052",
+     "rxnormName": "morphine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "MS Contin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203354",
+      "name": "MS Contin",
+      "tty": "BN",
+      "ingredients": [
+       "morphine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "73c25835-d9e9-4051-b1b9-3d140effa3fd",
+      "splEffective": "20170321",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=73c25835-d9e9-4051-b1b9-3d140effa3fd"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Avinza",
+     "splEvidence": {
+      "splSetId": "092883c0-687f-4ced-9e2b-a1d7a9579926",
+      "splEffective": "20180221",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=092883c0-687f-4ced-9e2b-a1d7a9579926"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Morphine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682133.html"
+   },
+   "matchTerms": [
+    "avinza",
+    "morphine",
+    "ms contin"
+   ]
+  },
+  {
+   "generic": "nifedipine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "calcium channel blocker (dihydropyridine)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "7417",
+     "rxnormName": "nifedipine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Procardia",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203423",
+      "name": "Procardia",
+      "tty": "BN",
+      "ingredients": [
+       "nifedipine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "298ec746-fad7-4585-a9cf-02cf40a167cc",
+      "splEffective": "20200407",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=298ec746-fad7-4585-a9cf-02cf40a167cc"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Adalat",
+     "splEvidence": {
+      "splSetId": "0292604a-12c1-4bb0-8b4a-e3ba3ec9708a",
+      "splEffective": "20200529",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0292604a-12c1-4bb0-8b4a-e3ba3ec9708a"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Procardia XL",
+     "splEvidence": {
+      "splSetId": "298ec746-fad7-4585-a9cf-02cf40a167cc",
+      "splEffective": "20200407",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=298ec746-fad7-4585-a9cf-02cf40a167cc"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Adalat CC",
+     "splEvidence": {
+      "splSetId": "0292604a-12c1-4bb0-8b4a-e3ba3ec9708a",
+      "splEffective": "20200529",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0292604a-12c1-4bb0-8b4a-e3ba3ec9708a"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Nifedipine",
+    "url": "https://medlineplus.gov/druginfo/meds/a684028.html"
+   },
+   "matchTerms": [
+    "adalat",
+    "adalat cc",
+    "nifedipine",
+    "procardia",
+    "procardia xl"
+   ]
+  },
+  {
+   "generic": "paliperidone",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "679314",
+     "rxnormName": "paliperidone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Invega",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "686438",
+      "name": "Invega",
+      "tty": "BN",
+      "ingredients": [
+       "paliperidone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "06a76aa2-1b28-44c8-b66b-518815d439d4",
+      "splEffective": "20180608",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=06a76aa2-1b28-44c8-b66b-518815d439d4"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Invega Sustenna",
+     "splEvidence": {
+      "splSetId": "1af14e42-951d-414d-8564-5d5fce138554",
+      "splEffective": "20250214",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1af14e42-951d-414d-8564-5d5fce138554"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Paliperidone",
+    "url": "https://medlineplus.gov/druginfo/meds/a607005.html"
+   },
+   "matchTerms": [
+    "invega",
+    "invega sustenna",
+    "paliperidone"
+   ]
+  },
+  {
+   "generic": "prednisone",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "corticosteroid",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "8640",
+     "rxnormName": "prednisone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Deltasone",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "227730",
+      "name": "Deltasone",
+      "tty": "BN",
+      "ingredients": [
+       "prednisone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "18bebd56-4848-32ae-e054-00144ff88e88",
+      "splEffective": "20171107",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=18bebd56-4848-32ae-e054-00144ff88e88"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Sterapred",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Rayos",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1303126",
+      "name": "Rayos",
+      "tty": "BN",
+      "ingredients": [
+       "prednisone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "281ab967-7565-4bef-9c0c-a646589c671e",
+      "splEffective": "20251029",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=281ab967-7565-4bef-9c0c-a646589c671e"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Prednisone",
+    "url": "https://medlineplus.gov/druginfo/meds/a601102.html"
+   },
+   "matchTerms": [
+    "deltasone",
+    "prednisone",
+    "rayos"
+   ]
+  },
+  {
+   "generic": "quinidine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antiarrhythmic (class Ia)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "9068",
+     "rxnormName": "quinidine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Quinaglute",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Quinidine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682396.html"
+   },
+   "matchTerms": [
+    "quinidine"
+   ]
+  },
+  {
+   "generic": "ranitidine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "H2 receptor antagonist",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "9143",
+     "rxnormName": "ranitidine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Zantac",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "152523",
+      "name": "Zantac",
+      "tty": "BN",
+      "ingredients": [
+       "ranitidine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "08010bf7-1f61-48b3-e1b5-7cecb72ba863",
+      "splEffective": "20180628",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=08010bf7-1f61-48b3-e1b5-7cecb72ba863"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Ranitidine",
+    "url": "https://medlineplus.gov/druginfo/meds/a601106.html"
+   },
+   "matchTerms": [
+    "ranitidine"
+   ],
+   "note": "FDA requested withdrawal of all ranitidine products from the US market on 2020-04-01 (NDMA). Note 'Zantac 360' is famotidine, NOT ranitidine.",
+   "ambiguousTerms": [
+    "zantac"
+   ]
+  },
+  {
+   "generic": "risperidone",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "35636",
+     "rxnormName": "risperidone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Risperdal",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "152318",
+      "name": "Risperdal",
+      "tty": "BN",
+      "ingredients": [
+       "risperidone"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "01859e07-1262-4cc6-b7ed-5a273cbf0c36",
+      "splEffective": "20101227",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01859e07-1262-4cc6-b7ed-5a273cbf0c36"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Risperdal Consta",
+     "splEvidence": {
+      "splSetId": "bb34ee82-d2c2-43b8-ba21-2825c0954691",
+      "splEffective": "20251105",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=bb34ee82-d2c2-43b8-ba21-2825c0954691"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Risperidone",
+    "url": "https://medlineplus.gov/druginfo/meds/a694015.html"
+   },
+   "matchTerms": [
+    "risperdal",
+    "risperdal consta",
+    "risperidone"
+   ]
+  },
+  {
+   "generic": "theophylline",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "methylxanthine bronchodilator",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "10438",
+     "rxnormName": "theophylline",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Theodur",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Uniphyl",
+     "splEvidence": {
+      "splSetId": "c4c80b87-fc6e-436d-84de-7a0cd9d895eb",
+      "splEffective": "20241219",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c4c80b87-fc6e-436d-84de-7a0cd9d895eb"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Theo-24",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203388",
+      "name": "Theo-24",
+      "tty": "BN",
+      "ingredients": [
+       "theophylline"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "7a108fa0-c230-475f-be93-6f864b98a410",
+      "splEffective": "20240708",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7a108fa0-c230-475f-be93-6f864b98a410"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Elixophyllin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203394",
+      "name": "Elixophyllin",
+      "tty": "BN",
+      "ingredients": [
+       "theophylline"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "2676f761-4fe5-40a9-a07d-ed2542847883",
+      "splEffective": "20191219",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2676f761-4fe5-40a9-a07d-ed2542847883"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Theophylline",
+    "url": "https://medlineplus.gov/druginfo/meds/a681006.html"
+   },
+   "matchTerms": [
+    "elixophyllin",
+    "theo-24",
+    "theophylline",
+    "uniphyl"
+   ]
+  },
+  {
+   "generic": "trazodone",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antidepressant (SARI)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "10737",
+     "rxnormName": "trazodone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Desyrel",
+     "splEvidence": {
+      "splSetId": "14160524-3343-450c-bab3-d8a4ae50eddc",
+      "splEffective": "20090220",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=14160524-3343-450c-bab3-d8a4ae50eddc"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Trazodone",
+    "url": "https://medlineplus.gov/druginfo/meds/a681038.html"
+   },
+   "matchTerms": [
+    "desyrel",
+    "trazodone"
+   ]
+  },
+  {
+   "generic": "triamterene",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "potassium-sparing diuretic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "10763",
+     "rxnormName": "triamterene",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Dyrenium",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203238",
+      "name": "Dyrenium",
+      "tty": "BN",
+      "ingredients": [
+       "triamterene"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "2eef91a8-e414-40b9-985e-7b3039034d1d",
+      "splEffective": "20120221",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2eef91a8-e414-40b9-985e-7b3039034d1d"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Maxzide",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "52440",
+      "name": "Maxzide",
+      "tty": "BN",
+      "ingredients": [
+       "hydrochlorothiazide",
+       "hydrochlorothiazide / triamterene",
+       "triamterene"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "48136e4a-0e77-4a00-b2fa-d3d90617a7ae",
+      "splEffective": "20121008",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=48136e4a-0e77-4a00-b2fa-d3d90617a7ae"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Dyazide",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "23742",
+      "name": "Dyazide",
+      "tty": "BN",
+      "ingredients": [
+       "hydrochlorothiazide",
+       "hydrochlorothiazide / triamterene",
+       "triamterene"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "7330f40d-b269-425b-a4e3-e7263a088fb7",
+      "splEffective": "20160413",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7330f40d-b269-425b-a4e3-e7263a088fb7"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Triamterene",
+    "url": "https://medlineplus.gov/druginfo/meds/a682337.html"
+   },
+   "matchTerms": [
+    "dyazide",
+    "dyrenium",
+    "maxzide",
+    "triamterene"
+   ],
+   "note": "Maxzide/Dyazide = triamterene + hydrochlorothiazide (very common combination)."
+  },
+  {
+   "generic": "venlafaxine",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "antidepressant (SNRI)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "39786",
+     "rxnormName": "venlafaxine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Effexor",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "151692",
+      "name": "Effexor",
+      "tty": "BN",
+      "ingredients": [
+       "venlafaxine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1aaab6c4-4c01-4b96-84d1-a577e20cb72d",
+      "splEffective": "20180527",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1aaab6c4-4c01-4b96-84d1-a577e20cb72d"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Effexor XR",
+     "splEvidence": {
+      "splSetId": "1aaab6c4-4c01-4b96-84d1-a577e20cb72d",
+      "splEffective": "20180527",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1aaab6c4-4c01-4b96-84d1-a577e20cb72d"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Venlafaxine",
+    "url": "https://medlineplus.gov/druginfo/meds/a694020.html"
+   },
+   "matchTerms": [
+    "effexor",
+    "effexor xr",
+    "venlafaxine"
+   ]
+  },
+  {
+   "generic": "warfarin",
+   "acbScore": 1,
+   "acbCategory": "possible anticholinergic",
+   "therapeuticClass": "anticoagulant (vitamin K antagonist)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "11289",
+     "rxnormName": "warfarin",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Coumadin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202421",
+      "name": "Coumadin",
+      "tty": "BN",
+      "ingredients": [
+       "warfarin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "08d3d60a-cc22-43ff-8f9a-ce41ae929adc",
+      "splEffective": "20180609",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=08d3d60a-cc22-43ff-8f9a-ce41ae929adc"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Jantoven",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "405155",
+      "name": "Jantoven",
+      "tty": "BN",
+      "ingredients": [
+       "warfarin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "19a69a72-ac5d-45d5-a94d-a5aaecbe4730",
+      "splEffective": "20250708",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=19a69a72-ac5d-45d5-a94d-a5aaecbe4730"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Warfarin",
+    "url": "https://medlineplus.gov/druginfo/meds/a682277.html"
+   },
+   "matchTerms": [
+    "coumadin",
+    "jantoven",
+    "warfarin"
+   ]
+  },
+  {
+   "generic": "amantadine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antiparkinsonian / antiviral",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "620",
+     "rxnormName": "amantadine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Symmetrel",
+     "splEvidence": {
+      "splSetId": "c23bbfaf-6e4a-4545-8bfb-6b75479b972a",
+      "splEffective": "20110318",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c23bbfaf-6e4a-4545-8bfb-6b75479b972a"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Gocovri",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1944371",
+      "name": "Gocovri",
+      "tty": "BN",
+      "ingredients": [
+       "amantadine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "2bee0631-0028-1314-e063-6394a90aaaed",
+      "splEffective": "20260908",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2bee0631-0028-1314-e063-6394a90aaaed"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Osmolex ER",
+     "splEvidence": {
+      "splSetId": "2bced627-51e3-4e5c-a23c-30deb86ff37b",
+      "splEffective": "20211012",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2bced627-51e3-4e5c-a23c-30deb86ff37b"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Amantadine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682064.html"
+   },
+   "matchTerms": [
+    "amantadine",
+    "gocovri",
+    "osmolex er",
+    "symmetrel"
+   ]
+  },
+  {
+   "generic": "belladonna",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antimuscarinic alkaloids",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "1359",
+     "rxnormName": "belladonna alkaloids",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "(multiple)",
+     "source": "ACB card",
+     "status": "not-applicable"
+    },
+    {
+     "brand": "Donnatal",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "115141",
+      "name": "Donnatal",
+      "tty": "BN",
+      "ingredients": [
+       "atropine",
+       "atropine / hyoscyamine / phenobarbital / scopolamine",
+       "hyoscyamine",
+       "phenobarbital",
+       "scopolamine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0dd71f55-e009-48dd-809d-5f651f7521de",
+      "splEffective": "20230110",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0dd71f55-e009-48dd-809d-5f651f7521de"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "belladonna",
+    "donnatal"
+   ],
+   "note": "Belladonna alkaloids appear in combination products (e.g. phenobarbital + belladonna alkaloids)."
+  },
+  {
+   "generic": "carbamazepine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antiepileptic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "2002",
+     "rxnormName": "carbamazepine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Tegretol",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203029",
+      "name": "Tegretol",
+      "tty": "BN",
+      "ingredients": [
+       "carbamazepine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "00fe4618-6b16-4431-9c07-495872012eaf",
+      "splEffective": "20130813",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00fe4618-6b16-4431-9c07-495872012eaf"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Tegretol XR",
+     "splEvidence": {
+      "splSetId": "00fe4618-6b16-4431-9c07-495872012eaf",
+      "splEffective": "20130813",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00fe4618-6b16-4431-9c07-495872012eaf"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Carbatrol",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "215879",
+      "name": "Carbatrol",
+      "tty": "BN",
+      "ingredients": [
+       "carbamazepine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "bc03e499-5bac-4293-bff4-6864153a624d",
+      "splEffective": "20260817",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=bc03e499-5bac-4293-bff4-6864153a624d"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Equetro",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "583135",
+      "name": "Equetro",
+      "tty": "BN",
+      "ingredients": [
+       "carbamazepine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "06f1b7dd-15f1-4385-b984-7e465966aaca",
+      "splEffective": "20101025",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=06f1b7dd-15f1-4385-b984-7e465966aaca"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Carbamazepine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682237.html"
+   },
+   "matchTerms": [
+    "carbamazepine",
+    "carbatrol",
+    "equetro",
+    "tegretol",
+    "tegretol xr"
+   ]
+  },
+  {
+   "generic": "cyclobenzaprine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "skeletal muscle relaxant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "21949",
+     "rxnormName": "cyclobenzaprine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Flexeril",
+     "splEvidence": {
+      "splSetId": "1108d2c3-4755-418f-98ee-cc819606bcc4",
+      "splEffective": "20120118",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1108d2c3-4755-418f-98ee-cc819606bcc4"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Amrix",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "725085",
+      "name": "Amrix",
+      "tty": "BN",
+      "ingredients": [
+       "cyclobenzaprine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "087ae128-1a5d-406e-8bd3-15cb640f6922",
+      "splEffective": "20111116",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=087ae128-1a5d-406e-8bd3-15cb640f6922"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Fexmid",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "705009",
+      "name": "Fexmid",
+      "tty": "BN",
+      "ingredients": [
+       "cyclobenzaprine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1fe26a63-f223-4b50-8616-fa2607a01663",
+      "splEffective": "20141001",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1fe26a63-f223-4b50-8616-fa2607a01663"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Cyclobenzaprine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682514.html"
+   },
+   "matchTerms": [
+    "amrix",
+    "cyclobenzaprine",
+    "fexmid",
+    "flexeril"
+   ],
+   "note": "AGS Beers 2023 Table 7 lists cyclobenzaprine as STRONG anticholinergic."
+  },
+  {
+   "generic": "cyproheptadine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "3013",
+     "rxnormName": "cyproheptadine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Periactin",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Cyproheptadine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682541.html"
+   },
+   "matchTerms": [
+    "cyproheptadine"
+   ],
+   "note": "AGS Beers 2023 Table 7 lists cyproheptadine as STRONG anticholinergic."
+  },
+  {
+   "generic": "loxapine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "6475",
+     "rxnormName": "loxapine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Loxitane",
+     "splEvidence": {
+      "splSetId": "a61ac8b0-d2eb-4546-a57b-2c296fb12699",
+      "splEffective": "20110728",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a61ac8b0-d2eb-4546-a57b-2c296fb12699"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Adasuve",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1364415",
+      "name": "Adasuve",
+      "tty": "BN",
+      "ingredients": [
+       "loxapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "257148b5-869e-4a06-89ca-8b8686e8e528",
+      "splEffective": "20190918",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=257148b5-869e-4a06-89ca-8b8686e8e528"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Loxapine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682311.html"
+   },
+   "matchTerms": [
+    "adasuve",
+    "loxapine",
+    "loxitane"
+   ]
+  },
+  {
+   "generic": "meperidine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "opioid",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "6754",
+     "rxnormName": "meperidine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Demerol",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "282381",
+      "name": "Demerol",
+      "tty": "BN",
+      "ingredients": [
+       "meperidine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "53ddfe26-5a7e-4f39-8904-829a03538f63",
+      "splEffective": "20111228",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=53ddfe26-5a7e-4f39-8904-829a03538f63"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Meperidine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682117.html"
+   },
+   "matchTerms": [
+    "demerol",
+    "meperidine"
+   ]
+  },
+  {
+   "generic": "methotrimeprazine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "phenothiazine antipsychotic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "6852",
+     "rxnormName": "methotrimeprazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Levoprome",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "levomepromazine",
+    "methotrimeprazine"
+   ],
+   "note": "Also called levomepromazine; not marketed in the US (UNVERIFIED)."
+  },
+  {
+   "generic": "molindone",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "7019",
+     "rxnormName": "molindone",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Moban",
+     "splEvidence": {
+      "splSetId": "326b49bd-3639-43ad-bfff-8f23ca8697b6",
+      "splEffective": "20101005",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=326b49bd-3639-43ad-bfff-8f23ca8697b6"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Molindone",
+    "url": "https://medlineplus.gov/druginfo/meds/a682238.html"
+   },
+   "matchTerms": [
+    "moban",
+    "molindone"
+   ]
+  },
+  {
+   "generic": "nefopam",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "non-opioid analgesic",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "7285",
+     "rxnormName": "nefopam",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Nefogesic",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "nefopam"
+   ],
+   "note": "Not marketed in the US (UNVERIFIED)."
+  },
+  {
+   "generic": "oxcarbazepine",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antiepileptic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "32624",
+     "rxnormName": "oxcarbazepine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Trileptal",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "261680",
+      "name": "Trileptal",
+      "tty": "BN",
+      "ingredients": [
+       "oxcarbazepine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "33af9350-95f3-384e-e054-00144ff88e88",
+      "splEffective": "20160525",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=33af9350-95f3-384e-e054-00144ff88e88"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Oxtellar XR",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1365655",
+      "name": "Oxtellar",
+      "tty": "BN",
+      "ingredients": [
+       "oxcarbazepine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "aa610e56-1d1d-11e1-8bc2-0800200c9a66",
+      "splEffective": "20251022",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=aa610e56-1d1d-11e1-8bc2-0800200c9a66"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Oxcarbazepine",
+    "url": "https://medlineplus.gov/druginfo/meds/a601245.html"
+   },
+   "matchTerms": [
+    "oxcarbazepine",
+    "oxtellar xr",
+    "trileptal"
+   ]
+  },
+  {
+   "generic": "pimozide",
+   "acbScore": 2,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "8331",
+     "rxnormName": "pimozide",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Orap",
+     "splEvidence": {
+      "splSetId": "6af93048-056a-407e-8a1b-eae0fd629411",
+      "splEffective": "20120918",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=6af93048-056a-407e-8a1b-eae0fd629411"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Pimozide",
+    "url": "https://medlineplus.gov/druginfo/meds/a686018.html"
+   },
+   "matchTerms": [
+    "orap",
+    "pimozide"
+   ]
+  },
+  {
+   "generic": "amitriptyline",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "704",
+     "rxnormName": "amitriptyline",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Elavil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "42940",
+      "name": "Elavil",
+      "tty": "BN",
+      "ingredients": [
+       "amitriptyline"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "cb986e14-d618-4021-91d7-599e038d9d39",
+      "splEffective": "20160413",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=cb986e14-d618-4021-91d7-599e038d9d39"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Amitriptyline",
+    "url": "https://medlineplus.gov/druginfo/meds/a682388.html"
+   },
+   "matchTerms": [
+    "amitriptyline",
+    "elavil"
+   ]
+  },
+  {
+   "generic": "amoxapine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic/tetracyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "722",
+     "rxnormName": "amoxapine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Asendin",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Amoxapine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682202.html"
+   },
+   "matchTerms": [
+    "amoxapine"
+   ]
+  },
+  {
+   "generic": "atropine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antimuscarinic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "1223",
+     "rxnormName": "atropine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Sal-Tropine",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Lomotil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "28874",
+      "name": "Lomotil",
+      "tty": "BN",
+      "ingredients": [
+       "atropine",
+       "atropine / diphenoxylate",
+       "diphenoxylate"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "396ea336-9db3-6d4e-e063-6294a90aee63",
+      "splEffective": "20251110",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=396ea336-9db3-6d4e-e063-6294a90aee63"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Atropine Ophthalmic",
+    "url": "https://medlineplus.gov/druginfo/meds/a682487.html"
+   },
+   "matchTerms": [
+    "atropine",
+    "lomotil"
+   ],
+   "note": "Lomotil = diphenoxylate + a sub-therapeutic amount of atropine (added to deter abuse); whether ACB scoring should apply to this combination is a clinical judgement (UNVERIFIED). Ophthalmic atropine is excluded by Beers 2023."
+  },
+  {
+   "generic": "benztropine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antiparkinsonian (antimuscarinic)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "1424",
+     "rxnormName": "benztropine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Cogentin",
+     "splEvidence": {
+      "splSetId": "754c990e-6d00-4523-b9c6-2442020d6205",
+      "splEffective": "20091201",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=754c990e-6d00-4523-b9c6-2442020d6205"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Benztropine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682155.html"
+   },
+   "matchTerms": [
+    "benztropine",
+    "cogentin"
+   ]
+  },
+  {
+   "generic": "brompheniramine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "1767",
+     "rxnormName": "brompheniramine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Dimetapp",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Brompheniramine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682545.html"
+   },
+   "matchTerms": [
+    "brompheniramine"
+   ],
+   "note": "Dimetapp is a product family; only some products contain brompheniramine."
+  },
+  {
+   "generic": "carbinoxamine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "20220",
+     "rxnormName": "carbinoxamine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Histex",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Carbihist",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Karbinal ER",
+     "splEvidence": {
+      "splSetId": "4e8248ad-f213-401c-9c0a-1e32e7341345",
+      "splEffective": "20180823",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4e8248ad-f213-401c-9c0a-1e32e7341345"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "RyVent",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1869878",
+      "name": "Ryvent",
+      "tty": "BN",
+      "ingredients": [
+       "carbinoxamine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "13ed76c7-49bd-4527-83dc-b4c7d0da9fff",
+      "splEffective": "20240109",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=13ed76c7-49bd-4527-83dc-b4c7d0da9fff"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "carbinoxamine",
+    "karbinal er",
+    "ryvent"
+   ]
+  },
+  {
+   "generic": "chlorpheniramine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "2400",
+     "rxnormName": "chlorpheniramine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Chlor-Trimeton",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202384",
+      "name": "Chlor-Trimeton",
+      "tty": "BN",
+      "ingredients": [
+       "chlorpheniramine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "883a0a71-c9fb-44fd-9f2c-591d7e17c973",
+      "splEffective": "20180326",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=883a0a71-c9fb-44fd-9f2c-591d7e17c973"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Coricidin HBP",
+     "splEvidence": {
+      "splSetId": "055b29f1-7e07-4787-9342-ab5629905e4a",
+      "splEffective": "20140924",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=055b29f1-7e07-4787-9342-ab5629905e4a"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Chlorpheniramine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682543.html"
+   },
+   "matchTerms": [
+    "chlor-trimeton",
+    "chlorpheniramine",
+    "coricidin hbp"
+   ],
+   "note": "Present in many OTC cold/allergy combinations."
+  },
+  {
+   "generic": "chlorpromazine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "2403",
+     "rxnormName": "chlorpromazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Thorazine",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Chlorpromazine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682040.html"
+   },
+   "matchTerms": [
+    "chlorpromazine"
+   ]
+  },
+  {
+   "generic": "clemastine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "2578",
+     "rxnormName": "clemastine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Tavist",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "42602",
+      "name": "Tavist",
+      "tty": "BN",
+      "ingredients": [
+       "clemastine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "da09ea30-067f-45bc-9dc8-6fdd63db9ee1",
+      "splEffective": "20130131",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=da09ea30-067f-45bc-9dc8-6fdd63db9ee1"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Dayhist",
+     "splEvidence": {
+      "splSetId": "1257b2e0-4ae6-4aab-b1f3-c93fd70116c6",
+      "splEffective": "20181022",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1257b2e0-4ae6-4aab-b1f3-c93fd70116c6"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Clemastine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682542.html"
+   },
+   "matchTerms": [
+    "clemastine",
+    "dayhist",
+    "tavist"
+   ]
+  },
+  {
+   "generic": "clomipramine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "2597",
+     "rxnormName": "clomipramine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Anafranil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "756",
+      "name": "Anafranil",
+      "tty": "BN",
+      "ingredients": [
+       "clomipramine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "4074b555-7635-41a9-809d-fae3b3610059",
+      "splEffective": "20241126",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4074b555-7635-41a9-809d-fae3b3610059"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Clomipramine",
+    "url": "https://medlineplus.gov/druginfo/meds/a697002.html"
+   },
+   "matchTerms": [
+    "anafranil",
+    "clomipramine"
+   ]
+  },
+  {
+   "generic": "clozapine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "2626",
+     "rxnormName": "clozapine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Clozaril",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "216102",
+      "name": "Clozaril",
+      "tty": "BN",
+      "ingredients": [
+       "clozapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "03a2a43b-5b62-41ae-a639-2887723e3851",
+      "splEffective": "20130723",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=03a2a43b-5b62-41ae-a639-2887723e3851"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Versacloz",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1369826",
+      "name": "Versacloz",
+      "tty": "BN",
+      "ingredients": [
+       "clozapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "2592c9a8-fd74-4e0d-a895-b07b014cf355",
+      "splEffective": "20260906",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2592c9a8-fd74-4e0d-a895-b07b014cf355"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Clozapine",
+    "url": "https://medlineplus.gov/druginfo/meds/a691001.html"
+   },
+   "matchTerms": [
+    "clozapine",
+    "clozaril",
+    "versacloz"
+   ]
+  },
+  {
+   "generic": "darifenacin",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "bladder antimuscarinic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "136198",
+     "rxnormName": "darifenacin",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Enablex",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "397392",
+      "name": "Enablex",
+      "tty": "BN",
+      "ingredients": [
+       "darifenacin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "a293cece-e97a-4e67-be72-b187568e3b11",
+      "splEffective": "20100101",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a293cece-e97a-4e67-be72-b187568e3b11"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Darifenacin",
+    "url": "https://medlineplus.gov/druginfo/meds/a605039.html"
+   },
+   "matchTerms": [
+    "darifenacin",
+    "enablex"
+   ]
+  },
+  {
+   "generic": "desipramine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "3247",
+     "rxnormName": "desipramine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Norpramin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203771",
+      "name": "Norpramin",
+      "tty": "BN",
+      "ingredients": [
+       "desipramine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "3e593725-3fc9-458e-907d-19d51d5a7f9c",
+      "splEffective": "20190228",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3e593725-3fc9-458e-907d-19d51d5a7f9c"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Desipramine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682387.html"
+   },
+   "matchTerms": [
+    "desipramine",
+    "norpramin"
+   ]
+  },
+  {
+   "generic": "dicyclomine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "GI antispasmodic (antimuscarinic)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "3361",
+     "rxnormName": "dicyclomine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Bentyl",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203018",
+      "name": "Bentyl",
+      "tty": "BN",
+      "ingredients": [
+       "dicyclomine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "3e078249-7555-41ff-93f6-0b1260651aa1",
+      "splEffective": "20250106",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3e078249-7555-41ff-93f6-0b1260651aa1"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Dicyclomine",
+    "url": "https://medlineplus.gov/druginfo/meds/a684007.html"
+   },
+   "matchTerms": [
+    "bentyl",
+    "dicyclomine"
+   ]
+  },
+  {
+   "generic": "dimenhydrinate",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation) / antiemetic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "3444",
+     "rxnormName": "dimenhydrinate",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Dramamine",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "151666",
+      "name": "Dramamine",
+      "tty": "BN",
+      "ingredients": [
+       "dimenhydrinate"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "09936316-8667-4950-b017-19e3a05385a4",
+      "splEffective": "20180712",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=09936316-8667-4950-b017-19e3a05385a4"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Dimenhydrinate",
+    "url": "https://medlineplus.gov/druginfo/meds/a607046.html"
+   },
+   "matchTerms": [
+    "dimenhydrinate",
+    "dramamine"
+   ],
+   "note": "Some 'Dramamine' products (e.g. 'Less Drowsy') contain meclizine instead (also ACB 3)."
+  },
+  {
+   "generic": "diphenhydramine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "3498",
+     "rxnormName": "diphenhydramine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Benadryl",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "203457",
+      "name": "Benadryl",
+      "tty": "BN",
+      "ingredients": [
+       "diphenhydramine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0bbc8617-3833-4a97-9749-7c0e793fc9c5",
+      "splEffective": "20170829",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0bbc8617-3833-4a97-9749-7c0e793fc9c5"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Tylenol PM",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "220581",
+      "name": "Tylenol PM",
+      "tty": "BN",
+      "ingredients": [
+       "acetaminophen",
+       "acetaminophen / diphenhydramine",
+       "diphenhydramine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "14b0e72a-2cce-42d9-8f67-c750246dc3db",
+      "splEffective": "20121221",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=14b0e72a-2cce-42d9-8f67-c750246dc3db"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Advil PM",
+     "splEvidence": {
+      "splSetId": "405afdb4-c157-1d88-f232-848063ba4714",
+      "splEffective": "20260729",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=405afdb4-c157-1d88-f232-848063ba4714"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Aleve PM",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1550958",
+      "name": "Aleve PM",
+      "tty": "BN",
+      "ingredients": [
+       "diphenhydramine",
+       "diphenhydramine / naproxen",
+       "naproxen"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "82891458-ab0d-459a-8602-dcebd22c3010",
+      "splEffective": "20251204",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=82891458-ab0d-459a-8602-dcebd22c3010"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "ZzzQuil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1233547",
+      "name": "Zzzquil",
+      "tty": "BN",
+      "ingredients": [
+       "diphenhydramine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "01906eed-78ee-f2a1-e063-6294a90a809b",
+      "splEffective": "20260908",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01906eed-78ee-f2a1-e063-6294a90a809b"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Unisom SleepGels",
+     "splEvidence": {
+      "splSetId": "17383d22-91cc-4d9e-a0b8-3f7d9a18af83",
+      "splEffective": "20260114",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=17383d22-91cc-4d9e-a0b8-3f7d9a18af83"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Diphenhydramine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682539.html"
+   },
+   "matchTerms": [
+    "advil pm",
+    "aleve pm",
+    "benadryl",
+    "diphenhydramine",
+    "tylenol pm",
+    "unisom sleepgels",
+    "zzzquil"
+   ],
+   "note": "Hidden in many OTC 'PM' sleep/pain combinations."
+  },
+  {
+   "generic": "doxepin",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "3638",
+     "rxnormName": "doxepin",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Sinequan",
+     "splEvidence": {
+      "splSetId": "880ecbfb-a1fa-463f-9e20-3cba4b6db963",
+      "splEffective": "20250715",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=880ecbfb-a1fa-463f-9e20-3cba4b6db963"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Silenor",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "966788",
+      "name": "Silenor",
+      "tty": "BN",
+      "ingredients": [
+       "doxepin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1bec1223-5239-4eb6-a9e8-62444106d2c0",
+      "splEffective": "20260421",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1bec1223-5239-4eb6-a9e8-62444106d2c0"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Doxepin (Depression, Anxiety)",
+    "url": "https://medlineplus.gov/druginfo/meds/a682390.html"
+   },
+   "matchTerms": [
+    "doxepin",
+    "silenor",
+    "sinequan"
+   ],
+   "note": "AGS Beers 2023 considers low-dose doxepin (<=6 mg/day, e.g. Silenor) comparable to placebo for safety; the ACB card does not distinguish dose."
+  },
+  {
+   "generic": "doxylamine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "3642",
+     "rxnormName": "doxylamine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Unisom",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "220672",
+      "name": "Unisom",
+      "tty": "BN",
+      "ingredients": [
+       "doxylamine"
+      ]
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Unisom SleepTabs",
+     "splEvidence": {
+      "splSetId": "7ae32d74-76a0-47e2-9e5c-812426413c4e",
+      "splEffective": "20260325",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7ae32d74-76a0-47e2-9e5c-812426413c4e"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "NyQuil",
+     "splEvidence": {
+      "splSetId": "01982867-ea13-401c-9b80-ea950a608cc3",
+      "splEffective": "20170605",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=01982867-ea13-401c-9b80-ea950a608cc3"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Doxylamine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682537.html"
+   },
+   "matchTerms": [
+    "doxylamine",
+    "nyquil",
+    "unisom",
+    "unisom sleeptabs"
+   ],
+   "note": "'Unisom SleepTabs' = doxylamine; 'Unisom SleepGels' = diphenhydramine."
+  },
+  {
+   "generic": "fesoterodine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "bladder antimuscarinic",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "797195",
+     "rxnormName": "fesoterodine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Toviaz",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "810072",
+      "name": "Toviaz",
+      "tty": "BN",
+      "ingredients": [
+       "fesoterodine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "4f01dced-195a-4712-a614-d68012bc29df",
+      "splEffective": "20260305",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4f01dced-195a-4712-a614-d68012bc29df"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Fesoterodine",
+    "url": "https://medlineplus.gov/druginfo/meds/a609021.html"
+   },
+   "matchTerms": [
+    "fesoterodine",
+    "toviaz"
+   ]
+  },
+  {
+   "generic": "flavoxate",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "urinary antispasmodic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "4440",
+     "rxnormName": "flavoxate",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Urispas",
+     "splEvidence": {
+      "splSetId": "c4eb0f29-5ccb-47e9-8fe4-696bf16c9bda",
+      "splEffective": "20120524",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c4eb0f29-5ccb-47e9-8fe4-696bf16c9bda"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Flavoxate",
+    "url": "https://medlineplus.gov/druginfo/meds/a682706.html"
+   },
+   "matchTerms": [
+    "flavoxate",
+    "urispas"
+   ]
+  },
+  {
+   "generic": "hydroxyzine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "5553",
+     "rxnormName": "hydroxyzine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Atarax",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Vistaril",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "282519",
+      "name": "Vistaril",
+      "tty": "BN",
+      "ingredients": [
+       "hydroxyzine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "17f166b4-5202-4b7c-bbb6-7922c36ab2ca",
+      "splEffective": "20170327",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=17f166b4-5202-4b7c-bbb6-7922c36ab2ca"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Hydroxyzine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682866.html"
+   },
+   "matchTerms": [
+    "hydroxyzine",
+    "vistaril"
+   ]
+  },
+  {
+   "generic": "hyoscyamine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "GI/bladder antispasmodic (antimuscarinic)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "153970",
+     "rxnormName": "hyoscyamine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Anaspaz",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "769",
+      "name": "Anaspaz",
+      "tty": "BN",
+      "ingredients": [
+       "hyoscyamine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "9bdc0f52-37b3-486c-acf1-730b2c7b82a9",
+      "splEffective": "20130522",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9bdc0f52-37b3-486c-acf1-730b2c7b82a9"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Levsin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "218003",
+      "name": "Levsin",
+      "tty": "BN",
+      "ingredients": [
+       "hyoscyamine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0918c44e-54f6-47b9-b927-4f1b0b394152",
+      "splEffective": "20091208",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0918c44e-54f6-47b9-b927-4f1b0b394152"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Levbid",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "217993",
+      "name": "Levbid",
+      "tty": "BN",
+      "ingredients": [
+       "hyoscyamine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "eb13c96f-319a-46f4-9955-ef5fa0a5f110",
+      "splEffective": "20250715",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=eb13c96f-319a-46f4-9955-ef5fa0a5f110"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Hyoscyamine",
+    "url": "https://medlineplus.gov/druginfo/meds/a684010.html"
+   },
+   "matchTerms": [
+    "anaspaz",
+    "hyoscyamine",
+    "levbid",
+    "levsin"
+   ]
+  },
+  {
+   "generic": "imipramine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "5691",
+     "rxnormName": "imipramine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Tofranil",
+     "splEvidence": {
+      "splSetId": "1827a5aa-733a-49d9-89d9-48ea0367b230",
+      "splEffective": "20210923",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1827a5aa-733a-49d9-89d9-48ea0367b230"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Tofranil-PM",
+     "splEvidence": {
+      "splSetId": "75bf3473-2d70-4d41-93cd-afa1015e45bb",
+      "splEffective": "20140630",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=75bf3473-2d70-4d41-93cd-afa1015e45bb"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Imipramine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682389.html"
+   },
+   "matchTerms": [
+    "imipramine",
+    "tofranil",
+    "tofranil-pm"
+   ]
+  },
+  {
+   "generic": "meclizine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antihistamine (first generation) / antivertigo",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "6676",
+     "rxnormName": "meclizine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Antivert",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "91818",
+      "name": "Antivert",
+      "tty": "BN",
+      "ingredients": [
+       "meclizine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "305a537b-db97-4c5b-824a-0b97dd4c6dc0",
+      "splEffective": "20181227",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=305a537b-db97-4c5b-824a-0b97dd4c6dc0"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Bonine",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1694",
+      "name": "Bonine",
+      "tty": "BN",
+      "ingredients": [
+       "meclizine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0b2ea6b8-b342-4940-8922-898758fbeb31",
+      "splEffective": "20250321",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0b2ea6b8-b342-4940-8922-898758fbeb31"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Dramamine Less Drowsy",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "827176",
+      "name": "Dramamine Less Drowsy",
+      "tty": "BN",
+      "ingredients": [
+       "meclizine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "113b2504-a0e9-4fa8-bdcf-31792fbd359c",
+      "splEffective": "20250903",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=113b2504-a0e9-4fa8-bdcf-31792fbd359c"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Meclizine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682548.html"
+   },
+   "matchTerms": [
+    "antivert",
+    "bonine",
+    "dramamine less drowsy",
+    "meclizine"
+   ]
+  },
+  {
+   "generic": "methocarbamol",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "skeletal muscle relaxant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "6845",
+     "rxnormName": "methocarbamol",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Robaxin",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "202955",
+      "name": "Robaxin",
+      "tty": "BN",
+      "ingredients": [
+       "methocarbamol"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "090a3d3d-92c3-4c30-a648-436461f81702",
+      "splEffective": "20240410",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=090a3d3d-92c3-4c30-a648-436461f81702"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Methocarbamol",
+    "url": "https://medlineplus.gov/druginfo/meds/a682579.html"
+   },
+   "matchTerms": [
+    "methocarbamol",
+    "robaxin"
+   ]
+  },
+  {
+   "generic": "nortriptyline",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "7531",
+     "rxnormName": "nortriptyline",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Pamelor",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "7866",
+      "name": "Pamelor",
+      "tty": "BN",
+      "ingredients": [
+       "nortriptyline"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "e17dc299-f52d-414d-ab6e-e809bd6f8acb",
+      "splEffective": "20241204",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e17dc299-f52d-414d-ab6e-e809bd6f8acb"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Nortriptyline",
+    "url": "https://medlineplus.gov/druginfo/meds/a682620.html"
+   },
+   "matchTerms": [
+    "nortriptyline",
+    "pamelor"
+   ]
+  },
+  {
+   "generic": "olanzapine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "61381",
+     "rxnormName": "olanzapine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Zyprexa",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "135423",
+      "name": "Zyprexa",
+      "tty": "BN",
+      "ingredients": [
+       "olanzapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "00309724-5ac7-4e6a-91e2-16087c83402c",
+      "splEffective": "20260130",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00309724-5ac7-4e6a-91e2-16087c83402c"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Zyprexa Zydis",
+     "splEvidence": {
+      "splSetId": "00309724-5ac7-4e6a-91e2-16087c83402c",
+      "splEffective": "20260130",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00309724-5ac7-4e6a-91e2-16087c83402c"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Symbyax",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "405343",
+      "name": "Symbyax",
+      "tty": "BN",
+      "ingredients": [
+       "fluoxetine",
+       "fluoxetine / olanzapine",
+       "olanzapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "6b28c424-0b7e-4b75-b090-f116b113554e",
+      "splEffective": "20250708",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=6b28c424-0b7e-4b75-b090-f116b113554e"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Lybalvi",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "2570393",
+      "name": "Lybalvi",
+      "tty": "BN",
+      "ingredients": [
+       "olanzapine",
+       "olanzapine / samidorphan",
+       "samidorphan"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "32ffddd1-4e2b-45d9-9b36-bb730167ec80",
+      "splEffective": "20260131",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=32ffddd1-4e2b-45d9-9b36-bb730167ec80"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Olanzapine",
+    "url": "https://medlineplus.gov/druginfo/meds/a601213.html"
+   },
+   "matchTerms": [
+    "lybalvi",
+    "olanzapine",
+    "symbyax",
+    "zyprexa",
+    "zyprexa zydis"
+   ],
+   "note": "Symbyax = olanzapine + fluoxetine; Lybalvi = olanzapine + samidorphan."
+  },
+  {
+   "generic": "orphenadrine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "skeletal muscle relaxant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "7715",
+     "rxnormName": "orphenadrine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Norflex",
+     "splEvidence": {
+      "splSetId": "8768cd6b-e79d-4b6d-8981-2f01ce28047b",
+      "splEffective": "20160808",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8768cd6b-e79d-4b6d-8981-2f01ce28047b"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Orphenadrine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682162.html"
+   },
+   "matchTerms": [
+    "norflex",
+    "orphenadrine"
+   ]
+  },
+  {
+   "generic": "oxybutynin",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "bladder antimuscarinic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "32675",
+     "rxnormName": "oxybutynin",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Ditropan",
+     "splEvidence": {
+      "splSetId": "2b0384a5-c65a-454d-9761-716af8afe5bd",
+      "splEffective": "20120216",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2b0384a5-c65a-454d-9761-716af8afe5bd"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    },
+    {
+     "brand": "Ditropan XL",
+     "splEvidence": {
+      "splSetId": "2b0384a5-c65a-454d-9761-716af8afe5bd",
+      "splEffective": "20120216",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2b0384a5-c65a-454d-9761-716af8afe5bd"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Oxytrol",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "356886",
+      "name": "Oxytrol",
+      "tty": "BN",
+      "ingredients": [
+       "oxybutynin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "20dee37f-1412-44ed-9e8b-f4379ce23eb0",
+      "splEffective": "20240529",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=20dee37f-1412-44ed-9e8b-f4379ce23eb0"
+     },
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Gelnique",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "831887",
+      "name": "Gelnique",
+      "tty": "BN",
+      "ingredients": [
+       "oxybutynin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "57616d79-9e68-4ec7-a25f-ebee07576351",
+      "splEffective": "20190301",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=57616d79-9e68-4ec7-a25f-ebee07576351"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Oxybutynin",
+    "url": "https://medlineplus.gov/druginfo/meds/a682141.html"
+   },
+   "matchTerms": [
+    "ditropan",
+    "ditropan xl",
+    "gelnique",
+    "oxybutynin",
+    "oxytrol"
+   ],
+   "note": "AGS Beers 2023: oxybutynin has the best evidence for adverse cognitive effects among bladder antimuscarinics."
+  },
+  {
+   "generic": "paroxetine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antidepressant (SSRI)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "32937",
+     "rxnormName": "paroxetine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Paxil",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "114228",
+      "name": "Paxil",
+      "tty": "BN",
+      "ingredients": [
+       "paroxetine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "027c7db2-2a36-477f-90bf-608ff3a0e14e",
+      "splEffective": "20110715",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=027c7db2-2a36-477f-90bf-608ff3a0e14e"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Paxil CR",
+     "splEvidence": {
+      "splSetId": "027c7db2-2a36-477f-90bf-608ff3a0e14e",
+      "splEffective": "20110715",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=027c7db2-2a36-477f-90bf-608ff3a0e14e"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Pexeva",
+     "splEvidence": {
+      "splSetId": "12936586-a83f-426c-a8fe-ecbbca588dd7",
+      "splEffective": "20181126",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=12936586-a83f-426c-a8fe-ecbbca588dd7"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    },
+    {
+     "brand": "Brisdelle",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "1430123",
+      "name": "Brisdelle",
+      "tty": "BN",
+      "ingredients": [
+       "paroxetine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1383d713-79b9-45bd-bd06-65707f28bc99",
+      "splEffective": "20230901",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1383d713-79b9-45bd-bd06-65707f28bc99"
+     },
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Paroxetine",
+    "url": "https://medlineplus.gov/druginfo/meds/a698032.html"
+   },
+   "matchTerms": [
+    "brisdelle",
+    "paroxetine",
+    "paxil",
+    "paxil cr",
+    "pexeva"
+   ]
+  },
+  {
+   "generic": "perphenazine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "8076",
+     "rxnormName": "perphenazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Trilafon",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Perphenazine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682165.html"
+   },
+   "matchTerms": [
+    "perphenazine"
+   ]
+  },
+  {
+   "generic": "promethazine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "phenothiazine antihistamine / antiemetic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "8745",
+     "rxnormName": "promethazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Phenergan",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "152218",
+      "name": "Phenergan",
+      "tty": "BN",
+      "ingredients": [
+       "promethazine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "1e3e9139-2505-441f-a221-2c803d3dc4f9",
+      "splEffective": "20240917",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1e3e9139-2505-441f-a221-2c803d3dc4f9"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Promethazine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682284.html"
+   },
+   "matchTerms": [
+    "phenergan",
+    "promethazine"
+   ]
+  },
+  {
+   "generic": "propantheline",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "GI antispasmodic (antimuscarinic)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "8761",
+     "rxnormName": "propantheline",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Pro-Banthine",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "224918",
+      "name": "Probanthine",
+      "tty": "BN",
+      "ingredients": [
+       "propantheline"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "3bc0b013-ae94-44ef-b311-96b6516abf78",
+      "splEffective": "20140430",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=3bc0b013-ae94-44ef-b311-96b6516abf78"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Propantheline",
+    "url": "https://medlineplus.gov/druginfo/meds/a684020.html"
+   },
+   "matchTerms": [
+    "pro-banthine",
+    "propantheline"
+   ]
+  },
+  {
+   "generic": "propiverine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "bladder antimuscarinic",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "55175",
+     "rxnormName": "propiverine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Detrunorm",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": null,
+   "matchTerms": [
+    "propiverine"
+   ],
+   "note": "Not marketed in the US (UNVERIFIED)."
+  },
+  {
+   "generic": "quetiapine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (second generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "51272",
+     "rxnormName": "quetiapine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Seroquel",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "83553",
+      "name": "Seroquel",
+      "tty": "BN",
+      "ingredients": [
+       "quetiapine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "0584dda8-bc3c-48fe-1a90-79608f78e8a0",
+      "splEffective": "20250122",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0584dda8-bc3c-48fe-1a90-79608f78e8a0"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Seroquel XR",
+     "splEvidence": {
+      "splSetId": "2a74e8a0-b2fd-4d7f-8bf8-72148b1d3ae7",
+      "splEffective": "20120206",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2a74e8a0-b2fd-4d7f-8bf8-72148b1d3ae7"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Quetiapine",
+    "url": "https://medlineplus.gov/druginfo/meds/a698019.html"
+   },
+   "matchTerms": [
+    "quetiapine",
+    "seroquel",
+    "seroquel xr"
+   ]
+  },
+  {
+   "generic": "scopolamine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antimuscarinic (antiemetic)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "9601",
+     "rxnormName": "scopolamine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Transderm Scop",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "220372",
+      "name": "Transderm Scop",
+      "tty": "BN",
+      "ingredients": [
+       "scopolamine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "4b8cb288-251d-4f99-94d7-a5d0d132729f",
+      "splEffective": "20190301",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=4b8cb288-251d-4f99-94d7-a5d0d132729f"
+     },
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Scopolamine Transdermal Patch",
+    "url": "https://medlineplus.gov/druginfo/meds/a682509.html"
+   },
+   "matchTerms": [
+    "scopolamine",
+    "transderm scop"
+   ]
+  },
+  {
+   "generic": "solifenacin",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "bladder antimuscarinic",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "322167",
+     "rxnormName": "solifenacin",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Vesicare",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "539812",
+      "name": "Vesicare",
+      "tty": "BN",
+      "ingredients": [
+       "solifenacin"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "100678f1-313a-4e99-ae77-319c610a830f",
+      "splEffective": "20171228",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=100678f1-313a-4e99-ae77-319c610a830f"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Vesicare LS",
+     "splEvidence": {
+      "splSetId": "e0300384-e980-45d5-8ed4-48a2618671ae",
+      "splEffective": "20221031",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e0300384-e980-45d5-8ed4-48a2618671ae"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Solifenacin",
+    "url": "https://medlineplus.gov/druginfo/meds/a605019.html"
+   },
+   "matchTerms": [
+    "solifenacin",
+    "vesicare",
+    "vesicare ls"
+   ]
+  },
+  {
+   "generic": "thioridazine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "10502",
+     "rxnormName": "thioridazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Mellaril",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Thioridazine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682119.html"
+   },
+   "matchTerms": [
+    "thioridazine"
+   ]
+  },
+  {
+   "generic": "tolterodine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "bladder antimuscarinic",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "119565",
+     "rxnormName": "tolterodine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Detrol",
+     "status": "verified-RxNorm",
+     "rxnormBrand": {
+      "rxcui": "216511",
+      "name": "Detrol",
+      "tty": "BN",
+      "ingredients": [
+       "tolterodine"
+      ]
+     },
+     "splEvidence": {
+      "splSetId": "25994fad-388d-4f9c-950e-14b7f8073b8c",
+      "splEffective": "20100114",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=25994fad-388d-4f9c-950e-14b7f8073b8c"
+     },
+     "source": "ACB card"
+    },
+    {
+     "brand": "Detrol LA",
+     "splEvidence": {
+      "splSetId": "25994fad-388d-4f9c-950e-14b7f8073b8c",
+      "splEffective": "20100114",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=25994fad-388d-4f9c-950e-14b7f8073b8c"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "MedWatch addition"
+    }
+   ],
+   "medlineplus": {
+    "title": "Tolterodine",
+    "url": "https://medlineplus.gov/druginfo/meds/a699026.html"
+   },
+   "matchTerms": [
+    "detrol",
+    "detrol la",
+    "tolterodine"
+   ]
+  },
+  {
+   "generic": "trifluoperazine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antipsychotic (first generation)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "10800",
+     "rxnormName": "trifluoperazine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Stelazine",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Trifluoperazine",
+    "url": "https://medlineplus.gov/druginfo/meds/a682121.html"
+   },
+   "matchTerms": [
+    "trifluoperazine"
+   ]
+  },
+  {
+   "generic": "trihexyphenidyl",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "antiparkinsonian (antimuscarinic)",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "10811",
+     "rxnormName": "trihexyphenidyl",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Artane",
+     "status": "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Trihexyphenidyl",
+    "url": "https://medlineplus.gov/druginfo/meds/a682160.html"
+   },
+   "matchTerms": [
+    "trihexyphenidyl"
+   ]
+  },
+  {
+   "generic": "trimipramine",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "tricyclic antidepressant",
+   "addedIn2012Update": false,
+   "beers2023StrongAnticholinergic": false,
+   "rxnorm": [
+    {
+     "rxcui": "10834",
+     "rxnormName": "trimipramine",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Surmontil",
+     "splEvidence": {
+      "splSetId": "0177d783-773c-41bf-9db9-eb7e5c64474a",
+      "splEffective": "20190611",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0177d783-773c-41bf-9db9-eb7e5c64474a"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Trimipramine",
+    "url": "https://medlineplus.gov/druginfo/meds/a602010.html"
+   },
+   "matchTerms": [
+    "surmontil",
+    "trimipramine"
+   ]
+  },
+  {
+   "generic": "trospium",
+   "acbScore": 3,
+   "acbCategory": "definite anticholinergic",
+   "therapeuticClass": "bladder antimuscarinic",
+   "addedIn2012Update": true,
+   "beers2023StrongAnticholinergic": true,
+   "rxnorm": [
+    {
+     "rxcui": "236778",
+     "rxnormName": "trospium",
+     "tty": "IN"
+    }
+   ],
+   "brands": [
+    {
+     "brand": "Sanctura",
+     "splEvidence": {
+      "splSetId": "02b0a8ab-d5b2-4b84-aa2e-47143da03a69",
+      "splEffective": "20070821",
+      "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=02b0a8ab-d5b2-4b84-aa2e-47143da03a69"
+     },
+     "status": "verified-FDA-SPL-only",
+     "source": "ACB card"
+    }
+   ],
+   "medlineplus": {
+    "title": "Trospium",
+    "url": "https://medlineplus.gov/druginfo/meds/a604037.html"
+   },
+   "matchTerms": [
+    "sanctura",
+    "trospium"
+   ]
+  }
+ ],
+ "reviewedNotAdded2012": [
+  {
+   "generic": "fexofenadine",
+   "brands": [
+    "Allegra"
+   ],
+   "acbScore": 0,
+   "rxnorm": [
+    {
+     "rxcui": "87636",
+     "rxnormName": "fexofenadine",
+     "tty": "IN"
+    }
+   ],
+   "note": "Reviewed in the 2012 update and NOT added (insufficient evidence of anticholinergic activity per the update). Treat as score 0 on ACB; do not flag as anticholinergic from ACB alone."
+  },
+  {
+   "generic": "gabapentin",
+   "brands": [
+    "Neurontin"
+   ],
+   "acbScore": 0,
+   "rxnorm": [
+    {
+     "rxcui": "25480",
+     "rxnormName": "gabapentin",
+     "tty": "IN"
+    }
+   ],
+   "note": "Reviewed in the 2012 update and NOT added (insufficient evidence of anticholinergic activity per the update). Treat as score 0 on ACB; do not flag as anticholinergic from ACB alone."
+  },
+  {
+   "generic": "topiramate",
+   "brands": [
+    "Topamax"
+   ],
+   "acbScore": 0,
+   "rxnorm": [
+    {
+     "rxcui": "38404",
+     "rxnormName": "topiramate",
+     "tty": "IN"
+    }
+   ],
+   "note": "Reviewed in the 2012 update and NOT added (insufficient evidence of anticholinergic activity per the update). Treat as score 0 on ACB; do not flag as anticholinergic from ACB alone."
+  },
+  {
+   "generic": "levetiracetam",
+   "brands": [
+    "Keppra"
+   ],
+   "acbScore": 0,
+   "rxnorm": [
+    {
+     "rxcui": "114477",
+     "rxnormName": "levetiracetam",
+     "tty": "IN"
+    }
+   ],
+   "note": "Reviewed in the 2012 update and NOT added (insufficient evidence of anticholinergic activity per the update). Treat as score 0 on ACB; do not flag as anticholinergic from ACB alone."
+  },
+  {
+   "generic": "tamoxifen",
+   "brands": [
+    "Nolvadex"
+   ],
+   "acbScore": 0,
+   "rxnorm": [
+    {
+     "rxcui": "10324",
+     "rxnormName": "tamoxifen",
+     "tty": "IN"
+    }
+   ],
+   "note": "Reviewed in the 2012 update and NOT added (insufficient evidence of anticholinergic activity per the update). Treat as score 0 on ACB; do not flag as anticholinergic from ACB alone."
+  },
+  {
+   "generic": "nizatidine",
+   "brands": [
+    "Axid"
+   ],
+   "acbScore": 0,
+   "rxnorm": [
+    {
+     "rxcui": "42319",
+     "rxnormName": "nizatidine",
+     "tty": "IN"
+    }
+   ],
+   "note": "Reviewed in the 2012 update and NOT added (insufficient evidence of anticholinergic activity per the update). Treat as score 0 on ACB; do not flag as anticholinergic from ACB alone."
+  },
+  {
+   "generic": "duloxetine",
+   "brands": [
+    "Cymbalta"
+   ],
+   "acbScore": 0,
+   "rxnorm": [
+    {
+     "rxcui": "72625",
+     "rxnormName": "duloxetine",
+     "tty": "IN"
+    }
+   ],
+   "note": "Reviewed in the 2012 update and NOT added (insufficient evidence of anticholinergic activity per the update). Treat as score 0 on ACB; do not flag as anticholinergic from ACB alone."
+  }
+ ],
+ "beers2023StrongAnticholinergicsNotOnACB": [
+  {
+   "generic": "prochlorperazine",
+   "acbScore": null,
+   "rxnorm": [
+    {
+     "rxcui": "8704",
+     "rxnormName": "prochlorperazine",
+     "tty": "IN"
+    }
+   ],
+   "beers2023StrongAnticholinergic": true,
+   "note": "Listed as a drug with STRONG anticholinergic properties in AGS Beers 2023 Table 7 but absent from the ACB 2012 card. MedWatch should flag it as anticholinergic (Beers) without inventing an ACB score."
+  },
+  {
+   "generic": "triprolidine",
+   "acbScore": null,
+   "rxnorm": [
+    {
+     "rxcui": "10849",
+     "rxnormName": "triprolidine",
+     "tty": "IN"
+    }
+   ],
+   "beers2023StrongAnticholinergic": true,
+   "note": "Listed as a drug with STRONG anticholinergic properties in AGS Beers 2023 Table 7 but absent from the ACB 2012 card. MedWatch should flag it as anticholinergic (Beers) without inventing an ACB score."
+  },
+  {
+   "generic": "homatropine",
+   "acbScore": null,
+   "rxnorm": [
+    {
+     "rxcui": "27084",
+     "rxnormName": "homatropine",
+     "tty": "IN"
+    }
+   ],
+   "beers2023StrongAnticholinergic": true,
+   "note": "Listed as a drug with STRONG anticholinergic properties in AGS Beers 2023 Table 7 but absent from the ACB 2012 card. MedWatch should flag it as anticholinergic (Beers) without inventing an ACB score."
+  }
+ ],
+ "brandStatusLegend": {
+  "verified-RxNorm": "RxNorm brand concept maps to this ingredient (RxNorm keeps many discontinued brands, so this does not prove current US marketing)",
+  "verified-FDA-SPL-only": "not resolved as an RxNorm brand but an FDA SPL with this brand and ingredient exists (see splEvidence)",
+  "brand-maps-to-different-ingredient": "the brand name resolves to a different ingredient in RxNorm - do NOT use it to match this drug",
+  "not-found (not a current RxNorm brand or FDA SPL; likely discontinued or non-US)": "kept only because it is printed on the ACB card"
+ },
+ "brandSafetyNotes": [
+  "'Zantac' brand is now used for famotidine ('Zantac 360'), which is NOT on the ACB scale; ranitidine was withdrawn from the US market on 2020-04-01. Do not map the word 'Zantac' to ranitidine without confirmation.",
+  "'Unisom SleepTabs' contain doxylamine, 'Unisom SleepGels' contain diphenhydramine; both score 3.",
+  "'Dramamine' original = dimenhydrinate; 'Dramamine Less Drowsy' = meclizine; both score 3.",
+  "'Diuril' is chlorothiazide (not on ACB) even though the ACB card prints it next to chlorthalidone."
+ ]
+}

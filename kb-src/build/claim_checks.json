@@ -1,0 +1,235 @@
+{
+ "DPP-4 arthralgia warning": {
+  "generic": "sitagliptin",
+  "splSetId": "194c3718-5eb5-4cf5-85d0-2bb1ed8293b8",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=194c3718-5eb5-4cf5-85d0-2bb1ed8293b8",
+  "splEffective": "20260708",
+  "genericName": "SITAGLIPTIN",
+  "brandName": "JANUVIA",
+  "manufacturer": "A-S Medication Solutions",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "warnings_and_cautions",
+    "term": "Arthralgia",
+    "snippet": "auses, institute appropriate monitoring and treatment. ( 5.5 , 6.2 ) Severe and Disabling Arthralgia: Has been reported in patients taking DPP-4 inhibitors. Consider as a possible cause for"
+   },
+   {
+    "section": "adverse_reactions",
+    "term": "Arthralgia",
+    "snippet": ") ] Hypersensitivity Reactions [see Warnings and Precautions (5.5) ] Severe and Disabling Arthralgia [see Warnings and Precautions (5.6) ] Bullous Pemphigoid [see Warnings and Precautions (5"
+   }
+  ]
+ },
+ "pioglitazone HF boxed warning": {
+  "generic": "pioglitazone",
+  "splSetId": "060e3169-46a7-419d-9acc-05586cb2406b",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=060e3169-46a7-419d-9acc-05586cb2406b",
+  "splEffective": "20260817",
+  "genericName": "PIOGLITAZONE",
+  "brandName": "Pioglitazone",
+  "manufacturer": "Preferred Pharmaceuticals, Inc.",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "boxed_warning",
+    "term": "HEART FAILURE",
+    "snippet": "WARNING: CONGESTIVE HEART FAILURE \u2022 Thiazolidinediones, including pioglitazone, cause or exacerbate congestive heart failur"
+   }
+  ]
+ },
+ "digoxin GI symptoms": {
+  "generic": "digoxin",
+  "splSetId": "2636527a-1ecd-455f-a928-19549ac83fa1",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2636527a-1ecd-455f-a928-19549ac83fa1",
+  "splEffective": "20260414",
+  "genericName": "DIGOXIN",
+  "brandName": "Digoxin",
+  "manufacturer": "Golden State Medical Supply, Inc.",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "warnings_and_cautions",
+    "term": "nausea",
+    "snippet": "in patients with sinus node disease and AV block. ( 5.2 ) Digoxin toxicity: Indicated by nausea, vomiting, visual disturbances, and cardiac arrhythmias. Advanced age, low body weight, i"
+   },
+   {
+    "section": "adverse_reactions",
+    "term": "nausea",
+    "snippet": "r toxicity for about one-fourth of these adverse events. Gastrointestinal: In addition to nausea and vomiting, the use of digoxin has been associated with abdominal pain, intestinal isch"
+   }
+  ]
+ },
+ "tramadol serotonin syndrome": {
+  "generic": "tramadol",
+  "splSetId": "007bf37f-0e46-426a-ac8c-be63d4b7414c",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=007bf37f-0e46-426a-ac8c-be63d4b7414c",
+  "splEffective": "20260410",
+  "genericName": "TRAMADOL HYDROCHLORIDE",
+  "brandName": "Tramadol Hydrochloride",
+  "manufacturer": "Unichem Pharmaceuticals (USA), Inc.",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "warnings_and_cautions",
+    "term": "Serotonin Syndrome",
+    "snippet": "priately decreasing the dose of the current opioid analgesic, or opioid rotation. ( 5.8 ) Serotonin Syndrome : May be life-threatening. Can occur with use of tramadol alone, with concomitant use of"
+   },
+   {
+    "section": "adverse_reactions",
+    "term": "Serotonin Syndrome",
+    "snippet": "ions with Benzodiazepines or Other CNS Depressants [see Warnings and Precautions ( 5.3 )] Serotonin Syndrome [see Warnings and Precautions ( 5.9 )] Seizures [see Warnings and Precautions ( 5.10 )] S"
+   }
+  ]
+ },
+ "amlodipine edema dose-related": {
+  "generic": "amlodipine",
+  "splSetId": "003dd1ec-16f8-4f96-b6a8-c4689d35892a",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=003dd1ec-16f8-4f96-b6a8-c4689d35892a",
+  "splEffective": "20260420",
+  "genericName": "AMLODIPINE BESYLATE",
+  "brandName": "Amlodipine Besylate",
+  "manufacturer": "Lupin Pharmaceuticals, Inc.",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "adverse_reactions",
+    "term": "dose related",
+    "snippet": "ADVERSE REACTIONS Most common adverse reaction to amlodipine is edema which occurred in a dose related manner. Other adverse experiences not dose related but reported with an incidence >1.0% a"
+   }
+  ]
+ },
+ "clonidine withdrawal": {
+  "generic": "clonidine",
+  "splSetId": "00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
+  "splEffective": "20260908",
+  "genericName": "CLONIDINE HYDROCHLORIDE",
+  "brandName": "Clonidine Hydrochloride",
+  "manufacturer": "REMEDYREPACK INC.",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "warnings",
+    "term": "Withdrawal",
+    "snippet": "WARNINGS Withdrawal Patients should be instructed not to discontinue therapy without consulting their physici"
+   },
+   {
+    "section": "precautions",
+    "term": "Withdrawal",
+    "snippet": "patients have not been established in adequate and well-controlled trials (see WARNINGS, Withdrawal )."
+   }
+  ]
+ },
+ "prednisone insomnia": {
+  "generic": "prednisone",
+  "splSetId": "0062fcc7-aa08-4990-9d33-d798725907f1",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0062fcc7-aa08-4990-9d33-d798725907f1",
+  "splEffective": "20260908",
+  "genericName": "PREDNISONE",
+  "brandName": "Prednisone",
+  "manufacturer": "Bryant Ranch Prepack",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "precautions",
+    "term": "insomnia",
+    "snippet": "Psychiatric derangements may appear when corticosteroids are used, ranging from euphoria, insomnia, mood swings, personality changes, and severe depression, to frank psychotic manifestatio"
+   },
+   {
+    "section": "adverse_reactions",
+    "term": "insomnia",
+    "snippet": "otumor cerebri) usually following discontinuation of treatment, increased motor activity, insomnia, ischemic neuropathy, long-term memory loss, mania, mood swings, neuritis, neuropathy, pa"
+   }
+  ]
+ },
+ "donepezil insomnia": {
+  "generic": "donepezil",
+  "splSetId": "0516d548-db9b-410a-aec9-79aedbc3f6e9",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0516d548-db9b-410a-aec9-79aedbc3f6e9",
+  "splEffective": "20260818",
+  "genericName": "DONEPEZIL HYDROCHLORIDE",
+  "brandName": "Donepezil Hydrochloride",
+  "manufacturer": "A-S Medication Solutions",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "adverse_reactions",
+    "term": "insomnia",
+    "snippet": "on adverse reactions in clinical studies of donepezil hydrochloride are nausea, diarrhea, insomnia, vomiting, muscle cramps, fatigue, and anorexia (6.1) To report SUSPECTED ADVERSE REACTIO"
+   },
+   {
+    "section": "information_for_patients",
+    "term": "insomnia",
+    "snippet": ". Advise patients and caregivers that donepezil hydrochloride may cause nausea, diarrhea, insomnia, vomiting, muscle cramps, fatigue, and decreased appetite. Advise patients to notify thei"
+   }
+  ]
+ },
+ "lisinopril cough": {
+  "generic": "lisinopril",
+  "splSetId": "02c23f9c-f3cf-4366-ae1e-56296f1fedf9",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=02c23f9c-f3cf-4366-ae1e-56296f1fedf9",
+  "splEffective": "20260522",
+  "genericName": "LISINOPRIL",
+  "brandName": "LISINOPRIL",
+  "manufacturer": "Preferred Pharmaceuticals Inc.",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "adverse_reactions",
+    "term": "cough",
+    "snippet": "eactions (events 2% greater than placebo) by use: \u2022 Hypertension: headache, dizziness and cough (6.1) \u2022 Heart Failure: hypotension and chest pain (6.1) \u2022 Acute Myocardial Infarction: hy"
+   }
+  ]
+ },
+ "verapamil constipation": {
+  "generic": "verapamil",
+  "splSetId": "18f6d349-8c5c-4443-ac65-16bf6619ecdc",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=18f6d349-8c5c-4443-ac65-16bf6619ecdc",
+  "splEffective": "20250325",
+  "genericName": "VERAPAMIL HYDROCHLORIDE",
+  "brandName": "Verapamil Hydrochloride",
+  "manufacturer": "Chartwell RX, LLC",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "adverse_reactions",
+    "term": "constipation",
+    "snippet": "ence \u2265 3% and more common than in patients treated with placebo) are headache, infection, constipation, flu syndrome, peripheral edema, dizziness, pharyngitis, and sinusitis ( 6.1 ) To report"
+   }
+  ]
+ },
+ "metoclopramide EPS": {
+  "generic": "metoclopramide",
+  "splSetId": "0034a97a-fb05-418a-a234-de278907cd2a",
+  "dailymed": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0034a97a-fb05-418a-a234-de278907cd2a",
+  "splEffective": "20260724",
+  "genericName": "METOCLOPRAMIDE",
+  "brandName": "Metoclopramide",
+  "manufacturer": "American Health Packaging",
+  "productType": "HUMAN PRESCRIPTION DRUG",
+  "matched": true,
+  "hits": [
+   {
+    "section": "boxed_warning",
+    "term": "TARDIVE",
+    "snippet": "WARNING: TARDIVE DYSKINESIA Treatment with metoclopramide can cause tardive dyskinesia, a serious movement"
+   },
+   {
+    "section": "warnings",
+    "term": "Extrapyramidal",
+    "snippet": "a prior history of depression only if the expected benefits outweigh the potential risks. Extrapyramidal symptoms, manifested primarily as acute dystonic reactions, occur in approximately 1 in 5"
+   }
+  ]
+ }
+}

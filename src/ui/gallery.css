@@ -1,0 +1,68 @@
+/* /dev/ui gallery layout (prefix gal-). */
+.gal-themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(36rem, 100%), 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+.gal-theme {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--bg);
+  color: var(--ink);
+}
+.gal-theme__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.gal-section {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+.gal-section__title {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.gal-section__body {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.gal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: var(--space-4);
+}
+.gal-tooltip-trigger {
+  padding: 0.5rem 0.875rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+}
+.gal-evidence {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gal-evidence li {
+  display: grid;
+  grid-template-columns: auto 4rem 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+}

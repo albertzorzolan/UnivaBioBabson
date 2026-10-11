@@ -1,0 +1,4731 @@
+{
+  "version": "1.0.0",
+  "author": "Independent evaluation author for the Kinwise team (Claude Code acting as a clinical-pharmacist test author; not the engine author)",
+  "written": "2026-10-10",
+  "today": "2026-10-10",
+  "method": "Each expectation was derived from the published criteria (AGS Beers 2023 Tables 2-7 read from the PMC full text and the journal PDF; the ACB 2012 card; CDC STEADI, STEADI-Rx and STOPPFall for fall-risk drugs; ThinkCascades and the primary cascade studies; STOPP/START v3 for duplicate classes; Budnitz 2011/2021 for the SPEC 12 monitoring classes) before and without reading the engine (src/engine/meds) or the compiled knowledge base (src/kb/data). Medication names are typed the way a family would (brands, generics, OTC combinations, dose text). See eval/MED-CASES-METHOD.md.",
+  "disclaimer": "Synthetic, fictional test cases for software testing. Not patient data, not clinical validation, and not medical advice. No flag does not mean a medicine is safe.",
+  "conventions": {
+    "today": "All dates are relative to today = 2026-10-10. startDate = today - daysAgoStarted; endDate = today - daysAgoStopped when given, else null.",
+    "ingredients": "Lowercase generic names. An expectation matches a finding when the finding's category is equal and every listed ingredient is among the ingredients of the medications the finding involves (finding.medIds -> Medication.ingredientIds). Matching is token-based so 'trimethoprim' matches 'sulfamethoxazole_trimethoprim' and 'insulin' matches 'insulin glargine'.",
+    "emptyIngredients": "An empty ingredients list means 'any finding of this category' (used in mustNotInclude to say 'no finding of this category at all').",
+    "comboProducts": "Assertions are at medication level. For a combination product every ingredient of that product counts as involved, so a negative assertion about one ingredient of a combination cannot be expressed; minMatches is used where one product meets two criteria.",
+    "nonVacuity": "Every ingredient named in an expectation must resolve from at least one of the case's medication names via matchDrug; otherwise the expectation fails as a precondition failure (so a negative cannot pass just because a name did not resolve).",
+    "fuzzy": "A 'fuzzy' match from matchDrug is treated as unconfirmed (ingredientIds = [], match = 'none') unless the case sets confirmSuggestion: true.",
+    "diary": "diary.fallsLast12Months = true adds one confirmed check-in 20 days before today with fall = true (all other answers unanswered).",
+    "newVsLongTerm": "Warfarin 'initial therapy' is encoded as started 10 days ago; 'long-term' as started 1200 or 2200 days ago. An engine that treats a start within the last N days as initial therapy passes for any N from 10 to 1199.",
+    "chronicNsaid": "Chronic NSAID use is encoded as 120-365 days of daily use; short-term as 10 days (the only short-term NSAID that carries an assertion). An engine that treats >= N days as chronic passes for any N from 11 to 120.",
+    "ppi": "PPI 'more than 8 weeks' is tested at 150 and 400 days (positive) and 21 days (negative)."
+  },
+  "sources": {
+    "AGS Beers 2023": {
+      "citation": "By the 2023 American Geriatrics Society Beers Criteria Update Expert Panel. American Geriatrics Society 2023 updated AGS Beers Criteria for potentially inappropriate medication use in older adults. J Am Geriatr Soc. 2023;71(7):2052-2081.",
+      "doi": "10.1111/jgs.18372",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12478568/",
+      "readHow": "Tables 2-10 read from the PMC JATS XML (NCBI E-utilities efetch, PMC12478568) and cross-checked against the final journal PDF text; read on 2026-10-10."
+    },
+    "ACB scale 2012 update": {
+      "citation": "Aging Brain Care, Regenstrief Institute / Indiana University. Anticholinergic Cognitive Burden Scale, 2012 Update (card). Boustani M et al. Aging Health 2008;4:311-320; Campbell N et al. Clin Interv Aging 2009;4:225-233.",
+      "doi": null,
+      "url": "https://www.hii.iu.edu/resources/anticholinergic-cognitive-burden-scale.pdf",
+      "readHow": "Both pages of the official card read on 2026-10-10 (score-1, score-2, score-3 lists and 'reviewed but not added' list)."
+    },
+    "STOPPFall": {
+      "citation": "Seppala LJ, Petrovic M, Ryg J, et al. STOPPFall (Screening Tool of Older Persons Prescriptions in older adults with high fall risk): a Delphi study by the EuGMS Task and Finish Group on Fall-Risk-Increasing Drugs. Age Ageing. 2021;50(4):1189-1199.",
+      "doi": "10.1093/ageing/afaa249",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8244563/",
+      "readHow": "Full text (Tables 1-2) read from PMC XML on 2026-10-10."
+    },
+    "CDC STEADI": {
+      "citation": "CDC STEADI. Medications Linked to Falls (fact sheet), 2017; and STEADI-Rx Community Pharmacy Fall Risk Checklist, 2019.",
+      "doi": null,
+      "url": "https://www.cdc.gov/steadi/media/pdfs/STEADI-FactSheet-MedsLinkedtoFalls-508.pdf",
+      "readHow": "Both PDFs read on 2026-10-10."
+    },
+    "ThinkCascades": {
+      "citation": "McCarthy LM, Savage R, Dalton K, et al. ThinkCascades: a tool for identifying clinically important prescribing cascades affecting older people. Drugs Aging. 2022;39(10):829-840.",
+      "doi": "10.1007/s40266-022-00964-9",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9477172/",
+      "readHow": "Table 2 (Round 1/3 ratings and 'retained' column) read from PMC XML on 2026-10-10."
+    },
+    "Savage 2020": {
+      "citation": "Savage RD, Visentin JD, Bronskill SE, et al. Evaluation of a common prescribing cascade of calcium channel blockers and diuretics in older adults with hypertension. JAMA Intern Med. 2020;180(5):643-651.",
+      "doi": "10.1001/jamainternmed.2019.7087",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32091538/",
+      "readHow": "Abstract (PubMed) read on 2026-10-10."
+    },
+    "Gill 2005": {
+      "citation": "Gill SS, Mamdani M, Naglie G, et al. A prescribing cascade involving cholinesterase inhibitors and anticholinergic drugs. Arch Intern Med. 2005;165(7):808-813.",
+      "doi": "10.1001/archinte.165.7.808",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15824303/",
+      "readHow": "Abstract (PubMed) read on 2026-10-10."
+    },
+    "Avorn 1995": {
+      "citation": "Avorn J, Gurwitz JH, Bohn RL, et al. Increased incidence of levodopa therapy following metoclopramide use. JAMA. 1995;274(22):1780-1782.",
+      "doi": null,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/7500509/",
+      "readHow": "Abstract (PubMed) read on 2026-10-10."
+    },
+    "Vegter 2013": {
+      "citation": "Vegter S, de Boer P, van Dijk KW, et al. The effects of antitussive treatment of ACE inhibitor-induced cough on therapy compliance: a prescription sequence symmetry analysis. Drug Saf. 2013;36(6):435-439.",
+      "doi": "10.1007/s40264-013-0024-z",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23494997/",
+      "readHow": "Abstract (PubMed) read on 2026-10-10."
+    },
+    "Gurwitz 1997": {
+      "citation": "Gurwitz JH, Kalish SC, Bohn RL, et al. Thiazide diuretics and the initiation of anti-gout therapy. J Clin Epidemiol. 1997;50(8):953-959.",
+      "doi": "10.1016/s0895-4356(97)00101-7",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9291881/",
+      "readHow": "Abstract (PubMed) read on 2026-10-10."
+    },
+    "Budnitz 2011": {
+      "citation": "Budnitz DS, Lovegrove MC, Shehab N, Richards CL. Emergency hospitalizations for adverse drug events in older Americans. N Engl J Med. 2011;365(21):2002-2012.",
+      "doi": "10.1056/NEJMsa1103053",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22111719/",
+      "readHow": "Abstract (PubMed) read on 2026-10-10."
+    },
+    "Budnitz 2021": {
+      "citation": "Budnitz DS, Shehab N, Lovegrove MC, et al. US emergency department visits attributed to medication harms, 2017-2019. JAMA. 2021;326(13):1299-1309.",
+      "doi": "10.1001/jama.2021.13844",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34609453/",
+      "readHow": "Abstract (PubMed) read on 2026-10-10."
+    },
+    "STOPP/START v3": {
+      "citation": "O'Mahony D, Cherubini A, Guiteras AR, et al. STOPP/START criteria for potentially inappropriate prescribing in older people: version 3. Eur Geriatr Med. 2023;14(4):625-632.",
+      "doi": "10.1007/s41999-023-00777-y",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10447584/",
+      "readHow": "Appendix 1 (criteria list, Section A) read from the publisher's supplementary PDF on 2026-10-10."
+    },
+    "Kinwise SPEC": {
+      "citation": "Kinwise build contract, docs/SPEC.md sections 6.1, 6.2 and 12 (engine behaviour that is a product decision rather than a published criterion).",
+      "doi": null,
+      "url": "docs/SPEC.md",
+      "readHow": "Repository file."
+    }
+  },
+  "notCovered": [
+    {
+      "criterion": "Beers Table 2 - nifedipine immediate release",
+      "reason": "Formulation (IR vs ER) is not captured by the Medication model; the ingredient alone cannot decide it."
+    },
+    {
+      "criterion": "Beers Table 2 - insulin, sliding scale",
+      "reason": "Regimen type is not captured; only the negative (basal insulin is not flagged) is tested."
+    },
+    {
+      "criterion": "Beers Table 2 - digoxin >0.125 mg/day, doxepin >6 mg/day, aspirin >325 mg/day",
+      "reason": "Dose is free text in the model; dose thresholds are not machine-checkable."
+    },
+    {
+      "criterion": "Beers Table 2 - aspirin for secondary prevention",
+      "reason": "No negative is asserted: a question asking whether aspirin is for primary or secondary prevention is acceptable."
+    },
+    {
+      "criterion": "Beers Table 2 - indication exceptions (antipsychotics in schizophrenia, testosterone in hypogonadism, metoclopramide in gastroparesis <=12 weeks, amiodarone with heart failure)",
+      "reason": "Indications are free text; cases avoid asserting either way where an exception could apply (e.g. haloperidol for schizophrenia is not asserted)."
+    },
+    {
+      "criterion": "Beers Table 2 - desmopressin, dronedarone, dipyridamole, ergoloid, growth hormone, desiccated thyroid, meprobamate, meperidine, mineral oil, GI antispasmodics",
+      "reason": "Low-use or indication-dependent; left for a later version."
+    },
+    {
+      "criterion": "Beers Table 3 - syncope",
+      "reason": "No ConditionTag for syncope in the model."
+    },
+    {
+      "criterion": "Beers Table 4 - SIADH/hyponatremia drugs (SSRIs, SNRIs, TCAs, mirtazapine, diuretics, carbamazepine, oxcarbazepine, antipsychotics, tramadol), dextromethorphan-quinidine, TMP-SMX with ACEI/ARB and low CrCl",
+      "reason": "Not asserted either way; an engine may legitimately add these 'use with caution' prompts."
+    },
+    {
+      "criterion": "Beers Table 5 - RAS inhibitor + potassium-sparing diuretic without CKD",
+      "reason": "The criterion is limited to CKD stage 3a+, but no negative is asserted."
+    },
+    {
+      "criterion": "Beers Table 6 - ciprofloxacin, TMP-SMX, amiloride, dabigatran, edoxaban, enoxaparin, fondaparinux, duloxetine, pregabalin, tramadol, cimetidine, nizatidine, colchicine, probenecid",
+      "reason": "Representative thresholds are tested (60, 50, <=80, 30, eGFR 60); the rest follow the same mechanism."
+    },
+    {
+      "criterion": "Prescribing cascades beyond the six tested (PIPC list, ThinkCascades alpha-blocker => vestibular sedative, benzodiazepine => antipsychotic, SSRI => sleep agent, NSAID => antihypertensive, diuretic => OAB medication)",
+      "reason": "Left for a later version; reversed-order negatives cover the timing rule."
+    },
+    {
+      "criterion": "relatedSymptoms, signalIds, sort order, finding wording",
+      "reason": "Out of scope for this clinical-criteria suite (covered by engine unit tests and the SPEC language rules)."
+    }
+  ],
+  "cases": [
+    {
+      "id": "mc-ativan-seroquel-sleep",
+      "title": "Lorazepam from a walk-in clinic plus low-dose quetiapine, both for sleep",
+      "covers": [
+        "T2:benzodiazepine",
+        "T2:antipsychotic",
+        "ACB:sum",
+        "FRID"
+      ],
+      "profile": {
+        "age": 78,
+        "sex": "female",
+        "conditions": [
+          "insomnia"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Ativan 0.5mg",
+          "daysAgoStarted": 16,
+          "reason": "sleep"
+        },
+        {
+          "name": "Seroquel 25 mg",
+          "daysAgoStarted": 120,
+          "reason": "sleep"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "lorazepam"
+            ],
+            "why": "Lorazepam is a benzodiazepine; Beers lists benzodiazepines as medicines older adults should generally avoid (memory problems, delirium, falls, fractures).",
+            "source": "AGS Beers 2023, Table 2 - Benzodiazepines (alprazolam, clonazepam, lorazepam, temazepam ...): Avoid (moderate quality; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "quetiapine"
+            ],
+            "why": "Quetiapine is an antipsychotic used here for sleep, which is not an FDA-approved indication; Beers lists antipsychotics as 'avoid' outside those indications.",
+            "source": "AGS Beers 2023, Table 2 - Antipsychotics, first and second generation (quetiapine, risperidone ...): Avoid except FDA-approved indications (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "lorazepam",
+              "quetiapine"
+            ],
+            "why": "Benzodiazepines and antipsychotics are named fall-risk-increasing drug classes.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "cns_active_combo",
+            "ingredients": [],
+            "why": "Only two CNS-active drugs (one benzodiazepine, one antipsychotic); the Beers combination criterion needs three or more.",
+            "source": "AGS Beers 2023, Table 5 - Any combination of >=3 CNS-active drugs among antiepileptics (incl. gabapentinoids), antidepressants (TCAs, SSRIs, SNRIs), antipsychotics, benzodiazepines, Z-drugs, opioids, skeletal muscle relaxants: Avoid (high; strong)"
+          }
+        ],
+        "acbTotalExactly": 3,
+        "fallRiskIngredientsInclude": [
+          "lorazepam",
+          "quetiapine"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Quetiapine 3 + lorazepam 0 (lorazepam is not on the ACB card) = 3.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Benzodiazepine and antipsychotic.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-advil-pm-combo",
+      "title": "OTC 'PM' combination taken nightly for months (ibuprofen + diphenhydramine)",
+      "covers": [
+        "T2:first-gen-antihistamine",
+        "T2:nsaid-chronic",
+        "combo-product",
+        "ACB:sum",
+        "FRID"
+      ],
+      "profile": {
+        "age": 74,
+        "sex": "female",
+        "conditions": [
+          "osteoarthritis"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Advil PM",
+          "daysAgoStarted": 200,
+          "reason": "sleep and achy knees"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "ibuprofen",
+              "diphenhydramine"
+            ],
+            "why": "One product, two separate Table 2 criteria: diphenhydramine (first-generation antihistamine) and ibuprofen used daily for 200 days (chronic oral NSAID). Two beers_avoid findings are expected for this one product.",
+            "source": "AGS Beers 2023, Table 2 - First-generation antihistamines incl. diphenhydramine (oral) and promethazine: Avoid (moderate; strong)",
+            "minMatches": 2
+          },
+          {
+            "category": "anticholinergic_burden",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "Diphenhydramine scores 3 on the ACB scale, which reaches the finding threshold on its own.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "Sedating first-generation antihistamines are fall-risk-increasing drugs.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 3,
+        "fallRiskIngredientsInclude": [
+          "diphenhydramine"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Diphenhydramine 3; ibuprofen is not on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Sedative antihistamine.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          },
+          "minMatches": {
+            "why": "Second Table 2 criterion: chronic non-COX-2 oral NSAID (ibuprofen).",
+            "source": "AGS Beers 2023, Table 2 - Non-COX-2-selective oral NSAIDs: Avoid chronic use unless alternatives are not effective and gastroprotection is used (moderate; strong)"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-paxil-zoloft-duplicate",
+      "title": "Two SSRIs at once: paroxetine (strongly anticholinergic) plus sertraline",
+      "covers": [
+        "T2:paroxetine",
+        "T2:negative-sertraline",
+        "duplicate:ssri",
+        "ACB:sum"
+      ],
+      "profile": {
+        "age": 76,
+        "sex": "female",
+        "conditions": [
+          "depression",
+          "anxiety"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Paxil 20 mg",
+          "daysAgoStarted": 400,
+          "reason": "anxiety"
+        },
+        {
+          "name": "Zoloft 50mg",
+          "daysAgoStarted": 60,
+          "reason": "depression"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "paroxetine"
+            ],
+            "why": "Paroxetine is the SSRI that Beers groups with the strongly anticholinergic antidepressants to avoid.",
+            "source": "AGS Beers 2023, Table 2 - Antidepressants with strong anticholinergic activity (amitriptyline ... paroxetine): Avoid (high; strong)"
+          },
+          {
+            "category": "duplicate_class",
+            "ingredients": [
+              "paroxetine",
+              "sertraline"
+            ],
+            "why": "Two concurrent SSRIs is the textbook therapeutic duplication.",
+            "source": "STOPP/START v3 (O'Mahony 2023, Eur Geriatr Med 14:625), Appendix 1, Section A3 - any duplicate drug class prescription for daily regular use, e.g. two concurrent NSAIDs, SSRIs, loop diuretics, ACE inhibitors, anticoagulants, antipsychotics, opioid analgesics"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "paroxetine",
+              "sertraline"
+            ],
+            "why": "Antidepressants (SSRIs) are fall-risk-increasing drugs.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "sertraline"
+            ],
+            "why": "Sertraline has no Table 2 criterion; only strongly anticholinergic antidepressants are listed.",
+            "source": "AGS Beers 2023, Table 2 - only antidepressants with strong anticholinergic activity are listed (paroxetine is the only SSRI); sertraline is not in Table 2"
+          }
+        ],
+        "acbTotalExactly": 3,
+        "fallRiskIngredientsInclude": [
+          "paroxetine",
+          "sertraline"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Paroxetine 3; sertraline is not on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Antidepressants (SSRIs).",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-zoloft-no-falls",
+      "title": "Sertraline alone with no recorded falls (twin of mc-zoloft-diary-fall)",
+      "covers": [
+        "T2:negative-sertraline",
+        "T3:negative-no-falls",
+        "FRID"
+      ],
+      "profile": {
+        "age": 76,
+        "sex": "female",
+        "conditions": [
+          "depression"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Zoloft 50mg",
+          "daysAgoStarted": 400,
+          "reason": "depression"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "sertraline"
+            ],
+            "why": "SSRIs are listed fall-risk-increasing drugs even without a recorded fall.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "sertraline"
+            ],
+            "why": "Sertraline is not a Table 2 criterion.",
+            "source": "AGS Beers 2023, Table 2 - only antidepressants with strong anticholinergic activity are listed (paroxetine is the only SSRI); sertraline is not in Table 2"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "sertraline"
+            ],
+            "why": "The SSRI drug-disease criterion needs a history of falls or fractures; none is recorded in profile or diary.",
+            "source": "AGS Beers 2023, Table 3 - the SSRI entry is in the 'history of falls or fractures' row only; with no recorded fall that condition is not in effect"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "fallRiskIngredientsInclude": [
+          "sertraline"
+        ],
+        "effectiveConditionsExclude": [
+          "history_of_falls"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Sertraline is not on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Antidepressants (SSRIs).",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          },
+          "effectiveConditions": {
+            "why": "No fall or near-fall recorded, so history_of_falls must not be derived.",
+            "source": "Kinwise SPEC 6.2 - history_of_falls is derived from any fall or near-fall recorded in the last 12 months"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-zoloft-diary-fall",
+      "title": "Same sertraline list, but a fall was recorded in the diary 20 days ago",
+      "covers": [
+        "T3:falls-ssri",
+        "diary-derived-condition",
+        "FRID"
+      ],
+      "profile": {
+        "age": 76,
+        "sex": "female",
+        "conditions": [
+          "depression"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Zoloft 50mg",
+          "daysAgoStarted": 400,
+          "reason": "depression"
+        }
+      ],
+      "diary": {
+        "fallsLast12Months": true
+      },
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "sertraline"
+            ],
+            "why": "With a recorded fall, history of falls is in effect; SSRIs are in the Beers 'history of falls or fractures' row.",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "sertraline"
+            ],
+            "why": "SSRIs are fall-risk-increasing drugs.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [],
+        "fallRiskIngredientsInclude": [
+          "sertraline"
+        ],
+        "effectiveConditionsInclude": [
+          {
+            "tag": "history_of_falls",
+            "from": "diary"
+          }
+        ],
+        "basis": {
+          "fallRisk": {
+            "why": "Antidepressants (SSRIs).",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          },
+          "effectiveConditions": {
+            "why": "A fall was recorded 20 days ago, so history_of_falls comes from the diary.",
+            "source": "Kinwise SPEC 6.2 - history_of_falls is derived from any fall or near-fall recorded in the last 12 months"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-baclofen-tizanidine",
+      "title": "Spasticity medicines that the muscle-relaxant criterion explicitly excludes",
+      "covers": [
+        "T2:negative-baclofen-tizanidine",
+        "T6:negative-no-crcl"
+      ],
+      "profile": {
+        "age": 70,
+        "sex": "female",
+        "conditions": [
+          "osteoarthritis"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Baclofen 10 mg",
+          "daysAgoStarted": 300,
+          "reason": "muscle spasms (MS)"
+        },
+        {
+          "name": "Tizanidine 4mg",
+          "daysAgoStarted": 100,
+          "reason": "spasticity"
+        }
+      ],
+      "expect": {
+        "mustInclude": [],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "baclofen"
+            ],
+            "why": "The Beers skeletal-muscle-relaxant criterion says it does not apply to baclofen.",
+            "source": "AGS Beers 2023, Table 2 - Skeletal muscle relaxants: 'does not apply to ... baclofen and tizanidine' (drugs for spasticity)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "tizanidine"
+            ],
+            "why": "The Beers skeletal-muscle-relaxant criterion says it does not apply to tizanidine.",
+            "source": "AGS Beers 2023, Table 2 - Skeletal muscle relaxants: 'does not apply to ... baclofen and tizanidine' (drugs for spasticity)"
+          },
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "baclofen"
+            ],
+            "why": "Baclofen has a kidney-function criterion, but kidney function is not recorded here.",
+            "source": "Kinwise SPEC 6.2 - 'beers_renal (only if CrCl known)'; AGS Beers 2023 Table 6 thresholds are stated as CrCl, which this profile does not record"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "Neither baclofen nor tizanidine is on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-glyburide-metformin-sglt2",
+      "title": "Type 2 diabetes on glyburide, metformin and a recently added SGLT2 inhibitor",
+      "covers": [
+        "T2:sulfonylurea",
+        "T2:negative-metformin",
+        "T4:sglt2",
+        "monitoring:diabetes"
+      ],
+      "profile": {
+        "age": 80,
+        "sex": "male",
+        "conditions": [
+          "type2_diabetes"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Glyburide 5mg",
+          "daysAgoStarted": 700,
+          "reason": "diabetes"
+        },
+        {
+          "name": "Metformin 1000 mg",
+          "daysAgoStarted": 900,
+          "reason": "diabetes"
+        },
+        {
+          "name": "Jardiance 10 mg",
+          "daysAgoStarted": 100,
+          "reason": "diabetes"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "glyburide"
+            ],
+            "why": "Glyburide is a long-acting sulfonylurea; Beers lists all sulfonylureas (longer low blood sugar episodes with glyburide).",
+            "source": "AGS Beers 2023, Table 2 - Sulfonylureas, all (gliclazide, glimepiride, glipizide, glyburide): Avoid as first/second-line or add-on unless substantial barriers (strong); widened from long-acting to all sulfonylureas in 2023 (Table 10)"
+          },
+          {
+            "category": "beers_caution",
+            "ingredients": [
+              "empagliflozin"
+            ],
+            "why": "SGLT2 inhibitors were added to Table 4 (use with caution) in 2023.",
+            "source": "AGS Beers 2023, Table 4 (use with caution) - SGLT2 inhibitors (canagliflozin, dapagliflozin, empagliflozin, ertugliflozin): monitor for urogenital infections and ketoacidosis (moderate; weak); added 2023"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "glyburide"
+            ],
+            "why": "Sulfonylureas are among the diabetes medicines most often linked to emergency hospital stays in older adults (low blood sugar).",
+            "source": "Budnitz 2011 NEJM 365:2002 - insulins (13.9%) and oral hypoglycaemic agents (10.7%) among the four classes in 67% of ADE hospitalizations in adults >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "metformin"
+            ],
+            "why": "Metformin is not a Beers Table 2 medicine.",
+            "source": "AGS Beers 2023, Table 2 - metformin is not listed in any Table 2 criterion"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "None of the three is on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-glipizide-basal-insulin-ppi",
+      "title": "Glipizide (short-acting sulfonylurea, newly covered in 2023) with bedtime basal insulin and a long-term PPI",
+      "covers": [
+        "T2:sulfonylurea-2023",
+        "T2:negative-basal-insulin",
+        "T2:ppi-long",
+        "monitoring:diabetes"
+      ],
+      "profile": {
+        "age": 77,
+        "sex": "female",
+        "conditions": [
+          "type2_diabetes"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Glipizide 5 mg",
+          "daysAgoStarted": 400,
+          "reason": "diabetes"
+        },
+        {
+          "name": "Lantus",
+          "daysAgoStarted": 200,
+          "reason": "bedtime insulin"
+        },
+        {
+          "name": "Protonix 40 mg",
+          "daysAgoStarted": 150,
+          "reason": "reflux"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "glipizide"
+            ],
+            "why": "Since 2023 the sulfonylurea criterion covers all sulfonylureas, including short-acting glipizide.",
+            "source": "AGS Beers 2023, Table 2 - Sulfonylureas, all (gliclazide, glimepiride, glipizide, glyburide): Avoid as first/second-line or add-on unless substantial barriers (strong); widened from long-acting to all sulfonylureas in 2023 (Table 10)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "pantoprazole"
+            ],
+            "why": "Pantoprazole taken daily for about 5 months, beyond the 8-week mark in the PPI criterion.",
+            "source": "AGS Beers 2023, Table 2 - Proton-pump inhibitors: Avoid scheduled use for >8 weeks unless high-risk patients or listed indications (strong)"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "glipizide"
+            ],
+            "why": "Sulfonylurea: watch for shakiness, sweating, confusion (possible low blood sugar).",
+            "source": "Budnitz 2011 NEJM 365:2002 - insulins (13.9%) and oral hypoglycaemic agents (10.7%) among the four classes in 67% of ADE hospitalizations in adults >=65; Kinwise SPEC 12 'monitoring' category"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "insulin"
+            ],
+            "why": "Insulin: one of the most common medicines in ADE hospitalizations of older adults.",
+            "source": "Budnitz 2011 NEJM 365:2002 - insulins (13.9%) and oral hypoglycaemic agents (10.7%) among the four classes in 67% of ADE hospitalizations in adults >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "insulin"
+            ],
+            "why": "Basal (long-acting) insulin is not the sliding-scale insulin criterion.",
+            "source": "AGS Beers 2023, Table 2 - Insulin, sliding scale: applies only to short/rapid-acting-only regimens; 'does not apply to regimens that contain basal insulin'"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "None of the three is on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-aleve-chronic-advil-duplicate",
+      "title": "Daily naproxen for a year plus ibuprofen added for headaches",
+      "covers": [
+        "T2:nsaid-chronic",
+        "duplicate:nsaid",
+        "T6:negative-no-crcl"
+      ],
+      "profile": {
+        "age": 77,
+        "sex": "female",
+        "conditions": [
+          "osteoarthritis"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Aleve",
+          "daysAgoStarted": 365,
+          "reason": "knee arthritis"
+        },
+        {
+          "name": "Advil 200mg",
+          "daysAgoStarted": 20,
+          "reason": "headaches"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "naproxen"
+            ],
+            "why": "Naproxen taken daily for a year is chronic use of a non-COX-2 oral NSAID.",
+            "source": "AGS Beers 2023, Table 2 - Non-COX-2-selective oral NSAIDs: Avoid chronic use unless alternatives are not effective and gastroprotection is used (moderate; strong)"
+          },
+          {
+            "category": "duplicate_class",
+            "ingredients": [
+              "naproxen",
+              "ibuprofen"
+            ],
+            "why": "Two NSAIDs at the same time is a named example of duplicate drug class prescribing.",
+            "source": "STOPP/START v3 (O'Mahony 2023, Eur Geriatr Med 14:625), Appendix 1, Section A3 - any duplicate drug class prescription for daily regular use, e.g. two concurrent NSAIDs, SSRIs, loop diuretics, ACE inhibitors, anticoagulants, antipsychotics, opioid analgesics"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "naproxen"
+            ],
+            "why": "Kidney function is not recorded, so the Table 6 NSAID rule cannot be applied.",
+            "source": "Kinwise SPEC 6.2 - 'beers_renal (only if CrCl known)'; AGS Beers 2023 Table 6 thresholds are stated as CrCl, which this profile does not record"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "Neither NSAID is on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-aspirin-primary-fioricet",
+      "title": "Low-dose aspirin explicitly for primary prevention, plus a butalbital combination for headaches",
+      "covers": [
+        "T2:aspirin-primary-prevention",
+        "T2:barbiturate",
+        "combo-product"
+      ],
+      "profile": {
+        "age": 79,
+        "sex": "female",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Aspirin 81 mg",
+          "daysAgoStarted": 1000,
+          "reason": "primary prevention - no heart disease, just in case"
+        },
+        {
+          "name": "Fioricet",
+          "daysAgoStarted": 200,
+          "reason": "tension headaches"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "aspirin"
+            ],
+            "why": "Encoding: the reason field states 'primary prevention' and the profile has no cardiovascular disease. Beers moved aspirin for primary prevention to Table 2 in 2023 (consider deprescribing in existing users).",
+            "source": "AGS Beers 2023, Table 2 - Aspirin for primary prevention of cardiovascular disease: Avoid initiating; consider deprescribing in existing users (high; strong); moved from Table 4 to Table 2 in 2023"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "butalbital"
+            ],
+            "why": "Fioricet contains butalbital, a barbiturate; Beers lists barbiturates as 'avoid'.",
+            "source": "AGS Beers 2023, Table 2 - Barbiturates (butalbital, phenobarbital, primidone): Avoid (high; strong)"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "Aspirin, butalbital, acetaminophen and caffeine are not on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-warfarin-new-amiodarone",
+      "title": "Warfarin newly started (10 days) for AF in a man already on amiodarone",
+      "covers": [
+        "T2:warfarin-new-start",
+        "T2:amiodarone",
+        "T5:warfarin-amiodarone",
+        "monitoring:anticoagulant"
+      ],
+      "profile": {
+        "age": 82,
+        "sex": "male",
+        "conditions": [
+          "atrial_fibrillation"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Coumadin 5 mg",
+          "daysAgoStarted": 10,
+          "reason": "new atrial fibrillation - blood thinner"
+        },
+        {
+          "name": "Pacerone 200 mg",
+          "daysAgoStarted": 400,
+          "reason": "AFib rhythm"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "warfarin"
+            ],
+            "why": "Encoding: started 10 days ago = initial therapy. Beers 2023: avoid starting warfarin for AF/VTE unless DOACs are unsuitable.",
+            "source": "AGS Beers 2023, Table 2 - Warfarin for nonvalvular AF or VTE: Avoid starting as initial therapy unless DOACs are contraindicated or there are substantial barriers (high; strong); new in 2023"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "amiodarone"
+            ],
+            "why": "Amiodarone for AF in someone without heart failure or substantial LVH is the Beers 'avoid as first-line' situation.",
+            "source": "AGS Beers 2023, Table 2 - Amiodarone: Avoid as first-line therapy for AF unless heart failure or substantial LVH (high; strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "warfarin",
+              "amiodarone"
+            ],
+            "why": "Warfarin with amiodarone is a listed Table 5 pair (bleeding; monitor INR closely).",
+            "source": "AGS Beers 2023, Table 5 - Warfarin + amiodarone, ciprofloxacin, macrolides (excluding azithromycin), trimethoprim-sulfamethoxazole, or SSRIs: avoid when possible; if used together, monitor INR closely (moderate; strong); SSRIs added 2023"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "warfarin"
+            ],
+            "why": "Anticoagulant: watch for unusual bruising or bleeding, black stools.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": []
+      }
+    },
+    {
+      "id": "mc-warfarin-long-ssri-azithro",
+      "title": "Long-term warfarin (6 years, stable) plus a new SSRI and a short azithromycin course",
+      "covers": [
+        "T2:negative-warfarin-long-term",
+        "T5:warfarin-ssri",
+        "T5:negative-warfarin-azithromycin",
+        "monitoring:anticoagulant"
+      ],
+      "profile": {
+        "age": 81,
+        "sex": "female",
+        "conditions": [
+          "atrial_fibrillation",
+          "depression"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Warfarin 4mg",
+          "daysAgoStarted": 2200,
+          "reason": "AFib - INR well controlled for years"
+        },
+        {
+          "name": "Celexa 20 mg",
+          "daysAgoStarted": 60,
+          "reason": "low mood"
+        },
+        {
+          "name": "Azithromycin 250 mg",
+          "daysAgoStarted": 3,
+          "reason": "chest infection"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "warfarin",
+              "citalopram"
+            ],
+            "why": "Warfarin with an SSRI was added to Table 5 in 2023 (bleeding).",
+            "source": "AGS Beers 2023, Table 5 - Warfarin + amiodarone, ciprofloxacin, macrolides (excluding azithromycin), trimethoprim-sulfamethoxazole, or SSRIs: avoid when possible; if used together, monitor INR closely (moderate; strong); SSRIs added 2023"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "warfarin"
+            ],
+            "why": "Anticoagulant monitoring prompt applies regardless of how long it has been taken.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "citalopram"
+            ],
+            "why": "SSRIs are fall-risk-increasing drugs.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "warfarin"
+            ],
+            "why": "Encoding: started ~6 years ago = long-term user. Beers 2023 says continuing may be reasonable, so it is not an 'avoid' flag.",
+            "source": "AGS Beers 2023, Table 2 - Warfarin: 'For older adults who have been using warfarin long-term, it may be reasonable to continue this medication' (Box 1 repeats this)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "warfarin",
+              "azithromycin"
+            ],
+            "why": "The Table 5 warfarin row lists macrolides 'excluding azithromycin'.",
+            "source": "AGS Beers 2023, Table 5 - the warfarin row lists 'macrolides (excluding azithromycin)'"
+          }
+        ],
+        "fallRiskIngredientsInclude": [
+          "citalopram"
+        ],
+        "basis": {
+          "fallRisk": {
+            "why": "Antidepressants (SSRIs).",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-dabigatran-digoxin",
+      "title": "AF managed with dabigatran and digoxin",
+      "covers": [
+        "T4:dabigatran",
+        "T2:negative-dabigatran",
+        "T2:digoxin",
+        "monitoring:anticoagulant"
+      ],
+      "profile": {
+        "age": 85,
+        "sex": "female",
+        "conditions": [
+          "atrial_fibrillation"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Pradaxa 150 mg",
+          "daysAgoStarted": 400,
+          "reason": "AFib blood thinner"
+        },
+        {
+          "name": "Lanoxin 0.125 mg",
+          "daysAgoStarted": 600,
+          "reason": "heart rate"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_caution",
+            "ingredients": [
+              "dabigatran"
+            ],
+            "why": "Dabigatran for long-term AF is a Table 4 'use with caution' item (more stomach bleeding than some alternatives).",
+            "source": "AGS Beers 2023, Table 4 (use with caution) - Dabigatran for long-term NVAF/VTE: use caution in selecting dabigatran over other DOACs (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "digoxin"
+            ],
+            "why": "Digoxin as a rate-control agent for AF is listed as 'avoid as first-line'; the finding should carry that qualifier.",
+            "source": "AGS Beers 2023, Table 2 - Digoxin for first-line treatment of AF or heart failure: Avoid; if used, avoid >0.125 mg/day (strong)"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "dabigatran"
+            ],
+            "why": "Anticoagulant: watch for bleeding.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "dabigatran"
+            ],
+            "why": "Dabigatran is 'use with caution' (Table 4), not 'avoid'.",
+            "source": "AGS Beers 2023 - dabigatran is a Table 4 'use with caution' criterion, not a Table 2 'avoid' criterion"
+          }
+        ],
+        "acbTotalExactly": 1,
+        "basis": {
+          "acbTotal": {
+            "why": "Digoxin 1; dabigatran is not on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-ui-woman-alpha-estrogen-nitrofurantoin",
+      "title": "Woman with urinary incontinence on doxazosin for blood pressure, a loop diuretic, oral estradiol and nitrofurantoin suppression",
+      "covers": [
+        "T2:alpha1-blocker-htn",
+        "T2:estrogen-oral",
+        "T2:nitrofurantoin-long-term",
+        "T3:ui-women",
+        "T5:alpha1-loop-women",
+        "T6:negative-no-crcl",
+        "FRID"
+      ],
+      "profile": {
+        "age": 79,
+        "sex": "female",
+        "conditions": [
+          "urinary_incontinence",
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Cardura 4mg",
+          "daysAgoStarted": 300,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Lasix 20 mg",
+          "daysAgoStarted": 200,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Estradiol 1mg",
+          "daysAgoStarted": 1000,
+          "reason": "hot flashes"
+        },
+        {
+          "name": "Macrobid 100 mg",
+          "daysAgoStarted": 200,
+          "reason": "to prevent bladder infections"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "doxazosin"
+            ],
+            "why": "Doxazosin used as a blood-pressure medicine is the Beers 'avoid as an antihypertensive' situation (dizziness on standing).",
+            "source": "AGS Beers 2023, Table 2 - Non-selective peripheral alpha-1 blockers (doxazosin, prazosin, terazosin) for hypertension: Avoid use as an antihypertensive (moderate; strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "doxazosin"
+            ],
+            "why": "Non-selective alpha-1 blockers can worsen incontinence in women.",
+            "source": "AGS Beers 2023, Table 3 - Urinary incontinence (all types) in women: non-selective peripheral alpha-1 blockers (doxazosin, prazosin, terazosin) and oral/transdermal estrogen: Avoid in women (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "estradiol"
+            ],
+            "why": "Oral estrogen is listed for urinary incontinence in women (lack of benefit).",
+            "source": "AGS Beers 2023, Table 3 - Urinary incontinence (all types) in women: non-selective peripheral alpha-1 blockers (doxazosin, prazosin, terazosin) and oral/transdermal estrogen: Avoid in women (strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "estradiol"
+            ],
+            "why": "Systemic (oral) estrogen: Beers advises not starting it and considering deprescribing in existing users.",
+            "source": "AGS Beers 2023, Table 2 - Estrogens with or without progestins: do not initiate systemic estrogen; consider deprescribing in existing users (oral/patch: high; strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "doxazosin",
+              "furosemide"
+            ],
+            "why": "Non-selective alpha-1 blocker plus loop diuretic in an older woman is a Table 5 pair (urinary incontinence).",
+            "source": "AGS Beers 2023, Table 5 - Non-selective peripheral alpha-1 blockers + loop diuretics: Avoid in older women unless conditions warrant both (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "nitrofurantoin"
+            ],
+            "why": "Nitrofurantoin taken for 200 days to prevent infections is long-term suppression.",
+            "source": "AGS Beers 2023, Table 2 - Nitrofurantoin: Avoid if CrCl <30 mL/min or for long-term suppression (low; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "doxazosin",
+              "furosemide"
+            ],
+            "why": "Alpha-blockers and diuretics are STOPPFall fall-risk classes.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "nitrofurantoin"
+            ],
+            "why": "Kidney function is not recorded, so the CrCl rule cannot be applied.",
+            "source": "Kinwise SPEC 6.2 - 'beers_renal (only if CrCl known)'; AGS Beers 2023 Table 6 thresholds are stated as CrCl, which this profile does not record"
+          }
+        ],
+        "acbTotalExactly": 1,
+        "fallRiskIngredientsInclude": [
+          "doxazosin",
+          "furosemide"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Furosemide 1; doxazosin, estradiol and nitrofurantoin are not on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Alpha-blockers used as antihypertensives; diuretics.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-clonidine-terazosin-testosterone",
+      "title": "Man on clonidine and terazosin for blood pressure, plus testosterone gel",
+      "covers": [
+        "T2:central-alpha-agonist",
+        "T2:alpha1-blocker-htn",
+        "T2:androgen",
+        "FRID"
+      ],
+      "profile": {
+        "age": 74,
+        "sex": "male",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Catapres 0.1 mg",
+          "daysAgoStarted": 400,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Terazosin 2 mg",
+          "daysAgoStarted": 300,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "AndroGel",
+          "daysAgoStarted": 300,
+          "reason": "low energy"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "clonidine"
+            ],
+            "why": "Clonidine for blood pressure: Beers advises against it as first-line (sedation, slow heart rate, dizziness on standing).",
+            "source": "AGS Beers 2023, Table 2 - Central alpha-agonists for hypertension: Avoid clonidine as first-line treatment for hypertension (low; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "terazosin"
+            ],
+            "why": "Terazosin used for blood pressure: 'avoid use as an antihypertensive'.",
+            "source": "AGS Beers 2023, Table 2 - Non-selective peripheral alpha-1 blockers (doxazosin, prazosin, terazosin) for hypertension: Avoid use as an antihypertensive (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "testosterone"
+            ],
+            "why": "Testosterone: avoid unless confirmed symptomatic hypogonadism (reason given is low energy).",
+            "source": "AGS Beers 2023, Table 2 - Androgens (methyltestosterone, testosterone): Avoid unless indicated for confirmed hypogonadism with clinical symptoms (moderate; weak)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "clonidine",
+              "terazosin"
+            ],
+            "why": "Centrally acting antihypertensives and alpha-blockers are STOPPFall fall-risk classes.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 0,
+        "fallRiskIngredientsInclude": [
+          "clonidine",
+          "terazosin"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "None of the three is on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Centrally acting antihypertensive; alpha-blocker.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-haloperidol-benztropine-cascade",
+      "title": "Benztropine started after haloperidol for stiffness and tremor",
+      "covers": [
+        "T2:antiparkinsonian-anticholinergic",
+        "cascade:antipsychotic-antiparkinsonian",
+        "ACB:sum"
+      ],
+      "profile": {
+        "age": 70,
+        "sex": "male",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Haldol 2 mg",
+          "daysAgoStarted": 300,
+          "reason": "schizophrenia"
+        },
+        {
+          "name": "Cogentin 1 mg",
+          "daysAgoStarted": 250,
+          "reason": "stiffness and tremor"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "benztropine"
+            ],
+            "why": "Oral benztropine is listed as 'avoid' (not recommended for antipsychotic-related movement symptoms).",
+            "source": "AGS Beers 2023, Table 2 - Antiparkinsonian agents with strong anticholinergic activity (benztropine oral, trihexyphenidyl): Avoid (moderate; strong)"
+          },
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "haloperidol",
+              "benztropine"
+            ],
+            "why": "Antiparkinsonian drug started 50 days after an antipsychotic, for stiffness and tremor.",
+            "source": "ThinkCascades (McCarthy 2022), Table 2/3 - antipsychotics => extrapyramidal symptoms => antiparkinsonian agents (retained)"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 4,
+        "basis": {
+          "acbTotal": {
+            "why": "Benztropine 3 + haloperidol 1 = 4.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-falls-profile-cns",
+      "title": "History of falls with gabapentin, tramadol, zolpidem and low-dose amitriptyline",
+      "covers": [
+        "T3:falls",
+        "T5:opioid-gabapentinoid",
+        "T5:cns-3plus",
+        "T2:tca",
+        "T2:z-drug",
+        "FRID"
+      ],
+      "profile": {
+        "age": 83,
+        "sex": "male",
+        "conditions": [
+          "history_of_falls"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Gabapentin 300 mg",
+          "daysAgoStarted": 300,
+          "reason": "nerve pain"
+        },
+        {
+          "name": "Tramadol 50mg",
+          "daysAgoStarted": 60,
+          "reason": "back pain"
+        },
+        {
+          "name": "Ambien 5mg",
+          "daysAgoStarted": 200,
+          "reason": "sleep"
+        },
+        {
+          "name": "Elavil 10 mg",
+          "daysAgoStarted": 400,
+          "reason": "nerve pain at night"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "gabapentin"
+            ],
+            "why": "Antiepileptics (gabapentinoids) with a history of falls; the exception is seizures or mood disorders, not nerve pain.",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "tramadol"
+            ],
+            "why": "Opioids with a history of falls; the exception is severe acute pain.",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "zolpidem"
+            ],
+            "why": "Z-drugs with a history of falls.",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "amitriptyline"
+            ],
+            "why": "TCAs with a history of falls.",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "tramadol",
+              "gabapentin"
+            ],
+            "why": "Opioid plus gabapentinoid (sedation, slowed breathing).",
+            "source": "AGS Beers 2023, Table 5 - Opioids + gabapentin or pregabalin: Avoid, except when transitioning between them (moderate; strong)"
+          },
+          {
+            "category": "cns_active_combo",
+            "ingredients": [
+              "gabapentin",
+              "tramadol",
+              "zolpidem",
+              "amitriptyline"
+            ],
+            "why": "Four CNS-active drugs from the listed types; the finding should list all four.",
+            "source": "AGS Beers 2023, Table 5 - Any combination of >=3 CNS-active drugs among antiepileptics (incl. gabapentinoids), antidepressants (TCAs, SSRIs, SNRIs), antipsychotics, benzodiazepines, Z-drugs, opioids, skeletal muscle relaxants: Avoid (high; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "amitriptyline"
+            ],
+            "why": "Amitriptyline is a strongly anticholinergic antidepressant.",
+            "source": "AGS Beers 2023, Table 2 - Antidepressants with strong anticholinergic activity (amitriptyline ... paroxetine): Avoid (high; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "zolpidem"
+            ],
+            "why": "Zolpidem is a Z-drug.",
+            "source": "AGS Beers 2023, Table 2 - Z-drugs (eszopiclone, zaleplon, zolpidem): Avoid (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 3,
+        "fallRiskIngredientsInclude": [
+          "gabapentin",
+          "tramadol",
+          "zolpidem",
+          "amitriptyline"
+        ],
+        "effectiveConditionsInclude": [
+          {
+            "tag": "history_of_falls",
+            "from": "profile"
+          }
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Amitriptyline 3; gabapentin was reviewed and not added (0); tramadol and zolpidem are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Anticonvulsant, opioid, sedative-hypnotic, antidepressant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          },
+          "effectiveConditions": {
+            "why": "history_of_falls entered by the caregiver in the profile.",
+            "source": "Kinwise SPEC 6.2 - conditions come from the profile plus diary-derived history_of_falls; MedReview.effectiveConditions records where each came from"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-dementia",
+      "title": "Dementia with diphenhydramine, risperidone, temazepam and megestrol",
+      "covers": [
+        "T3:dementia",
+        "T2:antipsychotic",
+        "T2:benzodiazepine",
+        "T2:megestrol",
+        "T5:negative-cns-2",
+        "ACB:sum",
+        "FRID"
+      ],
+      "profile": {
+        "age": 86,
+        "sex": "female",
+        "conditions": [
+          "dementia_or_cognitive_impairment"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Benadryl 25 mg",
+          "daysAgoStarted": 60,
+          "reason": "sleep"
+        },
+        {
+          "name": "Risperdal 0.5mg",
+          "daysAgoStarted": 200,
+          "reason": "agitation in the evenings"
+        },
+        {
+          "name": "Restoril 15 mg",
+          "daysAgoStarted": 100,
+          "reason": "sleep"
+        },
+        {
+          "name": "Megace",
+          "daysAgoStarted": 45,
+          "reason": "poor appetite"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "Strong anticholinergic (Table 7) with dementia.",
+            "source": "AGS Beers 2023, Table 3 - Dementia or cognitive impairment: anticholinergics (Table 7), antipsychotics (chronic or persistent as-needed use), benzodiazepines, Z-drugs: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "risperidone"
+            ],
+            "why": "Antipsychotic in chronic use (200 days) with dementia.",
+            "source": "AGS Beers 2023, Table 3 - Dementia or cognitive impairment: anticholinergics (Table 7), antipsychotics (chronic or persistent as-needed use), benzodiazepines, Z-drugs: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "temazepam"
+            ],
+            "why": "Benzodiazepine with dementia.",
+            "source": "AGS Beers 2023, Table 3 - Dementia or cognitive impairment: anticholinergics (Table 7), antipsychotics (chronic or persistent as-needed use), benzodiazepines, Z-drugs: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "megestrol"
+            ],
+            "why": "Megestrol is listed as 'avoid' (little effect on weight; blood clots).",
+            "source": "AGS Beers 2023, Table 2 - Megestrol: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "risperidone"
+            ],
+            "why": "Antipsychotic used for behaviour symptoms of dementia, the use Table 2 advises against unless non-drug approaches have failed.",
+            "source": "AGS Beers 2023, Table 2 - Antipsychotics, first and second generation (quetiapine, risperidone ...): Avoid except FDA-approved indications (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "temazepam"
+            ],
+            "why": "Benzodiazepine.",
+            "source": "AGS Beers 2023, Table 2 - Benzodiazepines (alprazolam, clonazepam, lorazepam, temazepam ...): Avoid (moderate quality; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "First-generation antihistamine.",
+            "source": "AGS Beers 2023, Table 2 - First-generation antihistamines incl. diphenhydramine (oral) and promethazine: Avoid (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "diphenhydramine",
+              "risperidone",
+              "temazepam"
+            ],
+            "why": "Sedating antihistamine, antipsychotic, benzodiazepine.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "cns_active_combo",
+            "ingredients": [],
+            "why": "Only two drugs from the listed CNS-active types (risperidone, temazepam); diphenhydramine is not one of the listed types.",
+            "source": "AGS Beers 2023, Table 5 - the >=3 CNS-active list names antiepileptics, TCA/SSRI/SNRI antidepressants, antipsychotics, benzodiazepines, Z-drugs, opioids and skeletal muscle relaxants; first-generation antihistamines are not one of the listed types"
+          }
+        ],
+        "acbTotalExactly": 4,
+        "fallRiskIngredientsInclude": [
+          "diphenhydramine",
+          "risperidone",
+          "temazepam"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Diphenhydramine 3 + risperidone 1 = 4; temazepam and megestrol are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Sedative antihistamine, antipsychotic, benzodiazepine.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-delirium",
+      "title": "History of delirium with famotidine, a prednisone burst and a new opioid",
+      "covers": [
+        "T3:delirium",
+        "T3:delirium-opioid-2023",
+        "FRID"
+      ],
+      "profile": {
+        "age": 82,
+        "sex": "male",
+        "conditions": [
+          "delirium_history"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Pepcid 20 mg",
+          "daysAgoStarted": 100,
+          "reason": "heartburn"
+        },
+        {
+          "name": "Prednisone 10mg",
+          "daysAgoStarted": 30,
+          "reason": "COPD flare"
+        },
+        {
+          "name": "Oxycodone 5 mg",
+          "daysAgoStarted": 10,
+          "reason": "hip pain"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "famotidine"
+            ],
+            "why": "H2-receptor antagonists are listed for delirium.",
+            "source": "AGS Beers 2023, Table 3 - Delirium: anticholinergics, antipsychotics, benzodiazepines, oral/parenteral corticosteroids, H2-receptor antagonists (cimetidine, famotidine, nizatidine), Z-drugs, opioids (added 2023): Avoid (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "prednisone"
+            ],
+            "why": "Oral corticosteroids are listed for delirium.",
+            "source": "AGS Beers 2023, Table 3 - Delirium: anticholinergics, antipsychotics, benzodiazepines, oral/parenteral corticosteroids, H2-receptor antagonists (cimetidine, famotidine, nizatidine), Z-drugs, opioids (added 2023): Avoid (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "oxycodone"
+            ],
+            "why": "Opioids were added to the delirium row in 2023.",
+            "source": "AGS Beers 2023, Table 3 - Delirium: anticholinergics, antipsychotics, benzodiazepines, oral/parenteral corticosteroids, H2-receptor antagonists (cimetidine, famotidine, nizatidine), Z-drugs, opioids (added 2023): Avoid (strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "oxycodone"
+            ],
+            "why": "Opioids are fall-risk-increasing drugs.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 1,
+        "fallRiskIngredientsInclude": [
+          "oxycodone"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Prednisone 1; famotidine and oxycodone are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Opioid.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-heart-failure",
+      "title": "Heart failure with ibuprofen, diltiazem, pioglitazone, glimepiride and amlodipine",
+      "covers": [
+        "T3:heart-failure",
+        "T3:negative-hf-amlodipine",
+        "T2:nsaid-chronic",
+        "T2:sulfonylurea",
+        "monitoring:diabetes"
+      ],
+      "profile": {
+        "age": 79,
+        "sex": "male",
+        "conditions": [
+          "heart_failure",
+          "type2_diabetes",
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Motrin 600",
+          "daysAgoStarted": 200,
+          "reason": "knee pain"
+        },
+        {
+          "name": "Diltiazem 120 mg",
+          "daysAgoStarted": 300,
+          "reason": "heart rate"
+        },
+        {
+          "name": "Actos 15 mg",
+          "daysAgoStarted": 400,
+          "reason": "diabetes"
+        },
+        {
+          "name": "Amaryl 2mg",
+          "daysAgoStarted": 500,
+          "reason": "diabetes"
+        },
+        {
+          "name": "Amlodipine 5 mg",
+          "daysAgoStarted": 300,
+          "reason": "blood pressure"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "ibuprofen"
+            ],
+            "why": "NSAIDs can cause fluid retention and worsen heart failure.",
+            "source": "AGS Beers 2023, Table 3 - Heart failure: non-dihydropyridine CCBs (diltiazem, verapamil) avoid in HFrEF; NSAIDs/COX-2 inhibitors and thiazolidinediones (pioglitazone) use with caution if asymptomatic, avoid if symptomatic (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "diltiazem"
+            ],
+            "why": "Non-dihydropyridine CCBs are listed for heart failure (avoid in HFrEF).",
+            "source": "AGS Beers 2023, Table 3 - Heart failure: non-dihydropyridine CCBs (diltiazem, verapamil) avoid in HFrEF; NSAIDs/COX-2 inhibitors and thiazolidinediones (pioglitazone) use with caution if asymptomatic, avoid if symptomatic (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "pioglitazone"
+            ],
+            "why": "Thiazolidinediones are listed for heart failure.",
+            "source": "AGS Beers 2023, Table 3 - Heart failure: non-dihydropyridine CCBs (diltiazem, verapamil) avoid in HFrEF; NSAIDs/COX-2 inhibitors and thiazolidinediones (pioglitazone) use with caution if asymptomatic, avoid if symptomatic (strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "ibuprofen"
+            ],
+            "why": "Ibuprofen daily for 200 days is chronic NSAID use.",
+            "source": "AGS Beers 2023, Table 2 - Non-COX-2-selective oral NSAIDs: Avoid chronic use unless alternatives are not effective and gastroprotection is used (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "glimepiride"
+            ],
+            "why": "Glimepiride is a long-acting sulfonylurea.",
+            "source": "AGS Beers 2023, Table 2 - Sulfonylureas, all (gliclazide, glimepiride, glipizide, glyburide): Avoid as first/second-line or add-on unless substantial barriers (strong); widened from long-acting to all sulfonylureas in 2023 (Table 10)"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "glimepiride"
+            ],
+            "why": "Sulfonylurea: watch for possible low blood sugar.",
+            "source": "Budnitz 2011 NEJM 365:2002 - insulins (13.9%) and oral hypoglycaemic agents (10.7%) among the four classes in 67% of ADE hospitalizations in adults >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "amlodipine"
+            ],
+            "why": "Amlodipine is a dihydropyridine CCB; the heart-failure row lists non-dihydropyridine CCBs only.",
+            "source": "AGS Beers 2023, Table 3 - the heart-failure row names non-dihydropyridine CCBs only; amlodipine (dihydropyridine) is not listed"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "None of the five is on the ACB card (nifedipine is, diltiazem and amlodipine are not).",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-parkinson",
+      "title": "Parkinson disease with metoclopramide and promethazine for nausea; quetiapine for hallucinations",
+      "covers": [
+        "T3:parkinson",
+        "T3:negative-parkinson-quetiapine",
+        "T2:first-gen-antihistamine",
+        "ACB:sum"
+      ],
+      "profile": {
+        "age": 75,
+        "sex": "male",
+        "conditions": [
+          "parkinson_disease"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Sinemet",
+          "daysAgoStarted": 900,
+          "reason": "Parkinson's"
+        },
+        {
+          "name": "Reglan 5mg",
+          "daysAgoStarted": 60,
+          "reason": "nausea"
+        },
+        {
+          "name": "Phenergan 12.5 mg",
+          "daysAgoStarted": 20,
+          "reason": "nausea"
+        },
+        {
+          "name": "Seroquel 25mg",
+          "daysAgoStarted": 200,
+          "reason": "night-time hallucinations"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "metoclopramide"
+            ],
+            "why": "Dopamine-blocking antiemetic with Parkinson disease.",
+            "source": "AGS Beers 2023, Table 3 - Parkinson disease: antiemetics (metoclopramide, prochlorperazine, promethazine) and antipsychotics except clozapine, pimavanserin and quetiapine: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "promethazine"
+            ],
+            "why": "Promethazine is named in the Parkinson disease row.",
+            "source": "AGS Beers 2023, Table 3 - Parkinson disease: antiemetics (metoclopramide, prochlorperazine, promethazine) and antipsychotics except clozapine, pimavanserin and quetiapine: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "promethazine"
+            ],
+            "why": "Promethazine is a first-generation antihistamine.",
+            "source": "AGS Beers 2023, Table 2 - First-generation antihistamines incl. diphenhydramine (oral) and promethazine: Avoid (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "quetiapine"
+            ],
+            "why": "Quetiapine is an explicit exception in the Parkinson disease row.",
+            "source": "AGS Beers 2023, Table 3 - Parkinson disease: quetiapine is named as an exception ('appear to be less likely to precipitate the worsening of Parkinson disease')"
+          }
+        ],
+        "acbTotalExactly": 6,
+        "basis": {
+          "acbTotal": {
+            "why": "Promethazine 3 + quetiapine 3 = 6; metoclopramide and carbidopa-levodopa are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-ulcer-history",
+      "title": "Past stomach ulcer: short ibuprofen course, long-term celecoxib, esomeprazole for 3 weeks",
+      "covers": [
+        "T3:ulcer",
+        "T3:negative-ulcer-cox2",
+        "T2:negative-cox2",
+        "T2:negative-nsaid-short",
+        "T2:negative-ppi-short",
+        "duplicate:nsaid"
+      ],
+      "profile": {
+        "age": 73,
+        "sex": "female",
+        "conditions": [
+          "gi_bleeding_or_ulcer_history",
+          "osteoarthritis"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Advil 200mg",
+          "daysAgoStarted": 10,
+          "reason": "back pain"
+        },
+        {
+          "name": "Celebrex 100 mg",
+          "daysAgoStarted": 200,
+          "reason": "arthritis"
+        },
+        {
+          "name": "Nexium 40mg",
+          "daysAgoStarted": 21,
+          "reason": "stomach protection"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "ibuprofen"
+            ],
+            "why": "Non-COX-2 NSAID with a history of gastric or duodenal ulcer.",
+            "source": "AGS Beers 2023, Table 3 - History of gastric or duodenal ulcers: aspirin and non-COX-2-selective NSAIDs: Avoid unless alternatives are not effective and gastroprotection is used (moderate; strong)"
+          },
+          {
+            "category": "duplicate_class",
+            "ingredients": [
+              "ibuprofen",
+              "celecoxib"
+            ],
+            "why": "Two NSAIDs at the same time (a COX-2 selective and a non-selective one).",
+            "source": "STOPP/START v3 (O'Mahony 2023, Eur Geriatr Med 14:625), Appendix 1, Section A3 - any duplicate drug class prescription for daily regular use, e.g. two concurrent NSAIDs, SSRIs, loop diuretics, ACE inhibitors, anticoagulants, antipsychotics, opioid analgesics"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "celecoxib"
+            ],
+            "why": "The ulcer-history row lists aspirin and non-COX-2-selective NSAIDs only.",
+            "source": "AGS Beers 2023, Table 3 - the ulcer-history row names aspirin and non-COX-2-selective NSAIDs only; celecoxib is not listed"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "celecoxib"
+            ],
+            "why": "The Table 2 NSAID criterion is limited to non-COX-2-selective NSAIDs.",
+            "source": "AGS Beers 2023, Table 2 - the oral NSAID criterion is limited to non-COX-2-selective NSAIDs; celecoxib is not listed"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "ibuprofen"
+            ],
+            "why": "Ten days of ibuprofen is not chronic use, and there is no corticosteroid, anticoagulant or antiplatelet with it.",
+            "source": "AGS Beers 2023, Table 2 - Non-COX-2-selective oral NSAIDs: the criterion covers chronic use, or short-term scheduled use together with corticosteroids, anticoagulants or antiplatelets"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "esomeprazole"
+            ],
+            "why": "Esomeprazole for 21 days is under the 8-week mark.",
+            "source": "AGS Beers 2023, Table 2 - Proton-pump inhibitors: the criterion starts at scheduled use for >8 weeks (56 days)"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "None of the three is on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-bph-men",
+      "title": "Man with BPH on diphenhydramine and tolterodine",
+      "covers": [
+        "T3:bph",
+        "T3:negative-bph-antimuscarinic",
+        "T5:anticholinergic-pair",
+        "T2:negative-antimuscarinic",
+        "ACB:sum"
+      ],
+      "profile": {
+        "age": 74,
+        "sex": "male",
+        "conditions": [
+          "benign_prostatic_hyperplasia"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Benadryl 25mg",
+          "daysAgoStarted": 100,
+          "reason": "allergies"
+        },
+        {
+          "name": "Tolterodine 2 mg",
+          "daysAgoStarted": 300,
+          "reason": "overactive bladder"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "Strongly anticholinergic drug in a man with BPH (urinary retention).",
+            "source": "AGS Beers 2023, Table 3 - Lower urinary tract symptoms / BPH: strongly anticholinergic drugs, except antimuscarinics for urinary incontinence: Avoid in men (moderate; strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "diphenhydramine",
+              "tolterodine"
+            ],
+            "why": "Two strong anticholinergics (both in Table 7).",
+            "source": "AGS Beers 2023, Table 5 - Anticholinergic + anticholinergic: Avoid; minimise the number of anticholinergic drugs (Table 7) (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "First-generation antihistamine.",
+            "source": "AGS Beers 2023, Table 2 - First-generation antihistamines incl. diphenhydramine (oral) and promethazine: Avoid (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "tolterodine"
+            ],
+            "why": "The BPH row excludes antimuscarinics for urinary incontinence.",
+            "source": "AGS Beers 2023, Table 3 - LUTS/BPH row excludes 'antimuscarinics for urinary incontinence' (tolterodine is one, Table 7)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "tolterodine"
+            ],
+            "why": "Bladder antimuscarinics have no Table 2 criterion.",
+            "source": "AGS Beers 2023 - no Table 2 criterion covers bladder antimuscarinics; oxybutynin and tolterodine appear only in Table 7 (strong anticholinergics), which Tables 3 and 5 reference"
+          }
+        ],
+        "acbTotalExactly": 6,
+        "basis": {
+          "acbTotal": {
+            "why": "Diphenhydramine 3 + tolterodine 3 = 6.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-opioid-benzo",
+      "title": "Hydrocodone-acetaminophen with alprazolam",
+      "covers": [
+        "T5:opioid-benzo",
+        "T2:benzodiazepine",
+        "T5:negative-cns-2",
+        "FRID"
+      ],
+      "profile": {
+        "age": 74,
+        "sex": "female",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Norco 5/325",
+          "daysAgoStarted": 90,
+          "reason": "back pain"
+        },
+        {
+          "name": "Xanax 0.25 mg",
+          "daysAgoStarted": 200,
+          "reason": "anxiety"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "hydrocodone",
+              "alprazolam"
+            ],
+            "why": "Opioid plus benzodiazepine (oversedation, overdose).",
+            "source": "AGS Beers 2023, Table 5 - Opioids + benzodiazepines: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "alprazolam"
+            ],
+            "why": "Benzodiazepine.",
+            "source": "AGS Beers 2023, Table 2 - Benzodiazepines (alprazolam, clonazepam, lorazepam, temazepam ...): Avoid (moderate quality; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "hydrocodone",
+              "alprazolam"
+            ],
+            "why": "Opioid and benzodiazepine.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "cns_active_combo",
+            "ingredients": [],
+            "why": "Only two CNS-active drugs.",
+            "source": "AGS Beers 2023, Table 5 - Any combination of >=3 CNS-active drugs among antiepileptics (incl. gabapentinoids), antidepressants (TCAs, SSRIs, SNRIs), antipsychotics, benzodiazepines, Z-drugs, opioids, skeletal muscle relaxants: Avoid (high; strong)"
+          }
+        ],
+        "acbTotalExactly": 1,
+        "fallRiskIngredientsInclude": [
+          "hydrocodone",
+          "alprazolam"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Alprazolam 1; hydrocodone and acetaminophen are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Opioid; benzodiazepine.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-opioid-gabapentinoid",
+      "title": "Oxycodone-acetaminophen with pregabalin",
+      "covers": [
+        "T5:opioid-gabapentinoid",
+        "T5:negative-cns-2",
+        "FRID"
+      ],
+      "profile": {
+        "age": 71,
+        "sex": "male",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Percocet",
+          "daysAgoStarted": 30,
+          "reason": "pain after knee surgery"
+        },
+        {
+          "name": "Lyrica 75 mg",
+          "daysAgoStarted": 200,
+          "reason": "nerve pain"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "oxycodone",
+              "pregabalin"
+            ],
+            "why": "Opioid plus gabapentinoid (severe sedation, slowed breathing).",
+            "source": "AGS Beers 2023, Table 5 - Opioids + gabapentin or pregabalin: Avoid, except when transitioning between them (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "oxycodone",
+              "pregabalin"
+            ],
+            "why": "Opioid and anticonvulsant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "cns_active_combo",
+            "ingredients": [],
+            "why": "Only two CNS-active drugs.",
+            "source": "AGS Beers 2023, Table 5 - Any combination of >=3 CNS-active drugs among antiepileptics (incl. gabapentinoids), antidepressants (TCAs, SSRIs, SNRIs), antipsychotics, benzodiazepines, Z-drugs, opioids, skeletal muscle relaxants: Avoid (high; strong)"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "fallRiskIngredientsInclude": [
+          "oxycodone",
+          "pregabalin"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Neither oxycodone nor pregabalin is on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Opioid; anticonvulsant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cns-three",
+      "title": "Escitalopram, clonazepam and gabapentin together",
+      "covers": [
+        "T5:cns-3plus",
+        "T2:benzodiazepine",
+        "FRID"
+      ],
+      "profile": {
+        "age": 76,
+        "sex": "female",
+        "conditions": [
+          "depression",
+          "anxiety"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Lexapro 10mg",
+          "daysAgoStarted": 400,
+          "reason": "depression"
+        },
+        {
+          "name": "Klonopin 0.5 mg",
+          "daysAgoStarted": 300,
+          "reason": "anxiety"
+        },
+        {
+          "name": "Neurontin 300 mg",
+          "daysAgoStarted": 200,
+          "reason": "nerve pain"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "cns_active_combo",
+            "ingredients": [
+              "escitalopram",
+              "clonazepam",
+              "gabapentin"
+            ],
+            "why": "SSRI + benzodiazepine + gabapentinoid = three listed CNS-active types.",
+            "source": "AGS Beers 2023, Table 5 - Any combination of >=3 CNS-active drugs among antiepileptics (incl. gabapentinoids), antidepressants (TCAs, SSRIs, SNRIs), antipsychotics, benzodiazepines, Z-drugs, opioids, skeletal muscle relaxants: Avoid (high; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "clonazepam"
+            ],
+            "why": "Benzodiazepine.",
+            "source": "AGS Beers 2023, Table 2 - Benzodiazepines (alprazolam, clonazepam, lorazepam, temazepam ...): Avoid (moderate quality; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "escitalopram",
+              "clonazepam",
+              "gabapentin"
+            ],
+            "why": "Antidepressant, benzodiazepine, anticonvulsant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 0,
+        "fallRiskIngredientsInclude": [
+          "escitalopram",
+          "clonazepam",
+          "gabapentin"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "None is on the card (gabapentin was reviewed and not added).",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Antidepressant, benzodiazepine, anticonvulsant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cns-three-muscle-relaxant",
+      "title": "Cyclobenzaprine, tramadol and duloxetine (2023: muscle relaxants added to the CNS combination)",
+      "covers": [
+        "T5:cns-3plus-2023-muscle-relaxant",
+        "T2:muscle-relaxant",
+        "ACB:below-threshold",
+        "FRID"
+      ],
+      "profile": {
+        "age": 68,
+        "sex": "male",
+        "conditions": [
+          "depression"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Flexeril 10mg",
+          "daysAgoStarted": 30,
+          "reason": "back spasm"
+        },
+        {
+          "name": "Tramadol 50 mg",
+          "daysAgoStarted": 60,
+          "reason": "back pain"
+        },
+        {
+          "name": "Cymbalta 60 mg",
+          "daysAgoStarted": 300,
+          "reason": "depression and pain"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "cns_active_combo",
+            "ingredients": [
+              "cyclobenzaprine",
+              "tramadol",
+              "duloxetine"
+            ],
+            "why": "Skeletal muscle relaxant + opioid + SNRI; muscle relaxants were added to this criterion in 2023.",
+            "source": "AGS Beers 2023, Table 5 - >=3 CNS-active drugs: skeletal muscle relaxants were added to this combination in 2023 (Table 9); SNRIs and opioids are listed types (high; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "cyclobenzaprine"
+            ],
+            "why": "Cyclobenzaprine is a listed skeletal muscle relaxant.",
+            "source": "AGS Beers 2023, Table 2 - Skeletal muscle relaxants (carisoprodol, chlorzoxazone, cyclobenzaprine, metaxalone, methocarbamol, orphenadrine): Avoid (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "cyclobenzaprine",
+              "tramadol",
+              "duloxetine"
+            ],
+            "why": "Muscle relaxant, opioid, antidepressant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "anticholinergic_burden",
+            "ingredients": [],
+            "why": "ACB total is 2 (below the threshold of 3).",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        ],
+        "acbTotalExactly": 2,
+        "fallRiskIngredientsInclude": [
+          "cyclobenzaprine",
+          "tramadol",
+          "duloxetine"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Cyclobenzaprine 2; duloxetine was reviewed and not added (0); tramadol is not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Muscle relaxant, opioid, antidepressant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cns-two-plus-antihistamine",
+      "title": "Sertraline, zolpidem and diphenhydramine (only two of the listed CNS-active types)",
+      "covers": [
+        "T5:negative-cns-antihistamine",
+        "T2:z-drug",
+        "T2:first-gen-antihistamine",
+        "ACB:sum"
+      ],
+      "profile": {
+        "age": 72,
+        "sex": "female",
+        "conditions": [
+          "depression",
+          "insomnia"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Zoloft 50mg",
+          "daysAgoStarted": 300,
+          "reason": "depression"
+        },
+        {
+          "name": "Ambien 5 mg",
+          "daysAgoStarted": 100,
+          "reason": "sleep"
+        },
+        {
+          "name": "Benadryl 25 mg",
+          "daysAgoStarted": 60,
+          "reason": "sleep"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "zolpidem"
+            ],
+            "why": "Z-drug.",
+            "source": "AGS Beers 2023, Table 2 - Z-drugs (eszopiclone, zaleplon, zolpidem): Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "First-generation antihistamine.",
+            "source": "AGS Beers 2023, Table 2 - First-generation antihistamines incl. diphenhydramine (oral) and promethazine: Avoid (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "cns_active_combo",
+            "ingredients": [],
+            "why": "SSRI + Z-drug = 2 listed types; first-generation antihistamines are not in the >=3 CNS-active list.",
+            "source": "AGS Beers 2023, Table 5 - the >=3 CNS-active list names antiepileptics, TCA/SSRI/SNRI antidepressants, antipsychotics, benzodiazepines, Z-drugs, opioids and skeletal muscle relaxants; first-generation antihistamines are not one of the listed types"
+          }
+        ],
+        "acbTotalExactly": 3,
+        "basis": {
+          "acbTotal": {
+            "why": "Diphenhydramine 3; sertraline and zolpidem are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-acb-seven",
+      "title": "Oxybutynin + Tylenol PM + furosemide: ACB 3 + 3 + 1 = 7",
+      "covers": [
+        "ACB:sum",
+        "T5:anticholinergic-pair",
+        "T2:first-gen-antihistamine",
+        "T2:negative-antimuscarinic",
+        "combo-product",
+        "FRID"
+      ],
+      "profile": {
+        "age": 80,
+        "sex": "female",
+        "conditions": [
+          "urinary_incontinence"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Ditropan 5mg",
+          "daysAgoStarted": 210,
+          "reason": "bladder"
+        },
+        {
+          "name": "Tylenol PM",
+          "daysAgoStarted": 180,
+          "reason": "sleep"
+        },
+        {
+          "name": "Lasix 20 mg",
+          "daysAgoStarted": 95,
+          "reason": "fluid on the legs"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "anticholinergic_burden",
+            "ingredients": [
+              "oxybutynin",
+              "diphenhydramine",
+              "furosemide"
+            ],
+            "why": "One burden finding listing all three contributors (3 + 3 + 1).",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "oxybutynin",
+              "diphenhydramine"
+            ],
+            "why": "Two strong anticholinergics (Table 7).",
+            "source": "AGS Beers 2023, Table 5 - Anticholinergic + anticholinergic: Avoid; minimise the number of anticholinergic drugs (Table 7) (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "Diphenhydramine inside Tylenol PM is a first-generation antihistamine.",
+            "source": "AGS Beers 2023, Table 2 - First-generation antihistamines incl. diphenhydramine (oral) and promethazine: Avoid (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "oxybutynin",
+              "diphenhydramine",
+              "furosemide"
+            ],
+            "why": "Overactive-bladder antimuscarinic, sedative antihistamine, diuretic.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "oxybutynin"
+            ],
+            "why": "Oxybutynin has no Table 2 criterion (Table 7 only, used by Tables 3 and 5).",
+            "source": "AGS Beers 2023 - no Table 2 criterion covers bladder antimuscarinics; oxybutynin and tolterodine appear only in Table 7 (strong anticholinergics), which Tables 3 and 5 reference"
+          }
+        ],
+        "acbTotalExactly": 7,
+        "fallRiskIngredientsInclude": [
+          "oxybutynin",
+          "diphenhydramine",
+          "furosemide"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Oxybutynin 3 + diphenhydramine 3 + furosemide 1 = 7 (acetaminophen 0).",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "OAB medication, sedative antihistamine, diuretic.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-ras-ksparing-ckd",
+      "title": "CKD stage 3: lisinopril with triamterene-hydrochlorothiazide (CrCl 45)",
+      "covers": [
+        "T5:ras-potassium-sparing",
+        "T6:negative-threshold-triamterene",
+        "combo-product"
+      ],
+      "profile": {
+        "age": 78,
+        "sex": "male",
+        "conditions": [
+          "chronic_kidney_disease",
+          "hypertension"
+        ],
+        "crclMlMin": 45
+      },
+      "meds": [
+        {
+          "name": "Lisinopril 20 mg",
+          "daysAgoStarted": 600,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Maxzide",
+          "daysAgoStarted": 300,
+          "reason": "blood pressure"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "lisinopril",
+              "triamterene"
+            ],
+            "why": "RAS inhibitor plus potassium-sparing diuretic with CKD stage 3a or worse (CrCl 45): high potassium.",
+            "source": "AGS Beers 2023, Table 5 - RAS inhibitor (ACEI, ARB, ARNI, aliskiren) + potassium-sparing diuretic (amiloride, triamterene): avoid routinely in CKD stage 3a or higher (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "triamterene"
+            ],
+            "why": "Triamterene's kidney rule starts below CrCl 30; this person's CrCl is 45.",
+            "source": "AGS Beers 2023, Table 6 - Triamterene threshold is CrCl <30 mL/min; 45 mL/min is above it"
+          }
+        ],
+        "acbTotalExactly": 1,
+        "basis": {
+          "acbTotal": {
+            "why": "Triamterene 1; lisinopril and hydrochlorothiazide are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-warfarin-theophylline-cimetidine-cipro",
+      "title": "Long-term warfarin and theophylline; cimetidine for heartburn; ciprofloxacin for a urine infection",
+      "covers": [
+        "T5:warfarin-ciprofloxacin",
+        "T5:theophylline-ciprofloxacin",
+        "T5:theophylline-cimetidine",
+        "T2:negative-warfarin-long-term",
+        "ACB:sum",
+        "monitoring:anticoagulant"
+      ],
+      "profile": {
+        "age": 79,
+        "sex": "male",
+        "conditions": [
+          "atrial_fibrillation"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Coumadin 5 mg",
+          "daysAgoStarted": 1200,
+          "reason": "AFib"
+        },
+        {
+          "name": "Theophylline 300mg",
+          "daysAgoStarted": 1500,
+          "reason": "COPD"
+        },
+        {
+          "name": "Tagamet 200 mg",
+          "daysAgoStarted": 40,
+          "reason": "heartburn"
+        },
+        {
+          "name": "Cipro 500 mg",
+          "daysAgoStarted": 4,
+          "reason": "urine infection"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "warfarin",
+              "ciprofloxacin"
+            ],
+            "why": "Warfarin with ciprofloxacin is a listed pair (bleeding).",
+            "source": "AGS Beers 2023, Table 5 - Warfarin + amiodarone, ciprofloxacin, macrolides (excluding azithromycin), trimethoprim-sulfamethoxazole, or SSRIs: avoid when possible; if used together, monitor INR closely (moderate; strong); SSRIs added 2023"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "theophylline",
+              "ciprofloxacin"
+            ],
+            "why": "Theophylline with ciprofloxacin (theophylline toxicity).",
+            "source": "AGS Beers 2023, Table 5 - Theophylline + ciprofloxacin: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "theophylline",
+              "cimetidine"
+            ],
+            "why": "Theophylline with cimetidine (theophylline toxicity).",
+            "source": "AGS Beers 2023, Table 5 - Theophylline + cimetidine: Avoid (moderate; strong)"
+          },
+          {
+            "category": "anticholinergic_burden",
+            "ingredients": [
+              "warfarin",
+              "theophylline",
+              "cimetidine"
+            ],
+            "why": "Three score-1 drugs reach the threshold of 3.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "warfarin"
+            ],
+            "why": "Anticoagulant monitoring prompt.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "warfarin"
+            ],
+            "why": "Warfarin taken for more than 3 years is long-term use, not initial therapy.",
+            "source": "AGS Beers 2023, Table 2 - Warfarin: 'For older adults who have been using warfarin long-term, it may be reasonable to continue this medication' (Box 1 repeats this)"
+          }
+        ],
+        "acbTotalExactly": 3,
+        "basis": {
+          "acbTotal": {
+            "why": "Warfarin 1 + theophylline 1 + cimetidine 1 = 3; ciprofloxacin is not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-phenytoin-warfarin-tmpsmx",
+      "title": "Phenytoin and warfarin, then trimethoprim-sulfamethoxazole for a bladder infection",
+      "covers": [
+        "T5:phenytoin-tmp-smx",
+        "T5:warfarin-tmp-smx",
+        "combo-product",
+        "FRID",
+        "monitoring:anticoagulant"
+      ],
+      "profile": {
+        "age": 77,
+        "sex": "male",
+        "conditions": [
+          "seizure_disorder",
+          "atrial_fibrillation"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Dilantin 100 mg",
+          "daysAgoStarted": 3000,
+          "reason": "seizures"
+        },
+        {
+          "name": "Coumadin 3mg",
+          "daysAgoStarted": 900,
+          "reason": "AFib"
+        },
+        {
+          "name": "Bactrim",
+          "daysAgoStarted": 3,
+          "reason": "bladder infection"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "phenytoin",
+              "trimethoprim"
+            ],
+            "why": "Phenytoin with trimethoprim-sulfamethoxazole (phenytoin toxicity).",
+            "source": "AGS Beers 2023, Table 5 - Phenytoin + trimethoprim-sulfamethoxazole: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "warfarin",
+              "trimethoprim"
+            ],
+            "why": "Warfarin with trimethoprim-sulfamethoxazole (bleeding).",
+            "source": "AGS Beers 2023, Table 5 - Warfarin + amiodarone, ciprofloxacin, macrolides (excluding azithromycin), trimethoprim-sulfamethoxazole, or SSRIs: avoid when possible; if used together, monitor INR closely (moderate; strong); SSRIs added 2023"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "phenytoin"
+            ],
+            "why": "Anticonvulsants are fall-risk-increasing drugs.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "warfarin"
+            ],
+            "why": "Anticoagulant monitoring prompt.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 1,
+        "fallRiskIngredientsInclude": [
+          "phenytoin"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Warfarin 1; phenytoin and trimethoprim-sulfamethoxazole are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Anticonvulsant.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-lithium-acei-loop",
+      "title": "Lithium with a newly added ACE inhibitor and loop diuretic",
+      "covers": [
+        "T5:lithium-acei",
+        "T5:lithium-loop",
+        "FRID"
+      ],
+      "profile": {
+        "age": 70,
+        "sex": "female",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Lithium 300 mg",
+          "daysAgoStarted": 2000,
+          "reason": "bipolar disorder"
+        },
+        {
+          "name": "Lisinopril 10mg",
+          "daysAgoStarted": 90,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Furosemide 20 mg",
+          "daysAgoStarted": 60,
+          "reason": "swollen legs"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "lithium",
+              "lisinopril"
+            ],
+            "why": "Lithium with an ACE inhibitor (lithium toxicity).",
+            "source": "AGS Beers 2023, Table 5 - Lithium + ACEIs, ARBs or ARNIs: Avoid; monitor lithium concentrations (moderate; strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "lithium",
+              "furosemide"
+            ],
+            "why": "Lithium with a loop diuretic (lithium toxicity).",
+            "source": "AGS Beers 2023, Table 5 - Lithium + loop diuretics: Avoid; monitor lithium concentrations (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "furosemide"
+            ],
+            "why": "Diuretics are a STOPPFall fall-risk class.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 1,
+        "fallRiskIngredientsInclude": [
+          "furosemide"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Furosemide 1; lithium and lisinopril are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Diuretic.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-renal-crcl40",
+      "title": "CrCl 40: gabapentin, dofetilide, rivaroxaban",
+      "covers": [
+        "T6:gabapentin",
+        "T6:dofetilide",
+        "T6:rivaroxaban",
+        "T2:rivaroxaban-long-term",
+        "monitoring:anticoagulant",
+        "ACB:zero"
+      ],
+      "profile": {
+        "age": 79,
+        "sex": "male",
+        "conditions": [
+          "atrial_fibrillation"
+        ],
+        "crclMlMin": 40
+      },
+      "meds": [
+        {
+          "name": "Gabapentin 300 mg",
+          "daysAgoStarted": 200,
+          "reason": "nerve pain"
+        },
+        {
+          "name": "Tikosyn 250 mcg",
+          "daysAgoStarted": 300,
+          "reason": "AFib rhythm"
+        },
+        {
+          "name": "Xarelto 15 mg",
+          "daysAgoStarted": 300,
+          "reason": "AFib blood thinner"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "gabapentin"
+            ],
+            "why": "CrCl 40 is below gabapentin's threshold of 60.",
+            "source": "AGS Beers 2023, Table 6 - Gabapentin: reduce dose when CrCl <60 mL/min (moderate; strong)"
+          },
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "dofetilide"
+            ],
+            "why": "CrCl 40 is in dofetilide's 20-59 dose-reduction band.",
+            "source": "AGS Beers 2023, Table 6 - Dofetilide: reduce dose if CrCl 20-59, avoid if <20 mL/min (moderate; strong)"
+          },
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "rivaroxaban"
+            ],
+            "why": "CrCl 40 is in rivaroxaban's 15-50 dose-reduction band.",
+            "source": "AGS Beers 2023, Table 6 - Rivaroxaban: reduce dose if CrCl 15-50, avoid if <15 mL/min (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "rivaroxaban"
+            ],
+            "why": "Rivaroxaban for long-term AF treatment (300 days).",
+            "source": "AGS Beers 2023, Table 2 - Rivaroxaban for long-term treatment of nonvalvular AF or VTE: Avoid in favour of other anticoagulants (moderate; strong); moved from Table 4 in 2023"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "rivaroxaban"
+            ],
+            "why": "Anticoagulant monitoring prompt.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "anticholinergic_burden",
+            "ingredients": [],
+            "why": "ACB total 0.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "basis": {
+          "acbTotal": {
+            "why": "Gabapentin reviewed and not added (0); dofetilide and rivaroxaban are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-renal-crcl40-unknown",
+      "title": "Same list as mc-renal-crcl40 with CrCl not recorded",
+      "covers": [
+        "T6:negative-no-crcl",
+        "T2:rivaroxaban-long-term"
+      ],
+      "profile": {
+        "age": 79,
+        "sex": "male",
+        "conditions": [
+          "atrial_fibrillation"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Gabapentin 300 mg",
+          "daysAgoStarted": 200,
+          "reason": "nerve pain"
+        },
+        {
+          "name": "Tikosyn 250 mcg",
+          "daysAgoStarted": 300,
+          "reason": "AFib rhythm"
+        },
+        {
+          "name": "Xarelto 15 mg",
+          "daysAgoStarted": 300,
+          "reason": "AFib blood thinner"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "rivaroxaban"
+            ],
+            "why": "The Table 2 rivaroxaban criterion does not depend on kidney function.",
+            "source": "AGS Beers 2023, Table 2 - Rivaroxaban for long-term treatment of nonvalvular AF or VTE: Avoid in favour of other anticoagulants (moderate; strong); moved from Table 4 in 2023"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [],
+            "why": "No kidney-function value, so no Table 6 finding of any kind.",
+            "source": "Kinwise SPEC 6.2 - 'beers_renal (only if CrCl known)'; AGS Beers 2023 Table 6 thresholds are stated as CrCl, which this profile does not record"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mc-renal-crcl75-threshold",
+      "title": "CrCl 75: levetiracetam (threshold <=80) yes, gabapentin (threshold <60) no",
+      "covers": [
+        "T6:levetiracetam",
+        "T6:negative-threshold-gabapentin",
+        "FRID",
+        "ACB:zero"
+      ],
+      "profile": {
+        "age": 72,
+        "sex": "female",
+        "conditions": [
+          "seizure_disorder"
+        ],
+        "crclMlMin": 75
+      },
+      "meds": [
+        {
+          "name": "Gabapentin 300mg",
+          "daysAgoStarted": 200,
+          "reason": "nerve pain"
+        },
+        {
+          "name": "Keppra 500 mg",
+          "daysAgoStarted": 400,
+          "reason": "seizures"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "levetiracetam"
+            ],
+            "why": "CrCl 75 is within levetiracetam's <=80 band.",
+            "source": "AGS Beers 2023, Table 6 - Levetiracetam: reduce dose when CrCl <=80 mL/min (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "gabapentin",
+              "levetiracetam"
+            ],
+            "why": "Anticonvulsants are fall-risk-increasing drugs.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "gabapentin"
+            ],
+            "why": "CrCl 75 is above gabapentin's threshold of 60.",
+            "source": "AGS Beers 2023, Table 6 - Gabapentin threshold is CrCl <60 mL/min; 75 mL/min is above it"
+          }
+        ],
+        "acbTotalExactly": 0,
+        "fallRiskIngredientsInclude": [
+          "gabapentin",
+          "levetiracetam"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Gabapentin and levetiracetam were both reviewed for the 2012 card and not added.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Anticonvulsants.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-renal-crcl24",
+      "title": "CrCl 24: nitrofurantoin, spironolactone, famotidine, baclofen; apixaban has no 2023 renal rule",
+      "covers": [
+        "T6:nitrofurantoin",
+        "T6:spironolactone",
+        "T6:famotidine",
+        "T6:baclofen-2023",
+        "T6:negative-apixaban-removed",
+        "monitoring:anticoagulant"
+      ],
+      "profile": {
+        "age": 84,
+        "sex": "female",
+        "conditions": [
+          "atrial_fibrillation",
+          "chronic_kidney_disease"
+        ],
+        "crclMlMin": 24
+      },
+      "meds": [
+        {
+          "name": "Macrobid 100 mg",
+          "daysAgoStarted": 5,
+          "reason": "bladder infection"
+        },
+        {
+          "name": "Spironolactone 25mg",
+          "daysAgoStarted": 400,
+          "reason": "heart"
+        },
+        {
+          "name": "Pepcid 20 mg",
+          "daysAgoStarted": 100,
+          "reason": "heartburn"
+        },
+        {
+          "name": "Baclofen 10 mg",
+          "daysAgoStarted": 300,
+          "reason": "muscle spasms"
+        },
+        {
+          "name": "Eliquis 2.5 mg",
+          "daysAgoStarted": 400,
+          "reason": "AFib blood thinner"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "nitrofurantoin"
+            ],
+            "why": "CrCl 24 is below nitrofurantoin's threshold of 30.",
+            "source": "AGS Beers 2023, Table 6 - Nitrofurantoin: avoid if CrCl <30 mL/min (low; strong); duplicated from Table 2 in 2023"
+          },
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "spironolactone"
+            ],
+            "why": "CrCl 24 is below spironolactone's threshold of 30.",
+            "source": "AGS Beers 2023, Table 6 - Spironolactone: avoid if CrCl <30 mL/min (moderate; strong)"
+          },
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "famotidine"
+            ],
+            "why": "CrCl 24 is below famotidine's threshold of 50.",
+            "source": "AGS Beers 2023, Table 6 - Famotidine: reduce dose if CrCl <50 mL/min (moderate; strong)"
+          },
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "baclofen"
+            ],
+            "why": "Kidney function well below 60; baclofen was added to Table 6 in 2023.",
+            "source": "AGS Beers 2023, Table 6 - Baclofen: avoid with eGFR <60 mL/min (moderate; strong); added 2023"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "apixaban"
+            ],
+            "why": "Anticoagulant monitoring prompt.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "apixaban"
+            ],
+            "why": "The 2019 apixaban kidney rule was removed in 2023.",
+            "source": "AGS Beers 2023 - apixaban appears in no 2023 criterion; the 2019 Table 6 rule (CrCl <25) was removed (Table 8: emerging evidence and clinical experience supporting use at lower levels of kidney function)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "apixaban"
+            ],
+            "why": "Apixaban is in no 2023 criterion.",
+            "source": "AGS Beers 2023 - apixaban appears in no 2023 criterion; the 2019 Table 6 rule (CrCl <25) was removed (Table 8: emerging evidence and clinical experience supporting use at lower levels of kidney function)"
+          },
+          {
+            "category": "beers_caution",
+            "ingredients": [
+              "apixaban"
+            ],
+            "why": "Apixaban is in no 2023 criterion (Table 4 names it only as the comparator for dabigatran).",
+            "source": "AGS Beers 2023 - apixaban appears in no 2023 criterion; the 2019 Table 6 rule (CrCl <25) was removed (Table 8: emerging evidence and clinical experience supporting use at lower levels of kidney function)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mc-renal-crcl24-unknown",
+      "title": "Same list as mc-renal-crcl24 with CrCl not recorded",
+      "covers": [
+        "T6:negative-no-crcl",
+        "monitoring:anticoagulant"
+      ],
+      "profile": {
+        "age": 84,
+        "sex": "female",
+        "conditions": [
+          "atrial_fibrillation",
+          "chronic_kidney_disease"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Macrobid 100 mg",
+          "daysAgoStarted": 5,
+          "reason": "bladder infection"
+        },
+        {
+          "name": "Spironolactone 25mg",
+          "daysAgoStarted": 400,
+          "reason": "heart"
+        },
+        {
+          "name": "Pepcid 20 mg",
+          "daysAgoStarted": 100,
+          "reason": "heartburn"
+        },
+        {
+          "name": "Baclofen 10 mg",
+          "daysAgoStarted": 300,
+          "reason": "muscle spasms"
+        },
+        {
+          "name": "Eliquis 2.5 mg",
+          "daysAgoStarted": 400,
+          "reason": "AFib blood thinner"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "apixaban"
+            ],
+            "why": "Anticoagulant monitoring prompt does not depend on kidney function.",
+            "source": "Budnitz 2011 NEJM 365:2002 - warfarin implicated in 33.3% of emergency hospitalizations for adverse drug events in adults >=65; Budnitz 2021 JAMA 326:1299 - anticoagulants the most frequent for >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [],
+            "why": "No kidney-function value, so no Table 6 finding of any kind (a CKD label alone does not give a CrCl).",
+            "source": "Kinwise SPEC 6.2 - 'beers_renal (only if CrCl known)'; AGS Beers 2023 Table 6 thresholds are stated as CrCl, which this profile does not record"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mc-ckd-nsaid-crcl25",
+      "title": "CKD with CrCl 25 taking naproxen daily",
+      "covers": [
+        "T6:nsaid-2023-moved-from-T3",
+        "T2:nsaid-chronic"
+      ],
+      "profile": {
+        "age": 80,
+        "sex": "female",
+        "conditions": [
+          "chronic_kidney_disease",
+          "osteoarthritis"
+        ],
+        "crclMlMin": 25
+      },
+      "meds": [
+        {
+          "name": "Aleve 220 mg",
+          "daysAgoStarted": 120,
+          "reason": "knee pain"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "naproxen"
+            ],
+            "why": "NSAIDs: avoid with CrCl <30 (moved from Table 3 to Table 6 in 2023).",
+            "source": "AGS Beers 2023, Table 6 - NSAIDs (non-selective, COX-2 selective, nonacetylated salicylates): avoid if CrCl <30 mL/min (moderate; strong); moved here from Table 3 in 2023 (Table 10)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "naproxen"
+            ],
+            "why": "Daily naproxen for 4 months is chronic NSAID use.",
+            "source": "AGS Beers 2023, Table 2 - Non-COX-2-selective oral NSAIDs: Avoid chronic use unless alternatives are not effective and gastroprotection is used (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": []
+      }
+    },
+    {
+      "id": "mc-ckd-nsaid-crcl-unknown",
+      "title": "Same naproxen list with a CKD label but no CrCl",
+      "covers": [
+        "T6:negative-no-crcl",
+        "T2:nsaid-chronic"
+      ],
+      "profile": {
+        "age": 80,
+        "sex": "female",
+        "conditions": [
+          "chronic_kidney_disease",
+          "osteoarthritis"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Aleve 220 mg",
+          "daysAgoStarted": 120,
+          "reason": "knee pain"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "naproxen"
+            ],
+            "why": "The Table 2 chronic-NSAID criterion does not depend on kidney function.",
+            "source": "AGS Beers 2023, Table 2 - Non-COX-2-selective oral NSAIDs: Avoid chronic use unless alternatives are not effective and gastroprotection is used (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_renal",
+            "ingredients": [
+              "naproxen"
+            ],
+            "why": "No CrCl recorded, so the Table 6 NSAID rule cannot be applied.",
+            "source": "Kinwise SPEC 6.2 - 'beers_renal (only if CrCl known)'; AGS Beers 2023 Table 6 thresholds are stated as CrCl, which this profile does not record"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mc-acb-low",
+      "title": "Loratadine + metoprolol: ACB 1 + 1 = 2 (below threshold)",
+      "covers": [
+        "ACB:below-threshold",
+        "T2:negative-second-gen-antihistamine"
+      ],
+      "profile": {
+        "age": 70,
+        "sex": "male",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Loratadine 10 mg",
+          "daysAgoStarted": 300,
+          "reason": "allergies"
+        },
+        {
+          "name": "Metoprolol 25 mg",
+          "daysAgoStarted": 500,
+          "reason": "blood pressure"
+        }
+      ],
+      "expect": {
+        "mustInclude": [],
+        "mustNotInclude": [
+          {
+            "category": "anticholinergic_burden",
+            "ingredients": [],
+            "why": "ACB total 2 is below the finding threshold of 3.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "loratadine"
+            ],
+            "why": "Loratadine is a second-generation antihistamine, not in the Table 2 list.",
+            "source": "AGS Beers 2023, Table 2 - the antihistamine criterion is limited to first-generation agents; loratadine (second generation) is not listed"
+          }
+        ],
+        "acbTotalExactly": 2,
+        "basis": {
+          "acbTotal": {
+            "why": "Loratadine 1 + metoprolol 1 = 2.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-frid-cardiovascular-ticagrelor",
+      "title": "Angina after a stent: isosorbide, hydrochlorothiazide, amlodipine, ticagrelor, aspirin",
+      "covers": [
+        "FRID:cardiovascular",
+        "T4:ticagrelor",
+        "T2:negative-ticagrelor",
+        "monitoring:antiplatelet"
+      ],
+      "profile": {
+        "age": 80,
+        "sex": "male",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Isosorbide mononitrate 30 mg",
+          "daysAgoStarted": 300,
+          "reason": "chest pain"
+        },
+        {
+          "name": "Hydrochlorothiazide 25 mg",
+          "daysAgoStarted": 500,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Amlodipine 10mg",
+          "daysAgoStarted": 400,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Brilinta 90 mg",
+          "daysAgoStarted": 200,
+          "reason": "after heart stent"
+        },
+        {
+          "name": "Aspirin 81 mg",
+          "daysAgoStarted": 200,
+          "reason": "after heart stent"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "isosorbide",
+              "hydrochlorothiazide",
+              "amlodipine"
+            ],
+            "why": "Vasodilator used in heart disease, diuretic, antihypertensive.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          },
+          {
+            "category": "beers_caution",
+            "ingredients": [
+              "ticagrelor"
+            ],
+            "why": "Ticagrelor at age 80: Table 4 'use with caution', particularly at 75 and older (bleeding).",
+            "source": "AGS Beers 2023, Table 4 (use with caution) - Prasugrel, ticagrelor: use with caution, particularly in adults 75 and older (moderate; strong)"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "ticagrelor"
+            ],
+            "why": "Oral antiplatelet: watch for bruising or bleeding.",
+            "source": "Budnitz 2011 NEJM 365:2002 - oral antiplatelet agents implicated in 13.3% of ADE hospitalizations in adults >=65; Kinwise SPEC 12 'monitoring' category"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "ticagrelor"
+            ],
+            "why": "Ticagrelor is 'use with caution', not 'avoid'.",
+            "source": "AGS Beers 2023 - ticagrelor is a Table 4 'use with caution' criterion, not a Table 2 'avoid' criterion"
+          }
+        ],
+        "acbTotalExactly": 1,
+        "fallRiskIngredientsInclude": [
+          "isosorbide",
+          "hydrochlorothiazide",
+          "amlodipine"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Isosorbide 1; the others are not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "STOPPFall: vasodilators used in cardiac diseases, diuretics; STEADI-Rx: antihypertensives (amlodipine).",
+            "source": "STEADI-Rx Community Pharmacy Fall Risk Checklist (2019): anticonvulsants, antidepressants, antihypertensives, antipsychotics, antispasmodics, benzodiazepines, opioids, sedative hypnotics, TCAs"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-clean-list",
+      "title": "Statin, metformin, levothyroxine: nothing to flag",
+      "covers": [
+        "specificity:clean-list",
+        "FRID:negative"
+      ],
+      "profile": {
+        "age": 75,
+        "sex": "female",
+        "conditions": [
+          "type2_diabetes"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Atorvastatin 20 mg",
+          "daysAgoStarted": 900,
+          "reason": "cholesterol"
+        },
+        {
+          "name": "Metformin 500mg",
+          "daysAgoStarted": 900,
+          "reason": "diabetes"
+        },
+        {
+          "name": "Levothyroxine 50 mcg",
+          "daysAgoStarted": 2000,
+          "reason": "thyroid"
+        }
+      ],
+      "expect": {
+        "mustInclude": [],
+        "mustNotInclude": [],
+        "noFindings": true,
+        "acbTotalExactly": 0,
+        "fallRiskIngredientsExclude": [
+          "atorvastatin",
+          "metformin",
+          "levothyroxine"
+        ],
+        "basis": {
+          "noFindings": {
+            "why": "None of the three appears in Beers 2023 Tables 2-6, the ACB card, the FRID lists, the cascade lists or the SPEC 12 monitoring classes.",
+            "source": "Not named by CDC STEADI (2017), STEADI-Rx (2019) or the STOPPFall consensus classes (statins, metformin, levothyroxine and PPIs are not listed; oral hypoglycaemics and PPIs were STOPPFall no-consensus classes)"
+          },
+          "acbTotal": {
+            "why": "None is on the ACB card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Not FRIDs in any of the three fall sources.",
+            "source": "Not named by CDC STEADI (2017), STEADI-Rx (2019) or the STOPPFall consensus classes (statins, metformin, levothyroxine and PPIs are not listed; oral hypoglycaemics and PPIs were STOPPFall no-consensus classes)"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cascade-ccb-loop",
+      "title": "Furosemide started 50 days after amlodipine for swollen ankles",
+      "covers": [
+        "cascade:ccb-loop",
+        "monitoring:antiplatelet",
+        "T2:negative-clopidogrel",
+        "FRID"
+      ],
+      "profile": {
+        "age": 77,
+        "sex": "female",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Amlodipine 10 mg",
+          "daysAgoStarted": 300,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Lasix 20 mg",
+          "daysAgoStarted": 250,
+          "reason": "swollen ankles"
+        },
+        {
+          "name": "Plavix 75",
+          "daysAgoStarted": 700,
+          "reason": "stroke prevention after a mini-stroke"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "amlodipine",
+              "furosemide"
+            ],
+            "why": "Loop diuretic started 50 days after a CCB, for ankle swelling (a known CCB effect).",
+            "source": "Savage 2020 JAMA Intern Med 180:643 - newly dispensed CCB followed by a loop diuretic (HR 1.68-2.40 within 90 days vs ACEI/ARB); ThinkCascades (McCarthy 2022) - CCB => peripheral edema => diuretics (retained)"
+          },
+          {
+            "category": "monitoring",
+            "ingredients": [
+              "clopidogrel"
+            ],
+            "why": "Oral antiplatelet: watch for bruising or bleeding.",
+            "source": "Budnitz 2011 NEJM 365:2002 - oral antiplatelet agents implicated in 13.3% of ADE hospitalizations in adults >=65; Kinwise SPEC 12 'monitoring' category"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "amlodipine",
+              "furosemide"
+            ],
+            "why": "Antihypertensive and diuretic.",
+            "source": "STEADI-Rx Community Pharmacy Fall Risk Checklist (2019): anticonvulsants, antidepressants, antihypertensives, antipsychotics, antispasmodics, benzodiazepines, opioids, sedative hypnotics, TCAs"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "clopidogrel"
+            ],
+            "why": "Clopidogrel is not a Beers 2023 criterion.",
+            "source": "AGS Beers 2023 - clopidogrel is not listed in Table 2 or Table 4 (Table 4 names prasugrel and ticagrelor relative to clopidogrel)"
+          },
+          {
+            "category": "beers_caution",
+            "ingredients": [
+              "clopidogrel"
+            ],
+            "why": "Table 4 names prasugrel and ticagrelor, not clopidogrel.",
+            "source": "AGS Beers 2023 - clopidogrel is not listed in Table 2 or Table 4 (Table 4 names prasugrel and ticagrelor relative to clopidogrel)"
+          }
+        ],
+        "fallRiskIngredientsInclude": [
+          "amlodipine",
+          "furosemide"
+        ],
+        "basis": {
+          "fallRisk": {
+            "why": "Antihypertensive (STEADI-Rx); diuretic (STOPPFall).",
+            "source": "STEADI-Rx Community Pharmacy Fall Risk Checklist (2019): anticonvulsants, antidepressants, antihypertensives, antipsychotics, antispasmodics, benzodiazepines, opioids, sedative hypnotics, TCAs"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cascade-ccb-loop-reversed",
+      "title": "Furosemide for years, amlodipine added later (marker before index)",
+      "covers": [
+        "cascade:negative-order"
+      ],
+      "profile": {
+        "age": 77,
+        "sex": "female",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Lasix 40 mg",
+          "daysAgoStarted": 400,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Amlodipine 5 mg",
+          "daysAgoStarted": 100,
+          "reason": "blood pressure"
+        }
+      ],
+      "expect": {
+        "mustInclude": [],
+        "mustNotInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "amlodipine",
+              "furosemide"
+            ],
+            "why": "The diuretic predates the CCB by 300 days and its reason does not mention swelling, so it cannot be a response to CCB edema.",
+            "source": "Prescribing-cascade definition (Gurwitz/Rochon; ThinkCascades 2022): the marker drug is started after the index drug; Kinwise SPEC 6.2 - 'index started before marker'. A marker that predates the index is not this cascade"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mc-cascade-acei-cough",
+      "title": "Cough medicine started 45 days after lisinopril",
+      "covers": [
+        "cascade:acei-cough"
+      ],
+      "profile": {
+        "age": 72,
+        "sex": "male",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Lisinopril 10 mg",
+          "daysAgoStarted": 120,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Dextromethorphan (Delsym)",
+          "daysAgoStarted": 75,
+          "reason": "dry cough that won't go away"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "lisinopril",
+              "dextromethorphan"
+            ],
+            "why": "Antitussive started after an ACE inhibitor, for a dry cough (a known ACE-inhibitor effect).",
+            "source": "Vegter 2013 Drug Saf 36:435 - antitussives started after ACEI start more often than before (sequence ratio 2.0); ThinkCascades 2022 Round 1 - ACEI => cough => cough remedy"
+          }
+        ],
+        "mustNotInclude": []
+      }
+    },
+    {
+      "id": "mc-cascade-chei-oab",
+      "title": "Oxybutynin started after donepezil for new bladder leakage",
+      "covers": [
+        "cascade:chei-oab",
+        "T3:dementia-anticholinergic",
+        "ACB:sum"
+      ],
+      "profile": {
+        "age": 83,
+        "sex": "female",
+        "conditions": [
+          "dementia_or_cognitive_impairment"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Aricept 10 mg",
+          "daysAgoStarted": 400,
+          "reason": "memory"
+        },
+        {
+          "name": "Oxybutynin 5 mg",
+          "daysAgoStarted": 355,
+          "reason": "new bladder leakage"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "donepezil",
+              "oxybutynin"
+            ],
+            "why": "Bladder antimuscarinic started 45 days after a cholinesterase inhibitor, for new incontinence.",
+            "source": "Gill 2005 Arch Intern Med 165:808 - cholinesterase inhibitor users more often started an anticholinergic for incontinence (aHR 1.55)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "oxybutynin"
+            ],
+            "why": "Strong anticholinergic (Table 7) with dementia.",
+            "source": "AGS Beers 2023, Table 3 - Dementia or cognitive impairment: anticholinergics (Table 7), antipsychotics (chronic or persistent as-needed use), benzodiazepines, Z-drugs: Avoid (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 3,
+        "basis": {
+          "acbTotal": {
+            "why": "Oxybutynin 3; donepezil is not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cascade-oab-chei-falls",
+      "title": "Donepezil started after tolterodine for memory problems; a fall recorded in the diary",
+      "covers": [
+        "cascade:oab-chei",
+        "T3:falls-anticholinergic-2023",
+        "diary-derived-condition",
+        "FRID"
+      ],
+      "profile": {
+        "age": 80,
+        "sex": "female",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Detrol 2 mg",
+          "daysAgoStarted": 200,
+          "reason": "overactive bladder"
+        },
+        {
+          "name": "Aricept 5mg",
+          "daysAgoStarted": 140,
+          "reason": "memory problems"
+        }
+      ],
+      "diary": {
+        "fallsLast12Months": true
+      },
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "tolterodine",
+              "donepezil"
+            ],
+            "why": "Cholinesterase inhibitor started 60 days after a urinary anticholinergic, for memory problems.",
+            "source": "ThinkCascades (McCarthy 2022, Drugs Aging 39:829), Table 2/3 - urinary anticholinergics => cognitive impairment => cholinesterase inhibitors (retained)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "tolterodine"
+            ],
+            "why": "Strong anticholinergics were added to the 'history of falls' row in 2023; the fall comes from the diary.",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "tolterodine"
+            ],
+            "why": "Overactive-bladder medicines are a STOPPFall class.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 3,
+        "fallRiskIngredientsInclude": [
+          "tolterodine"
+        ],
+        "effectiveConditionsInclude": [
+          {
+            "tag": "history_of_falls",
+            "from": "diary"
+          }
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Tolterodine 3; donepezil is not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "OAB medication.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          },
+          "effectiveConditions": {
+            "why": "Fall recorded 20 days ago.",
+            "source": "Kinwise SPEC 6.2 - history_of_falls is derived from any fall or near-fall recorded in the last 12 months"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cascade-metoclopramide-levodopa",
+      "title": "Carbidopa-levodopa started after months of metoclopramide",
+      "covers": [
+        "cascade:metoclopramide-levodopa",
+        "T2:metoclopramide"
+      ],
+      "profile": {
+        "age": 79,
+        "sex": "male",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Reglan 10 mg",
+          "daysAgoStarted": 200,
+          "reason": "slow stomach and nausea"
+        },
+        {
+          "name": "Sinemet",
+          "daysAgoStarted": 140,
+          "reason": "shaky hands and slow walking"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "metoclopramide",
+              "levodopa"
+            ],
+            "why": "Levodopa started 60 days after metoclopramide for tremor and slowness, which metoclopramide can produce.",
+            "source": "Avorn 1995 JAMA 274:1780 - metoclopramide users were about 3 times as likely to start a levodopa-containing medicine (OR 3.09)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "metoclopramide"
+            ],
+            "why": "Metoclopramide for 200 days is beyond the 12-week limit in the criterion.",
+            "source": "AGS Beers 2023, Table 2 - Metoclopramide: Avoid unless for gastroparesis with use not exceeding 12 weeks (moderate; strong)"
+          }
+        ],
+        "mustNotInclude": []
+      }
+    },
+    {
+      "id": "mc-cascade-thiazide-allopurinol",
+      "title": "Allopurinol started after hydrochlorothiazide; indomethacin for a gout flare",
+      "covers": [
+        "cascade:thiazide-antigout",
+        "T2:indomethacin",
+        "FRID"
+      ],
+      "profile": {
+        "age": 74,
+        "sex": "male",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Hydrochlorothiazide 25 mg",
+          "daysAgoStarted": 300,
+          "reason": "blood pressure"
+        },
+        {
+          "name": "Allopurinol 100mg",
+          "daysAgoStarted": 240,
+          "reason": "gout"
+        },
+        {
+          "name": "Indocin 25 mg",
+          "daysAgoStarted": 7,
+          "reason": "gout flare"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "hydrochlorothiazide",
+              "allopurinol"
+            ],
+            "why": "Anti-gout medicine started 60 days after a thiazide.",
+            "source": "Gurwitz 1997 J Clin Epidemiol 50:953 - thiazide use associated with starting anti-gout therapy (adjusted RR 1.99)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "indomethacin"
+            ],
+            "why": "Indomethacin is 'avoid' regardless of duration.",
+            "source": "AGS Beers 2023, Table 2 - Indomethacin, ketorolac: Avoid (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "hydrochlorothiazide"
+            ],
+            "why": "Diuretic.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        ],
+        "mustNotInclude": [],
+        "fallRiskIngredientsInclude": [
+          "hydrochlorothiazide"
+        ],
+        "basis": {
+          "fallRisk": {
+            "why": "Diuretic.",
+            "source": "STOPPFall (Seppala 2021, Age Ageing 50:1189, PMC8244563): 14 consensus FRID classes incl. benzodiazepines and related drugs, antipsychotics, opioids, antidepressants, antiepileptics, diuretics, alpha-blockers (antihypertensive and BPH), centrally acting antihypertensives, sedative antihistamines, vasodilators used in cardiac diseases, overactive-bladder/incontinence medications"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-cascade-thiazide-allopurinol-reversed",
+      "title": "Allopurinol for years, hydrochlorothiazide added later (marker before index)",
+      "covers": [
+        "cascade:negative-order"
+      ],
+      "profile": {
+        "age": 74,
+        "sex": "male",
+        "conditions": [
+          "hypertension"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Allopurinol 300 mg",
+          "daysAgoStarted": 1500,
+          "reason": "gout"
+        },
+        {
+          "name": "Hydrochlorothiazide 12.5 mg",
+          "daysAgoStarted": 120,
+          "reason": "blood pressure"
+        }
+      ],
+      "expect": {
+        "mustInclude": [],
+        "mustNotInclude": [
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "hydrochlorothiazide",
+              "allopurinol"
+            ],
+            "why": "Allopurinol predates the thiazide by almost 4 years.",
+            "source": "Prescribing-cascade definition (Gurwitz/Rochon; ThinkCascades 2022): the marker drug is started after the index drug; Kinwise SPEC 6.2 - 'index started before marker'. A marker that predates the index is not this cascade"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mc-age-under-65",
+      "title": "Age 60: Beers-based findings are suppressed with a notice",
+      "covers": [
+        "age:under-65"
+      ],
+      "profile": {
+        "age": 60,
+        "sex": "female",
+        "conditions": [
+          "history_of_falls"
+        ],
+        "crclMlMin": 40
+      },
+      "meds": [
+        {
+          "name": "Ativan 1mg",
+          "daysAgoStarted": 100,
+          "reason": "anxiety"
+        },
+        {
+          "name": "Ambien 10 mg",
+          "daysAgoStarted": 100,
+          "reason": "sleep"
+        },
+        {
+          "name": "Benadryl 50mg",
+          "daysAgoStarted": 100,
+          "reason": "sleep"
+        },
+        {
+          "name": "Gabapentin 600 mg",
+          "daysAgoStarted": 200,
+          "reason": "nerve pain"
+        }
+      ],
+      "expect": {
+        "mustInclude": [],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [],
+            "why": "Beers criteria are written for adults 65 and older.",
+            "source": "AGS Beers 2023, 'Intent of criteria' - intended for adults 65 years old and older; Kinwise SPEC 6.2 - age <65 suppresses Beers findings with a notice"
+          },
+          {
+            "category": "beers_caution",
+            "ingredients": [],
+            "why": "Beers criteria are written for adults 65 and older.",
+            "source": "AGS Beers 2023, 'Intent of criteria' - intended for adults 65 years old and older; Kinwise SPEC 6.2 - age <65 suppresses Beers findings with a notice"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [],
+            "why": "Beers criteria are written for adults 65 and older.",
+            "source": "AGS Beers 2023, 'Intent of criteria' - intended for adults 65 years old and older; Kinwise SPEC 6.2 - age <65 suppresses Beers findings with a notice"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [],
+            "why": "Beers criteria are written for adults 65 and older.",
+            "source": "AGS Beers 2023, 'Intent of criteria' - intended for adults 65 years old and older; Kinwise SPEC 6.2 - age <65 suppresses Beers findings with a notice"
+          },
+          {
+            "category": "beers_renal",
+            "ingredients": [],
+            "why": "Beers criteria are written for adults 65 and older.",
+            "source": "AGS Beers 2023, 'Intent of criteria' - intended for adults 65 years old and older; Kinwise SPEC 6.2 - age <65 suppresses Beers findings with a notice"
+          },
+          {
+            "category": "cns_active_combo",
+            "ingredients": [],
+            "why": "The >=3 CNS-active criterion is part of Beers Table 5, so it is suppressed too.",
+            "source": "AGS Beers 2023, 'Intent of criteria' - intended for adults 65 years old and older; Kinwise SPEC 6.2 - age <65 suppresses Beers findings with a notice"
+          }
+        ],
+        "beersSuppressedNotice": true,
+        "basis": {
+          "beersSuppressedNotice": {
+            "why": "A notice must explain why Beers findings are not shown.",
+            "source": "AGS Beers 2023, 'Intent of criteria' - intended for adults 65 years old and older; Kinwise SPEC 6.2 - age <65 suppresses Beers findings with a notice"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-age-65-boundary",
+      "title": "Age exactly 65: Beers applies",
+      "covers": [
+        "age:65-boundary",
+        "T2:z-drug",
+        "FRID"
+      ],
+      "profile": {
+        "age": 65,
+        "sex": "male",
+        "conditions": [
+          "insomnia"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Ambien 5 mg",
+          "daysAgoStarted": 200,
+          "reason": "sleep"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "zolpidem"
+            ],
+            "why": "65 is within 'adults 65 years old and older'.",
+            "source": "AGS Beers 2023, Table 2 - Z-drugs (eszopiclone, zaleplon, zolpidem): Avoid (moderate; strong)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "zolpidem"
+            ],
+            "why": "Sedative-hypnotic.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [],
+        "acbTotalExactly": 0,
+        "fallRiskIngredientsInclude": [
+          "zolpidem"
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Zolpidem is not on the card.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "Sedative-hypnotic (zolpidem named).",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-unknown-names",
+      "title": "Names that are not in the reference set",
+      "covers": [
+        "unmatched"
+      ],
+      "profile": {
+        "age": 80,
+        "sex": "female",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Grandma's herbal tea",
+          "daysAgoStarted": 100,
+          "reason": "sleep"
+        },
+        {
+          "name": "XYZ-123",
+          "daysAgoStarted": 30
+        }
+      ],
+      "expect": {
+        "mustInclude": [],
+        "mustNotInclude": [],
+        "unmatchedNames": [
+          "Grandma's herbal tea",
+          "XYZ-123"
+        ],
+        "noFindings": true,
+        "acbTotalExactly": 0,
+        "basis": {
+          "unmatched": {
+            "why": "Unknown names are reported as unmatched, not as fine.",
+            "source": "Kinwise SPEC 6.1/6.2 - names not in the reference set are reported as unmatched (never implied to be fine) and cannot trigger rules"
+          },
+          "noFindings": {
+            "why": "An unmatched entry has no ingredients, so no rule can fire.",
+            "source": "Kinwise SPEC 6.1/6.2 - names not in the reference set are reported as unmatched (never implied to be fine) and cannot trigger rules"
+          },
+          "acbTotal": {
+            "why": "No scored ingredients.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-stopped-med",
+      "title": "Lorazepam stopped 30 days ago; sertraline continues",
+      "covers": [
+        "active-only"
+      ],
+      "profile": {
+        "age": 78,
+        "sex": "female",
+        "conditions": [],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Ativan 0.5 mg",
+          "daysAgoStarted": 200,
+          "reason": "sleep",
+          "daysAgoStopped": 30
+        },
+        {
+          "name": "Zoloft 50 mg",
+          "daysAgoStarted": 400,
+          "reason": "depression"
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "sertraline"
+            ],
+            "why": "Active SSRI.",
+            "source": "CDC STEADI 'Medications Linked to Falls' fact sheet (2017): anticonvulsants, antidepressants (TCAs, SSRIs), antipsychotics, benzodiazepines, opioids, sedative-hypnotics (eszopiclone, zaleplon, zolpidem); also anticholinergics, antihistamines, medications affecting blood pressure, muscle relaxants"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "lorazepam"
+            ],
+            "why": "Lorazepam was stopped 30 days ago; only active medicines are reviewed.",
+            "source": "Kinwise SPEC 6.2 - review uses only active medications (no endDate, or endDate on/after today)"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "lorazepam"
+            ],
+            "why": "A stopped medicine must not be listed in the fall-risk finding.",
+            "source": "Kinwise SPEC 6.2 - review uses only active medications (no endDate, or endDate on/after today)"
+          }
+        ],
+        "fallRiskIngredientsInclude": [
+          "sertraline"
+        ],
+        "fallRiskIngredientsExclude": [
+          "lorazepam"
+        ],
+        "basis": {
+          "fallRisk": {
+            "why": "Only the active SSRI counts.",
+            "source": "Kinwise SPEC 6.2 - review uses only active medications (no endDate, or endDate on/after today)"
+          }
+        }
+      }
+    },
+    {
+      "id": "mc-fuzzy-misspelling",
+      "title": "Misspelled name confirmed by the family ('Lorazapam')",
+      "covers": [
+        "normalization:fuzzy-confirmed",
+        "T2:benzodiazepine"
+      ],
+      "profile": {
+        "age": 81,
+        "sex": "female",
+        "conditions": [
+          "insomnia"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Lorazapam 1 mg",
+          "daysAgoStarted": 30,
+          "reason": "sleep",
+          "confirmSuggestion": true
+        }
+      ],
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "lorazepam"
+            ],
+            "why": "After the family confirms the suggested match, lorazepam is reviewed like any other benzodiazepine.",
+            "source": "AGS Beers 2023, Table 2 - Benzodiazepines (alprazolam, clonazepam, lorazepam, temazepam ...): Avoid (moderate quality; strong)"
+          }
+        ],
+        "mustNotInclude": []
+      }
+    },
+    {
+      "id": "mc-seed-margaret",
+      "title": "Margaret's medication list (SPEC 2) with a recorded fall",
+      "covers": [
+        "integration:seed",
+        "T2:benzodiazepine",
+        "T2:first-gen-antihistamine",
+        "T2:ppi-long",
+        "T2:negative-antimuscarinic",
+        "T3:falls",
+        "T5:anticholinergic-pair",
+        "cascade:ccb-loop",
+        "ACB:sum",
+        "FRID",
+        "duplicate:negative"
+      ],
+      "profile": {
+        "age": 78,
+        "sex": "female",
+        "conditions": [
+          "hypertension",
+          "type2_diabetes",
+          "urinary_incontinence",
+          "insomnia",
+          "osteoarthritis"
+        ],
+        "crclMlMin": null
+      },
+      "meds": [
+        {
+          "name": "Amlodipine",
+          "daysAgoStarted": 140,
+          "reason": "Blood pressure"
+        },
+        {
+          "name": "Furosemide (Lasix)",
+          "daysAgoStarted": 95,
+          "reason": "Ankle swelling"
+        },
+        {
+          "name": "Metformin",
+          "daysAgoStarted": 900,
+          "reason": "Diabetes"
+        },
+        {
+          "name": "Atorvastatin",
+          "daysAgoStarted": 900,
+          "reason": "Cholesterol"
+        },
+        {
+          "name": "Omeprazole",
+          "daysAgoStarted": 400,
+          "reason": "Heartburn"
+        },
+        {
+          "name": "Oxybutynin",
+          "daysAgoStarted": 210,
+          "reason": "Bladder"
+        },
+        {
+          "name": "Tylenol PM (OTC)",
+          "daysAgoStarted": 180,
+          "reason": "Sleep"
+        },
+        {
+          "name": "Lorazepam (Ativan)",
+          "daysAgoStarted": 16,
+          "reason": "Anxiety / sleep"
+        }
+      ],
+      "diary": {
+        "fallsLast12Months": true
+      },
+      "expect": {
+        "mustInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "lorazepam"
+            ],
+            "why": "Benzodiazepine.",
+            "source": "AGS Beers 2023, Table 2 - Benzodiazepines (alprazolam, clonazepam, lorazepam, temazepam ...): Avoid (moderate quality; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "First-generation antihistamine inside Tylenol PM.",
+            "source": "AGS Beers 2023, Table 2 - First-generation antihistamines incl. diphenhydramine (oral) and promethazine: Avoid (moderate; strong)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "omeprazole"
+            ],
+            "why": "PPI taken for 400 days.",
+            "source": "AGS Beers 2023, Table 2 - Proton-pump inhibitors: Avoid scheduled use for >8 weeks unless high-risk patients or listed indications (strong)"
+          },
+          {
+            "category": "beers_interaction",
+            "ingredients": [
+              "oxybutynin",
+              "diphenhydramine"
+            ],
+            "why": "Two strong anticholinergics.",
+            "source": "AGS Beers 2023, Table 5 - Anticholinergic + anticholinergic: Avoid; minimise the number of anticholinergic drugs (Table 7) (moderate; strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "lorazepam"
+            ],
+            "why": "Benzodiazepine with a recorded fall.",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "oxybutynin"
+            ],
+            "why": "Strong anticholinergic with a recorded fall (added 2023).",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "beers_condition",
+            "ingredients": [
+              "diphenhydramine"
+            ],
+            "why": "Strong anticholinergic with a recorded fall (added 2023).",
+            "source": "AGS Beers 2023, Table 3 - History of falls or fractures: antiepileptics, antidepressants (SNRIs, SSRIs, TCAs), antipsychotics, benzodiazepines, Z-drugs, opioids, anticholinergics (Table 7, added 2023): Avoid unless alternatives are not available (strong)"
+          },
+          {
+            "category": "prescribing_cascade",
+            "ingredients": [
+              "amlodipine",
+              "furosemide"
+            ],
+            "why": "Furosemide started 45 days after amlodipine, for ankle swelling.",
+            "source": "Savage 2020 JAMA Intern Med 180:643 - newly dispensed CCB followed by a loop diuretic (HR 1.68-2.40 within 90 days vs ACEI/ARB); ThinkCascades (McCarthy 2022) - CCB => peripheral edema => diuretics (retained)"
+          },
+          {
+            "category": "anticholinergic_burden",
+            "ingredients": [
+              "oxybutynin",
+              "diphenhydramine",
+              "furosemide"
+            ],
+            "why": "ACB 3 + 3 + 1 = 7.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          {
+            "category": "fall_risk",
+            "ingredients": [
+              "lorazepam",
+              "diphenhydramine",
+              "furosemide",
+              "amlodipine",
+              "oxybutynin"
+            ],
+            "why": "Benzodiazepine, sedative antihistamine, diuretic, antihypertensive, OAB antimuscarinic.",
+            "source": "STEADI-Rx Community Pharmacy Fall Risk Checklist (2019): anticonvulsants, antidepressants, antihypertensives, antipsychotics, antispasmodics, benzodiazepines, opioids, sedative hypnotics, TCAs"
+          }
+        ],
+        "mustNotInclude": [
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "oxybutynin"
+            ],
+            "why": "No Table 2 criterion for bladder antimuscarinics.",
+            "source": "AGS Beers 2023 - no Table 2 criterion covers bladder antimuscarinics; oxybutynin and tolterodine appear only in Table 7 (strong anticholinergics), which Tables 3 and 5 reference"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "amlodipine"
+            ],
+            "why": "Amlodipine is not a Table 2 medicine.",
+            "source": "AGS Beers 2023 - amlodipine (dihydropyridine CCB) is not listed in Table 2 (only immediate-release nifedipine is)"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "metformin"
+            ],
+            "why": "Metformin is not a Table 2 medicine.",
+            "source": "AGS Beers 2023, Table 2 - metformin is not listed in any Table 2 criterion"
+          },
+          {
+            "category": "beers_avoid",
+            "ingredients": [
+              "atorvastatin"
+            ],
+            "why": "Atorvastatin is in no Beers criterion.",
+            "source": "AGS Beers 2023 - atorvastatin is not listed in any 2023 criterion"
+          },
+          {
+            "category": "cns_active_combo",
+            "ingredients": [],
+            "why": "Only one listed CNS-active drug (lorazepam).",
+            "source": "AGS Beers 2023, Table 5 - Any combination of >=3 CNS-active drugs among antiepileptics (incl. gabapentinoids), antidepressants (TCAs, SSRIs, SNRIs), antipsychotics, benzodiazepines, Z-drugs, opioids, skeletal muscle relaxants: Avoid (high; strong)"
+          },
+          {
+            "category": "duplicate_class",
+            "ingredients": [],
+            "why": "No two medicines share a drug class (an antihistamine and a bladder antimuscarinic are different classes).",
+            "source": "STOPP/START v3 Section A3 defines duplication within one drug class (e.g. two SSRIs); a sleep-aid antihistamine and a bladder antimuscarinic, or a CCB and a loop diuretic, are different classes"
+          }
+        ],
+        "acbTotalExactly": 7,
+        "fallRiskIngredientsInclude": [
+          "lorazepam",
+          "diphenhydramine",
+          "furosemide",
+          "amlodipine",
+          "oxybutynin"
+        ],
+        "fallRiskIngredientsExclude": [
+          "atorvastatin",
+          "omeprazole"
+        ],
+        "effectiveConditionsInclude": [
+          {
+            "tag": "history_of_falls",
+            "from": "diary"
+          }
+        ],
+        "basis": {
+          "acbTotal": {
+            "why": "Oxybutynin 3 + diphenhydramine 3 + furosemide 1 = 7; the others score 0.",
+            "source": "ACB scale 2012 update (Aging Brain Care, Regenstrief Institute / Indiana University); scores are added per medication; Kinwise SPEC 6.2 raises a finding when the total is >=3"
+          },
+          "fallRisk": {
+            "why": "STEADI-Rx (antihypertensives, antispasmodics, benzodiazepines), STOPPFall (diuretics, sedative antihistamines, OAB medications); statins and PPIs are not listed.",
+            "source": "STEADI-Rx Community Pharmacy Fall Risk Checklist (2019): anticonvulsants, antidepressants, antihypertensives, antipsychotics, antispasmodics, benzodiazepines, opioids, sedative hypnotics, TCAs"
+          },
+          "effectiveConditions": {
+            "why": "Fall recorded 20 days ago.",
+            "source": "Kinwise SPEC 6.2 - history_of_falls is derived from any fall or near-fall recorded in the last 12 months"
+          }
+        }
+      }
+    }
+  ]
+}

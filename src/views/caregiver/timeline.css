@@ -1,0 +1,471 @@
+/* Symptoms & timeline (/c/timeline). Prefix: cg-tl. Tokens only. */
+
+.cg-tl {
+  container: cg-tl / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.cg-tl > .ui-page-header {
+  margin-bottom: 0;
+}
+.cg-tl-muted {
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+.cg-tl-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+}
+.cg-tl-section-title svg {
+  color: var(--primary-text);
+}
+
+/* ---- Event picker ---------------------------------------------------------------- */
+.cg-tl-events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.cg-tl-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+  gap: var(--space-3);
+}
+.cg-tl-picker__opt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-height: var(--target-min);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  text-align: left;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.cg-tl-picker__opt:hover {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+}
+.cg-tl-picker__opt.is-checked {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+.cg-tl-picker__opt.is-checked::after {
+  content: "";
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 3px var(--surface);
+}
+.cg-tl-picker__name {
+  padding-right: var(--space-4);
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+}
+.cg-tl-picker__when {
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+.cg-tl-picker__status {
+  margin-top: var(--space-1);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--ink-muted);
+}
+.cg-tl-picker__status.is-flagged {
+  color: var(--caution-ink);
+}
+.cg-tl-picker__opt.is-muted:not(.is-checked) .cg-tl-picker__name {
+  color: var(--ink-muted);
+}
+
+/* ---- Comparison card --------------------------------------------------------------- */
+.cg-tl-compare {
+  border-color: color-mix(in srgb, var(--primary) 22%, var(--line));
+  box-shadow: var(--shadow-2);
+}
+.cg-tl-compare .ui-card__title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-xl);
+}
+.cg-tl-compare__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+.cg-tl-compare__lead {
+  font-size: var(--fs-md);
+}
+.cg-tl-compare__partial {
+  margin-top: calc(-1 * var(--space-3));
+}
+
+.cg-tl-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.cg-tl-row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1.1fr) minmax(9rem, 1fr) minmax(9rem, 1fr) minmax(13rem, 1.3fr) auto;
+  grid-template-areas: "metric before after stat records";
+  align-items: center;
+  gap: var(--space-2) var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-sm);
+}
+.cg-tl-row:first-child {
+  border-top: 0;
+}
+.cg-tl-row.is-flagged {
+  background: color-mix(in srgb, var(--caution-soft) 55%, var(--surface));
+}
+.cg-tl-row.is-none,
+.cg-tl-row.is-untested {
+  color: var(--ink-muted);
+}
+.cg-tl-row__metric {
+  grid-area: metric;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+}
+.cg-tl-row__dir {
+  padding-left: calc(11px + 0.5rem);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  color: var(--ink-muted);
+}
+.cg-tl-row__dir.is-worse {
+  color: var(--caution-ink);
+  font-weight: var(--fw-semibold);
+}
+.cg-tl-row__win {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(2.5rem, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: var(--space-2);
+  row-gap: 0.15rem;
+  align-items: center;
+}
+.cg-tl-row__win.is-before {
+  grid-area: before;
+}
+.cg-tl-row__win.is-after {
+  grid-area: after;
+}
+.cg-tl-row__side {
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
+.cg-tl-row__track {
+  position: relative;
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--line) 80%, transparent);
+  overflow: hidden;
+}
+.cg-tl-row__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--radius-pill);
+  background: var(--ink-subtle);
+}
+.cg-tl-row__value {
+  grid-column: 2;
+  white-space: nowrap;
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
+.cg-tl-row__win.is-after .cg-tl-row__value {
+  color: var(--ink);
+  font-weight: var(--fw-semibold);
+}
+.cg-tl-row__stat {
+  grid-area: stat;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem var(--space-2);
+}
+.cg-tl-row__p,
+.cg-tl-row__untested {
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
+.cg-tl-row__records {
+  grid-area: records;
+  justify-self: end;
+}
+
+/* Falls listed by date */
+.cg-tl-falls {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3) var(--space-4);
+  align-items: start;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--attention-soft);
+  font-size: var(--fs-sm);
+}
+.cg-tl-falls > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.cg-tl-falls__icon {
+  color: var(--attention-ink);
+  margin-top: 0.1rem;
+}
+.cg-tl-falls__title {
+  font-weight: var(--fw-semibold);
+  color: var(--attention-ink);
+}
+
+/* Context list: caveat, confounders, KB, coverage */
+.cg-tl-context {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  font-size: var(--fs-sm);
+}
+.cg-tl-context dt {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.cg-tl-context dd {
+  margin: 0.15rem 0 0;
+  color: var(--ink);
+}
+.cg-tl-method {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: var(--reading-max);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+
+/* ---- Chart card ------------------------------------------------------------------- */
+.cg-tl-chart__body {
+  margin-top: var(--space-5);
+}
+
+/* ---- Day list --------------------------------------------------------------------- */
+.cg-tl-daylist {
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.cg-tl-daylist__head,
+.cg-tl-day {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(10rem, 1.1fr) 10.5rem minmax(0, 2fr) 1.25rem;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+}
+.cg-tl-daylist__head {
+  grid-template-columns: 9.5rem minmax(10rem, 1.1fr) 10.5rem minmax(0, 2fr) 1.25rem;
+  background: var(--surface-sunken);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.cg-tl-daylist__head::after {
+  content: "";
+}
+.cg-tl-daylist li + li {
+  border-top: 1px solid var(--line);
+}
+.cg-tl-day {
+  width: 100%;
+  text-align: left;
+  font-size: var(--fs-sm);
+  min-height: var(--target-min);
+}
+.cg-tl-day:hover {
+  background: var(--surface-tint);
+}
+.cg-tl-day:focus-visible {
+  outline-offset: -3px;
+}
+.cg-tl-day__date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--fw-semibold);
+}
+.cg-tl-day__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.cg-tl-chip {
+  padding: 0.05rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--caution-soft);
+  color: var(--caution-ink);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+.cg-tl-day__scales {
+  font-weight: var(--fw-semibold);
+}
+.cg-tl-day__story {
+  min-width: 0;
+  color: var(--ink);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.cg-tl-day__chev {
+  color: var(--ink-muted);
+}
+.cg-tl-days__empty {
+  margin-top: var(--space-4);
+}
+.cg-tl-more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+.cg-tl-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
+
+/* ---- Responsive (container queries on the content column) -------------------------- */
+@container cg-tl (max-width: 62rem) {
+  .cg-tl-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    grid-template-areas:
+      "metric metric records"
+      "before after after"
+      "stat stat stat";
+  }
+  .cg-tl-row__win.is-after {
+    grid-area: after;
+  }
+}
+@container cg-tl (max-width: 46rem) {
+  .cg-tl-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "metric records"
+      "before before"
+      "after after"
+      "stat stat";
+    padding: var(--space-3);
+  }
+  .cg-tl-context {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+  }
+  .cg-tl-falls {
+    grid-template-columns: auto 1fr;
+    padding: var(--space-4);
+  }
+  .cg-tl-falls > .ui-evidence-link {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .cg-tl-daylist__head {
+    display: none;
+  }
+  .cg-tl-day {
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas:
+      "date scales chev"
+      "chips chips chips"
+      "story story story";
+    gap: var(--space-2);
+  }
+  .cg-tl-day__date {
+    grid-area: date;
+  }
+  .cg-tl-day__scales {
+    grid-area: scales;
+  }
+  .cg-tl-day__chev {
+    grid-area: chev;
+  }
+  .cg-tl-day__chips {
+    grid-area: chips;
+  }
+  .cg-tl-day__story {
+    grid-area: story;
+  }
+  .cg-tl-chart .ui-card__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+  .cg-tl-period .ui-seg__options {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .cg-tl-period .ui-seg__option {
+    padding-inline: 0.5rem;
+    white-space: nowrap;
+    justify-content: center;
+  }
+  /* The filled pill already marks the choice; the tick would not fit four options on a phone. */
+  .cg-tl-period.ui-seg--md .ui-seg__option.is-checked .ui-seg__check {
+    display: none;
+  }
+  /* Event cards become one swipeable row */
+  .cg-tl-picker {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 2px 2px var(--space-2);
+    margin: -2px;
+  }
+  .cg-tl-picker__opt {
+    flex: 0 0 min(15rem, 78%);
+    scroll-snap-align: start;
+  }
+}

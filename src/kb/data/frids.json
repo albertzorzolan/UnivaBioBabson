@@ -1,0 +1,92 @@
+[
+ {
+  "classId": "benzodiazepine",
+  "display": "Benzodiazepines",
+  "plain": "Sedation and slower reactions affect balance.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "z_drug",
+  "display": "Z-drug sleeping pills",
+  "plain": "Next-day drowsiness and unsteadiness, especially at night.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "antipsychotic",
+  "display": "Antipsychotics",
+  "plain": "Sedation, stiffness and low blood pressure on standing.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "opioid",
+  "display": "Opioids",
+  "plain": "Drowsiness, dizziness and slower reactions.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "antidepressant",
+  "display": "Antidepressants",
+  "plain": "Drowsiness, low sodium or low blood pressure on standing.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "antiepileptic",
+  "display": "Antiepileptics (seizure and nerve-pain medicines)",
+  "plain": "Dizziness, drowsiness and unsteadiness.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "bp_lowering",
+  "display": "Blood-pressure medicines",
+  "plain": "Blood pressure can drop on standing, especially after a dose change.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "muscle_relaxant",
+  "display": "Muscle relaxants",
+  "plain": "Drowsiness and muscle weakness.",
+  "sourceId": "steadi"
+ },
+ {
+  "classId": "diuretic",
+  "display": "Diuretics (water pills)",
+  "plain": "Low blood pressure on standing, dehydration and night-time trips to the bathroom.",
+  "sourceId": "stoppfall"
+ },
+ {
+  "classId": "alpha1_blocker",
+  "display": "Alpha-blockers",
+  "plain": "Blood pressure can drop on standing.",
+  "sourceId": "stoppfall"
+ },
+ {
+  "classId": "central_alpha_agonist",
+  "display": "Centrally acting blood-pressure medicines",
+  "plain": "Drowsiness and low blood pressure on standing.",
+  "sourceId": "stoppfall"
+ },
+ {
+  "classId": "nitrate",
+  "display": "Nitrates (heart vasodilators)",
+  "plain": "Blood pressure can drop, especially on standing.",
+  "sourceId": "stoppfall"
+ },
+ {
+  "classId": "first_gen_antihistamine",
+  "display": "Sedating antihistamines",
+  "plain": "Drowsiness, confusion and blurred vision.",
+  "sourceId": "stoppfall"
+ },
+ {
+  "classId": "strong_anticholinergic",
+  "display": "Strongly anticholinergic medicines",
+  "plain": "Drowsiness, confusion and blurred vision.",
+  "sourceId": "stoppfall"
+ },
+ {
+  "classId": "bladder_antimuscarinic",
+  "display": "Overactive-bladder medicines",
+  "plain": "Drowsiness, blurred vision and dizziness; urgency at night.",
+  "sourceId": "stoppfall"
+ }
+]

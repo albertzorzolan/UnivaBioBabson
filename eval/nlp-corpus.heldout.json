@@ -1,0 +1,496 @@
+{
+  "version": 1,
+  "author": "independent held-out set (written without access to the extractor or the dev corpus)",
+  "cases": [
+    {
+      "id": "h001",
+      "story": "Quiet one today. Did the crossword, had a cup of tea with Pauline from next door and watched the cricket. Nothing to report really.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["no_symptoms"]
+    },
+    {
+      "id": "h002",
+      "story": "No dizziness today, didn't fall or even trip. Slept well for once. Energy alright.",
+      "expect": { "dizziness": false, "fall": false, "nearFall": false, "sleep": 4, "energy": 3 },
+      "expectOther": {},
+      "tags": ["negation", "fall_vs_near_fall", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h003",
+      "story": "Bit under the weather today, off my food and had a headache most of the afternoon. Took a couple of paracetamol.",
+      "expect": { "appetite": "worse" },
+      "expectOther": { "headache": true },
+      "tags": ["colloquial", "qualitative", "med_mention", "multi_symptom"]
+    },
+    {
+      "id": "h004",
+      "story": "Energy 2/5. Sleep 3/5. Fairly lightheaded after my morning tablets, and ankles a bit puffy by evening.",
+      "expect": { "energy": 2, "sleep": 3, "dizziness": true, "dizzinessSeverity": 2, "swelling": true },
+      "expectOther": {},
+      "tags": ["explicit_rating", "qualitative", "multi_symptom", "med_mention"]
+    },
+    {
+      "id": "h005",
+      "story": "My husband Frank had a fall in the garage this morning, nothing broken thank goodness. I spent the afternoon fussing over him.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["experiencer_other", "no_symptoms"]
+    },
+    {
+      "id": "h006",
+      "story": "Had a dizzy spell yesterday at the shops. Slept like a log last night though.",
+      "expect": { "sleep": 5 },
+      "expectOther": {},
+      "tags": ["historical", "qualitative", "colloquial"]
+    },
+    {
+      "id": "h007",
+      "story": "The new tablets from Dr Patel came today. The leaflet says they can make you drowsy, so I'll take them at bedtime in case I get sleepy during the day.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["hypothetical", "med_mention", "no_symptoms"]
+    },
+    {
+      "id": "h008",
+      "story": "Nearly fell getting out of the bath this morning, grabbed the towel rail just in time. Rest of the day was good, decent energy.",
+      "expect": { "nearFall": true, "energy": 4 },
+      "expectOther": {},
+      "tags": ["fall_vs_near_fall", "qualitative"]
+    },
+    {
+      "id": "h009",
+      "story": "Took a tumble in the garden pulling weeds, ended up on my bum on the lawn. Bruised but nothing broken. Hip is sore tonight.",
+      "expect": { "fall": true },
+      "expectOther": { "pain": true },
+      "tags": ["fall_vs_near_fall", "colloquial", "multi_symptom"]
+    },
+    {
+      "id": "h010",
+      "story": "Mom said she felt lightheaded when she stood up from the table at lunch, quite lightheaded, she had to sit back down. She didn't fall. I was exhausted after work so we had an early night.",
+      "expect": { "dizziness": true, "dizzinessSeverity": 2, "fall": false },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "experiencer_other", "negation", "qualitative", "fall_vs_near_fall"]
+    },
+    {
+      "id": "h011",
+      "story": "felt dizy this morning when i got up, room was spining. slept terible",
+      "expect": { "dizziness": true, "sleep": 1 },
+      "expectOther": {},
+      "tags": ["typo", "qualitative"]
+    },
+    {
+      "id": "h012",
+      "story": "Dizziness no better today, still woozy every time I turn my head. Not only that but my mouth is dry as a bone.",
+      "expect": { "dizziness": true },
+      "expectOther": { "dry_mouth": true },
+      "tags": ["pseudo_negation", "colloquial", "multi_symptom"]
+    },
+    {
+      "id": "h013",
+      "story": "I can't say I wasn't dizzy after lunch, but it passed. Appetite same as always.",
+      "expect": { "dizziness": true, "appetite": "same" },
+      "expectOther": {},
+      "tags": ["double_negation", "qualitative"]
+    },
+    {
+      "id": "h014",
+      "story": "I'd give my sleep a two out of five, I was up to the toilet four times in the night, my bladder is playing up again even with the oxybutynin. Energy three out of five.",
+      "expect": { "sleep": 2, "energy": 3 },
+      "expectOther": { "urinary_problem": true },
+      "tags": ["explicit_rating", "multi_symptom", "med_mention"]
+    },
+    {
+      "id": "h015",
+      "story": "lost my balence on the front step and went down hard on my knee. its bruised and sore tonight. didnt hit my head thank god",
+      "expect": { "fall": true },
+      "expectOther": { "pain": true },
+      "tags": ["typo", "fall_vs_near_fall", "multi_symptom"]
+    },
+    {
+      "id": "h016",
+      "story": "Don't want to fall on the ice going to church on Sunday, so my son is picking me up. If I get lightheaded during the service I'll just sit down.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["hypothetical", "no_symptoms"]
+    },
+    {
+      "id": "h017",
+      "story": "Used to get terrible headaches years ago but no headache today. Ankles swollen though, the water pill doesn't seem to be doing much.",
+      "expect": { "swelling": true },
+      "expectOther": { "headache": false },
+      "tags": ["historical", "negation", "med_mention", "multi_symptom"]
+    },
+    {
+      "id": "h018",
+      "story": "Dad was very groggy this morning after his sleeping tablet and nodded off twice at breakfast. He seemed a bit confused about what day it was. Ate hardly anything.",
+      "expect": { "drowsiness": true, "confusion": true, "appetite": "worse" },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "med_mention", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h019",
+      "story": "Lost my balance on the back step but caught hold of the railing so I didn't go down. No harm done.",
+      "expect": { "nearFall": true, "fall": false },
+      "expectOther": {},
+      "tags": ["fall_vs_near_fall", "negation"]
+    },
+    {
+      "id": "h020",
+      "story": "Lovely crisp fall day. Walked to the post office and back and picked up a pumpkin for the grandkids. Carved it with them after school.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["no_symptoms", "fall_vs_near_fall"]
+    },
+    {
+      "id": "h021",
+      "story": "Not dizzy, not drowsy, no confusion. Feet a little swollen in the evening as usual.",
+      "expect": { "dizziness": false, "drowsiness": false, "confusion": false, "swelling": true },
+      "expectOther": {},
+      "tags": ["negation", "multi_symptom"]
+    },
+    {
+      "id": "h022",
+      "story": "energy was about a 4 today, went to the garden centre with my daughter. sleep not bad. apetite normal",
+      "expect": { "energy": 4, "sleep": 3, "appetite": "same" },
+      "expectOther": {},
+      "tags": ["explicit_rating", "qualitative", "typo", "pseudo_negation"]
+    },
+    {
+      "id": "h023",
+      "story": "Mum had a good day, I think. She said no dizziness today. I'm the one who's run down, I barely slept because the dog was poorly.",
+      "expect": { "dizziness": false },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "experiencer_other", "negation"]
+    },
+    {
+      "id": "h024",
+      "story": "Doctor says if the dizziness comes back I should ring the surgery. Thankfully I haven't been dizzy today. Energy a 3.",
+      "expect": { "dizziness": false, "energy": 3 },
+      "expectOther": {},
+      "tags": ["hypothetical", "negation", "explicit_rating"]
+    },
+    {
+      "id": "h025",
+      "story": "Last week I had a fall in the bathroom. Today no falls, used my walking stick everywhere and took it slowly.",
+      "expect": { "fall": false },
+      "expectOther": {},
+      "tags": ["historical", "negation", "fall_vs_near_fall"]
+    },
+    {
+      "id": "h026",
+      "story": "Gran tripped on the hall rug this afternoon and grabbed the radiator to stop herself falling. She says she wasn't dizzy, she just didn't see the rug. Her ankles look puffy tonight.",
+      "expect": { "nearFall": true, "dizziness": false, "swelling": true },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "fall_vs_near_fall", "negation", "multi_symptom"]
+    },
+    {
+      "id": "h027",
+      "story": "Felt hungover all morning from the Tylenol PM, couldn't keep my eyes open during my program. The other day I nearly fell on the way to the bathroom at night, so I'm being extra careful.",
+      "expect": { "drowsiness": true },
+      "expectOther": {},
+      "tags": ["med_mention", "colloquial", "historical", "fall_vs_near_fall"]
+    },
+    {
+      "id": "h028",
+      "story": "Forgot my evening tablets again, found them still in the pill box this morning. Otherwise my head's been clear, no muddled moments. Slept well.",
+      "expect": { "confusion": false, "sleep": 4 },
+      "expectOther": {},
+      "tags": ["med_mention", "negation", "qualitative"]
+    },
+    {
+      "id": "h029",
+      "story": "Well, my granddaughter Ellie came round with the little one and we made scones. Then Bert from the allotment dropped off some runner beans, far too many as usual, so I've frozen half of them. Watched a quiz show in the evening and got most of the answers right. Can't complain.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["no_symptoms", "long", "colloquial"]
+    },
+    {
+      "id": "h030",
+      "story": "No headache today which was a relief, but I was queasy after breakfast and my mouth was dry all day. Hands a bit shaky holding my tea.",
+      "expect": {},
+      "expectOther": { "headache": false, "nausea": true, "dry_mouth": true, "tremor": true },
+      "tags": ["negation", "multi_symptom"]
+    },
+    {
+      "id": "h031",
+      "story": "Both Harold and I felt a little faint in the heat at the church fete. He sat in the shade, I had a lemonade and it passed.",
+      "expect": { "dizziness": true, "dizzinessSeverity": 1 },
+      "expectOther": {},
+      "tags": ["experiencer_other", "qualitative"]
+    },
+    {
+      "id": "h032",
+      "story": "On Tuesday my ankles were really swollen and I had to put my feet up all evening. Energy good today, did a big shop at the supermarket. Felt a bit nervous before my hearing test this afternoon.",
+      "expect": { "energy": 4 },
+      "expectOther": { "anxiety": true },
+      "tags": ["historical", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h033",
+      "story": "Mom insists she wasn't dizzy today, but the home aide wrote in her notebook that Mom was dizzy after lunch and had to sit down for a while. Appetite was poor, she left most of her dinner.",
+      "expect": { "appetite": "worse" },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "conflict", "negation", "qualitative"]
+    },
+    {
+      "id": "h034",
+      "story": "Sleep: 1. Energy: 1. Up most of the night with my hip aching, absolutely wiped out today.",
+      "expect": { "sleep": 1, "energy": 1 },
+      "expectOther": { "pain": true },
+      "tags": ["explicit_rating", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h035",
+      "story": "cant stop coughing today and im out of breth going up the stairs. ankels not swolen tho",
+      "expect": { "swelling": false },
+      "expectOther": { "cough": true, "shortness_of_breath": true },
+      "tags": ["typo", "negation", "multi_symptom"]
+    },
+    {
+      "id": "h036",
+      "story": "No sooner had I stood up from my chair than my head was spinning, really badly. Had to sit straight back down. Felt knackered for the rest of the day.",
+      "expect": { "dizziness": true, "dizzinessSeverity": 3, "energy": 1 },
+      "expectOther": {},
+      "tags": ["pseudo_negation", "colloquial", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h037",
+      "story": "Almost went over on the wet kitchen floor, caught myself on the counter. Then later I did actually fall, slipped on the bath mat and ended up on the floor. Had to ring my son to help me up.",
+      "expect": { "nearFall": true, "fall": true },
+      "expectOther": {},
+      "tags": ["fall_vs_near_fall", "multi_symptom"]
+    },
+    {
+      "id": "h038",
+      "story": "Fell asleep in my armchair halfway through the afternoon film, which isn't like me. Couldn't keep my eyes open. Slept poorly last night though, so maybe that's why.",
+      "expect": { "drowsiness": true, "sleep": 2 },
+      "expectOther": {},
+      "tags": ["fall_vs_near_fall", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h039",
+      "story": "My neighbour Doris has been terribly confused lately, she knocked on my door twice today asking what day it was. I helped her find her keys and made us both a cup of tea.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["experiencer_other", "no_symptoms"]
+    },
+    {
+      "id": "h040",
+      "story": "Nothing but dizzy spells all morning, really bad ones, I had to keep sitting down. Couldn't face lunch.",
+      "expect": { "dizziness": true, "dizzinessSeverity": 3, "appetite": "worse" },
+      "expectOther": {},
+      "tags": ["pseudo_negation", "qualitative", "colloquial", "multi_symptom"]
+    },
+    {
+      "id": "h041",
+      "story": "Dad rated his energy 2 out of 5 and his sleep 4 out of 5. He says no dizziness, but his feet are swollen again.",
+      "expect": { "energy": 2, "sleep": 4, "dizziness": false, "swelling": true },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "explicit_rating", "negation", "multi_symptom"]
+    },
+    {
+      "id": "h042",
+      "story": "A few days ago I got confused at the bank and couldn't remember my PIN. Today I did the bills myself without a hitch.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["historical", "no_symptoms"]
+    },
+    {
+      "id": "h043",
+      "story": "Feeling a bit low today, missing Arthur. Anxious about my scan on Friday, and my heart has been fluttering on and off. Slept badly, kept waking up.",
+      "expect": { "sleep": 2 },
+      "expectOther": { "low_mood": true, "anxiety": true, "palpitations": true },
+      "tags": ["qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h044",
+      "story": "I thought I was coming over dizzy in the queue at the post office, but actually no, it was just the heat and I was fine once I got outside. Energy so-so.",
+      "expect": { "dizziness": false, "energy": 3 },
+      "expectOther": {},
+      "tags": ["conflict", "negation", "qualitative", "colloquial"]
+    },
+    {
+      "id": "h045",
+      "story": "Fell asleep as soon as my head hit the pillow and slept like a baby, right through. Wasn't a bit drowsy today, raring to go.",
+      "expect": { "sleep": 5, "drowsiness": false, "energy": 5 },
+      "expectOther": {},
+      "tags": ["negation", "qualitative", "colloquial", "fall_vs_near_fall"]
+    },
+    {
+      "id": "h046",
+      "story": "The dog was sick on the carpet twice in the night so I barely slept. Absolutely shattered today.",
+      "expect": { "sleep": 1, "energy": 1 },
+      "expectOther": {},
+      "tags": ["experiencer_other", "qualitative", "colloquial"]
+    },
+    {
+      "id": "h047",
+      "story": "Put a plastic chair in the shower in case I get woozy again. Didn't need it today. Sleep 4/5.",
+      "expect": { "sleep": 4 },
+      "expectOther": {},
+      "tags": ["hypothetical", "explicit_rating"]
+    },
+    {
+      "id": "h048",
+      "story": "Took Dad to his eye appointment. In the waiting room he didn't know where he was for a minute and kept asking for Mum. His vision is still blurry from the drops tonight. My back is killing me from helping him in and out of the car.",
+      "expect": { "confusion": true },
+      "expectOther": { "blurred_vision": true },
+      "tags": ["caregiver_voice", "experiencer_other", "multi_symptom"]
+    },
+    {
+      "id": "h049",
+      "story": "Never lost my balance once today, even on the stairs. No dizziness. Full of beans, and my appetite's better than it's been, had seconds of shepherd's pie.",
+      "expect": { "nearFall": false, "dizziness": false, "energy": 5, "appetite": "better" },
+      "expectOther": {},
+      "tags": ["negation", "fall_vs_near_fall", "qualitative", "colloquial", "multi_symptom"]
+    },
+    {
+      "id": "h050",
+      "story": "My wife says I was muddled this afternoon, kept calling our grandson by my brother's name. She was the one with the headache though.",
+      "expect": { "confusion": true },
+      "expectOther": {},
+      "tags": ["experiencer_other"]
+    },
+    {
+      "id": "h051",
+      "story": "Sleep was a solid four out of five. Energy maybe a three. Had diarrhoea twice this morning so I stayed close to home.",
+      "expect": { "sleep": 4, "energy": 3 },
+      "expectOther": { "diarrhea": true },
+      "tags": ["explicit_rating", "multi_symptom"]
+    },
+    {
+      "id": "h052",
+      "story": "Bunged up again, haven't been in three days despite the prunes. Bit of brain fog in the afternoon too. Energy average.",
+      "expect": { "confusion": true, "energy": 3 },
+      "expectOther": { "constipation": true },
+      "tags": ["colloquial", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h053",
+      "story": "Physio came this morning and I did all my exercises. Confused today? Not really. Well, maybe a little muddled over lunch, I'm not sure. Energy okay.",
+      "expect": { "energy": 3 },
+      "expectOther": {},
+      "tags": ["conflict", "negation", "qualitative"]
+    },
+    {
+      "id": "h054",
+      "story": "nearly fel over in the carpark, my foot caught the kerb but i grabed the trolley. no dizzyness, just clumsy",
+      "expect": { "nearFall": true, "dizziness": false },
+      "expectOther": {},
+      "tags": ["typo", "fall_vs_near_fall", "negation"]
+    },
+    {
+      "id": "h055",
+      "story": "Mum ate really well today, hungrier than usual, had a full roast dinner. She slept well last night, she said. We've put a night light in the hall in case she gets disoriented when she gets up. I didn't sleep a wink myself, worrying about her appointment.",
+      "expect": { "appetite": "better", "sleep": 4 },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "experiencer_other", "hypothetical", "qualitative"]
+    },
+    {
+      "id": "h056",
+      "story": "In the past I used to get dreadful migraines. Today my knees ached on the walk to church. Slept alright, energy pretty good.",
+      "expect": { "sleep": 3, "energy": 4 },
+      "expectOther": { "pain": true },
+      "tags": ["historical", "qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h057",
+      "story": "Picked up my repeat prescription from the chemist. They've changed the brand of my amlodipine so the tablets look different, so I rang and the pharmacist said it's the same medicine. Had a nice chat with her.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["no_symptoms", "med_mention"]
+    },
+    {
+      "id": "h058",
+      "story": "Sick and tired of this rain, it's been grey all week. Stayed in, wrote to my cousin in Canada and did the exercises the physio gave me. Nothing else to report.",
+      "expect": {},
+      "expectOther": {},
+      "tags": ["no_symptoms", "colloquial"]
+    },
+    {
+      "id": "h059",
+      "story": "My granddaughter has a rash from the new washing powder, and now I've got an itchy red rash on my forearm too.",
+      "expect": {},
+      "expectOther": { "rash": true },
+      "tags": ["experiencer_other"]
+    },
+    {
+      "id": "h060",
+      "story": "Eyes a bit blurry reading the paper this morning and sort of a dull headache behind them. Sort of tired all day.",
+      "expect": { "energy": 2 },
+      "expectOther": { "blurred_vision": true, "headache": true },
+      "tags": ["qualitative", "multi_symptom"]
+    },
+    {
+      "id": "h061",
+      "story": "Dad had a fall on Saturday and today he's been more confused than usual, asking the same questions over and over. No falls today, thank goodness.",
+      "expect": { "confusion": true, "fall": false },
+      "expectOther": {},
+      "tags": ["caregiver_voice", "historical", "negation", "fall_vs_near_fall", "multi_symptom"]
+    },
+    {
+      "id": "h062",
+      "story": "If I take the lorazepam too late I'm groggy the next morning, so I took it at nine last night. Woke up clear-headed, not groggy at all.",
+      "expect": { "drowsiness": false },
+      "expectOther": {},
+      "tags": ["hypothetical", "negation", "med_mention"]
+    },
+    {
+      "id": "h063",
+      "story": "Got up for the loo at 3 last night and nearly went flying over the cat. Grabbed the door frame just in time. Sleep was rubbish after that, maybe a 2 out of 5.",
+      "expect": { "nearFall": true, "sleep": 2 },
+      "expectOther": {},
+      "tags": ["fall_vs_near_fall", "explicit_rating", "colloquial"]
+    },
+    {
+      "id": "h064",
+      "story": "Sleep 5 out of 5 for once!! Energy 4 out of 5. My daughter took me to the coast, we had fish and chips and an ice cream, appetite good.",
+      "expect": { "sleep": 5, "energy": 4, "appetite": "better" },
+      "expectOther": {},
+      "tags": ["explicit_rating", "qualitative"]
+    },
+    {
+      "id": "h065",
+      "story": "Right, where to start. Went down to the shops first thing for bread and the papers, bumped into Maureen who told me her Ken had fallen off a ladder, silly man. Came home and had a bit of a dizzy turn while putting the shopping away, nothing too bad, sat down and it went off. Ankles are puffy again tonight. Slept badly last night with the wind rattling the windows. Mustn't grumble though, had a lovely phone call with my grandson in Leeds.",
+      "expect": { "dizziness": true, "dizzinessSeverity": 1, "swelling": true, "sleep": 2 },
+      "expectOther": {},
+      "tags": ["long", "experiencer_other", "multi_symptom", "colloquial", "qualitative", "fall_vs_near_fall"]
+    },
+    {
+      "id": "h066",
+      "story": "I'm afraid I'll fall again if I go out in this wind, so I stayed in and did my jigsaw. Energy so-so, appetite same as usual.",
+      "expect": { "energy": 3, "appetite": "same" },
+      "expectOther": {},
+      "tags": ["hypothetical", "qualitative"]
+    },
+    {
+      "id": "h067",
+      "story": "My wife felt nauseous after her new metformin dose but she hasn't been constipated. I've had a stinking cold all week myself and I'm coughing my head off.",
+      "expect": {},
+      "expectOther": { "nausea": true, "constipation": false },
+      "tags": ["caregiver_voice", "negation", "med_mention", "experiencer_other"]
+    },
+    {
+      "id": "h068",
+      "story": "Kept dozing off in the chair after lunch. Bladder has been terrible today, had a couple of little accidents before I got to the loo. Feeling quite down about it.",
+      "expect": { "drowsiness": true },
+      "expectOther": { "urinary_problem": true, "low_mood": true },
+      "tags": ["multi_symptom", "colloquial", "qualitative"]
+    },
+    {
+      "id": "h069",
+      "story": "Very dizzy when I got up from the toilet tonight, had to plonk myself back down on the seat. Much worse than last week when it was only slight.",
+      "expect": { "dizziness": true, "dizzinessSeverity": 3 },
+      "expectOther": {},
+      "tags": ["historical", "qualitative"]
+    },
+    {
+      "id": "h070",
+      "story": "No doubt about it, my ankles are swollen today. My friend Betty's were worse though, she could barely get her shoes on. Neither of us was dizzy, thankfully.",
+      "expect": { "swelling": true, "dizziness": false },
+      "expectOther": {},
+      "tags": ["pseudo_negation", "experiencer_other", "negation"]
+    }
+  ]
+}

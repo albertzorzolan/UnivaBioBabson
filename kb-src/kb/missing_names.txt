@@ -1,0 +1,102 @@
+melatonin
+vilazodone
+vortioxetine
+divalproex
+naloxone
+buspirone
+memantine
+carbidopa
+levodopa
+pramipexole
+ropinirole
+rotigotine
+rasagiline
+ergoloid mesylates
+caffeine
+ondansetron
+felodipine
+nicardipine
+minoxidil
+bisoprolol
+labetalol
+nadolol
+nebivolol
+propranolol
+sotalol
+chlorothiazide
+flecainide
+atorvastatin
+lovastatin
+pitavastatin
+pravastatin
+rosuvastatin
+simvastatin
+ezetimibe
+fenofibrate
+omega-3 fatty acids
+sildenafil
+tadalafil
+potassium chloride
+alogliptin
+linagliptin
+saxagliptin
+sitagliptin
+dulaglutide
+liraglutide
+semaglutide
+tirzepatide
+insulin nph
+insulin regular
+sucralfate
+misoprostol
+bisacodyl
+docusate
+lactulose
+magnesium hydroxide
+polyethylene glycol 3350
+psyllium
+sennosides
+diphenoxylate
+bismuth subsalicylate
+salsalate
+allopurinol
+febuxostat
+methotrexate
+hydroxychloroquine
+albuterol
+formoterol
+salmeterol
+ipratropium
+tiotropium
+umeclidinium
+budesonide
+fluticasone
+montelukast
+benzonatate
+guaifenesin
+phenylephrine
+pseudoephedrine
+amoxicillin
+clavulanate
+cephalexin
+levofloxacin
+doxycycline
+metronidazole
+fluconazole
+finasteride
+dutasteride
+alendronate
+ibandronate
+risedronate
+raloxifene
+calcium carbonate
+calcium citrate
+cholecalciferol
+ergocalciferol
+cyanocobalamin
+ferrous sulfate
+magnesium oxide
+levothyroxine
+desiccated thyroid
+conjugated estrogens
+esterified estrogens

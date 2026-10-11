@@ -1,0 +1,614 @@
+{
+ "melatonin": {
+  "query": "melatonin",
+  "rxcui": "6711",
+  "name": "melatonin",
+  "tty": "IN"
+ },
+ "vilazodone": {
+  "query": "vilazodone",
+  "rxcui": "1086769",
+  "name": "vilazodone",
+  "tty": "IN"
+ },
+ "vortioxetine": {
+  "query": "vortioxetine",
+  "rxcui": "1455099",
+  "name": "vortioxetine",
+  "tty": "IN"
+ },
+ "divalproex": {
+  "query": "valproate",
+  "rxcui": "40254",
+  "name": "valproate",
+  "tty": "IN"
+ },
+ "naloxone": {
+  "query": "naloxone",
+  "rxcui": "7242",
+  "name": "naloxone",
+  "tty": "IN"
+ },
+ "buspirone": {
+  "query": "buspirone",
+  "rxcui": "1827",
+  "name": "buspirone",
+  "tty": "IN"
+ },
+ "memantine": {
+  "query": "memantine",
+  "rxcui": "6719",
+  "name": "memantine",
+  "tty": "IN"
+ },
+ "carbidopa": {
+  "query": "carbidopa",
+  "rxcui": "2019",
+  "name": "carbidopa",
+  "tty": "IN"
+ },
+ "levodopa": {
+  "query": "levodopa",
+  "rxcui": "6375",
+  "name": "levodopa",
+  "tty": "IN"
+ },
+ "pramipexole": {
+  "query": "pramipexole",
+  "rxcui": "746741",
+  "name": "pramipexole",
+  "tty": "IN"
+ },
+ "ropinirole": {
+  "query": "ropinirole",
+  "rxcui": "72302",
+  "name": "ropinirole",
+  "tty": "IN"
+ },
+ "rotigotine": {
+  "query": "rotigotine",
+  "rxcui": "616739",
+  "name": "rotigotine",
+  "tty": "IN"
+ },
+ "rasagiline": {
+  "query": "rasagiline",
+  "rxcui": "134748",
+  "name": "rasagiline",
+  "tty": "IN"
+ },
+ "ergoloid mesylates": {
+  "query": "ergoloid mesylates, USP",
+  "rxcui": "4024",
+  "name": "ergoloid mesylates, USP",
+  "tty": "IN"
+ },
+ "caffeine": {
+  "query": "caffeine",
+  "rxcui": "1886",
+  "name": "caffeine",
+  "tty": "IN"
+ },
+ "ondansetron": {
+  "query": "ondansetron",
+  "rxcui": "26225",
+  "name": "ondansetron",
+  "tty": "IN"
+ },
+ "felodipine": {
+  "query": "felodipine",
+  "rxcui": "4316",
+  "name": "felodipine",
+  "tty": "IN"
+ },
+ "nicardipine": {
+  "query": "nicardipine",
+  "rxcui": "7396",
+  "name": "nicardipine",
+  "tty": "IN"
+ },
+ "minoxidil": {
+  "query": "minoxidil",
+  "rxcui": "6984",
+  "name": "minoxidil",
+  "tty": "IN"
+ },
+ "bisoprolol": {
+  "query": "bisoprolol",
+  "rxcui": "19484",
+  "name": "bisoprolol",
+  "tty": "IN"
+ },
+ "labetalol": {
+  "query": "labetalol",
+  "rxcui": "6185",
+  "name": "labetalol",
+  "tty": "IN"
+ },
+ "nadolol": {
+  "query": "nadolol",
+  "rxcui": "7226",
+  "name": "nadolol",
+  "tty": "IN"
+ },
+ "nebivolol": {
+  "query": "nebivolol",
+  "rxcui": "31555",
+  "name": "nebivolol",
+  "tty": "IN"
+ },
+ "propranolol": {
+  "query": "propranolol",
+  "rxcui": "8787",
+  "name": "propranolol",
+  "tty": "IN"
+ },
+ "sotalol": {
+  "query": "sotalol",
+  "rxcui": "9947",
+  "name": "sotalol",
+  "tty": "IN"
+ },
+ "chlorothiazide": {
+  "query": "chlorothiazide",
+  "rxcui": "2396",
+  "name": "chlorothiazide",
+  "tty": "IN"
+ },
+ "flecainide": {
+  "query": "flecainide",
+  "rxcui": "4441",
+  "name": "flecainide",
+  "tty": "IN"
+ },
+ "atorvastatin": {
+  "query": "atorvastatin",
+  "rxcui": "83367",
+  "name": "atorvastatin",
+  "tty": "IN"
+ },
+ "lovastatin": {
+  "query": "lovastatin",
+  "rxcui": "6472",
+  "name": "lovastatin",
+  "tty": "IN"
+ },
+ "pitavastatin": {
+  "query": "pitavastatin",
+  "rxcui": "861634",
+  "name": "pitavastatin",
+  "tty": "IN"
+ },
+ "pravastatin": {
+  "query": "pravastatin",
+  "rxcui": "42463",
+  "name": "pravastatin",
+  "tty": "IN"
+ },
+ "rosuvastatin": {
+  "query": "rosuvastatin",
+  "rxcui": "301542",
+  "name": "rosuvastatin",
+  "tty": "IN"
+ },
+ "simvastatin": {
+  "query": "simvastatin",
+  "rxcui": "36567",
+  "name": "simvastatin",
+  "tty": "IN"
+ },
+ "ezetimibe": {
+  "query": "ezetimibe",
+  "rxcui": "341248",
+  "name": "ezetimibe",
+  "tty": "IN"
+ },
+ "fenofibrate": {
+  "query": "fenofibrate",
+  "rxcui": "8703",
+  "name": "fenofibrate",
+  "tty": "IN"
+ },
+ "omega-3 fatty acids": {
+  "query": "omega-3 acid ethyl esters",
+  "rxcui": "484348",
+  "name": "omega-3 acid ethyl esters (USP)",
+  "tty": "IN"
+ },
+ "sildenafil": {
+  "query": "sildenafil",
+  "rxcui": "136411",
+  "name": "sildenafil",
+  "tty": "IN"
+ },
+ "tadalafil": {
+  "query": "tadalafil",
+  "rxcui": "358263",
+  "name": "tadalafil",
+  "tty": "IN"
+ },
+ "potassium chloride": {
+  "query": "potassium chloride",
+  "rxcui": "8591",
+  "name": "potassium chloride",
+  "tty": "IN"
+ },
+ "alogliptin": {
+  "query": "alogliptin",
+  "rxcui": "1368001",
+  "name": "alogliptin",
+  "tty": "IN"
+ },
+ "linagliptin": {
+  "query": "linagliptin",
+  "rxcui": "1100699",
+  "name": "linagliptin",
+  "tty": "IN"
+ },
+ "saxagliptin": {
+  "query": "saxagliptin",
+  "rxcui": "857974",
+  "name": "saxagliptin",
+  "tty": "IN"
+ },
+ "sitagliptin": {
+  "query": "sitagliptin",
+  "rxcui": "593411",
+  "name": "sitagliptin",
+  "tty": "IN"
+ },
+ "dulaglutide": {
+  "query": "dulaglutide",
+  "rxcui": "1551291",
+  "name": "dulaglutide",
+  "tty": "IN"
+ },
+ "liraglutide": {
+  "query": "liraglutide",
+  "rxcui": "475968",
+  "name": "liraglutide",
+  "tty": "IN"
+ },
+ "semaglutide": {
+  "query": "semaglutide",
+  "rxcui": "1991302",
+  "name": "semaglutide",
+  "tty": "IN"
+ },
+ "tirzepatide": {
+  "query": "tirzepatide",
+  "rxcui": "2601723",
+  "name": "tirzepatide",
+  "tty": "IN"
+ },
+ "insulin nph": {
+  "query": "insulin isophane",
+  "rxcui": "1605101",
+  "name": "insulin isophane",
+  "tty": "IN"
+ },
+ "insulin regular": {
+  "query": "insulin, regular, human",
+  "rxcui": "253182",
+  "name": "insulin, regular, human",
+  "tty": "IN"
+ },
+ "sucralfate": {
+  "query": "sucralfate",
+  "rxcui": "10156",
+  "name": "sucralfate",
+  "tty": "IN"
+ },
+ "misoprostol": {
+  "query": "misoprostol",
+  "rxcui": "42331",
+  "name": "misoprostol",
+  "tty": "IN"
+ },
+ "bisacodyl": {
+  "query": "bisacodyl",
+  "rxcui": "1596",
+  "name": "bisacodyl",
+  "tty": "IN"
+ },
+ "docusate": {
+  "query": "docusate",
+  "rxcui": "82003",
+  "name": "docusate",
+  "tty": "IN"
+ },
+ "lactulose": {
+  "query": "lactulose",
+  "rxcui": "6218",
+  "name": "lactulose",
+  "tty": "IN"
+ },
+ "magnesium hydroxide": {
+  "query": "magnesium hydroxide",
+  "rxcui": "6581",
+  "name": "magnesium hydroxide",
+  "tty": "IN"
+ },
+ "polyethylene glycol 3350": {
+  "query": "polyethylene glycol 3350",
+  "rxcui": "221147",
+  "name": "polyethylene glycol 3350",
+  "tty": "IN"
+ },
+ "psyllium": {
+  "query": "psyllium",
+  "rxcui": "8928",
+  "name": "psyllium",
+  "tty": "IN"
+ },
+ "sennosides": {
+  "query": "sennosides",
+  "rxcui": "36387",
+  "name": "sennosides, USP",
+  "tty": "IN"
+ },
+ "diphenoxylate": {
+  "query": "diphenoxylate",
+  "rxcui": "3500",
+  "name": "diphenoxylate",
+  "tty": "IN"
+ },
+ "bismuth subsalicylate": {
+  "query": "bismuth subsalicylate",
+  "rxcui": "19478",
+  "name": "bismuth subsalicylate",
+  "tty": "IN"
+ },
+ "salsalate": {
+  "query": "salsalate",
+  "rxcui": "36108",
+  "name": "salsalate",
+  "tty": "IN"
+ },
+ "allopurinol": {
+  "query": "allopurinol",
+  "rxcui": "519",
+  "name": "allopurinol",
+  "tty": "IN"
+ },
+ "febuxostat": {
+  "query": "febuxostat",
+  "rxcui": "73689",
+  "name": "febuxostat",
+  "tty": "IN"
+ },
+ "methotrexate": {
+  "query": "methotrexate",
+  "rxcui": "6851",
+  "name": "methotrexate",
+  "tty": "IN"
+ },
+ "hydroxychloroquine": {
+  "query": "hydroxychloroquine",
+  "rxcui": "5521",
+  "name": "hydroxychloroquine",
+  "tty": "IN"
+ },
+ "albuterol": {
+  "query": "albuterol",
+  "rxcui": "435",
+  "name": "albuterol",
+  "tty": "IN"
+ },
+ "formoterol": {
+  "query": "formoterol",
+  "rxcui": "25255",
+  "name": "formoterol",
+  "tty": "IN"
+ },
+ "salmeterol": {
+  "query": "salmeterol",
+  "rxcui": "36117",
+  "name": "salmeterol",
+  "tty": "IN"
+ },
+ "ipratropium": {
+  "query": "ipratropium",
+  "rxcui": "7213",
+  "name": "ipratropium",
+  "tty": "IN"
+ },
+ "tiotropium": {
+  "query": "tiotropium",
+  "rxcui": "69120",
+  "name": "tiotropium",
+  "tty": "IN"
+ },
+ "umeclidinium": {
+  "query": "umeclidinium",
+  "rxcui": "1487514",
+  "name": "umeclidinium",
+  "tty": "IN"
+ },
+ "budesonide": {
+  "query": "budesonide",
+  "rxcui": "19831",
+  "name": "budesonide",
+  "tty": "IN"
+ },
+ "fluticasone": {
+  "query": "fluticasone",
+  "rxcui": "41126",
+  "name": "fluticasone",
+  "tty": "IN"
+ },
+ "montelukast": {
+  "query": "montelukast",
+  "rxcui": "88249",
+  "name": "montelukast",
+  "tty": "IN"
+ },
+ "benzonatate": {
+  "query": "benzonatate",
+  "rxcui": "18993",
+  "name": "benzonatate",
+  "tty": "IN"
+ },
+ "guaifenesin": {
+  "query": "guaifenesin",
+  "rxcui": "5032",
+  "name": "guaifenesin",
+  "tty": "IN"
+ },
+ "phenylephrine": {
+  "query": "phenylephrine",
+  "rxcui": "8163",
+  "name": "phenylephrine",
+  "tty": "IN"
+ },
+ "pseudoephedrine": {
+  "query": "pseudoephedrine",
+  "rxcui": "8896",
+  "name": "pseudoephedrine",
+  "tty": "IN"
+ },
+ "amoxicillin": {
+  "query": "amoxicillin",
+  "rxcui": "723",
+  "name": "amoxicillin",
+  "tty": "IN"
+ },
+ "clavulanate": {
+  "query": "clavulanate",
+  "rxcui": "48203",
+  "name": "clavulanate",
+  "tty": "IN"
+ },
+ "cephalexin": {
+  "query": "cephalexin",
+  "rxcui": "2231",
+  "name": "cephalexin",
+  "tty": "IN"
+ },
+ "levofloxacin": {
+  "query": "levofloxacin",
+  "rxcui": "82122",
+  "name": "levofloxacin",
+  "tty": "IN"
+ },
+ "doxycycline": {
+  "query": "doxycycline",
+  "rxcui": "3640",
+  "name": "doxycycline",
+  "tty": "IN"
+ },
+ "metronidazole": {
+  "query": "metronidazole",
+  "rxcui": "6922",
+  "name": "metronidazole",
+  "tty": "IN"
+ },
+ "fluconazole": {
+  "query": "fluconazole",
+  "rxcui": "4450",
+  "name": "fluconazole",
+  "tty": "IN"
+ },
+ "finasteride": {
+  "query": "finasteride",
+  "rxcui": "25025",
+  "name": "finasteride",
+  "tty": "IN"
+ },
+ "dutasteride": {
+  "query": "dutasteride",
+  "rxcui": "228790",
+  "name": "dutasteride",
+  "tty": "IN"
+ },
+ "alendronate": {
+  "query": "alendronate",
+  "rxcui": "46041",
+  "name": "alendronate",
+  "tty": "IN"
+ },
+ "ibandronate": {
+  "query": "ibandronate",
+  "rxcui": "115264",
+  "name": "ibandronate",
+  "tty": "IN"
+ },
+ "risedronate": {
+  "query": "risedronate",
+  "rxcui": "73056",
+  "name": "risedronate",
+  "tty": "IN"
+ },
+ "raloxifene": {
+  "query": "raloxifene",
+  "rxcui": "72143",
+  "name": "raloxifene",
+  "tty": "IN"
+ },
+ "calcium carbonate": {
+  "query": "calcium carbonate",
+  "rxcui": "1897",
+  "name": "calcium carbonate",
+  "tty": "IN"
+ },
+ "calcium citrate": {
+  "query": "calcium citrate",
+  "rxcui": "47613",
+  "name": "calcium citrate",
+  "tty": "IN"
+ },
+ "cholecalciferol": {
+  "query": "cholecalciferol",
+  "rxcui": "2418",
+  "name": "cholecalciferol",
+  "tty": "IN"
+ },
+ "ergocalciferol": {
+  "query": "ergocalciferol",
+  "rxcui": "4018",
+  "name": "ergocalciferol",
+  "tty": "IN"
+ },
+ "cyanocobalamin": {
+  "query": "cyanocobalamin",
+  "rxcui": "11248",
+  "name": "vitamin B12",
+  "tty": "IN"
+ },
+ "ferrous sulfate": {
+  "query": "ferrous sulfate",
+  "rxcui": "24947",
+  "name": "ferrous sulfate",
+  "tty": "IN"
+ },
+ "magnesium oxide": {
+  "query": "magnesium oxide",
+  "rxcui": "6582",
+  "name": "magnesium oxide",
+  "tty": "IN"
+ },
+ "levothyroxine": {
+  "query": "levothyroxine",
+  "rxcui": "10582",
+  "name": "levothyroxine",
+  "tty": "IN"
+ },
+ "desiccated thyroid": {
+  "query": "thyroid (USP)",
+  "rxcui": "10572",
+  "name": "thyroid (USP)",
+  "tty": "IN"
+ },
+ "conjugated estrogens": {
+  "query": "estrogens, conjugated (USP)",
+  "rxcui": "4099",
+  "name": "estrogens, conjugated (USP)",
+  "tty": "IN"
+ },
+ "esterified estrogens": {
+  "query": "estrogens, esterified (USP)",
+  "rxcui": "214549",
+  "name": "estrogens, esterified (USP)",
+  "tty": "IN"
+ }
+}

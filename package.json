@@ -1,0 +1,41 @@
+{
+  "name": "kinwise",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Kinwise — private, on-device AI co-pilot for medication safety in older adults (UnivaBio 2026)",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5174 --strictPort",
+    "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && GITHUB_PAGES=1 vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc -b --noEmit",
+    "eval:nlp": "vitest run eval/nlp.eval.test.ts",
+    "eval:meds": "vitest run eval/meds.eval.test.ts",
+    "model:download": "node scripts/download-model.mjs",
+    "test:e2e": "node scripts/browser-test.mjs",
+    "test:a11y": "node scripts/a11y.mjs"
+  },
+  "dependencies": {
+    "@mlc-ai/web-llm": "0.2.85",
+    "lucide-react": "0.468.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "recharts": "3.2.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.55.1",
+    "@types/node": "22.18.6",
+    "@types/react": "19.1.16",
+    "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react": "5.0.3",
+    "@vitest/coverage-v8": "3.2.4",
+    "typescript": "5.9.2",
+    "vite": "7.1.7",
+    "vitest": "3.2.4"
+  }
+}

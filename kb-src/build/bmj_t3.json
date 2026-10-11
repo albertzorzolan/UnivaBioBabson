@@ -1,0 +1,522 @@
+{
+ "Antihypertensive to antiemetic": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "3086",
+  "initialAfterSubsequent": "1917",
+  "crudeSR": "1.61",
+  "nullEffectSR": "0.97",
+  "adjustedSR": "1.65 (1.56 to 1.75)"
+ },
+ "HMG Co-A reductase inhibitor to mineral supplement": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "219",
+  "initialAfterSubsequent": "134",
+  "crudeSR": "1.63",
+  "nullEffectSR": "0.93",
+  "adjustedSR": "1.76 (1.42 to 2.19)"
+ },
+ "HMG Co-A reductase inhibitor to sleep agent": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "7654",
+  "initialAfterSubsequent": "6216",
+  "crudeSR": "1.23",
+  "nullEffectSR": "0.92",
+  "adjustedSR": "1.34 (1.29 to 1.38)"
+ },
+ "HMG Co-A reductase inhibitor to pain reliever": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "19 339",
+  "initialAfterSubsequent": "18 144",
+  "crudeSR": "1.07",
+  "nullEffectSR": "0.92",
+  "adjustedSR": "1.16 (1.14 to 1.19)"
+ },
+ "HMG Co-A reductase inhibitor to quinine sulfate": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "0",
+  "initialAfterSubsequent": "0",
+  "crudeSR": "\u2014",
+  "nullEffectSR": "\u2014",
+  "adjustedSR": "\u2014"
+ },
+ "Angiotensin converting enzyme inhibitor to cough remedy": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "1877",
+  "initialAfterSubsequent": "1197",
+  "crudeSR": "1.57",
+  "nullEffectSR": "1.07",
+  "adjustedSR": "1.47 (1.37 to 1.58)"
+ },
+ "Beta blocker to antidepressant": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "7221",
+  "initialAfterSubsequent": "5927",
+  "crudeSR": "1.22",
+  "nullEffectSR": "0.98",
+  "adjustedSR": "1.25 (1.21 to 1.29)"
+ },
+ "Beta blocker to phosphodiesterase-5 inhibitor": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "8",
+  "initialAfterSubsequent": "7",
+  "crudeSR": "1.14",
+  "nullEffectSR": "1.16",
+  "adjustedSR": "0.98 (0.36 to 2.71)"
+ },
+ "Calcium channel blocker to diuretic": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "11 018",
+  "initialAfterSubsequent": "6671",
+  "crudeSR": "1.65",
+  "nullEffectSR": "1.00",
+  "adjustedSR": "1.65 (1.60 to 1.70)"
+ },
+ "Calcium channel blocker to laxative": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "11 129",
+  "initialAfterSubsequent": "9111",
+  "crudeSR": "1.22",
+  "nullEffectSR": "0.98",
+  "adjustedSR": "1.24 (1.21 to 1.28)"
+ },
+ "Diuretic to overactive bladder drug": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "4595",
+  "initialAfterSubsequent": "4877",
+  "crudeSR": "0.94",
+  "nullEffectSR": "0.99",
+  "adjustedSR": "0.95 (0.91 to 0.99)"
+ },
+ "Diuretic to anti-gout agent": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "12 906",
+  "initialAfterSubsequent": "16 131",
+  "crudeSR": "0.80",
+  "nullEffectSR": "0.98",
+  "adjustedSR": "0.82 (0.80 to 0.84)"
+ },
+ "Digoxin to antiemetic": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "423",
+  "initialAfterSubsequent": "264",
+  "crudeSR": "1.60",
+  "nullEffectSR": "0.95",
+  "adjustedSR": "1.68 (1.44 to 1.96)"
+ },
+ "Midodrine to antihypertensive": {
+  "system": "Cardiovascular system",
+  "initialBeforeSubsequent": "148",
+  "initialAfterSubsequent": "300",
+  "crudeSR": "0.49",
+  "nullEffectSR": "0.88",
+  "adjustedSR": "0.56 (0.46 to 0.68)"
+ },
+ "SSRI or SNRI to overactive bladder drug": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "3107",
+  "initialAfterSubsequent": "2808",
+  "crudeSR": "1.11",
+  "nullEffectSR": "1.03",
+  "adjustedSR": "1.07 (1.02 to 1.13)"
+ },
+ "Gabapentinoid to diuretic": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "8162",
+  "initialAfterSubsequent": "6809",
+  "crudeSR": "1.20",
+  "nullEffectSR": "0.99",
+  "adjustedSR": "1.21 (1.17 to 1.25)"
+ },
+ "Benzodiazepine to cholinesterase inhibitor": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "591",
+  "initialAfterSubsequent": "618",
+  "crudeSR": "0.96",
+  "nullEffectSR": "1.09",
+  "adjustedSR": "0.88 (0.79 to 0.99)"
+ },
+ "Anticonvulsant to antiemetic": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "2840",
+  "initialAfterSubsequent": "2343",
+  "crudeSR": "1.21",
+  "nullEffectSR": "0.95",
+  "adjustedSR": "1.27 (1.20 to 1.34)"
+ },
+ "Anticonvulsant to topical corticosteroid": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "7539",
+  "initialAfterSubsequent": "8363",
+  "crudeSR": "0.90",
+  "nullEffectSR": "0.92",
+  "adjustedSR": "0.98 (0.95 to 1.01)"
+ },
+ "Antipsychotic to anti-tremor antimuscarinic": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "91",
+  "initialAfterSubsequent": "26",
+  "crudeSR": "3.50",
+  "nullEffectSR": "0.95",
+  "adjustedSR": "3.69 (2.39 to 5.70)"
+ },
+ "Antipsychotic to sedative": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "7211",
+  "initialAfterSubsequent": "5912",
+  "crudeSR": "1.22",
+  "nullEffectSR": "0.92",
+  "adjustedSR": "1.32 (1.28 to 1.37)"
+ },
+ "Antipsychotic to antiparkinsonian agent": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "472",
+  "initialAfterSubsequent": "575",
+  "crudeSR": "0.82",
+  "nullEffectSR": "1.03",
+  "adjustedSR": "0.80 (0.71 to 0.90)"
+ },
+ "Antipsychotic to antihyperglycaemic": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "1074",
+  "initialAfterSubsequent": "1754",
+  "crudeSR": "0.61",
+  "nullEffectSR": "1.06",
+  "adjustedSR": "0.58 (0.53 to 0.62)"
+ },
+ "Antipsychotic to beta blocker": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "1765",
+  "initialAfterSubsequent": "3292",
+  "crudeSR": "0.54",
+  "nullEffectSR": "0.99",
+  "adjustedSR": "0.54 (0.51 to 0.57)"
+ },
+ "Antipsychotic to antiarrhythmic": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "1636",
+  "initialAfterSubsequent": "3083",
+  "crudeSR": "0.53",
+  "nullEffectSR": "0.99",
+  "adjustedSR": "0.54 (0.51 to 0.57)"
+ },
+ "Tricyclic antidepressant to cholinesterase inhibitor": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "156",
+  "initialAfterSubsequent": "120",
+  "crudeSR": "1.30",
+  "nullEffectSR": "1.06",
+  "adjustedSR": "1.22 (0.96 to 1.55)"
+ },
+ "Tricyclic antidepressant to laxative": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "3186",
+  "initialAfterSubsequent": "3163",
+  "crudeSR": "1.01",
+  "nullEffectSR": "1.05",
+  "adjustedSR": "0.96 (0.92 to 1.01)"
+ },
+ "Tricyclic antidepressant to overactive bladder drug": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "2008",
+  "initialAfterSubsequent": "2178",
+  "crudeSR": "0.92",
+  "nullEffectSR": "1.06",
+  "adjustedSR": "0.87 (0.82 to 0.93)"
+ },
+ "Cholinesterase inhibitor to antiemetic": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "437",
+  "initialAfterSubsequent": "206",
+  "crudeSR": "2.12",
+  "nullEffectSR": "0.95",
+  "adjustedSR": "2.24 (1.90 to 2.65)"
+ },
+ "Cholinesterase inhibitor to antidiarrheal": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "392",
+  "initialAfterSubsequent": "220",
+  "crudeSR": "1.78",
+  "nullEffectSR": "0.97",
+  "adjustedSR": "1.83 (1.55 to 2.16)"
+ },
+ "Cholinesterase inhibitor to sleep agent": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "2475",
+  "initialAfterSubsequent": "2044",
+  "crudeSR": "1.21",
+  "nullEffectSR": "0.92",
+  "adjustedSR": "1.31 (1.23 to 1.39)"
+ },
+ "Cholinesterase inhibitor to overactive bladder drug": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "835",
+  "initialAfterSubsequent": "745",
+  "crudeSR": "1.12",
+  "nullEffectSR": "0.99",
+  "adjustedSR": "1.13 (1.02 to 1.25)"
+ },
+ "Cholinesterase inhibitor to bismuth subsalicylate": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "0",
+  "initialAfterSubsequent": "0",
+  "crudeSR": "\u2014",
+  "nullEffectSR": "\u2014",
+  "adjustedSR": "\u2014"
+ },
+ "Cholinesterase inhibitor to antihistamine": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "\u22645",
+  "initialAfterSubsequent": "\u22645",
+  "crudeSR": "\u2014",
+  "nullEffectSR": "\u2014",
+  "adjustedSR": "\u2014"
+ },
+ "Dopaminergic antiparkinsonian agent to antipsychotic": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "614",
+  "initialAfterSubsequent": "351",
+  "crudeSR": "1.75",
+  "nullEffectSR": "0.97",
+  "adjustedSR": "1.80 (1.58 to 2.05)"
+ },
+ "Venlafaxine to antihypertensive": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "421",
+  "initialAfterSubsequent": "431",
+  "crudeSR": "0.98",
+  "nullEffectSR": "1.02",
+  "adjustedSR": "0.96 (0.84 to 1.10)"
+ },
+ "Venlafaxine to benzodiazepine": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "530",
+  "initialAfterSubsequent": "945",
+  "crudeSR": "0.56",
+  "nullEffectSR": "0.96",
+  "adjustedSR": "0.59 (0.53 to 0.65)"
+ },
+ "Lithium to antiparkinsonian agent": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "9",
+  "initialAfterSubsequent": "9",
+  "crudeSR": "1.00",
+  "nullEffectSR": "1.13",
+  "adjustedSR": "0.89 (0.35 to 2.23)"
+ },
+ "Flunarizine to antidepressant": {
+  "system": "Central nervous system",
+  "initialBeforeSubsequent": "7",
+  "initialAfterSubsequent": "10",
+  "crudeSR": "0.70",
+  "nullEffectSR": "0.93",
+  "adjustedSR": "0.75 (0.29 to 1.98)"
+ },
+ "Dipeptidyl peptidase-4 inhibitor to NSAID": {
+  "system": "Endocrine system",
+  "initialBeforeSubsequent": "2173",
+  "initialAfterSubsequent": "2264",
+  "crudeSR": "0.96",
+  "nullEffectSR": "0.87",
+  "adjustedSR": "1.10 (1.04 to 1.17)"
+ },
+ "Sodium-glucose cotransporter-2 inhibitor to antifungal": {
+  "system": "Endocrine system",
+  "initialBeforeSubsequent": "7129",
+  "initialAfterSubsequent": "3431",
+  "crudeSR": "2.08",
+  "nullEffectSR": "0.98",
+  "adjustedSR": "2.12 (2.04 to 2.21)"
+ },
+ "Metformin to antidiarrheal": {
+  "system": "Endocrine system",
+  "initialBeforeSubsequent": "734",
+  "initialAfterSubsequent": "465",
+  "crudeSR": "1.58",
+  "nullEffectSR": "1.03",
+  "adjustedSR": "1.54 (1.37 to 1.73)"
+ },
+ "Pioglitazone or rosiglitazone to diuretic": {
+  "system": "Endocrine system",
+  "initialBeforeSubsequent": "\u22645",
+  "initialAfterSubsequent": "\u22645",
+  "crudeSR": "\u2014",
+  "nullEffectSR": "\u2014",
+  "adjustedSR": "\u2014"
+ },
+ "Rosiglitazone to diuretic": {
+  "system": "Endocrine system",
+  "initialBeforeSubsequent": "\u22645",
+  "initialAfterSubsequent": "\u22645",
+  "crudeSR": "\u2014",
+  "nullEffectSR": "\u2014",
+  "adjustedSR": "\u2014"
+ },
+ "Proton pump inhibitor to vitamin supplement": {
+  "system": "Gastrointestinal system",
+  "initialBeforeSubsequent": "5084",
+  "initialAfterSubsequent": "4040",
+  "crudeSR": "1.26",
+  "nullEffectSR": "0.96",
+  "adjustedSR": "1.31 (1.26 to 1.36)"
+ },
+ "Proton pump inhibitor to vitamin or mineral supplement": {
+  "system": "Gastrointestinal system",
+  "initialBeforeSubsequent": "12 902",
+  "initialAfterSubsequent": "10 161",
+  "crudeSR": "1.27",
+  "nullEffectSR": "1.01",
+  "adjustedSR": "1.25 (1.22 to 1.29)"
+ },
+ "Laxative to antidiarrheal agent": {
+  "system": "Gastrointestinal system",
+  "initialBeforeSubsequent": "7268",
+  "initialAfterSubsequent": "2886",
+  "crudeSR": "2.52",
+  "nullEffectSR": "0.99",
+  "adjustedSR": "2.53 (2.43 to 2.65)"
+ },
+ "Antidopaminergic antiemetic to antiparkinsonian agent": {
+  "system": "Gastrointestinal system",
+  "initialBeforeSubsequent": "282",
+  "initialAfterSubsequent": "522",
+  "crudeSR": "0.54",
+  "nullEffectSR": "1.08",
+  "adjustedSR": "0.50 (0.43 to 0.58)"
+ },
+ "Anticholinergic antiemetics to alpha-1 receptor blocker": {
+  "system": "Gastrointestinal system",
+  "initialBeforeSubsequent": "112",
+  "initialAfterSubsequent": "733",
+  "crudeSR": "0.15",
+  "nullEffectSR": "1.06",
+  "adjustedSR": "0.14 (0.12 to 0.18)"
+ },
+ "Opioid to antidepressant": {
+  "system": "Musculoskeletal system",
+  "initialBeforeSubsequent": "25 737",
+  "initialAfterSubsequent": "19 731",
+  "crudeSR": "1.30",
+  "nullEffectSR": "1.01",
+  "adjustedSR": "1.29 (1.27 to 1.32)"
+ },
+ "NSAID to antiemetic": {
+  "system": "Musculoskeletal system",
+  "initialBeforeSubsequent": "5627",
+  "initialAfterSubsequent": "3483",
+  "crudeSR": "1.62",
+  "nullEffectSR": "0.97",
+  "adjustedSR": "1.66 (1.59 to 1.73)"
+ },
+ "NSAID to gastroprotective agent": {
+  "system": "Musculoskeletal system",
+  "initialBeforeSubsequent": "22 273",
+  "initialAfterSubsequent": "18 530",
+  "crudeSR": "1.20",
+  "nullEffectSR": "0.97",
+  "adjustedSR": "1.24 (1.21 to 1.26)"
+ },
+ "NSAID to heart failure agent": {
+  "system": "Musculoskeletal system",
+  "initialBeforeSubsequent": "11 908",
+  "initialAfterSubsequent": "10 129",
+  "crudeSR": "1.18",
+  "nullEffectSR": "1.01",
+  "adjustedSR": "1.17 (1.14 to 1.20)"
+ },
+ "NSAID to antihypertensive": {
+  "system": "Musculoskeletal system",
+  "initialBeforeSubsequent": "10 000",
+  "initialAfterSubsequent": "9052",
+  "crudeSR": "1.10",
+  "nullEffectSR": "1.01",
+  "adjustedSR": "1.10 (1.07 to 1.13)"
+ },
+ "Bisphosphonate to gastroprotective agent": {
+  "system": "Musculoskeletal system",
+  "initialBeforeSubsequent": "4342",
+  "initialAfterSubsequent": "5112",
+  "crudeSR": "0.85",
+  "nullEffectSR": "0.93",
+  "adjustedSR": "0.91 (0.88 to 0.95)"
+ },
+ "Alpha-1 receptor blocker to vestibular suppressant": {
+  "system": "Urogenital system",
+  "initialBeforeSubsequent": "904",
+  "initialAfterSubsequent": "110",
+  "crudeSR": "8.22",
+  "nullEffectSR": "0.94",
+  "adjustedSR": "8.70 (7.12 to 10.61)"
+ },
+ "Urinary anticholinergic to saliva substitute": {
+  "system": "Urogenital system",
+  "initialBeforeSubsequent": "0",
+  "initialAfterSubsequent": "0",
+  "crudeSR": "\u2014",
+  "nullEffectSR": "\u2014",
+  "adjustedSR": "\u2014"
+ },
+ "Corticosteroid to antipsychotic": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "12 959",
+  "initialAfterSubsequent": "5051",
+  "crudeSR": "2.57",
+  "nullEffectSR": "1.01",
+  "adjustedSR": "2.55 (2.47 to 2.64)"
+ },
+ "Corticosteroid to sleep agent": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "29 599",
+  "initialAfterSubsequent": "23 089",
+  "crudeSR": "1.28",
+  "nullEffectSR": "0.98",
+  "adjustedSR": "1.31 (1.29 to 1.34)"
+ },
+ "Corticosteroid to antihypertensive": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "14 867",
+  "initialAfterSubsequent": "15 997",
+  "crudeSR": "0.93",
+  "nullEffectSR": "1.02",
+  "adjustedSR": "0.91 (0.89 to 0.93)"
+ },
+ "Carbapenem to anticonvulsant": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "\u22645",
+  "initialAfterSubsequent": "\u22645",
+  "crudeSR": "\u2014",
+  "nullEffectSR": "\u2014",
+  "adjustedSR": "\u2014"
+ },
+ "Iron supplement to laxative": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "12 908",
+  "initialAfterSubsequent": "11 233",
+  "crudeSR": "1.15",
+  "nullEffectSR": "0.98",
+  "adjustedSR": "1.17 (1.14 to 1.20)"
+ },
+ "Fludrocortisone to antihypertensive": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "100",
+  "initialAfterSubsequent": "93",
+  "crudeSR": "1.08",
+  "nullEffectSR": "0.94",
+  "adjustedSR": "1.15 (0.87 to 1.52)"
+ },
+ "Acitretin to antifungal": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "41",
+  "initialAfterSubsequent": "49",
+  "crudeSR": "0.84",
+  "nullEffectSR": "1.03",
+  "adjustedSR": "0.82 (0.54 to 1.24)"
+ },
+ "Erythromycin to antiarrhythmic": {
+  "system": "Miscellaneous system",
+  "initialBeforeSubsequent": "13",
+  "initialAfterSubsequent": "9",
+  "crudeSR": "1.44",
+  "nullEffectSR": "2.05",
+  "adjustedSR": "0.71 (0.30 to 1.65)"
+ }
+}

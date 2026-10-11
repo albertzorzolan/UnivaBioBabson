@@ -4,3 +4,10 @@
 !.env.example
 __pycache__/
 *.pyc
+node_modules/
+dist/
+coverage/
+public/models/
+test-results/
+tmp/
+*.tsbuildinfo

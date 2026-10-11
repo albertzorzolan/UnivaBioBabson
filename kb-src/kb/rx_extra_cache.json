@@ -1,0 +1,839 @@
+{
+ "brands": {
+  "accuretic": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / quinapril",
+   "quinapril"
+  ],
+  "activella": [],
+  "actoplus met": [
+   "metformin",
+   "metformin / pioglitazone",
+   "pioglitazone"
+  ],
+  "acular": [
+   "ketorolac"
+  ],
+  "acular ls": [],
+  "acuvail": [
+   "ketorolac"
+  ],
+  "advair": [
+   "fluticasone",
+   "fluticasone / salmeterol",
+   "salmeterol"
+  ],
+  "advil allergy sinus": [],
+  "advil cold & sinus": [],
+  "advil dual action": [],
+  "advil pm": [],
+  "advil sinus congestion & pain": [],
+  "aggrenox": [],
+  "aldactazide": [],
+  "aleve pm": [
+   "diphenhydramine",
+   "diphenhydramine / naproxen",
+   "naproxen"
+  ],
+  "alka-seltzer plus": [],
+  "alka-seltzer plus cold night": [],
+  "alka-seltzer plus night": [],
+  "allegra-d": [
+   "fexofenadine",
+   "fexofenadine / pseudoephedrine",
+   "pseudoephedrine"
+  ],
+  "alphagan p": [],
+  "amiloride/hctz": [
+   "amiloride",
+   "amiloride / hydrochlorothiazide",
+   "hydrochlorothiazide"
+  ],
+  "anacin": [
+   "aspirin",
+   "aspirin / caffeine",
+   "caffeine"
+  ],
+  "anoro": [
+   "umeclidinium",
+   "umeclidinium / vilanterol",
+   "vilanterol"
+  ],
+  "arimidex": [
+   "anastrozole"
+  ],
+  "arthrotec": [
+   "diclofenac",
+   "diclofenac / misoprostol",
+   "misoprostol"
+  ],
+  "aspruzyo sprinkle": [
+   "ranolazine"
+  ],
+  "atacand hct": [
+   "candesartan",
+   "candesartan / hydrochlorothiazide",
+   "hydrochlorothiazide"
+  ],
+  "atropine care": [],
+  "augmentin": [
+   "amoxicillin",
+   "amoxicillin / clavulanate",
+   "clavulanate"
+  ],
+  "avalide": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / irbesartan",
+   "irbesartan"
+  ],
+  "aygestin": [],
+  "azor": [
+   "amlodipine",
+   "amlodipine / olmesartan",
+   "olmesartan"
+  ],
+  "bactrim": [
+   "sulfamethoxazole",
+   "sulfamethoxazole / trimethoprim",
+   "trimethoprim"
+  ],
+  "bayer": [],
+  "bayer low dose": [],
+  "bayer pm": [],
+  "bc powder": [],
+  "belsomra": [
+   "suvorexant"
+  ],
+  "benadryl allergy": [],
+  "benadryl allergy plus congestion": [
+   "diphenhydramine",
+   "diphenhydramine / phenylephrine",
+   "phenylephrine"
+  ],
+  "benadryl allergy ultratabs": [],
+  "benadryl cream": [],
+  "benadryl extra strength itch relief": [],
+  "benadryl extra strength itch stopping cream": [],
+  "benadryl itch cooling spray": [],
+  "benadryl itch relief stick": [],
+  "benadryl itch stopping cream": [],
+  "benadryl itch stopping gel": [],
+  "benadryl ultratabs": [],
+  "benicar hct": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / olmesartan",
+   "olmesartan"
+  ],
+  "bidil": [
+   "hydralazine",
+   "hydralazine / isosorbide dinitrate",
+   "isosorbide dinitrate"
+  ],
+  "breo": [
+   "fluticasone",
+   "fluticasone / vilanterol",
+   "vilanterol"
+  ],
+  "caduet": [
+   "amlodipine",
+   "amlodipine / atorvastatin",
+   "atorvastatin"
+  ],
+  "centrum": [],
+  "centrum silver": [],
+  "citracal": [],
+  "claritin-d": [
+   "loratadine",
+   "loratadine / pseudoephedrine",
+   "pseudoephedrine"
+  ],
+  "clinoril": [],
+  "combivent": [
+   "albuterol",
+   "albuterol / ipratropium",
+   "ipratropium"
+  ],
+  "coricidin hbp": [],
+  "coricidin hbp chest congestion & cough": [],
+  "coricidin hbp cough & cold": [],
+  "coricidin hbp maximum strength flu": [],
+  "coricidin hbp nighttime": [],
+  "cortaid": [
+   "hydrocortisone"
+  ],
+  "cortizone": [
+   "hydrocortisone"
+  ],
+  "cortizone 10": [],
+  "cortizone-10": [],
+  "cosopt": [
+   "dorzolamide",
+   "dorzolamide / timolol",
+   "timolol"
+  ],
+  "dayquil": [],
+  "dayvigo": [
+   "lemborexant"
+  ],
+  "depo-provera": [
+   "medroxyprogesterone"
+  ],
+  "depo-subq provera 104": [],
+  "dexpak": [],
+  "dimetapp": [],
+  "dimetapp cold & cough": [],
+  "dimetapp nighttime": [],
+  "diovan hct": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / valsartan",
+   "valsartan"
+  ],
+  "doan's": [],
+  "doan's pm": [],
+  "donnatal": [
+   "atropine",
+   "atropine / hyoscyamine / phenobarbital / scopolamine",
+   "hyoscyamine",
+   "phenobarbital",
+   "scopolamine"
+  ],
+  "dramamine all day less drowsy": [],
+  "duexis": [
+   "famotidine",
+   "famotidine / ibuprofen",
+   "ibuprofen"
+  ],
+  "edarbyclor": [
+   "azilsartan",
+   "azilsartan / chlorthalidone",
+   "chlorthalidone"
+  ],
+  "entresto": [
+   "sacubitril",
+   "sacubitril / valsartan",
+   "valsartan"
+  ],
+  "estrace cream": [],
+  "estrace vaginal cream": [],
+  "estring": [
+   "estradiol"
+  ],
+  "excedrin": [
+   "acetaminophen",
+   "acetaminophen / aspirin / caffeine",
+   "aspirin",
+   "caffeine"
+  ],
+  "excedrin pm": [
+   "acetaminophen",
+   "acetaminophen / diphenhydramine",
+   "diphenhydramine"
+  ],
+  "excedrin pm triple action": [
+   "acetaminophen",
+   "acetaminophen / aspirin / diphenhydramine",
+   "aspirin",
+   "diphenhydramine"
+  ],
+  "exforge": [
+   "amlodipine",
+   "amlodipine / valsartan",
+   "valsartan"
+  ],
+  "exforge hct": [
+   "amlodipine",
+   "amlodipine / hydrochlorothiazide / valsartan",
+   "hydrochlorothiazide",
+   "valsartan"
+  ],
+  "femara": [
+   "letrozole"
+  ],
+  "fioricet": [
+   "acetaminophen",
+   "acetaminophen / butalbital / caffeine",
+   "butalbital",
+   "caffeine"
+  ],
+  "fiorinal": [],
+  "flector": [
+   "diclofenac"
+  ],
+  "flector patch": [],
+  "glipizide/metformin": [
+   "glipizide",
+   "glipizide / metformin",
+   "metformin"
+  ],
+  "glucovance": [],
+  "glyxambi": [
+   "empagliflozin",
+   "empagliflozin / linagliptin",
+   "linagliptin"
+  ],
+  "goody's": [],
+  "humulin 70/30": [],
+  "hycodan": [
+   "homatropine",
+   "homatropine / hydrocodone",
+   "hydrocodone"
+  ],
+  "hytrin": [],
+  "hyzaar": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / losartan",
+   "losartan"
+  ],
+  "imitrex": [
+   "sumatriptan"
+  ],
+  "imvexxy": [
+   "estradiol"
+  ],
+  "isopto atropine": [
+   "atropine"
+  ],
+  "istalol": [
+   "timolol"
+  ],
+  "jalyn": [
+   "dutasteride",
+   "dutasteride / tamsulosin",
+   "tamsulosin"
+  ],
+  "janumet": [
+   "metformin",
+   "metformin / sitagliptin",
+   "sitagliptin"
+  ],
+  "jentadueto": [
+   "linagliptin",
+   "linagliptin / metformin",
+   "metformin"
+  ],
+  "kapspargo sprinkle": [],
+  "librax": [
+   "chlordiazepoxide",
+   "chlordiazepoxide / clidinium",
+   "clidinium"
+  ],
+  "lidoderm": [
+   "lidocaine"
+  ],
+  "limbitrol": [],
+  "lodine": [
+   "etodolac"
+  ],
+  "lofena": [
+   "diclofenac"
+  ],
+  "lomotil": [
+   "atropine",
+   "atropine / diphenoxylate",
+   "diphenoxylate"
+  ],
+  "lopressor hct": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / metoprolol",
+   "metoprolol"
+  ],
+  "lotensin hct": [
+   "benazepril",
+   "benazepril / hydrochlorothiazide",
+   "hydrochlorothiazide"
+  ],
+  "lotrel": [
+   "amlodipine",
+   "amlodipine / benazepril",
+   "benazepril"
+  ],
+  "lumify": [
+   "brimonidine"
+  ],
+  "lumigan": [
+   "bimatoprost"
+  ],
+  "mag-ox": [],
+  "mavik": [],
+  "maxidex": [
+   "dexamethasone"
+  ],
+  "maxzide": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / triamterene",
+   "triamterene"
+  ],
+  "mellaril": [],
+  "metaxall": [],
+  "micardis hct": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / telmisartan",
+   "telmisartan"
+  ],
+  "midol complete": [],
+  "motrin pm": [
+   "diphenhydramine",
+   "diphenhydramine / ibuprofen",
+   "ibuprofen"
+  ],
+  "mucinex d": [],
+  "mucinex dm": [],
+  "mucinex nightshift": [],
+  "mucinex nightshift sinus": [],
+  "namzaric": [
+   "donepezil",
+   "donepezil / memantine",
+   "memantine"
+  ],
+  "norco": [
+   "acetaminophen",
+   "acetaminophen / hydrocodone",
+   "hydrocodone"
+  ],
+  "nuedexta": [
+   "dextromethorphan",
+   "dextromethorphan / quinidine",
+   "quinidine"
+  ],
+  "nyquil": [],
+  "omnipred": [],
+  "one a day": [],
+  "onzetra xsail": [],
+  "os-cal": [],
+  "pamprin multi-symptom": [
+   "acetaminophen",
+   "acetaminophen / pamabrom / pyrilamine",
+   "pamabrom",
+   "pyrilamine"
+  ],
+  "pennsaid": [
+   "diclofenac"
+  ],
+  "percocet": [
+   "acetaminophen",
+   "acetaminophen / oxycodone",
+   "oxycodone"
+  ],
+  "percodan": [],
+  "percogesic": [],
+  "perphenazine/amitriptyline": [
+   "amitriptyline",
+   "amitriptyline / perphenazine",
+   "perphenazine"
+  ],
+  "pred forte": [
+   "prednisolone"
+  ],
+  "pred mild": [
+   "prednisolone"
+  ],
+  "premarin cream": [],
+  "premarin vaginal": [],
+  "premarin vaginal cream": [],
+  "prempro": [],
+  "preparation h hydrocortisone": [],
+  "prevalite": [
+   "cholestyramine resin"
+  ],
+  "proair": [
+   "albuterol"
+  ],
+  "proair digihaler": [],
+  "prolia": [
+   "denosumab"
+  ],
+  "promethazine dm": [
+   "dextromethorphan",
+   "dextromethorphan / promethazine",
+   "promethazine"
+  ],
+  "promethazine with codeine": [
+   "codeine",
+   "codeine / promethazine",
+   "promethazine"
+  ],
+  "proventil": [
+   "albuterol"
+  ],
+  "provera": [
+   "medroxyprogesterone"
+  ],
+  "questran": [
+   "cholestyramine resin"
+  ],
+  "questran light": [],
+  "quviviq": [
+   "daridorexant"
+  ],
+  "ranexa": [
+   "ranolazine"
+  ],
+  "reclast": [
+   "zoledronic acid"
+  ],
+  "remeronsoltab": [],
+  "renagel": [
+   "sevelamer"
+  ],
+  "renvela": [
+   "sevelamer"
+  ],
+  "robitussin dm": [],
+  "robitussin nighttime": [],
+  "rocaltrol": [
+   "calcitriol"
+  ],
+  "rythmol sr": [],
+  "silenor": [
+   "doxepin"
+  ],
+  "sinemet": [
+   "carbidopa",
+   "carbidopa / levodopa",
+   "levodopa"
+  ],
+  "sitavig": [
+   "acyclovir"
+  ],
+  "solaraze": [],
+  "soltamox": [
+   "tamoxifen"
+  ],
+  "stelazine": [],
+  "suboxone": [
+   "buprenorphine",
+   "buprenorphine / naloxone",
+   "naloxone"
+  ],
+  "sudafed pe sinus & allergy": [],
+  "sudafed pe sinus pressure & pain": [],
+  "surfak": [],
+  "symbicort": [
+   "budesonide",
+   "budesonide / formoterol",
+   "formoterol"
+  ],
+  "symbyax": [
+   "fluoxetine",
+   "fluoxetine / olanzapine",
+   "olanzapine"
+  ],
+  "synjardy": [
+   "empagliflozin",
+   "empagliflozin / metformin",
+   "metformin"
+  ],
+  "tamiflu": [
+   "oseltamivir"
+  ],
+  "tapazole": [],
+  "taztia xt": [],
+  "tenoretic": [
+   "atenolol",
+   "atenolol / chlorthalidone",
+   "chlorthalidone"
+  ],
+  "tezruly": [
+   "terazosin"
+  ],
+  "theraflu nighttime": [],
+  "thorazine": [],
+  "timoptic": [
+   "timolol"
+  ],
+  "timoptic-xe": [],
+  "tosymra": [
+   "sumatriptan"
+  ],
+  "trelegy": [
+   "fluticasone",
+   "fluticasone / umeclidinium / vilanterol",
+   "umeclidinium",
+   "vilanterol"
+  ],
+  "treximet": [
+   "naproxen",
+   "naproxen / sumatriptan",
+   "sumatriptan"
+  ],
+  "tribenzor": [
+   "amlodipine",
+   "amlodipine / hydrochlorothiazide / olmesartan",
+   "hydrochlorothiazide",
+   "olmesartan"
+  ],
+  "trusopt": [],
+  "tussionex": [
+   "chlorpheniramine",
+   "chlorpheniramine / hydrocodone",
+   "hydrocodone"
+  ],
+  "tylenol cold & flu & cough night": [],
+  "tylenol cold & flu severe": [],
+  "tylenol cold multi-symptom nighttime": [],
+  "tylenol pm": [
+   "acetaminophen",
+   "acetaminophen / diphenhydramine",
+   "diphenhydramine"
+  ],
+  "tylenol simply sleep": [],
+  "tylenol with codeine": [
+   "acetaminophen",
+   "acetaminophen / codeine",
+   "codeine"
+  ],
+  "ultracet": [
+   "acetaminophen",
+   "acetaminophen / tramadol",
+   "tramadol"
+  ],
+  "unisom pm pain": [],
+  "unisom sleepmelts": [],
+  "unisom sleepminis": [],
+  "vagifem": [
+   "estradiol"
+  ],
+  "valtrex": [
+   "valacyclovir"
+  ],
+  "vaseretic": [
+   "enalapril",
+   "enalapril / hydrochlorothiazide",
+   "hydrochlorothiazide"
+  ],
+  "ventolin": [
+   "albuterol"
+  ],
+  "viactiv": [],
+  "vicoprofen": [
+   "hydrocodone",
+   "hydrocodone / ibuprofen",
+   "ibuprofen"
+  ],
+  "vimovo": [
+   "esomeprazole",
+   "esomeprazole / naproxen",
+   "naproxen"
+  ],
+  "voltaren": [
+   "diclofenac"
+  ],
+  "voltaren arthritis pain": [],
+  "voltaren arthritis pain gel": [],
+  "voltaren gel": [],
+  "voltaren-xr": [],
+  "vytorin": [
+   "ezetimibe",
+   "ezetimibe / simvastatin",
+   "simvastatin"
+  ],
+  "xalatan": [
+   "latanoprost"
+  ],
+  "xelpros": [
+   "latanoprost"
+  ],
+  "xgeva": [
+   "denosumab"
+  ],
+  "xigduo xr": [],
+  "yuvafem": [
+   "estradiol"
+  ],
+  "zantac": [
+   "ranitidine"
+  ],
+  "zaroxolyn": [],
+  "zembrace symtouch": [],
+  "zestoretic": [
+   "hydrochlorothiazide",
+   "hydrochlorothiazide / lisinopril",
+   "lisinopril"
+  ],
+  "ziac": [],
+  "zometa": [],
+  "zovirax": [
+   "acyclovir"
+  ],
+  "ztlido": [
+   "lidocaine"
+  ],
+  "zyrtec-d": [
+   "cetirizine",
+   "cetirizine / pseudoephedrine",
+   "pseudoephedrine"
+  ],
+  "zzzquil night pain": [],
+  "zzzquil ultra": [
+   "doxylamine"
+  ]
+ },
+ "ingredients": {
+  "acyclovir": {
+   "name": "acyclovir",
+   "rxcui": "281",
+   "tty": "IN"
+  },
+  "anastrozole": {
+   "name": "anastrozole",
+   "rxcui": "84857",
+   "tty": "IN"
+  },
+  "ascorbic acid": {
+   "name": "ascorbic acid",
+   "rxcui": "1151",
+   "tty": "IN"
+  },
+  "bimatoprost": {
+   "name": "bimatoprost",
+   "rxcui": "283810",
+   "tty": "IN"
+  },
+  "brimonidine": {
+   "name": "brimonidine",
+   "rxcui": "134615",
+   "tty": "IN"
+  },
+  "calcitriol": {
+   "name": "calcitriol",
+   "rxcui": "1894",
+   "tty": "IN"
+  },
+  "cholestyramine": {
+   "name": "cholestyramine resin",
+   "rxcui": "2447",
+   "tty": "IN"
+  },
+  "daridorexant": {
+   "name": "daridorexant",
+   "rxcui": "2591497",
+   "tty": "IN"
+  },
+  "denosumab": {
+   "name": "denosumab",
+   "rxcui": "993449",
+   "tty": "IN"
+  },
+  "dorzolamide": {
+   "name": "dorzolamide",
+   "rxcui": "60207",
+   "tty": "IN"
+  },
+  "fludrocortisone": {
+   "name": "fludrocortisone",
+   "rxcui": "4452",
+   "tty": "IN"
+  },
+  "folic acid": {
+   "name": "folic acid",
+   "rxcui": "4511",
+   "tty": "IN"
+  },
+  "insulin": {
+   "name": "insulin, regular, human",
+   "rxcui": "253182",
+   "tty": "IN"
+  },
+  "latanoprost": {
+   "name": "latanoprost",
+   "rxcui": "43611",
+   "tty": "IN"
+  },
+  "lemborexant": {
+   "name": "lemborexant",
+   "rxcui": "2272403",
+   "tty": "IN"
+  },
+  "letrozole": {
+   "name": "letrozole",
+   "rxcui": "72965",
+   "tty": "IN"
+  },
+  "lidocaine": {
+   "name": "lidocaine",
+   "rxcui": "6387",
+   "tty": "IN"
+  },
+  "medroxyprogesterone": {
+   "name": "medroxyprogesterone",
+   "rxcui": "6691",
+   "tty": "IN"
+  },
+  "methimazole": {
+   "name": "methimazole",
+   "rxcui": "6835",
+   "tty": "IN"
+  },
+  "midodrine": {
+   "name": "midodrine",
+   "rxcui": "6963",
+   "tty": "IN"
+  },
+  "multivitamin": null,
+  "norethindrone": {
+   "name": "norethindrone",
+   "rxcui": "7514",
+   "tty": "IN"
+  },
+  "nystatin": {
+   "name": "nystatin",
+   "rxcui": "7597",
+   "tty": "IN"
+  },
+  "oseltamivir": {
+   "name": "oseltamivir",
+   "rxcui": "260101",
+   "tty": "IN"
+  },
+  "pamabrom": {
+   "name": "pamabrom",
+   "rxcui": "54365",
+   "tty": "IN"
+  },
+  "propafenone": {
+   "name": "propafenone",
+   "rxcui": "8754",
+   "tty": "IN"
+  },
+  "ranolazine": {
+   "name": "ranolazine",
+   "rxcui": "35829",
+   "tty": "IN"
+  },
+  "sevelamer": {
+   "name": "sevelamer",
+   "rxcui": "214824",
+   "tty": "IN"
+  },
+  "sumatriptan": {
+   "name": "sumatriptan",
+   "rxcui": "37418",
+   "tty": "IN"
+  },
+  "suvorexant": {
+   "name": "suvorexant",
+   "rxcui": "1547099",
+   "tty": "IN"
+  },
+  "timolol": {
+   "name": "timolol",
+   "rxcui": "10600",
+   "tty": "IN"
+  },
+  "valacyclovir": {
+   "name": "valacyclovir",
+   "rxcui": "73645",
+   "tty": "IN"
+  },
+  "vilanterol": {
+   "name": "vilanterol",
+   "rxcui": "1424884",
+   "tty": "IN"
+  },
+  "zoledronic acid": {
+   "name": "zoledronic acid",
+   "rxcui": "77655",
+   "tty": "IN"
+  }
+ }
+}

@@ -1,0 +1,776 @@
+[
+ {
+  "id": "cns_active",
+  "display": "CNS-active medicine (AGS Beers 2023 Table 5 list)",
+  "parents": []
+ },
+ {
+  "id": "sedative_hypnotic",
+  "display": "Sedative or sleep medicine",
+  "parents": []
+ },
+ {
+  "id": "strong_anticholinergic",
+  "display": "Strongly anticholinergic medicine (AGS Beers 2023 Table 7)",
+  "parents": []
+ },
+ {
+  "id": "antidepressant",
+  "display": "Antidepressant",
+  "parents": []
+ },
+ {
+  "id": "muscle_relaxant",
+  "display": "Muscle relaxant",
+  "parents": []
+ },
+ {
+  "id": "bp_lowering",
+  "display": "Blood-pressure-lowering medicine (ACE inhibitor, ARB, calcium channel blocker, vasodilator)",
+  "parents": []
+ },
+ {
+  "id": "ras_inhibitor",
+  "display": "Renin-angiotensin system (RAS) inhibitor",
+  "parents": []
+ },
+ {
+  "id": "diuretic",
+  "display": "Diuretic ('water pill')",
+  "parents": []
+ },
+ {
+  "id": "alpha1_blocker",
+  "display": "Alpha-1 blocker",
+  "parents": []
+ },
+ {
+  "id": "anticoagulant",
+  "display": "Anticoagulant (blood thinner)",
+  "parents": []
+ },
+ {
+  "id": "antiplatelet",
+  "display": "Antiplatelet medicine",
+  "parents": []
+ },
+ {
+  "id": "antidiabetic",
+  "display": "Diabetes medicine",
+  "parents": []
+ },
+ {
+  "id": "insulin",
+  "display": "Insulin",
+  "parents": [
+   "antidiabetic"
+  ]
+ },
+ {
+  "id": "nsaid",
+  "display": "NSAID pain reliever (any)",
+  "parents": []
+ },
+ {
+  "id": "antiarrhythmic",
+  "display": "Heart-rhythm medicine (antiarrhythmic)",
+  "parents": []
+ },
+ {
+  "id": "benzodiazepine",
+  "display": "Benzodiazepine",
+  "parents": [
+   "cns_active",
+   "sedative_hypnotic"
+  ]
+ },
+ {
+  "id": "z_drug",
+  "display": "Z-drug sleep medicine (zolpidem, eszopiclone, zaleplon)",
+  "parents": [
+   "cns_active",
+   "sedative_hypnotic"
+  ]
+ },
+ {
+  "id": "barbiturate",
+  "display": "Barbiturate",
+  "parents": [
+   "sedative_hypnotic"
+  ]
+ },
+ {
+  "id": "sedative_other",
+  "display": "Other sedative (meprobamate)",
+  "parents": [
+   "sedative_hypnotic"
+  ]
+ },
+ {
+  "id": "antipsychotic",
+  "display": "Antipsychotic",
+  "parents": [
+   "cns_active"
+  ]
+ },
+ {
+  "id": "tca",
+  "display": "Tricyclic antidepressant (TCA)",
+  "parents": [
+   "antidepressant",
+   "cns_active"
+  ]
+ },
+ {
+  "id": "ssri",
+  "display": "Selective serotonin reuptake inhibitor (SSRI)",
+  "parents": [
+   "antidepressant",
+   "cns_active"
+  ]
+ },
+ {
+  "id": "snri",
+  "display": "Serotonin-norepinephrine reuptake inhibitor (SNRI)",
+  "parents": [
+   "antidepressant",
+   "cns_active"
+  ]
+ },
+ {
+  "id": "antidepressant_other",
+  "display": "Other antidepressant (e.g. mirtazapine, trazodone, bupropion)",
+  "parents": [
+   "antidepressant"
+  ]
+ },
+ {
+  "id": "antiepileptic",
+  "display": "Antiepileptic (seizure medicine)",
+  "parents": [
+   "cns_active"
+  ]
+ },
+ {
+  "id": "gabapentinoid",
+  "display": "Gabapentinoid (gabapentin, pregabalin)",
+  "parents": [
+   "antiepileptic"
+  ]
+ },
+ {
+  "id": "opioid",
+  "display": "Opioid pain medicine",
+  "parents": [
+   "cns_active"
+  ]
+ },
+ {
+  "id": "skeletal_muscle_relaxant",
+  "display": "Skeletal muscle relaxant (AGS Beers 2023 list)",
+  "parents": [
+   "muscle_relaxant",
+   "cns_active"
+  ]
+ },
+ {
+  "id": "antispasticity_agent",
+  "display": "Antispasticity muscle relaxant (baclofen, tizanidine)",
+  "parents": [
+   "muscle_relaxant"
+  ]
+ },
+ {
+  "id": "anxiolytic_other",
+  "display": "Other anxiety medicine (buspirone)",
+  "parents": []
+ },
+ {
+  "id": "mood_stabilizer",
+  "display": "Mood stabilizer (lithium)",
+  "parents": []
+ },
+ {
+  "id": "cholinesterase_inhibitor",
+  "display": "Cholinesterase inhibitor (dementia medicine)",
+  "parents": []
+ },
+ {
+  "id": "nmda_antagonist",
+  "display": "NMDA antagonist (memantine)",
+  "parents": []
+ },
+ {
+  "id": "dopaminergic_antiparkinson",
+  "display": "Dopaminergic Parkinson medicine",
+  "parents": []
+ },
+ {
+  "id": "antiparkinson_anticholinergic",
+  "display": "Anticholinergic Parkinson medicine",
+  "parents": []
+ },
+ {
+  "id": "sleep_supplement",
+  "display": "Sleep supplement",
+  "parents": []
+ },
+ {
+  "id": "first_gen_antihistamine",
+  "display": "First-generation (sedating) antihistamine",
+  "parents": []
+ },
+ {
+  "id": "second_gen_antihistamine",
+  "display": "Second-generation (less sedating) antihistamine",
+  "parents": []
+ },
+ {
+  "id": "bladder_antimuscarinic",
+  "display": "Bladder antimuscarinic (overactive bladder medicine)",
+  "parents": []
+ },
+ {
+  "id": "beta3_agonist",
+  "display": "Beta-3 agonist (overactive bladder medicine)",
+  "parents": []
+ },
+ {
+  "id": "gi_antispasmodic",
+  "display": "Stomach/bowel antispasmodic",
+  "parents": []
+ },
+ {
+  "id": "dopamine_antagonist_antiemetic",
+  "display": "Dopamine-blocking anti-nausea medicine",
+  "parents": []
+ },
+ {
+  "id": "serotonin_antagonist_antiemetic",
+  "display": "5-HT3 anti-nausea medicine",
+  "parents": []
+ },
+ {
+  "id": "acei",
+  "display": "ACE inhibitor",
+  "parents": [
+   "bp_lowering",
+   "ras_inhibitor"
+  ]
+ },
+ {
+  "id": "arb",
+  "display": "Angiotensin receptor blocker (ARB)",
+  "parents": [
+   "bp_lowering",
+   "ras_inhibitor"
+  ]
+ },
+ {
+  "id": "arni",
+  "display": "Angiotensin receptor-neprilysin inhibitor (ARNI)",
+  "parents": [
+   "bp_lowering",
+   "ras_inhibitor"
+  ]
+ },
+ {
+  "id": "direct_renin_inhibitor",
+  "display": "Direct renin inhibitor",
+  "parents": [
+   "bp_lowering",
+   "ras_inhibitor"
+  ]
+ },
+ {
+  "id": "ccb",
+  "display": "Calcium channel blocker",
+  "parents": [
+   "bp_lowering"
+  ]
+ },
+ {
+  "id": "ccb_dihydropyridine",
+  "display": "Dihydropyridine calcium channel blocker",
+  "parents": [
+   "ccb"
+  ]
+ },
+ {
+  "id": "ccb_nondihydropyridine",
+  "display": "Non-dihydropyridine calcium channel blocker",
+  "parents": [
+   "ccb"
+  ]
+ },
+ {
+  "id": "vasodilator",
+  "display": "Direct vasodilator",
+  "parents": [
+   "bp_lowering"
+  ]
+ },
+ {
+  "id": "beta_blocker",
+  "display": "Beta-blocker",
+  "parents": []
+ },
+ {
+  "id": "loop_diuretic",
+  "display": "Loop diuretic",
+  "parents": [
+   "diuretic"
+  ]
+ },
+ {
+  "id": "thiazide_diuretic",
+  "display": "Thiazide or thiazide-like diuretic",
+  "parents": [
+   "diuretic"
+  ]
+ },
+ {
+  "id": "potassium_sparing_diuretic",
+  "display": "Potassium-sparing diuretic (amiloride, triamterene)",
+  "parents": [
+   "diuretic"
+  ]
+ },
+ {
+  "id": "mineralocorticoid_antagonist",
+  "display": "Mineralocorticoid receptor antagonist (spironolactone, eplerenone)",
+  "parents": [
+   "diuretic"
+  ]
+ },
+ {
+  "id": "alpha1_blocker_nonselective",
+  "display": "Non-selective peripheral alpha-1 blocker",
+  "parents": [
+   "alpha1_blocker"
+  ]
+ },
+ {
+  "id": "alpha1_blocker_selective",
+  "display": "Selective alpha-1 blocker (prostate)",
+  "parents": [
+   "alpha1_blocker"
+  ]
+ },
+ {
+  "id": "central_alpha_agonist",
+  "display": "Central alpha-agonist",
+  "parents": []
+ },
+ {
+  "id": "nitrate",
+  "display": "Nitrate (heart vasodilator)",
+  "parents": []
+ },
+ {
+  "id": "cardiac_glycoside",
+  "display": "Cardiac glycoside (digoxin)",
+  "parents": []
+ },
+ {
+  "id": "statin",
+  "display": "Statin (cholesterol medicine)",
+  "parents": []
+ },
+ {
+  "id": "lipid_lowering_other",
+  "display": "Other cholesterol/lipid medicine",
+  "parents": []
+ },
+ {
+  "id": "doac",
+  "display": "Direct oral anticoagulant (DOAC)",
+  "parents": [
+   "anticoagulant"
+  ]
+ },
+ {
+  "id": "vitamin_k_antagonist",
+  "display": "Vitamin K antagonist (warfarin)",
+  "parents": [
+   "anticoagulant"
+  ]
+ },
+ {
+  "id": "injectable_anticoagulant",
+  "display": "Injectable anticoagulant",
+  "parents": [
+   "anticoagulant"
+  ]
+ },
+ {
+  "id": "p2y12_inhibitor",
+  "display": "P2Y12 inhibitor (antiplatelet)",
+  "parents": [
+   "antiplatelet"
+  ]
+ },
+ {
+  "id": "pde5_inhibitor",
+  "display": "PDE-5 inhibitor",
+  "parents": []
+ },
+ {
+  "id": "electrolyte",
+  "display": "Electrolyte supplement",
+  "parents": []
+ },
+ {
+  "id": "biguanide",
+  "display": "Biguanide (metformin)",
+  "parents": [
+   "antidiabetic"
+  ]
+ },
+ {
+  "id": "sulfonylurea",
+  "display": "Sulfonylurea",
+  "parents": [
+   "antidiabetic"
+  ]
+ },
+ {
+  "id": "dpp4_inhibitor",
+  "display": "DPP-4 inhibitor",
+  "parents": [
+   "antidiabetic"
+  ]
+ },
+ {
+  "id": "sglt2_inhibitor",
+  "display": "SGLT2 inhibitor",
+  "parents": [
+   "antidiabetic"
+  ]
+ },
+ {
+  "id": "glp1_agonist",
+  "display": "GLP-1 receptor agonist",
+  "parents": [
+   "antidiabetic"
+  ]
+ },
+ {
+  "id": "thiazolidinedione",
+  "display": "Thiazolidinedione",
+  "parents": [
+   "antidiabetic"
+  ]
+ },
+ {
+  "id": "insulin_basal",
+  "display": "Long-acting (basal) insulin",
+  "parents": [
+   "insulin"
+  ]
+ },
+ {
+  "id": "insulin_rapid",
+  "display": "Short- or rapid-acting insulin",
+  "parents": [
+   "insulin"
+  ]
+ },
+ {
+  "id": "ppi",
+  "display": "Proton-pump inhibitor (PPI)",
+  "parents": []
+ },
+ {
+  "id": "h2ra",
+  "display": "H2-receptor antagonist",
+  "parents": []
+ },
+ {
+  "id": "laxative",
+  "display": "Laxative",
+  "parents": []
+ },
+ {
+  "id": "antidiarrheal",
+  "display": "Antidiarrheal",
+  "parents": []
+ },
+ {
+  "id": "gi_protectant",
+  "display": "Stomach-protecting medicine",
+  "parents": []
+ },
+ {
+  "id": "analgesic_nonopioid",
+  "display": "Non-opioid pain reliever (acetaminophen)",
+  "parents": []
+ },
+ {
+  "id": "nsaid_nonselective",
+  "display": "Non-selective NSAID",
+  "parents": [
+   "nsaid"
+  ]
+ },
+ {
+  "id": "cox2_inhibitor",
+  "display": "COX-2 selective NSAID",
+  "parents": [
+   "nsaid"
+  ]
+ },
+ {
+  "id": "nonacetylated_salicylate",
+  "display": "Nonacetylated salicylate",
+  "parents": [
+   "nsaid"
+  ]
+ },
+ {
+  "id": "salicylate",
+  "display": "Salicylate",
+  "parents": []
+ },
+ {
+  "id": "antigout",
+  "display": "Gout medicine",
+  "parents": []
+ },
+ {
+  "id": "bisphosphonate",
+  "display": "Bisphosphonate (bone medicine)",
+  "parents": []
+ },
+ {
+  "id": "dmard",
+  "display": "Disease-modifying antirheumatic drug",
+  "parents": []
+ },
+ {
+  "id": "bronchodilator",
+  "display": "Inhaled bronchodilator",
+  "parents": []
+ },
+ {
+  "id": "inhaled_antimuscarinic",
+  "display": "Inhaled antimuscarinic (COPD)",
+  "parents": [
+   "bronchodilator"
+  ]
+ },
+ {
+  "id": "inhaled_or_nasal_corticosteroid",
+  "display": "Inhaled or nasal corticosteroid",
+  "parents": []
+ },
+ {
+  "id": "leukotriene_antagonist",
+  "display": "Leukotriene receptor antagonist",
+  "parents": []
+ },
+ {
+  "id": "methylxanthine",
+  "display": "Methylxanthine",
+  "parents": []
+ },
+ {
+  "id": "decongestant",
+  "display": "Decongestant",
+  "parents": []
+ },
+ {
+  "id": "cough_cold",
+  "display": "Cough or cold remedy",
+  "parents": []
+ },
+ {
+  "id": "antibiotic",
+  "display": "Antibiotic",
+  "parents": []
+ },
+ {
+  "id": "fluoroquinolone",
+  "display": "Fluoroquinolone antibiotic",
+  "parents": [
+   "antibiotic"
+  ]
+ },
+ {
+  "id": "macrolide",
+  "display": "Macrolide antibiotic",
+  "parents": [
+   "antibiotic"
+  ]
+ },
+ {
+  "id": "antifungal",
+  "display": "Antifungal",
+  "parents": []
+ },
+ {
+  "id": "thyroid_hormone",
+  "display": "Thyroid hormone",
+  "parents": []
+ },
+ {
+  "id": "corticosteroid_systemic",
+  "display": "Corticosteroid taken by mouth or injection",
+  "parents": []
+ },
+ {
+  "id": "estrogen",
+  "display": "Estrogen",
+  "parents": []
+ },
+ {
+  "id": "androgen",
+  "display": "Androgen (testosterone)",
+  "parents": []
+ },
+ {
+  "id": "progestin",
+  "display": "Progestin",
+  "parents": []
+ },
+ {
+  "id": "growth_hormone",
+  "display": "Growth hormone",
+  "parents": []
+ },
+ {
+  "id": "serm",
+  "display": "Selective estrogen receptor modulator",
+  "parents": []
+ },
+ {
+  "id": "five_alpha_reductase_inhibitor",
+  "display": "5-alpha-reductase inhibitor (prostate)",
+  "parents": []
+ },
+ {
+  "id": "vasopressin_analog",
+  "display": "Vasopressin analog (desmopressin)",
+  "parents": []
+ },
+ {
+  "id": "vitamin_mineral",
+  "display": "Vitamin or mineral supplement",
+  "parents": []
+ },
+ {
+  "id": "ergot_derivative",
+  "display": "Ergot derivative (ergoloid mesylates)",
+  "parents": []
+ },
+ {
+  "id": "opioid_antagonist",
+  "display": "Opioid antagonist",
+  "parents": []
+ },
+ {
+  "id": "stimulant",
+  "display": "Stimulant",
+  "parents": []
+ },
+ {
+  "id": "other",
+  "display": "Other",
+  "parents": []
+ },
+ {
+  "id": "ophthalmic_glaucoma",
+  "display": "Glaucoma eye drops",
+  "parents": []
+ },
+ {
+  "id": "antianginal_other",
+  "display": "Other chest-pain (angina) medicine",
+  "parents": []
+ },
+ {
+  "id": "antihypotensive",
+  "display": "Medicine for low blood pressure",
+  "parents": []
+ },
+ {
+  "id": "mineralocorticoid",
+  "display": "Mineralocorticoid (fludrocortisone)",
+  "parents": []
+ },
+ {
+  "id": "bone_antiresorptive",
+  "display": "Bone-strengthening injection (denosumab)",
+  "parents": []
+ },
+ {
+  "id": "phosphate_binder",
+  "display": "Phosphate binder",
+  "parents": []
+ },
+ {
+  "id": "triptan",
+  "display": "Triptan (migraine medicine)",
+  "parents": []
+ },
+ {
+  "id": "antiviral",
+  "display": "Antiviral",
+  "parents": []
+ },
+ {
+  "id": "bile_acid_sequestrant",
+  "display": "Bile acid sequestrant",
+  "parents": []
+ },
+ {
+  "id": "antithyroid",
+  "display": "Antithyroid medicine",
+  "parents": []
+ },
+ {
+  "id": "hormonal_cancer_therapy",
+  "display": "Hormonal breast-cancer medicine",
+  "parents": []
+ },
+ {
+  "id": "local_anesthetic",
+  "display": "Local anesthetic",
+  "parents": []
+ },
+ {
+  "id": "analgesic_other",
+  "display": "Other pain reliever",
+  "parents": []
+ },
+ {
+  "id": "nsaid_topical",
+  "display": "NSAID gel, solution or patch used on the skin (not an oral NSAID)",
+  "parents": []
+ },
+ {
+  "id": "estrogen_vaginal",
+  "display": "Low-dose vaginal estrogen (not systemic estrogen)",
+  "parents": []
+ },
+ {
+  "id": "ophthalmic_other",
+  "display": "Other eye drops",
+  "parents": []
+ },
+ {
+  "id": "corticosteroid_topical",
+  "display": "Corticosteroid used on the skin (not a systemic corticosteroid)",
+  "parents": []
+ },
+ {
+  "id": "antihistamine_topical",
+  "display": "Antihistamine used on the skin (not taken by mouth)",
+  "parents": []
+ },
+ {
+  "id": "orexin_antagonist",
+  "display": "Orexin receptor antagonist (sleep medicine)",
+  "parents": []
+ }
+]
