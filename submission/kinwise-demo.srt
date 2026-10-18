@@ -1,155 +1,195 @@
 1
-00:00:00,300 --> 00:00:03,782
-In a primary-care study, more than a third of medicine side effects
+00:00:00,300 --> 00:00:02,912
+More than a third of medicine side effects that could have
 
 2
-00:00:03,782 --> 00:00:07,367
-that could have been eased went on because the doctor was never told.
+00:00:02,912 --> 00:00:05,344
+been eased were linked to the doctor never being told.
 
 3
-00:00:07,838 --> 00:00:11,372
-Meet Margaret, seventy-eight, on eight medicines, and her
+00:00:05,815 --> 00:00:09,315
+Kinwise helps families notice what changes after a medicine
 
 4
-00:00:11,372 --> 00:00:13,233
-daughter Alex, both fictional.
+00:00:09,315 --> 00:00:12,874
+change, and bring one clear, sourced question to the doctor.
 
 5
-00:00:13,233 --> 00:00:15,713
-Urgent care started a new sleeping pill.
+00:00:12,874 --> 00:00:15,781
+Meet Margaret, seventy-eight, on eight medicines,
 
 6
-00:00:16,483 --> 00:00:19,034
-Margaret describes her day in her own words.
+00:00:15,781 --> 00:00:18,035
+and her daughter Alex, both fictional.
 
 7
-00:00:19,034 --> 00:00:21,933
-A clinical language engine reads it on her device.
+00:00:18,035 --> 00:00:20,408
+Urgent care started a new sleeping pill.
 
 8
-00:00:22,705 --> 00:00:26,388
-Woozy becomes dizziness, nearly went over a near-fall, and
+00:00:22,945 --> 00:00:25,404
+Margaret describes her day in her own words.
 
 9
-00:00:26,388 --> 00:00:28,229
-no ankle swelling stays a no.
+00:00:25,404 --> 00:00:28,198
+A clinical language engine reads it on her device.
 
 10
-00:00:28,229 --> 00:00:31,023
-Sofia's fall is set aside as someone else's.
+00:00:28,919 --> 00:00:31,580
+Woozy becomes dizziness, nearly went over a
 
 11
-00:00:31,023 --> 00:00:33,817
-Margaret confirms each answer before saving.
+00:00:31,580 --> 00:00:34,304
+near-fall, and no ankle swelling stays a no.
 
 12
-00:00:35,571 --> 00:00:39,303
-Since lorazepam started, dizziness was recorded on 9 of 14
+00:00:34,304 --> 00:00:37,027
+Sofia's fall is set aside as someone else's.
 
 13
-00:00:39,303 --> 00:00:42,134
-answered days, compared with 2 of 19 before.
+00:00:37,027 --> 00:00:38,883
+Margaret confirms each answer.
 
 14
-00:00:42,134 --> 00:00:45,930
-One fall and two near-falls were recorded on those 14 days.
+00:00:40,583 --> 00:00:43,809
+Since lorazepam started, dizziness was recorded on 9
 
 15
-00:00:45,930 --> 00:00:49,727
-It shows a change in what was recorded, not what caused it.
+00:00:43,809 --> 00:00:46,910
+of 14 answered days, compared with 2 of 19 before.
 
 16
-00:00:51,769 --> 00:00:56,700
-Deterministic code, not AI, checks her eight medicines against AGS Beers
+00:00:46,910 --> 00:00:50,569
+One fall and two near-falls were recorded on those 14 days.
 
 17
-00:00:56,700 --> 00:01:01,494
-2023, anticholinergic burden, where she scores 7, fall-risk lists, and
+00:00:50,569 --> 00:00:54,229
+It shows a change in what was recorded, not what caused it.
 
 18
-00:01:01,494 --> 00:01:07,178
-possible prescribing cascades, like furosemide for ankle swelling after amlodipine.
+00:00:56,222 --> 00:00:59,811
+Deterministic code, not AI, checks her eight medicines
 
 19
-00:01:07,178 --> 00:01:11,904
-Each finding ends in a sourced question for her doctor or pharmacist.
+00:00:59,811 --> 00:01:03,599
+against AGS Beers 2023, anticholinergic burden, where she
 
 20
-00:01:12,682 --> 00:01:16,030
-The safety net: here the model's wording failed the source
+00:01:03,599 --> 00:01:07,653
+scores 7, fall-risk lists, and possible prescribing cascades,
 
 21
-00:01:16,030 --> 00:01:19,033
-check, so code hides it and the original text stays.
+00:01:07,653 --> 00:01:11,109
+like furosemide for ankle swelling after amlodipine.
 
 22
-00:01:21,151 --> 00:01:27,560
-The timeline tests the change in dizziness: Fisher's exact test, p = 0.0023.
+00:01:11,109 --> 00:01:13,102
+Each finding ends in a sourced
 
 23
-00:01:27,560 --> 00:01:31,101
-Falls are listed by date: too few to test.
+00:01:13,102 --> 00:01:15,628
+question for her doctor or pharmacist.
 
 24
-00:01:33,081 --> 00:01:36,654
-Ask Kinwise answers from the records: near-falls on 2 of 14
+00:01:17,499 --> 00:01:20,205
+The safety net: code checked the model's wording and
 
 25
-00:01:36,654 --> 00:01:38,956
-answered days since lorazepam started.
+00:01:20,205 --> 00:01:22,702
+removed a sentence with wording its rules block.
 
 26
-00:01:38,956 --> 00:01:42,892
-A 3-billion-parameter model running on this laptop's GPU drafts a
+00:01:24,745 --> 00:01:28,113
+Dizziness: Fisher's exact test, p = 0.0023, and it
 
 27
-00:01:42,892 --> 00:01:46,828
-plainer answer; code checks every number and medicine name first.
+00:01:28,113 --> 00:01:31,413
+still holds when whole runs of days are shuffled.
 
 28
-00:01:46,828 --> 00:01:50,644
-Treatment questions are redirected to her doctor or pharmacist.
+00:01:31,413 --> 00:01:35,657
+With nine items compared, more than one in ten medicine changes
 
 29
-00:01:52,924 --> 00:01:55,542
-The visit brief puts it on one page.
+00:01:35,657 --> 00:01:39,833
+with no real effect still get flagged, so it stays a question.
 
 30
-00:01:55,542 --> 00:01:59,832
-Alex must mark it reviewed before it prints, and it exports
+00:01:41,760 --> 00:01:44,529
+Ask Kinwise answers from the records: near-falls
 
 31
-00:01:59,832 --> 00:02:02,886
-as an HL7 FHIR R4 bundle of 270 resources.
+00:01:44,529 --> 00:01:47,356
+on 2 of 14 answered days since lorazepam started.
 
 32
-00:02:06,491 --> 00:02:11,781
-Both test suites rerun live: 94.2 percent micro-F1 on 70 held-out
+00:01:47,356 --> 00:01:50,126
+A three-billion-parameter model on this laptop's
 
 33
-00:02:11,781 --> 00:02:17,641
-fictional diary stories, and 57 of 57 synthetic medication cases passed.
+00:01:50,126 --> 00:01:52,722
+GPU drafts a short summary; code checks every
 
 34
-00:02:18,416 --> 00:02:20,661
-Working today: everything you saw.
+00:01:52,722 --> 00:01:55,261
+number and medicine name before it is shown.
 
 35
-00:02:20,661 --> 00:02:25,813
-Partial: the model's code check isn't airtight; no dose or allergy checks yet.
+00:01:55,261 --> 00:01:58,895
+Treatment questions are redirected to her doctor or pharmacist.
 
 36
-00:02:25,813 --> 00:02:30,039
-Planned: a validation study, pharmacy import and family sharing.
+00:02:01,289 --> 00:02:03,812
+The visit brief puts it on one page.
 
 37
-00:02:30,810 --> 00:02:33,344
-Kinwise. Records stay in your browser.
+00:02:03,812 --> 00:02:07,387
+Alex must mark it reviewed before it prints, and it
 
 38
-00:02:33,344 --> 00:02:36,479
-Not yet clinician-reviewed; not medical advice.
+00:02:07,387 --> 00:02:10,892
+exports as an HL7 FHIR R4 bundle of 270 resources.
 
 39
-00:02:36,479 --> 00:02:38,413
+00:02:14,475 --> 00:02:17,714
+Both test suites rerun live: 94.2 percent
+
+40
+00:02:17,714 --> 00:02:21,506
+micro-F1 on 70 held-out fictional diary stories,
+
+41
+00:02:21,506 --> 00:02:25,219
+and 57 of 57 synthetic medication cases passed.
+
+42
+00:02:25,956 --> 00:02:28,457
+Working today: the check-in, timeline,
+
+43
+00:02:28,457 --> 00:02:30,432
+review, Ask and brief you saw.
+
+44
+00:02:30,432 --> 00:02:33,527
+Partial: the model's code check isn't airtight;
+
+45
+00:02:33,527 --> 00:02:36,687
+no dose, allergy or full interaction checks yet.
+
+46
+00:02:36,687 --> 00:02:40,900
+Planned: a validation study, pharmacy import and family sharing.
+
+47
+00:02:41,620 --> 00:02:44,062
+Kinwise. Records stay in your browser.
+
+48
+00:02:44,062 --> 00:02:47,082
+Not yet clinician-reviewed; not medical advice.
+
+49
+00:02:47,082 --> 00:02:48,945
 Try it at the link on screen.
