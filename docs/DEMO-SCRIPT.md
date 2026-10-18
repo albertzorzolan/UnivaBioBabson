@@ -15,10 +15,11 @@ check without recording.
   2:23.2 for the template-only cut (`PLAN=1`, macOS voice "Samantha" at 185 wpm; Samantha's rate only changes in
   steps, and 160 to 181 wpm all read at the same speed as the earlier 175). The recorder refuses a plan over 175 s.
   Page changes happen between shots, off the narration, and add about a second each; the model's Ask draft takes a
-  varying time. The last renders came out about 10 s longer than planned (the submitted render of 2026-10-18,
-  `blocked` verify line, ran 2:39.4 for a 2:29 plan). This script adds a few seconds of on-screen actions (Margaret's
-  medicine list, one confirm click, waiting for toasts), so expect a render of about 2:50; this version has not been
-  rendered yet. On-screen actions can only make a shot longer. Each render writes the real start, end and narration
+  varying time. Renders come out longer than planned (an earlier render of 2026-10-18, `blocked` verify line, ran
+  2:39.4 for a 2:29 plan). This script adds a few seconds of on-screen actions (Margaret's medicine list, one confirm
+  click, waiting for toasts): the current submission/kinwise-demo.mp4 (rendered 2026-10-18 with the on-device model,
+  `removedBlocked` verify line, `runs` timeline line, `model` honesty line) runs 2:49.9 for the 2:37.7 plan.
+  On-screen actions can only make a shot longer. Each render writes the real start, end and narration
   time of every shot to `timings.json` (see [Re-recording](#re-recording)), and prints a warning if the result is
   over 3:00.
 - **Order:** judges mostly watch the first minute, so the problem, what Kinwise is and the people, her check-in and
@@ -195,8 +196,8 @@ changes between shots add about a second each on top). The real times of each re
 | 12 | `honesty` · Finished, partial, planned | 2:14 · 15.6 s (`kb` 15.0 s) | How it works › Finished vs planned | The section is found by its id (`#how-honesty`) or its heading, and opened if it is collapsed. The ring spans the "Working in this demo" row(s), glides to the Partial row(s), then scrolls to the Planned row(s); the recorder checks the planned validation study, pharmacy import and family sharing are listed. Before the shot it reads the Working and Partial rows and picks the line that fits them: the Working row must name the check-in, timeline, medication review, Ask Kinwise and visit brief; the knowledge-base coverage row must be Partial with "no dose or allergy checks" and the interaction limit ("interactions limited to the AGS Beers 2023 combination table"); **`model`** also needs the on-device model row with "the code check is not airtight" (the current table), **`kb`** is for a table where the model is not Partial. Other Partial rows (the timeline runs check, the hand-off, FHIR, English only) are fine. Anything else stops the run. | `honesty.model`: Working today: the check-in, timeline, review, Ask and brief you saw. Partial: the model's code check isn't airtight; no dose, allergy or full interaction checks yet. Planned: a validation study, pharmacy import and family sharing. <br>`honesty.kb`: Working today: the check-in, timeline, review, Ask and brief you saw. Partial: knowledge-base coverage; no dose, allergy or full interaction checks yet. Planned: a validation study, pharmacy import and family sharing. |
 | 13 | `close` · (no label) | 2:30 · 8.0 s | End card | No cursor. "Notice what changes after a medicine change, and bring a clear question to the visit." One call to action, the same as the Devpost text and the Welcome button: **Take the 2-minute guided tour →** albertzorzolan.github.io/UnivaBioBabson (no sign-up · fictional data). Code: github.com/albertzorzolan/UnivaBioBabson/tree/medwatch-v2. Albert Zorzolan and Neil Shah, Babson College. Footer: "Fictional demo data. Not medical advice. Knowledge base not yet clinician-reviewed." plus, in the model cut, "On-device model (Qwen2.5 3B Instruct, WebGPU) used only for the review explanation (shown only if it passes the source check) and the Ask Kinwise draft; the visit brief uses the standard template." (true whichever way shot 7 went), or "Template mode shown (on-device model not loaded)." | Kinwise. Records stay in your browser. Not yet clinician-reviewed; not medical advice. Try it at the link on screen. |
 
-Planned total with the model: 2:37.7 (`say`), about 2:50 once page changes, the Ask draft and the on-screen actions
-are added (not yet rendered); template-only cut 2:23.2. The earlier
+Planned total with the model: 2:37.7 (`say`); the 2026-10-18 render with page changes, the Ask draft and the on-screen
+actions runs 2:49.9; template-only cut 2:23.2 (planned). The earlier
 cut's Add-medication preview and "What is AI here" shots are no longer in the video, to reach the medication review
 sooner; the app still has both (Medications › Add medication, and How it works › "The right tool for each job"). Their
 points are said elsewhere: "Deterministic code, not AI" (review), "code checks every number and medicine name"

@@ -23,7 +23,7 @@ used anywhere.
 | 5 | Live in-app AI run | The running app on real WebGPU | 0 external requests (model files served from a local copy; the live demo downloads them once, and no diary data is sent); at least 6 flawed AI sentences (from 5 outputs) got past the checker (live-01…06) | [eval/results/ai-live.json](../eval/results/ai-live.json), [eval/verifier-redteam.json](../eval/verifier-redteam.json) |
 | 5b | Claim-checker red team (§5) | 163 harmful + 87 valid sentences written by an AI agent; later probes of 18, 20 and 22 | 72 of 163 caught as submitted; 163 of 163 after fixes tuned on the set, 0 of 87 valid rejected; on probes written after the rules, when first run: 1 of 18 (first probe; later used for tuning), 12 of 20 (second; two items later used to design a rule, so no longer held out) and 10 of 22 (held-out third; 10 of 23 after a label correction), 0 valid rejected | [verifier-redteam.json](../eval/results/verifier-redteam.json) |
 | 6 | FHIR export | Seed record, 270 resources | Validated against base R4 structure with the HAPI validator: 0 errors; codes not terminology-checked (25 warnings); no US Core/IPS profile | [samples/kinwise-fhir-validation.json](samples/kinwise-fhir-validation.json) |
-| 7 | Engineering gates | Unit, E2E, accessibility, KB build | Last recorded 2026-10-18: 1,917 unit tests passed, 1 skipped (75 files); 21 of 21 end-to-end checks; 46 axe scans, 0 violations. Run the commands in §7 for current results | see §7 |
+| 7 | Engineering gates | Unit, E2E, accessibility, KB build | Last recorded 2026-10-18: 2,120 unit tests passed, 1 skipped (81 files); 22 of 22 end-to-end checks; 46 axe scans, 0 violations. Run the commands in §7 for current results | see §7 |
 
 ---
 
@@ -555,15 +555,15 @@ that file. Limitation: base FHIR R4 validation only; no US Core or IPS profile c
 
 | Gate | Command | What it covers | Last recorded result |
 |---|---|---|---|
-| Unit and eval tests | `npm test` (`npx vitest run`) | Engines, KB integrity and a 150-row name-matching table, AI guards and verifier, router, view logic, the NLP, medication, ablation, verifier and timeline-null evaluations. One opt-in test (the FHIR sample writer) is skipped by default | 1,918 tests: 1,917 passed, 1 skipped (the opt-in FHIR sample writer; 75 files), 2026-10-18 |
-| End-to-end | `npm run test:e2e` | Playwright checks in system Chrome: one-click and credential logins, wrong password, check-in from a story, adding "Ativan" / a misspelling / an unknown name, review citation and saved decision, timeline counts with denominators, Ask with redirect, brief print gate, FHIR download, How-it-works eval run, 8-step tour, restore demo, every route without console errors, SPEC §3 wording, no horizontal scroll at 390 px, no request to any other origin | 21 of 21 passed, 2026-10-18 |
+| Unit and eval tests | `npm test` (`npx vitest run`) | Engines, KB integrity and a 150-row name-matching table, AI guards and verifier, router, view logic, the NLP, medication, ablation, verifier and timeline-null evaluations. One opt-in test (the FHIR sample writer) is skipped by default | 2,121 tests: 2,120 passed, 1 skipped (the opt-in FHIR sample writer; 81 files), 2026-10-18 |
+| End-to-end | `npm run test:e2e` | Playwright checks in system Chrome: one-click and credential logins, wrong password, check-in from a story, adding "Ativan" / a misspelling / an unknown name, review citation and saved decision, timeline counts with denominators, Ask with redirect, brief print gate, FHIR download, How-it-works eval run, 8-step tour, restore demo, every route without console errors, SPEC §3 wording, no horizontal scroll at 390 px, no request to any other origin | 22 of 22 passed, 2026-10-18 |
 | Accessibility | `npm run test:a11y` | axe-core scans with WCAG 2.0/2.1/2.2 A and AA rules: every route in light and dark theme plus open dialogs, drawers, the "Here's what I heard" panel, Ask answers, the tour and eval results (the gate fails on serious or critical violations) | 46 scans, 0 violations reported (the gate fails on serious or critical), 2026-10-18 |
 | Types | `npm run typecheck` | TypeScript strict | not recorded here (run the command) |
 | Build | `npm run build` | Type-check and production bundle | not recorded here (run the command) |
 | Knowledge base | `python3 -I kb-src/build_kb.py --check` | Ids resolve, Beers ratings match the research file, banned wording | not recorded here (run the command) |
 
 The last column is the dated run behind the submission PDFs, copied from the reports it wrote: the vitest JSON report
-of `node scripts/submission/make-pdfs.mjs` (tmp/submission-build/vitest-report.json, started 2026-10-18 02:23 EDT),
+of `node scripts/submission/make-pdfs.mjs` (tmp/submission-build/vitest-report.json, started 2026-10-18 07:33 EDT),
 test-results/e2e/results.json and test-results/a11y/report.json (all git-ignored). `recordedTests()` in
 scripts/submission/facts.mjs reads these three cells, so a printed test count can be traced to this committed file,
 and `node scripts/submission/check-facts.mjs` warns when the last local reports no longer match them. Counts change
