@@ -129,13 +129,18 @@ export async function captureScreens(browser, base, outDir) {
     if (!/^Question for the (visit|doctor)/i.test(questionText)) throw new Error(`capture: unexpected question box: ${questionText}`);
     // The question must sit beside the bars (featured layout); stacked, the crop would be a tall strip.
     if (boxes.question.x < boxes.bars.x + boxes.bars.width) throw new Error("capture: the question is not beside the bars (viewport too narrow?)");
-    const clip = unionBox(Object.values(boxes), 8);
+    // The action buttons sit just under the question box. When that gap is smaller than the 8 px padding, the crop
+    // would show a thin sliver of the first button's border, so each crop ends 1 px above the buttons instead.
+    const actions = card.locator(".cg-ov-insight__actions");
+    const actionsTop = (await actions.count()) === 1 ? (await actions.boundingBox()).y : Infinity;
+    const stopAboveActions = (box) => ({ ...box, height: Math.min(box.height, actionsTop - 1 - box.y) });
+    const clip = stopAboveActions(unionBox(Object.values(boxes), 8));
     const visitCard = join(outDir, "screen-visit-card.png");
     await page.screenshot({ path: visitCard, clip });
     const title = card.locator(".cg-ov-insight__title");
     if ((await title.count()) !== 1) throw new Error(`capture: the Overview card has ${await title.count()} titles, expected 1`);
     const visitCardTitled = join(outDir, "screen-visit-card-titled.png");
-    await page.screenshot({ path: visitCardTitled, clip: unionBox([...Object.values(boxes), await title.boundingBox()], 8) });
+    await page.screenshot({ path: visitCardTitled, clip: stopAboveActions(unionBox([...Object.values(boxes), await title.boundingBox()], 8)) });
     const text = async (loc) => (await loc.innerText()).replace(/\s+/g, " ").trim();
     const pieces = [];
     for (const [name, loc] of Object.entries(parts)) pieces.push(name === "question" ? questionText.replace(/\s+/g, " ") : await text(loc));

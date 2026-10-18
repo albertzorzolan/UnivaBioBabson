@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { EvidencePackage, MetricKey, StoreData } from "../../model/types";
 import { addDays } from "../../model/dates";
 import { buildEvidence } from "./evidence";
-import { EMERGENCY_REDIRECT, NOT_FOUND_TEXT, parseQuestion, parseRange, redirectText, retrieveForQuestion, routeQuestion } from "./qa";
+import { correctEmergencyTypos, correctMetricTypos, EMERGENCY_REDIRECT, NOT_FOUND_TEXT, parseQuestion, parseRange, redirectText, retrieveForQuestion, routeQuestion } from "./qa";
 import type { QaResult, RouteOptions } from "./qa";
 import { SUGGESTED_QUESTIONS } from "./index";
 import { verifySentence } from "./verify";
@@ -1452,4 +1452,291 @@ describe("routeQuestion — integration review probes (round 4 fixes)", () => {
   it("keeps a risk question about one medicine redirected", () => {
     expect(routed("is lorazepam raising her risk of falls")).not.toBe("in");
   });
+});
+
+// Ask on a phone gets typos. A misspelt symptom word ("how dizy was she this week") used to fall through to "I couldn't
+// find that in the records" while the same question spelt right was answered. Metric detection now accepts one-letter
+// slips in a curated list of symptom words; the safety gate must never get looser because of it.
+describe("Ask typo tolerance (symptom words only)", () => {
+  const ASK_OPTS: RouteOptions = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name), possessive: "her" };
+
+  it.each([
+    ["how dizy was she this week", "how dizzy was she this week"],
+    ["Has she had any confsion recently?", "Has she had any confusion recently?"],
+    ["How has her apetite been lately?", "How has her appetite been lately?"],
+    ["Has she been drowzy this week?", "Has she been drowsy this week?"],
+    ["Has sweling been recorded?", "Has swelling been recorded?"],
+    ["Any insomina this month?", "Any insomnia this month?"],
+    ["Was she lightheded this week?", "Was she lightheaded this week?"],
+  ])("answers '%s' exactly as '%s'", (typo, right) => {
+    expect(routeQuestion(typo, ASK_OPTS), typo).toEqual({ inScope: true });
+    const a = ask(typo);
+    const b = ask(right);
+    expect(b.status).toBe("answered");
+    expect(a.status, typo).toBe("answered");
+    expect(a.intent).toBe(b.intent);
+    expect(parseQuestion(typo, W.data, TODAY).metrics).toEqual(parseQuestion(right, W.data, TODAY).metrics);
+    expect(text(a)).toBe(text(b));
+    expectGrounded(a);
+  });
+
+  it.each([
+    ["Did she drink anything fizzy this week?", "dizziness"],
+    ["Was a contusion recorded this week?", "confusion"],
+    ["Is her dwelling on one floor?", "swelling"],
+    ["Has she had an enema this month?", "swelling"],
+    ["Were her shoes soggy this week?", "confusion"],
+    ["Did she eat anything spelling related?", "swelling"],
+    // Integration review probes: names and real words one edit from a symptom word (round 5).
+    ["how was lizzy this week", "dizziness"],
+    ["what did she say about izzy", "dizziness"],
+    ["Did Lizzy visit this week?", "dizziness"],
+    ["Did Izzy call her this week?", "dizziness"],
+    ["was the weather mizzy this week", "dizziness"],
+    ["did she have a doozy of a day", "dizziness"],
+    ["was she wooly headed", "dizziness"],
+    ["Was her sweater wooly?", "dizziness"],
+    ["Was her sweater woolly?", "dizziness"],
+    ["Did the dog seem woofy this week?", "dizziness"],
+    ["did she enjoy the bobbly sweater", "dizziness"],
+    ["was the path hobbly this week", "dizziness"],
+    ["was the street cobbly this week", "dizziness"],
+    ["Were her eyes welling up this week?", "swelling"],
+    ["Did she have figgy pudding this week?", "confusion"],
+    ["Did the old notes mention dropsy?", "drowsiness"],
+    ["Was the hill steepy this week?", "drowsiness"],
+    ["Was the lamb sheepy this week?", "drowsiness"],
+    ["Was the broom sweepy this week?", "drowsiness"],
+    ["Did she visit stelling this week?", "swelling"],
+  ])("leaves the real word in '%s' alone (no %s)", (q, metric) => {
+    expect(parseQuestion(q, W.data, TODAY).metrics).not.toContain(metric);
+  });
+
+  // Every out-of-scope question keeps its category when its symptom word is misspelt: the typo is read the way the
+  // metric layer reads it, so it can only add a redirect, never remove one.
+  it.each([
+    ["Why is she so dizy?", "Why is she so dizzy?"],
+    ["Did the lorazepam make her dizy?", "Did the lorazepam make her dizzy?"],
+    ["Is her confsion dementia?", "Is her confusion dementia?"],
+    ["Is her sweling from the furosemide?", "Is her swelling from the furosemide?"],
+    ["Why is Mom so drowzy?", "Why is Mom so drowsy?"],
+    ["She is suddenly confsed right now", "She is suddenly confused right now"],
+    ["Will her confsion get worse?", "Will her confusion get worse?"],
+    ["Is she confsed because of the zolpidem?", "Is she confused because of the zolpidem?"],
+    ["Why is she so wozy?", "Why is she so woozy?"],
+    ["Did the lorazepam make her grogy?", "Did the lorazepam make her groggy?"],
+    ["Why is she so slepy?", "Why is she so sleepy?"],
+    ["Does her dizzyness mean she had a stroke?", "Does her dizziness mean she had a stroke?"],
+  ])("keeps '%s' out of scope like '%s'", (typo, right) => {
+    const r = routeQuestion(right, ASK_OPTS);
+    expect(r.inScope, right).toBe(false);
+    const t = routeQuestion(typo, ASK_OPTS);
+    expect(t.inScope, typo).toBe(false);
+    if (!r.inScope && !t.inScope) {
+      expect(t.category, typo).toBe(r.category);
+      expect(t.redirect).toBe(r.redirect);
+    }
+  });
+
+  it("still answers in-scope questions that a correction leaves in scope", () => {
+    expect(routeQuestion("how dizy was she this week", ASK_OPTS)).toEqual({ inScope: true });
+  });
+
+  // Rule "never correct a name": a word capitalised mid-sentence, a profile name or a medicine name is left as typed.
+  it("leaves a name capitalised mid-sentence alone", () => {
+    expect(parseQuestion("Did Dizy visit her this week?", W.data, TODAY).metrics).not.toContain("dizziness");
+    expect(parseQuestion("did dizy visit her this week?", W.data, TODAY).metrics).toContain("dizziness");
+  });
+
+  it("leaves the profile's own names alone", () => {
+    const data: StoreData = { ...W.data, profile: { ...W.data.profile, preferredName: "Edena", displayName: "Edena Hale" } };
+    expect(parseQuestion("how was edena this week", data, TODAY).metrics).not.toContain("swelling");
+    expect(parseQuestion("how was edena this week", W.data, TODAY).metrics).toContain("swelling");
+  });
+
+  it("leaves a medicine name on the list alone", () => {
+    const meds = [...W.data.medications, { ...W.data.medications[0], id: "m-woozi", name: "Wozy (made-up brand)" }];
+    const data: StoreData = { ...W.data, medications: meds };
+    expect(parseQuestion("did she take wozy this week", data, TODAY).metrics).not.toContain("dizziness");
+  });
+
+  it("passes names to the routing pass too (a correction never turns a name into a symptom)", () => {
+    expect(correctMetricTypos("did edena visit", ["Edena Hale"])).toBe("did edena visit");
+    expect(correctMetricTypos("did edena visit")).toBe("did edema visit");
+  });
+});
+
+// Rule "typos only tighten the gate", emergency words: an emergency typed on a phone, with the emergency word
+// misspelt, used to fall through to an ordinary records answer once the symptom word was corrected. The routing-only
+// pass reads emergency words within one edit as the word meant, so these get the 911 / Poison Control card.
+describe("Ask typo tolerance never answers an emergency from the records", () => {
+  const ASK_OPTS: RouteOptions = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name), possessive: "her" };
+
+  it.each([
+    "She is very dizy and cant breath",
+    "she can't breath and is wozy",
+    "She is wozy and not breathng",
+    "She is dizy and unconcious",
+    "She had a siezure and was dizy",
+    "She is dizy and colapsed",
+    "She fanted and is very dizy",
+    "she is very drowzy and unresponsve",
+    "she is dizy and her speech is slured",
+    "she cant breathr and is dizzy",
+    "She can't breath",
+    "she cannot breath and is dizzy",
+    // Present-tense breathlessness and pills taken all at once (spelt right and wrong).
+    "She is dizzy and short of breath",
+    "she's out of breath and very drowsy",
+    "She is getting short of breath",
+    "She is groggy after taking all her pills",
+    "She is grogy after taking all her pills",
+    "he is very sleepy after he took all his pills",
+  ])("'%s' gets the emergency card", (q) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    expect(r.inScope, q).toBe(false);
+    if (!r.inScope) {
+      expect(r.category, q).toBe("emergency");
+      expect(r.redirect).toBe(EMERGENCY_REDIRECT);
+    }
+  });
+
+  // Real words one edit from an emergency word are not emergencies, and look-backs at the records stay look-backs.
+  it.each([
+    "how dizy was she this week",
+    "Was she cooking this week?",
+    "Did she paint anything this week? She painted a lot last month",
+    "Has she been drooling at night this week?",
+    "Was she slurping her soup this week?",
+    "Is she taking all her pills?",
+    "Did she take all her pills this week?",
+    "How often was she short of breath last week?",
+    "Did she take a deep breath before walking this week?",
+    "Was her vision blurred this week?",
+    "Has her blood pressure been dropping this week?",
+    "She overdoes it in the garden and is tired",
+    "Was she chowing down on snacks this week?",
+    "Did she enjoy the trooping of the colour?",
+  ])("'%s' is not routed as an emergency", (q) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    expect(r.inScope ? "in" : r.category, q).not.toBe("emergency");
+  });
+});
+
+// Rule "emergency outranks every redirect": a misspelt emergency word beside a dose, safety, treatment, cause or
+// urgency question used to get the visit-questions card, because the redirect found as typed returned first.
+describe("Ask: the emergency card outranks every other redirect", () => {
+  const ASK_OPTS: RouteOptions = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name), possessive: "her" };
+  const expectEmergency = (q: string) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    expect(r.inScope, q).toBe(false);
+    if (!r.inScope) {
+      expect(r.category, q).toBe("emergency");
+      expect(r.redirect, q).toBe(EMERGENCY_REDIRECT);
+    }
+  };
+
+  it.each([
+    "Should I give her another lorazepam, she is unconcious",
+    "Is it safe? she is breathng strangely",
+    "is it normal that she is not breathng",
+    "Can I give her an extra pill, she colapsed",
+    "Did the lorazepam cause it? she fanted just now",
+    "Is it dangerous that she fanted",
+  ])("'%s' gets the emergency card", expectEmergency);
+
+  const PREFIXES = ["is it safe? ", "should i give her lorazepam? ", "is it normal that ", "can i give her an extra dose, "];
+  const MISSPELT = ["she is unconcious", "she had a siezure", "she colapsed", "she fanted", "she is not breathng", "she is unresponsve", "her speech is slured", "she cant breathr"];
+  it("every misspelt emergency word still gets the emergency card behind any redirect", () => {
+    for (const p of PREFIXES) for (const m of MISSPELT) expectEmergency(p + m);
+  });
+});
+
+// Missed emergencies in the emergency layer (review): "seizing", a face "dropping", "to many", "strok".
+describe("Ask: more emergency wordings", () => {
+  const ASK_OPTS: RouteOptions = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name), possessive: "her" };
+
+  it.each([
+    "she is seizing",
+    "she seized up and shook",
+    "her face is dropping on one side",
+    "her mouth is dropping",
+    "she took to many of her pills",
+    "she is having a strok",
+  ])("'%s' gets the emergency card", (q) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    expect(r.inScope, q).toBe(false);
+    if (!r.inScope) {
+      expect(r.category, q).toBe("emergency");
+      expect(r.redirect).toBe(EMERGENCY_REDIRECT);
+    }
+  });
+
+  it.each(["is her blood pressure dropping", "did she take all her pills this week", "she stroked the cat this week, was she dizzy"])(
+    "'%s' stays in scope",
+    (q) => expect(routeQuestion(q, ASK_OPTS)).toEqual({ inScope: true }),
+  );
+});
+
+// Rule "short or out of breath now": only the person, in the present. Habits, the asker's own breath, questions,
+// negations and look-backs are records questions, answered from the check-ins.
+describe("Ask: short or out of breath now", () => {
+  const ASK_OPTS: RouteOptions = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name), possessive: "her" };
+
+  it.each(["She is short of breath", "she's suddenly out of breath", "she is getting short of breath right now", "Margaret is out of breath"])(
+    "'%s' gets the emergency card",
+    (q) => {
+      const r = routeQuestion(q, ASK_OPTS);
+      expect(r.inScope, q).toBe(false);
+      if (!r.inScope) expect(r.category, q).toBe("emergency");
+    },
+  );
+
+  it.each([
+    "she is never short of breath",
+    "is she ever short of breath",
+    "she is always short of breath on hills",
+    "she gets out of breath on the stairs",
+    "she keeps getting out of breath when she walks to the mailbox",
+    "she is fine but i'm out of breath",
+    "we're out of breath after the walk, was she dizzy",
+    "i'm out of breath from chasing the dog, how dizzy was she this week",
+    "she looks out of breath in the photo from monday",
+  ])("'%s' stays in scope", (q) => expect(routeQuestion(q, ASK_OPTS)).toEqual({ inScope: true }));
+});
+
+describe("correctEmergencyTypos (routing only)", () => {
+  it.each([
+    ["she is unconcious", "she is unconscious"],
+    ["she had a siezure", "she had a seizure"],
+    ["she colapsed", "she collapsed"],
+    ["she fanted", "she fainted"],
+    ["not breathng", "not breathing"],
+    ["she is unresponsve", "she is unresponsive"],
+    ["speech is slured", "speech is slurred"],
+    ["cant breathr", "cant breathe"],
+  ])("corrects '%s'", (q, want) => expect(correctEmergencyTypos(q)).toBe(want));
+
+  it.each(["a deep breath", "her vision blurred", "pressure is dropping", "she overdoes it", "she was cooking", "she is drooling", "she painted", "she is dizy"])(
+    "leaves '%s' unchanged",
+    (q) => expect(correctEmergencyTypos(q)).toBe(q),
+  );
+});
+
+describe("correctMetricTypos", () => {
+  it.each([
+    ["how dizy was she", "how dizzy was she"],
+    ["any insomina", "any insomnia"],
+    ["was she wozy", "was she woozy"],
+    ["her apetite", "her appetite"],
+  ])("corrects '%s'", (q, want) => expect(correctMetricTypos(q)).toBe(want));
+
+  it.each([
+    "was she diz", "has she tried it", "any calls this week", "did she feel well", "her ankle", "fizzy drink", "a contusion", "she is dizzy", "the dosage",
+    "izzy", "lizzy", "mizzy", "doozy", "wooly", "woolly", "woofy", "bobbly", "hobbly", "cobbly", "welling", "dropsy", "sheepy", "steepy", "sweepy", "figgy", "stelling",
+    "booziness", "fizziness", "steepiness", "fogy", "fuggy", "snelling", "confuted",
+  ])(
+    "leaves '%s' unchanged",
+    (q) => expect(correctMetricTypos(q)).toBe(q),
+  );
 });

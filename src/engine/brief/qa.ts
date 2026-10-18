@@ -596,6 +596,52 @@ const CONFUSION_NEW_TODAY = new RegExp(
 );
 
 /**
+ * Rule "short or out of breath now": the person the questions are about described as short or out of breath in the
+ * present: "she is short of breath", "she's suddenly out of breath", "she is dizzy and short of breath", "she is
+ * getting short of breath right now". Only she / he / they or the person's name with "is / 's / are / 're", then
+ * only an intensifier (SHORT_OF_BREATH_INTENSIFIER) or one symptom joined by "and". So these stay records questions:
+ * habits ("she gets out of breath on the stairs", "she keeps getting out of breath"), the asker's own breath ("i'm
+ * out of breath", "we're out of breath"), a question ("is she ever short of breath"), and the exclusions below.
+ */
+const SHORT_OF_BREATH_INTENSIFIER = "(?:very|really|so|quite|a bit|a little|suddenly|now|getting|becoming)";
+/** Named exclusion: negation and frequency words in the slot ("she is never short of breath", "always ... on hills"). */
+const SHORT_OF_BREATH_NOT_NOW = /\b(?:never|not|isn'?t|ever|always|usually|sometimes|often|rarely|normally|generally)\b/;
+/** Named exclusion: a past-time cue ("she looks out of breath in the photo from monday", "on tuesday"). */
+const SHORT_OF_BREATH_PAST_CUE =
+  /\b(?:in (?:the|that|this|a) (?:photos?|pictures?|videos?|clips?)|on (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)s?|from (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b/;
+
+function shortOfBreathNow(t: string, PERSON: string): boolean {
+  const slot = `(?: ${SHORT_OF_BREATH_INTENSIFIER})*`;
+  const re = new RegExp(`\\b(?!(?:i|we|him|them)\\b)${PERSON}(?: is|'s| are|'re)(${slot}(?: [a-z'-]+ and${slot})?) (?:short|out) of breath\\b`);
+  const m = re.exec(t);
+  if (!m || SHORT_OF_BREATH_NOT_NOW.test(m[1])) return false;
+  if (SHORT_OF_BREATH_PAST_CUE.test(t) && !NOW_WORDS.test(t)) return false;
+  return happeningNow(t, re);
+}
+
+/**
+ * A symptom stated in the present tense ("she is groggy", "he's very sleepy", "she seems confused"), for forms that
+ * need the symptom to be happening, not asked about.
+ */
+const SYMPTOM_STATED_NOW = new RegExp(`\\b(?:is|are|she'?s|he'?s|they'?re|seems|looks|feels|getting)\\b (?:[a-z'-]+ ){0,3}?${ACUTE_SYMPTOM}`);
+/** A question that asks rather than tells ("Is she drowsy after taking all her pills?"). */
+const ASKS_RATHER_THAN_TELLS = /^(?:is|are|does|do|has|have|can|could|would|should|will)\b/;
+
+/**
+ * "She is groggy after taking all her pills": all of her medicines taken at once, with a symptom stated as happening.
+ * Not "Is she taking all her pills?" (adherence) and not a look-back ("Was she dizzy after taking all her pills on
+ * Monday?"), nor a question about it ("Is she drowsy after taking all her pills?").
+ */
+function symptomAfterAllHerPills(t: string, MED: string): boolean {
+  const allPills = new RegExp(
+    `\\b(?:after|since) (?:taking|swallowing|(?:she|he|they) (?:took|swallowed|had)|took|swallowed) all (?:of )?(?:her|his|my|their|the) (?:[a-z'-]+ )?(?:${MED}|pills?|tablets?|caplets?|capsules?|meds|medicines?|medications?)\\b`,
+  );
+  if (!allPills.test(t) || !SYMPTOM_STATED_NOW.test(t)) return false;
+  if (ASKS_RATHER_THAN_TELLS.test(t) && !NOW_WORDS.test(t)) return false;
+  return happeningNow(t, allPills);
+}
+
+/**
  * The scope table: ordered categories, each with named, ordered forms. The first category with a matching form wins,
  * and within it the first matching form names the route (route.rule). Each form is tested against lower-cased,
  * punctuation-normalised text.
@@ -618,10 +664,19 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
     forms: [
       rx(
         "emergency words (911, not breathing, chest pain, stroke, overdose, seizure, poison…)",
-        "\\b(?:911|emergency|ambulance|paramedics?|unconscious|unresponsive|not breathing|can'?t breathe|cannot breathe|trouble breathing|struggling to breathe|gasping|chest pains?|heart attack|stroke|mini[- ]?stroke|tia|droop\\w*|slurr\\w*|overdos\\w*|swallowed (?:a|the|too|all|her|his)|seizures?|having a fit|convuls\\w*|passed out|fainted|collaps\\w*|hit (?:her|his|my) head|bleeding (?:a lot|heavily|badly|won'?t stop)|won'?t wake|can'?t wake|(?:hard|difficult) to (?:wake|rouse)|barely (?:wake\\w*|rous\\w*)|(?:can'?t|won'?t|cannot) (?:be )?rous\\w*|not rousable|unrousable|can'?t get up|cannot get up|can'?t move|cannot move|unable to move|suicid\\w*|kill (?:her|him|my)self|poison\\w*|choking|anaphyla\\w*|throat (?:is )?(?:swelling|closing)|(?:vomiting|throwing up|coughing up) blood)\\b",
+        "\\b(?:911|emergency|ambulance|paramedics?|unconscious|unresponsive|not breathing|can'?t breathe|cannot breathe|trouble breathing|struggling to breathe|gasping|chest pains?|heart attack|stroke|mini[- ]?stroke|tia|droop\\w*|slurr\\w*|overdos\\w*|swallowed (?:a|the|too|all|her|his)|seizures?|seiz(?:ing|ed)|having a fit|convuls\\w*|passed out|fainted|collaps\\w*|hit (?:her|his|my) head|bleeding (?:a lot|heavily|badly|won'?t stop)|won'?t wake|can'?t wake|(?:hard|difficult) to (?:wake|rouse)|barely (?:wake\\w*|rous\\w*)|(?:can'?t|won'?t|cannot) (?:be )?rous\\w*|not rousable|unrousable|can'?t get up|cannot get up|can'?t move|cannot move|unable to move|suicid\\w*|kill (?:her|him|my)self|poison\\w*|choking|anaphyla\\w*|throat (?:is )?(?:swelling|closing)|(?:vomiting|throwing up|coughing up) blood)\\b",
       ),
+      // "she can't breath" (no final e: a common slip), "she can't catch her breath".
+      rx("can't breath (no final e)", "\\b(?:can'?t|cannot|can not|couldn'?t) (?:catch (?:her|his|my|their) )?breath\\b"),
+      // "she is breathing strangely", "breathing very fast": abnormal breathing described now.
+      rx("breathing strangely", "\\b(?:is|she'?s|he'?s|they'?re|are) breathing (?:very |really |so )?(?:strangely|strange|oddly|odd|funny|weird(?:ly)?|noisily|shallow(?:ly)?|fast|slowly)\\b"),
+      // "She is dizzy and short of breath", "she's out of breath" (the person, in the present; see the rule).
+      { name: "short or out of breath now", test: (t) => shortOfBreathNow(t, PERSON) },
       // "her lips are blue", "face looks grey".
       rx("colour change", "\\b(?:lips?|face|skin|fingers?) (?:are |is |look\\w* |turn\\w* |went |gone |going )+(?:blue|grey|gray|purple|white)\\b"),
+      // "her face is dropping on one side", "her mouth is dropping": a common lay word for a drooping face (stroke).
+      // "dropping" is left as typed by correctEmergencyTypos (blood pressure), so the face words carry it here.
+      rx("face or mouth dropping", "\\b(?:face|mouth|smile|lips?|eyelids?)\\b[^?]{0,25}\\bdropp\\w*"),
       // "not making sense", "doesn't know where she is".
       rx("acute confusion: not making sense", "\\bnot making (?:any )?sense\\b|\\b(?:doesn'?t|does not|didn'?t|did not|can'?t) (?:know|recogni[sz]e) (?:where|who|what day|me|us)\\b"),
       // "Mom is suddenly very confused today", "all of a sudden she's disoriented" (both word orders). Not a look-back
@@ -648,6 +703,8 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         "\\b(?:took|taken|take|swallowed|had|given|gave|ate)\\b[^?]*\\b(?:by mistake|by accident|accidentally|all at once|at once|at the same time|double dose|the whole (?:bottle|pack|box|week))\\b",
       ),
       rx("several pills or doses taken", "\\b(?:took|taken|swallowed|had|given) (?:two|2|three|3|four|4|double|an extra|extra|all|her whole|his whole|the whole|a week'?s?)\\b[^?]*\\b(?:pills?|tablets?|doses?|meds|medicines?|bottle)\\b"),
+      // "She is groggy after taking all her pills": all of them at once, with a symptom happening now.
+      { name: "several pills or doses taken: a symptom after taking all her pills", test: (t) => symptomAfterAllHerPills(t, MED) },
       // "she accidentally took her pills", "mistakenly gave him". (Not "accidentally had a fall": a fall on its own is
       // a records question.)
       rx(
@@ -662,9 +719,10 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         `\\b(?:took|taken|swallowed|ate|eaten|given|gave)(?: (?:him|her|them|me))? (?:(?:[2-3]|two|three) of|(?:[4-9]|[1-9]\\d+|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|a handful|handfuls|several|a bunch|a whole (?:bunch|lot|handful))\\b(?!\\s?(?:mg|mcg|milligrams?|micrograms?|g|ml|units?|iu)\\b)(?: of)?)[^?.]{0,40}?\\b(?:${MED}|pills?|tablets?|caplets?|capsules?|gummies|meds|medicines?|medications?|doses?)\\b`,
       ),
       // "has taken too many pills", "took too many of her lorazepam"; not "had too many falls" or "took too many naps".
+      // "to many" (the common homophone slip) counts as "too many".
       rx(
         "possible overdose: too many of a medicine",
-        `\\b(?:took|taken|swallowed|had|given|gave)\\b[^?.]{0,30}\\btoo many (?:of )?(?:her |his |my |the |their )?(?:[a-z'-]+ )?(?:${MED}|pills?|tablets?|caplets?|capsules?|gummies|meds|medicines?|medications?|doses?)\\b`,
+        `\\b(?:took|taken|swallowed|had|given|gave)\\b[^?.]{0,30}\\bto?o many (?:of )?(?:her |his |my |the |their )?(?:[a-z'-]+ )?(?:${MED}|pills?|tablets?|caplets?|capsules?|gummies|meds|medicines?|medications?|doses?)\\b`,
       ),
       // "took a whole bottle", "he took twice his dose".
       rx("possible overdose: a whole container", "\\b(?:took|taken|swallowed|ate|eaten|had|given|gave)\\b[^?.]{0,20}\\b(?:a|the) (?:whole|entire|full) (?:bottle|pack|packet|box|strip|blister pack)\\b"),
@@ -1005,6 +1063,61 @@ function safetyReason(t: string, med: RegExp, MED: string, opts: RouteOptions): 
 export function routeQuestion(q: string, opts: RouteOptions = {}): QuestionRoute {
   const t = normalizeQuestion(q);
   if (!t) return { inScope: true };
+  // Rule "typos only tighten the gate": the metric layer reads a misspelt symptom word as the word it was meant to be
+  // (correctMetricTypos), so "Did the lorazepam make her dizy?" would otherwise reach retrieval as a dizziness
+  // question. The scope rules themselves are unchanged and still run on the text as typed, first; the corrected text
+  // is checked only as well, so a correction can add a redirect but never remove one. The corrected text also reads
+  // misspelt emergency words as the word meant (correctEmergencyTypos, this routing pass only): "She is dizy and
+  // unconcious" must get the emergency card, not a dizziness answer.
+  const asTyped = routeText(t, opts);
+  if (!asTyped.inScope && asTyped.category === "emergency") return asTyped;
+  const names = [opts.patientName ?? "", ...(opts.personNames ?? []), ...(opts.medNames ?? []), ...namesAsTyped(q)];
+  const corrected = correctEmergencyTypos(correctMetricTypos(t, names));
+  if (corrected === t) return asTyped;
+  const fixed = routeText(corrected, opts);
+  // Rule "emergency outranks every redirect": a misspelt emergency word beside a dose or safety question ("Should I
+  // give her another lorazepam, she is unconcious") still gets the 911 card, not the visit-questions card. Otherwise
+  // a redirect found as typed stands, and the corrected text can only add one.
+  if (!fixed.inScope && fixed.category === "emergency") return fixed;
+  return asTyped.inScope ? fixed : asTyped;
+}
+
+/**
+ * Rule "emergency words, one slip" (routing only; never fed to findMetrics). Emergency words from the emergency
+ * lexicon, read within one edit (withinOneEdit) of how they were typed: "unconcious", "siezure", "colapsed",
+ * "fanted", "breathng", "slured", "strok". A false alarm costs one tap, so an ambiguous match ("seizurs": seizure or
+ * seizures) still redirects. The emergency regexes are unchanged; this only rewrites the text they also check.
+ * "breath" (no final e) is a real word and stays as typed: "can't breath" has its own emergency form instead.
+ */
+const EMERGENCY_TYPO_TARGETS = [
+  "unconscious", "unresponsive", "seizure", "seizures", "collapsed", "fainted", "slurred", "slurring",
+  "overdose", "overdosed", "choking", "convulsing", "poisoned", "drooping", "breathing", "breathe", "stroke",
+];
+
+/**
+ * Real words one edit from an emergency word above, left as typed: "blurred vision" is not "slurred", "her pressure
+ * is dropping" is not "drooping", "she overdoes it" is not "overdose". From a sweep of /usr/share/dict/words (and
+ * simple inflections) through correctEmergencyTypos.
+ */
+const NOT_EMERGENCY_TYPOS = new Set(
+  (
+    "breath breaths breathed breather breathes breathy wreathe wreathing breaching cooking chowing cheking drooling dropping trooping " +
+    "painted tainted sainted fainter feinted slurped slurping blurred blurring spurred spurring overdone overdoes " +
+    // Real words one edit from "stroke" ("she stroked the cat", "a strike", "she strode in").
+    "stoke stokes strike strake streke strode strove stroked stroker strokes stroky strome strone troke"
+  ).split(" "),
+);
+
+/** The question with misspelt emergency words replaced by the word meant (routing only; see the rule above). */
+export function correctEmergencyTypos(t: string): string {
+  return t.replace(/\b[a-z]{5,}\b/g, (w) => {
+    if (NOT_EMERGENCY_TYPOS.has(w) || COMMON_WORDS.has(w) || EMERGENCY_TYPO_TARGETS.includes(w)) return w;
+    return EMERGENCY_TYPO_TARGETS.find((target) => withinOneEdit(w, target)) ?? w;
+  });
+}
+
+/** The scope rules over one normalised text (routeQuestion). */
+function routeText(t: string, opts: RouteOptions): QuestionRoute {
   const { rules, med, MED } = rulesFor(opts);
   // Categories in order (emergency first); within a category, the first form that matches names the route.
   for (const rule of rules) {
@@ -1035,6 +1148,95 @@ const METRIC_WORDS: [MetricKey, RegExp][] = [
   // "appetite" questions are answered with the appetiteWorse metric (days with a poor appetite).
   ["appetiteWorse", /\bappetite\b|\beat(?:ing|s|en)?\b|\bate\b|\bhungry\b|\bmeals?\b/g],
 ];
+
+/**
+ * Rule "one slip in a symptom word" (typo tolerance, metric detection only). A question typed on a phone ("how dizy was
+ * she this week") should find the same diary item as the word spelt right. Conservative on purpose:
+ *   - only these symptom words are corrected to: distinctive ones whose one-letter neighbours are rarely real words
+ *     (short or common-neighboured words such as "fall", "fell", "tired", "sleep", "night" and "ankle" are left out);
+ *   - only a word of 4+ letters that no metric word already matches, one edit away (a letter added, dropped, changed,
+ *     or two neighbours swapped) from exactly one of them;
+ *   - never a real word or name listed in NOT_METRIC_TYPOS ("fizzy" is not "dizzy", "contusion" is not "confusion");
+ *   - never one of the names passed in, nor a word capitalised mid-sentence ("never correct a name", below).
+ * Medicine, range and intent detection keep the text as typed. routeQuestion also checks the corrected text, so a
+ * correction can only add a redirect ("typos only tighten the gate").
+ */
+const METRIC_TYPO_TARGETS = [
+  "dizzy", "dizziness", "woozy", "wooziness", "lightheaded", "unsteady", "wobbly", "vertigo",
+  "drowsy", "drowsiness", "sleepy", "sleepiness", "groggy",
+  "confused", "confusion", "foggy", "forgetful", "disoriented",
+  "swelling", "swollen", "edema",
+  "insomnia",
+  "energy", "fatigue", "fatigued", "exhausted",
+  "appetite",
+];
+
+/**
+ * Real words and names one edit from a target above: never read as a misspelt symptom. Includes names a caregiver
+ * may type for a grandchild ("izzy", "lizzy"), and old or rare words with their own meaning ("dropsy" is an old word
+ * for edema, so it must not become "drowsy").
+ */
+const NOT_METRIC_TYPOS = new Set(
+  (
+    "fizzy tizzy ditzy woody boozy oozy wobble froggy soggy boggy doggy moggy fogey sleeps sleety contused contusion dwelling smelling spelling selling swilling shelling stollen enema " +
+    "izzy lizzy mizzy doozy wooly woolly woofy bobbly hobbly cobbly welling stelling dropsy sheepy steepy sweepy figgy " +
+    // From a sweep of /usr/share/dict/words (and simple inflections) through correctMetricTypos.
+    "booziness woodiness wooliness ooziness woofiness fizziness tizziness sheepiness steepiness sweepiness seepiness sleekiness " +
+    "sleetiness fuggy hoggy poggy loggy fogy seepy sleeky bizzy drossy drossiness dropsiness nonfusion confuted rightheaded snelling greggy"
+  ).split(" "),
+);
+
+/**
+ * Rule "never correct a name": the words of the names passed in (the profile's names, the list's medicine names and
+ * brands, words capitalised mid-sentence) are left exactly as typed. "Did Lizzy visit?" is about a person.
+ */
+function nameWords(names: readonly string[]): Set<string> {
+  return new Set(names.flatMap((n) => oneLine(typeof n === "string" ? n : "").toLowerCase().split(/[^a-z]+/)).filter((w) => w.length >= 4));
+}
+
+/**
+ * Words capitalised mid-sentence in the question as typed ("Did Lizzy visit this week?" → "lizzy"): likely names.
+ * The first word of a sentence and words in capitals ("DIZY") don't count.
+ */
+function namesAsTyped(q: string): string[] {
+  const s = oneLine(typeof q === "string" ? q : "").slice(0, MAX_QUESTION_CHARS);
+  const out: string[] = [];
+  for (const m of s.matchAll(/[A-Za-z][A-Za-z'-]*/g)) {
+    if (!/^[A-Z][a-z]+$/.test(m[0])) continue;
+    const before = s.slice(0, m.index).trimEnd();
+    if (before === "" || /[.!?:;"(“‘]$/.test(before)) continue;
+    out.push(m[0]);
+  }
+  return out;
+}
+
+/** The metric words as plain (non-global) tests, to tell a word that is already understood. */
+const METRIC_WORD_TESTS = METRIC_WORDS.map(([, re]) => new RegExp(re.source));
+
+/** True when `a` becomes `b` with at most one edit: insert, delete, substitute, or swap two neighbouring letters. */
+function withinOneEdit(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (Math.abs(a.length - b.length) > 1) return false;
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  if (a.length === b.length) {
+    return a.slice(i + 1) === b.slice(i + 1) || (a[i] === b[i + 1] && a[i + 1] === b[i] && a.slice(i + 2) === b.slice(i + 2));
+  }
+  return a.length > b.length ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
+}
+
+/**
+ * The question with misspelt symptom words replaced by the word meant (see the rule above). `names` are left as
+ * typed ("never correct a name"). Exported for tests.
+ */
+export function correctMetricTypos(t: string, names: readonly string[] = []): string {
+  const keep = nameWords(names);
+  return t.replace(/\b[a-z]{4,}\b/g, (w) => {
+    if (keep.has(w) || NOT_METRIC_TYPOS.has(w) || COMMON_WORDS.has(w) || METRIC_WORD_TESTS.some((re) => re.test(w))) return w;
+    const near = METRIC_TYPO_TARGETS.filter((target) => withinOneEdit(w, target));
+    return near.length === 1 ? near[0] : w;
+  });
+}
 
 /** Words that count as "talking about" a diary item inside her own story (broader than the question words). */
 const STORY_WORDS: Record<MetricKey, RegExp> = {
@@ -1245,8 +1447,8 @@ function findMeds(t: string, data: StoreData, today: ISODate): { meds: Medicatio
   return { meds, unlisted };
 }
 
-function findMetrics(t: string): MetricKey[] {
-  let rest = t;
+function findMetrics(t: string, names: readonly string[] = []): MetricKey[] {
+  let rest = correctMetricTypos(t, names);
   const out: MetricKey[] = [];
   for (const [key, re] of METRIC_WORDS) {
     re.lastIndex = 0;
@@ -1489,7 +1691,10 @@ function detectIntent(t: string, p: Omit<ParsedQuestion, "intent" | "normalized"
 /** Parse a question into concepts, medicines, a period and an intent (exported for tests and the UI). */
 export function parseQuestion(q: string, data: StoreData, today: ISODate): ParsedQuestion {
   const t = normalizeQuestion(q);
-  const metrics = findMetrics(t);
+  // "never correct a name": the profile's names, the list's medicine names and words capitalised mid-sentence.
+  const p = data.profile;
+  const names = [p.displayName, p.preferredName, p.caregiverName, ...data.medications.map((m) => m.name), ...namesAsTyped(q)];
+  const metrics = findMetrics(t, names);
   const concepts = findConcepts(t);
   const { meds, unlisted } = findMeds(t, data, today);
   const range = parseRange(t, today, meds, data.medications);

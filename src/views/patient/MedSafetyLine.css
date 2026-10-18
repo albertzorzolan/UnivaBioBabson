@@ -60,3 +60,16 @@
 .pt-medsafety--flow {
   margin-top: 0;
 }
+/* The static 911 line (EmergencyLine.tsx) uses the same box: the Help dialog's 911 row, in the same "help" tone.
+ * Three short sentences instead of one, so they get their own spacing; the first is the one to read. */
+.pt-emergency__text {
+  display: grid;
+  gap: var(--space-2);
+}
+.pt-emergency__title {
+  font-weight: var(--fw-bold);
+}
+/* At the top of "Here's what I heard" the panel's own gap spaces it. */
+.pt-emergency--top {
+  margin-top: 0;
+}

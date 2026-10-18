@@ -5,6 +5,8 @@
 //   4. other symptoms and medicine remarks she can keep or remove (with the static Poison Control line when a remark
 //      says too much of a medicine, or the wrong one, was taken: MedSafetyLine.tsx)
 //   5. optionally, a second look by the on-device language model (only when it is already loaded)
+// When her words describe one of the app's listed emergency signs, the static 911 line (EmergencyLine.tsx: the Help
+// dialog's 911 row, word for word) comes first, right under the heading.
 // When the story gives no answer to fill in, it says so and offers a jump to the questions (the quick form below).
 import { useMemo, useState } from "react";
 import {
@@ -23,6 +25,7 @@ import { CONCEPTS, isConceptId } from "../../engine/nlp/lexicon";
 import { AIBadge, Badge, Button, Callout, cx, type Tone } from "../../ui";
 import { layoutStory, type MarkKind, type StoryMark } from "./highlight";
 import { MedSafetyLine, needsPoisonLine } from "./MedSafetyLine";
+import { EmergencyLine, describesEmergencySign } from "./EmergencyLine";
 import { FIELD_LABEL, FIELD_TAG, MAIN_FIELDS, answerWords, dedupeSkipped, isAccepted, type CheckInForm } from "./checkin";
 
 const NO_TAG: Partial<Record<DiaryField, string>> = {
@@ -257,6 +260,9 @@ export function HeardPanel(props: HeardPanelProps) {
           </span>
         </p>
       </div>
+
+      {/* Read from the words this panel shows (the reading's story), before anything to check or accept. */}
+      {describesEmergencySign(story) && <EmergencyLine className="pt-emergency--top" />}
 
       {stale && (
         <p className="pt-heard__stale" role="status">

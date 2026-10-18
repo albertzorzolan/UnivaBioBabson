@@ -221,9 +221,9 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
 
 /* The one screenshot: a contiguous crop of the live app's Overview card at a fixed height (SHOT_HEIGHT_IN), as wide as
    its proportions allow up to the page width less SHOT_CAPTION_IN for the caption; the caption column takes the rest.
-   The page height therefore never depends on the card's height. */
+   The page height therefore never depends on the card's height. A wide crop is centred vertically in the box. */
 .shot { margin: 0; display: grid; grid-template-columns: auto minmax(${SHOT_CAPTION_IN}in, 1fr); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: var(--surface); }
-.shot img { display: block; height: ${SHOT_HEIGHT_IN}in; width: auto; max-width: calc(7.66in - 2px - ${SHOT_CAPTION_IN}in); object-fit: contain; object-position: left top; border-right: 1px solid var(--line); }
+.shot img { display: block; height: ${SHOT_HEIGHT_IN}in; width: auto; max-width: calc(7.66in - 2px - ${SHOT_CAPTION_IN}in); object-fit: contain; object-position: left center; border-right: 1px solid var(--line); }
 .shot figcaption { padding: 8px 10px; background: var(--primary-soft); display: flex; flex-direction: column; gap: 5px; }
 .shot figcaption > b { font-family: var(--font-serif); font-size: 12pt; line-height: 1.15; font-weight: 650; color: var(--primary-soft-ink); }
 .shot figcaption .src { font-size: 7.2pt; color: var(--ink-muted); line-height: 1.25; }
