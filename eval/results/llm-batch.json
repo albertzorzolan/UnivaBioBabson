@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T11:25:17.417Z",
+  "generatedAt": "2026-10-18T13:34:11.841Z",
   "date": "2026-10-18",
   "machine": "Apple M1 Pro, headless Chrome WebGPU",
   "machineDetail": {
@@ -14,20 +14,20 @@
   },
   "model": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
   "modelSource": "local copy (public/models/resolve/Qwen2.5-3B-Instruct-q4f16_1-MLC/)",
-  "loadMs": 5896,
+  "loadMs": 7448,
   "runtime": "@mlc-ai/web-llm 0.2.85 (WebGPU, Web Worker); the app's fixed settings: temperature 0, top_p 1, grammar-constrained JSON",
   "record": "demo record (src/model/seed.ts, fictional Margaret story) built for today = 2026-10-11",
   "script": "scripts/llm-batch.mjs (prompt set) + src/ai/batchHarness.ts (app pipeline in the page)",
   "code": {
-    "commit": "5ea4b44",
+    "commit": "b389425",
     "uncommittedChangesInTheseFiles": true,
     "sha256": {
       "src/ai/tasks.ts": "d8202e8dbd9a49a2",
       "src/ai/prompts.ts": "7d94243109d9260c",
       "src/ai/schemas.ts": "43501466105a11cd",
       "src/ai/llm.ts": "539f76f37ecac986",
-      "src/engine/brief/verify.ts": "7898a9b09b6857c7",
-      "src/engine/brief/qa.ts": "2f291f093e9b9b45",
+      "src/engine/brief/verify.ts": "a5920fc596c78bd1",
+      "src/engine/brief/qa.ts": "f4be3000c3017125",
       "src/engine/brief/evidence.ts": "0379e201b63352d3",
       "src/ai/batchHarness.ts": "053ddd617d554c74"
     },
@@ -52,9 +52,9 @@
     "blockedRate": 0.2763,
     "shownRate": 0.3947,
     "latencyMs": {
-      "p50": 5630,
-      "p95": 45906,
-      "max": 50412
+      "p50": 5633,
+      "p95": 45890,
+      "max": 50332
     },
     "byTask": {
       "ask": {
@@ -68,9 +68,9 @@
         "blockedRate": 0.0789,
         "shownRate": 0.3947,
         "latencyMs": {
-          "p50": 4922,
-          "p95": 8817,
-          "max": 11642
+          "p50": 4991,
+          "p95": 8833,
+          "max": 11682
         }
       },
       "brief": {
@@ -84,9 +84,9 @@
         "blockedRate": 0.4167,
         "shownRate": 0.5,
         "latencyMs": {
-          "p50": 45906,
-          "p95": 50412,
-          "max": 50412
+          "p50": 45890,
+          "p95": 50332,
+          "max": 50332
         }
       },
       "explain": {
@@ -100,9 +100,9 @@
         "blockedRate": 0.5714,
         "shownRate": 0.2143,
         "latencyMs": {
-          "p50": 6973,
-          "p95": 7366,
-          "max": 7366
+          "p50": 6935,
+          "p95": 7351,
+          "max": 7351
         }
       }
     }
@@ -155,8 +155,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 5640,
-      "modelMs": 5577,
+      "ms": 5769,
+      "modelMs": 5655,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\",\"S1\"],\"text\":\"Dizziness was first recorded on Aug 15, and recorded on 9 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11.\"}]}",
       "recordsAnswer": [
@@ -194,8 +194,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 4922,
-      "modelMs": 4864,
+      "ms": 4991,
+      "modelMs": 4937,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\",\"K2\"],\"text\":\"2 near-falls were recorded on 14 answered days since Sep 25, compared with 1 near-fall on 20 answered days before.\"}]}",
       "recordsAnswer": [
@@ -233,8 +233,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 5817,
-      "modelMs": 5719,
+      "ms": 5808,
+      "modelMs": 5716,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"D1\",\"K2\"],\"text\":\"In Margaret's words on Oct 1: 'Slept like a log, but I could hardly keep my eyes open after lunch.' Sleep quality ratings averaged 3.5 out of 5 on 6 answered days from Oct 5 through Oct 11.\"}]}",
       "recordsAnswer": [
@@ -282,8 +282,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 11642,
-      "modelMs": 11493,
+      "ms": 11682,
+      "modelMs": 11527,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"5 of Margaret's 8 current medicines appear in AGS Beers Criteria® 2023 prompts.\"},{\"evidenceIds\":[\"K2\"],\"text\":\"Lorazepam (Ativan), Tylenol PM (OTC) and Omeprazole are listed as medicines older adults should generally avoid.\"}]}",
       "recordsAnswer": [
@@ -338,7 +338,7 @@
       },
       "modelRan": true,
       "outcome": "AI draft blocked; only the records answer is shown",
-      "ms": 5510,
+      "ms": 5538,
       "modelMs": null,
       "error": "AIValidationError: The AI answer did not pass the evidence check; the records-based answer is shown instead.",
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K2\",\"K3\"],\"text\":\"Dizziness and a poor appetite were recorded in the last two weeks.\"},{\"evidenceIds\":[\"K4\"],\"text\":\"Falls and near-falls were recorded in the last two weeks.\"}]}",
@@ -382,8 +382,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft did not answer the question; not shown",
-      "ms": 4456,
-      "modelMs": 4453,
+      "ms": 4463,
+      "modelMs": 4460,
       "error": null,
       "raw": "{\"answer\":[]}",
       "recordsAnswer": [
@@ -402,8 +402,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 3335,
-      "modelMs": 3287,
+      "ms": 3355,
+      "modelMs": 3306,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Dizziness was recorded on 10 of 25 answered days.\"}]}",
       "recordsAnswer": [
@@ -438,8 +438,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 5688,
-      "modelMs": 5638,
+      "ms": 5700,
+      "modelMs": 5653,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"S1\"],\"text\":\"Daytime drowsiness was recorded on 8 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 20 answered days in the 21 days before.\"}]}",
       "recordsAnswer": [
@@ -470,8 +470,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 3794,
-      "modelMs": 3746,
+      "ms": 3817,
+      "modelMs": 3764,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Falls were recorded on 1 of 9 answered days from Oct 1 through Oct 11 (Oct 6).\"}]}",
       "recordsAnswer": [
@@ -502,8 +502,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 8817,
-      "modelMs": 8679,
+      "ms": 8833,
+      "modelMs": 8696,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"M7\"],\"text\":\"Oxybutynin 5 mg twice daily, started Mar 15, for bladder, prescribed by Dr. Shah (urology).\"},{\"evidenceIds\":[\"M8\"],\"text\":\"Lorazepam (Ativan) 0.5 mg at bedtime, started Sep 25, for anxiety / sleep, prescribed by Urgent care.\"}]}",
       "recordsAnswer": [
@@ -558,8 +558,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 6757,
-      "modelMs": 6651,
+      "ms": 6754,
+      "modelMs": 6660,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\",\"K2\"],\"text\":\"The anticholinergic burden score (ACB) adds up to 7: diphenhydramine 3 (in Tylenol PM (OTC)), Oxybutynin 3, Furosemide (Lasix) 1.\"}]}",
       "recordsAnswer": [
@@ -592,7 +592,7 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 6851,
+      "ms": 6857,
       "modelMs": 6801,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"M1\",\"F1\"],\"text\":\"Furosemide (Lasix) was started on Jul 8 for ankle swelling, prescribed by Dr. Lee (primary care).\"}]}",
@@ -631,8 +631,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 7622,
-      "modelMs": 7529,
+      "ms": 7597,
+      "modelMs": 7505,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Amlodipine was started on May 24.\"},{\"evidenceIds\":[\"M1\"],\"text\":\"Amlodipine 10 mg once daily, started May 24, for blood pressure, prescribed by Dr. Okafor (cardiology).\"}]}",
       "recordsAnswer": [
@@ -678,8 +678,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 8084,
-      "modelMs": 7993,
+      "ms": 8099,
+      "modelMs": 7998,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Energy ratings averaged 2.6 out of 5 on 11 answered days from Sep 28 through Oct 11.\"},{\"evidenceIds\":[\"S1\"],\"text\":\"Energy ratings averaged 2.6 out of 5 on 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 3.5 out of 5 on 20 answered days in the 21 days before.\"}]}",
       "recordsAnswer": [
@@ -724,8 +724,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 4334,
-      "modelMs": 4288,
+      "ms": 4344,
+      "modelMs": 4296,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Sleep quality ratings averaged 3.6 out of 5 on 5 answered days from Sep 28 through Oct 4.\"}]}",
       "recordsAnswer": [
@@ -757,8 +757,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 4405,
-      "modelMs": 4353,
+      "ms": 4422,
+      "modelMs": 4370,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Confusion or memory fog was recorded on 3 of 11 answered days from Sep 28 through Oct 11 (Oct 2, Oct 5, Oct 9).\"}]}",
       "recordsAnswer": [
@@ -789,8 +789,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft did not answer the question; not shown",
-      "ms": 2875,
-      "modelMs": 2873,
+      "ms": 2882,
+      "modelMs": 2880,
       "error": null,
       "raw": "{\"answer\":[]}",
       "recordsAnswer": [
@@ -809,8 +809,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 8053,
-      "modelMs": 7953,
+      "ms": 8038,
+      "modelMs": 7935,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"5 of Margaret's medicines are on published lists of medicines linked to falls.\"},{\"evidenceIds\":[\"K2\"],\"text\":\"Falls were recorded on 1 of 26 answered days (Oct 6) and near-falls on 2 of 26 answered days (Sep 27, Sep 30) from Sep 12 through Oct 11.\"}]}",
       "recordsAnswer": [
@@ -863,8 +863,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 4407,
-      "modelMs": 4360,
+      "ms": 4416,
+      "modelMs": 4367,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Omeprazole was started on Sep 6, 2025.\"}]}",
       "recordsAnswer": [
@@ -897,8 +897,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 3734,
-      "modelMs": 3688,
+      "ms": 3747,
+      "modelMs": 3696,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Ankle swelling was recorded on 3 of 25 answered days from Sep 12 through Oct 11.\"}]}",
       "recordsAnswer": [
@@ -929,8 +929,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 6773,
-      "modelMs": 6723,
+      "ms": 6802,
+      "modelMs": 6749,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"M1\",\"F1\"],\"text\":\"Oxybutynin 5 mg twice daily, started started Mar 15, for bladder, prescribed by Dr. Shah (urology).\"}]}",
       "recordsAnswer": [
@@ -969,8 +969,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 3936,
-      "modelMs": 3889,
+      "ms": 3932,
+      "modelMs": 3886,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Near-falls were recorded on 1 of 20 answered days from Sep 4 through Sep 24 (Sep 11).\"}]}",
       "recordsAnswer": [
@@ -1001,8 +1001,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft only repeated the records answer; not shown",
-      "ms": 4356,
-      "modelMs": 4310,
+      "ms": 4365,
+      "modelMs": 4320,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"A poor appetite was recorded on 3 of 10 answered days from Sep 28 through Oct 11 (Sep 30, Oct 6, Oct 7).\"}]}",
       "recordsAnswer": [
@@ -1033,8 +1033,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 4743,
-      "modelMs": 4689,
+      "ms": 4763,
+      "modelMs": 4712,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"C1\",\"N1\",\"N2\"],\"text\":\"Alex wrote concerns on Oct 4 and Sep 26, and noted the fall on Oct 7.\"}]}",
       "recordsAnswer": [
@@ -1075,8 +1075,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft did not answer the question; not shown",
-      "ms": 4454,
-      "modelMs": 4452,
+      "ms": 4461,
+      "modelMs": 4459,
       "error": null,
       "raw": "{\"answer\":[]}",
       "recordsAnswer": [
@@ -1095,8 +1095,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 4504,
-      "modelMs": 4454,
+      "ms": 4506,
+      "modelMs": 4457,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Medicine changes from Sep 25 through Oct 11: Lorazepam (Ativan) started.\"}]}",
       "recordsAnswer": [
@@ -1134,8 +1134,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 5321,
-      "modelMs": 5273,
+      "ms": 5341,
+      "modelMs": 5293,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"D1\",\"D2\",\"D3\"],\"text\":\"She said she was very dizzy getting up and landed on her bottom in the bathroom on Oct 6, and after lunch on Oct 8, but no dizziness on Oct 10.\"}]}",
       "recordsAnswer": [
@@ -1177,8 +1177,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown under the records answer",
-      "ms": 5612,
-      "modelMs": 5562,
+      "ms": 5633,
+      "modelMs": 5583,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"K1\",\"K2\"],\"text\":\"The ACB scale scores each listed medicine from 1 to 3 for anticholinergic effects; the published review threshold is a total of 3 or more.\"}]}",
       "recordsAnswer": [
@@ -1216,8 +1216,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft did not answer the question; not shown",
-      "ms": 4203,
-      "modelMs": 4109,
+      "ms": 4186,
+      "modelMs": 4093,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"D1\"],\"text\":\"In Margaret's words on Oct 6: 'To tumble this evening. I was very dizzy getting up and landed on my bottom in the bathroom.'\"}]}",
       "recordsAnswer": [
@@ -1262,8 +1262,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft did not answer the question; not shown",
-      "ms": 4981,
-      "modelMs": 4799,
+      "ms": 4991,
+      "modelMs": 4807,
       "error": null,
       "raw": "{\"answer\":[{\"evidenceIds\":[\"D1\"],\"text\":\"In Margaret's words on Oct 6: 'Took a tumble this evening. I was very dizzy getting up and landed on my bottom in the bathroom. Nothing broken, just sore and shaken. Alex is coming over...'\"}]}",
       "recordsAnswer": [
@@ -1334,8 +1334,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown: why we're coming in from the AI, what we've noticed from the AI, questions from the template",
-      "ms": 50412,
-      "modelMs": 49843,
+      "ms": 50332,
+      "modelMs": 49886,
       "error": null,
       "raw": "{\"reason\":[{\"evidenceIds\":[\"C1\"],\"text\":\"We are coming in because Mom seems more foggy in the mornings since she started the new sleeping pill.\"}],\"noticed\":[{\"evidenceIds\":[\"S1\",\"F1\"],\"text\":\"Dizziness was recorded on 9 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 19 answered days in the 21 days before.\"},{\"evidenceIds\":[\"S2\",\"F1\"],\"text\":\"Daytime drowsiness was recorded on 8 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 20 answered days in the 21 days before.\"}]}\n---\n{\"questions\":[{\"evidenceIds\":[\"S1\",\"F1\"],\"text\":\"Could the Lorazepam (Ativan) started on Oct 4 be contributing to the dizziness recorded since then?\"},{\"evidenceIds\":[\"S1\",\"F2\"],\"text\":\"Could the Tylenol PM (OTC) be contributing to the drowsiness recorded since then?\"},{\"evidenceIds\":[\"S1\",\"F3\"],\"text\":\"Is there an alternative to Lorazepam (Ativan) for nighttime drowsiness that is less likely to affect balance or memory?\"},{\"evidenceIds\":[\"S1\",\"F4\"],\"text\":\"Is there an alternative to Lorazepam (Ativan) for nighttime drowsiness that is less likely to cause falls?\"}]}",
       "sentences": [
@@ -1452,8 +1452,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown: why we're coming in from the AI, what we've noticed from the AI, questions from the template",
-      "ms": 45906,
-      "modelMs": 45411,
+      "ms": 45890,
+      "modelMs": 45493,
       "error": null,
       "raw": "{\"reason\":[{\"evidenceIds\":[\"C1\"],\"text\":\"We are coming in because Mom seems more foggy in the mornings since she started the new sleeping pill.\"}],\"noticed\":[{\"evidenceIds\":[\"S1\",\"F1\"],\"text\":\"Dizziness was recorded on 9 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 19 answered days in the 21 days before.\"},{\"evidenceIds\":[\"S2\",\"F1\"],\"text\":\"Daytime drowsiness was recorded on 8 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 20 answered days in the 21 days before.\"}]}\n---\n{\"questions\":[{\"evidenceIds\":[\"C1\"],\"text\":\"Could the Lorazepam (Ativan) started on Oct 4 be contributing to the dizziness recorded since then?\"},{\"evidenceIds\":[\"C1\"],\"text\":\"Could the Lorazepam (Ativan) started on Oct 4 be contributing to the daytime drowsiness recorded since then?\"},{\"evidenceIds\":[\"F5\"],\"text\":\"Is there an alternative to Oxybutynin for nighttime urination that is less likely to affect balance or memory?\"}]}",
       "sentences": [
@@ -1559,8 +1559,8 @@
       },
       "modelRan": true,
       "outcome": "AI draft shown: why we're coming in from the AI, what we've noticed from the AI, questions from the AI",
-      "ms": 49585,
-      "modelMs": 49020,
+      "ms": 49493,
+      "modelMs": 49070,
       "error": null,
       "raw": "{\"reason\":[{\"evidenceIds\":[\"C1\"],\"text\":\"We are coming in because Mom seems more foggy in the mornings since she started the new sleeping pill.\"}],\"noticed\":[{\"evidenceIds\":[\"S1\",\"F1\"],\"text\":\"Dizziness was recorded on 9 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 19 answered days in the 21 days before.\"},{\"evidenceIds\":[\"S2\",\"F1\"],\"text\":\"Daytime drowsiness was recorded on 8 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 20 answered days in the 21 days before.\"}]}\n---\n{\"questions\":[{\"evidenceIds\":[\"S1\",\"F1\"],\"text\":\"Could the Lorazepam (Ativan) started on Sep 25 be contributing to the dizziness recorded since then?\"},{\"evidenceIds\":[\"S1\"],\"text\":\"Could the Lorazepam (Ativan) started on Sep 25 be contributing to the daytime drowsiness recorded since then?\"},{\"evidenceIds\":[\"F2\"],\"text\":\"Is there an alternative to Tylenol PM (OTC) for sleep that is less likely to cause drowsiness?\"},{\"evidenceIds\":[\"F4\"],\"text\":\"Is the Lorazepam (Ativan) still needed, given the history of falls recorded since then?\"}]}",
       "sentences": [
@@ -1697,7 +1697,7 @@
       },
       "modelRan": true,
       "outcome": "AI draft not used; the standard template brief is shown",
-      "ms": 17560,
+      "ms": 17541,
       "modelMs": null,
       "error": "AIValidationError: Only 1 observation(s) passed the evidence check, so the template brief is shown instead.",
       "raw": "{\"reason\":[],\"noticed\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Check-ins were recorded on 26 of 30 days from Sep 12 through Oct 11.\"},{\"evidenceIds\":[\"K2\"],\"text\":\"Dizziness was recorded on 10 of 25 answered days from Sep 12 through Oct 11, compared with 2 of 19 answered days in the 21 days before.\"}]}",
@@ -1743,7 +1743,7 @@
       },
       "modelRan": true,
       "outcome": "AI draft not used; the standard template brief is shown",
-      "ms": 17555,
+      "ms": 17535,
       "modelMs": null,
       "error": "AIValidationError: Only 1 observation(s) passed the evidence check, so the template brief is shown instead.",
       "raw": "{\"reason\":[],\"noticed\":[{\"evidenceIds\":[\"K1\"],\"text\":\"Check-ins were recorded on 50 of 60 days from Aug 13 through Oct 11.\"},{\"evidenceIds\":[\"K2\"],\"text\":\"Dizziness was recorded on 13 of 49 answered days from Aug 13 through Oct 11, compared with 2 of 19 answered days in the 21 days before.\"}]}",
@@ -1786,8 +1786,8 @@
       },
       "modelRan": true,
       "outcome": "AI explanation shown under the reviewed text",
-      "ms": 6973,
-      "modelMs": 6907,
+      "ms": 6935,
+      "modelMs": 6913,
       "error": null,
       "raw": "{\"sentences\":[{\"text\":\"Lorazepam (Ativan) is on the AGS Beers list of medicines older adults should avoid.\"},{\"text\":\"It is a benzodiazepine linked to memory problems, falls, broken bones and car crashes; if used, it can cause confusion, drowsiness, falls and near-falls.\"},{\"text\":\"That makes it important to discuss with the doctor or pharmacist about its use and alternatives.\"}]}",
       "sentences": [
@@ -1862,7 +1862,7 @@
       },
       "modelRan": true,
       "outcome": "AI explanation blocked; the reviewed text stays",
-      "ms": 5630,
+      "ms": 5629,
       "modelMs": null,
       "error": "AIValidationError: The AI explanation did not pass the source check; the reviewed text is shown instead.",
       "raw": "{\"sentences\":[{\"text\":\"Lorazepam (Ativan) is listed in the AGS Beers Criteria for older adults who have had falls.\"},{\"text\":\"It can affect balance and alertness, which might lead to more falls.\"},{\"text\":\"That's why it's important to discuss with the doctor or pharmacist about safer options.\"}]}",
@@ -1911,7 +1911,7 @@
       },
       "modelRan": true,
       "outcome": "AI explanation blocked; the reviewed text stays",
-      "ms": 7366,
+      "ms": 7351,
       "modelMs": null,
       "error": "AIValidationError: The AI explanation did not pass the source check; the reviewed text is shown instead.",
       "raw": "{\"sentences\":[{\"text\":\"Margaret takes Tylenol PM and Oxybutynin, both of which block acetylcholine, and together they can cause confusion, constipation, dry mouth, falls, and delirium.\"},{\"text\":\"That makes it a good topic to raise with the doctor or pharmacist at the next visit to see if all these medicines are still needed together.\"},{\"text\":\"They might be able to replace some with medicines that have less anticholinergic effect to reduce these risks.\"}]}",
@@ -1961,7 +1961,7 @@
       },
       "modelRan": true,
       "outcome": "AI explanation blocked; the reviewed text stays",
-      "ms": 6302,
+      "ms": 6338,
       "modelMs": null,
       "error": "AIValidationError: The AI explanation did not pass the source check; the reviewed text is shown instead.",
       "raw": "{\"sentences\":[{\"text\":\"Margaret's medicines add up to 7 on the ACB scale, which is worth reviewing because it can cause confusion, dry mouth, constipation, and drowsiness.\"},{\"text\":\"The doctor or pharmacist should review these medicines together to see if any can be reduced or replaced with ones that cause fewer of these effects.\"}]}",
@@ -2000,7 +2000,7 @@
       },
       "modelRan": true,
       "outcome": "AI explanation blocked; the reviewed text stays",
-      "ms": 7282,
+      "ms": 7301,
       "modelMs": null,
       "error": "AIValidationError: The AI explanation did not pass the source check; the reviewed text is shown instead.",
       "raw": "{\"sentences\":[{\"text\":\"Amlodipine caused ankle swelling, which led to Furosemide (Lasix) being started later. This is called a prescribing cascade.\"},{\"text\":\"It's important to check if the swelling is still linked to Amlodipine, as Furosemide (Lasix) might not be the best treatment for this effect.\"},{\"text\":\"That's a good topic to discuss with the doctor or pharmacist at the next visit.\"}]}",

@@ -1,11 +1,11 @@
 // Derived, deterministic views of the record (medication review + timeline signals), memoised on the
 // record revision so every screen shows the same numbers.
 import { useMemo } from "react";
-import type { Medication, MedReview, MetricKey, TimelineAnalysis, WeeklyTrend } from "../model/types";
+import type { Medication, MedReview, TimelineAnalysis, WeeklyTrend } from "../model/types";
 import { useStore } from "./StoreProvider";
+import { recordTimeline } from "./recordTimeline";
 import { activeMeds, reviewMedications } from "../engine/meds/review";
-import { analyzeTimeline, weeklyTrends } from "../engine/timeline/signals";
-import { knownEffect } from "../kb";
+import { weeklyTrends } from "../engine/timeline/signals";
 
 export interface Derived {
   review: MedReview;
@@ -17,8 +17,7 @@ export interface Derived {
 export function useDerived(): Derived {
   const { data, today } = useStore();
   return useMemo(() => {
-    const isKnownEffect = (med: Medication, m: MetricKey) => knownEffect(med.ingredientIds, m);
-    const timeline = analyzeTimeline({ checkIns: data.checkIns, meds: data.medications, today, isKnownEffect });
+    const timeline = recordTimeline(data, today);
     const review = reviewMedications({
       meds: data.medications,
       profile: data.profile,

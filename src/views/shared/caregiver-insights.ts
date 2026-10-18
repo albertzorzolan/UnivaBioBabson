@@ -15,6 +15,11 @@
 //   RELIABILITY_TITLE      — "How reliable is this?", the disclosure that holds the test, p-value and the measured
 //                            rates (rendered by caregiver-Reliability.tsx straight from engine/timeline/rules.ts).
 //   TEST_NAME              — the statistical test's name in words.
+//   CHANCE_SHORT           — the one short, visible chance sentence (the longer CHANCE_NOTE is in the disclosure).
+//   sizeWords / RUNS_QUALIFIER — a size word plus "maybe a bad stretch" when the runs check does not back it.
+//   signalCountsLine       — "Dizziness: 9 of 14 answered days after … started on Oct 2, vs 2 of 19 before".
+//   reviewNarrative        — the Review page's one-sentence lead ("Kinwise checked Margaret's 8 medicines against
+//                            published criteria …; Lorazepam (Ativan) comes up in 4 of the 11 review prompts …").
 import type { Finding, ISODate, MetricKey, Signal } from "../../model/types";
 import type { Tone } from "../../ui";
 import type { SentinelEvents } from "../../engine/timeline/sentinel";
@@ -188,3 +193,97 @@ export const TEST_NAME: Record<Signal["test"], string> = {
   fisher_exact: "Fisher's exact test",
   mann_whitney: "Mann–Whitney U test",
 };
+
+// ---------------------------------------------------------------------------
+// Plain first, statistics one tap away (round 4). The visible card keeps the headline, the size word, the counts with
+// their denominators and ONE short chance sentence; the test names, p-values, runs-check p and method notes sit in
+// "How reliable is this?" (caregiver-Reliability.tsx). Nothing is deleted: it moves.
+
+/**
+ * The one visible chance sentence beside a before/after comparison (Overview card, Timeline lead). Short on purpose:
+ * the longer CHANCE_NOTE and the measured rates (MULTIPLE_COMPARISONS_NOTE) are in "How reliable is this?".
+ */
+export const CHANCE_SHORT = "It may be chance.";
+
+/**
+ * Words added to a size word when the runs check does not back it (Signal.runsCheck.passed === false): the difference
+ * does not reach the bar of its size word once whole runs of days are shuffled together, so part of it may be one bad
+ * stretch (RUNS_CHECK_NOTE's own words: "days in a bad stretch move together"). Worded as a possibility, never as a
+ * verdict. RUNS_QUALIFIER_NOTE explains it inside the disclosure.
+ */
+export const RUNS_QUALIFIER = "maybe a bad stretch";
+
+/** The disclosure line that explains RUNS_QUALIFIER, built from the same words so the two cannot drift. */
+export const RUNS_QUALIFIER_NOTE =
+  `“${RUNS_QUALIFIER[0].toUpperCase()}${RUNS_QUALIFIER.slice(1)}” marks a difference that does not reach the bar for its ` +
+  "size word in the runs check, which shuffles whole runs of days instead of single days.";
+
+/**
+ * The size word for one flagged comparison and, when the runs check does not back it, its qualifier.
+ * `runsCheck` is optional because older saved analyses and fixtures have none (then there is nothing to qualify).
+ */
+export function sizeWords(
+  strength: Signal["strength"],
+  runsCheck?: { passed: boolean } | null,
+): { word: string; qualifier: string | null } {
+  return { word: STRENGTH_SIZE_WORD[strength], qualifier: runsCheck && !runsCheck.passed ? RUNS_QUALIFIER : null };
+}
+
+/**
+ * One before/after comparison as a plain counts line for a review card, e.g. "Dizziness: 9 of 14 answered days after
+ * Lorazepam (Ativan) started on Oct 2, vs 2 of 19 before". Ratings read as averages with their answered days ("rated
+ * 2.6 of 5 on average on 14 answered days after …, vs 3.5 on 20 before"), so both sides always carry a denominator.
+ * The engine's longer sentence (Signal.text, with the window dates) is the same comparison; the Timeline shows both
+ * windows in full.
+ */
+export function signalCountsLine(
+  s: Pick<Signal, "metric" | "event" | "eventDate" | "before" | "after">,
+  medName: string,
+): string {
+  const def = getMetric(s.metric);
+  const change = `after ${medName} ${s.event === "started" ? "started" : "was stopped"} on ${formatShort(s.eventDate)}`;
+  if (def.kind === "scale") {
+    return `${def.label}: rated ${s.after.value.toFixed(1)} of 5 on average on ${answeredDays(s.after.answered)} ${change}, vs ${s.before.value.toFixed(1)} on ${s.before.answered} before`;
+  }
+  return `${def.label}: ${s.after.positive} of ${answeredDays(s.after.answered)} ${change}, vs ${s.before.positive} of ${s.before.answered} before`;
+}
+
+/**
+ * The Review page's one-sentence narrative before its counts, in two clauses:
+ *   1. what was checked: "Kinwise checked Margaret's 8 medicines against published criteria geriatric clinicians use"
+ *      (`meds` is the active list that was checked; `possessive` is "Margaret's", or "their" with no name);
+ *   2. which medicine comes up in the most review prompts, as a count: "Lorazepam (Ativan) comes up in 4 of the 11
+ *      review prompts, more than any other medicine." Ties are named together; with one prompt, or when no medicine
+ *      appears in more than one, it says how many medicines the prompts involve.
+ * Descriptive only: it ranks how often a medicine is mentioned, not how much it matters. With no prompts it returns ""
+ * and the page keeps its own no-findings line.
+ */
+export function reviewNarrative(
+  findings: Pick<Finding, "medIds">[],
+  meds: { id: string; name: string }[],
+  possessive: string,
+): string {
+  const total = findings.length;
+  if (total === 0) return "";
+  const checked = `Kinwise checked ${possessive} ${meds.length} ${meds.length === 1 ? "medicine" : "medicines"} against published criteria geriatric clinicians use`;
+  return `${checked}; ${mostPromptsClause(findings, meds)}`;
+}
+
+/** Clause 2 of reviewNarrative (lower-case start, full stop at the end). */
+function mostPromptsClause(findings: Pick<Finding, "medIds">[], meds: { id: string; name: string }[]): string {
+  const total = findings.length;
+  const names = new Map(meds.map((m) => [m.id, m.name.replace(/\s+/g, " ").trim()]));
+  const counts = new Map<string, number>();
+  for (const f of findings) for (const id of new Set(f.medIds)) if (names.has(id)) counts.set(id, (counts.get(id) ?? 0) + 1);
+  const top = Math.max(0, ...counts.values());
+  const prompts = `${total} review ${total === 1 ? "prompt" : "prompts"}`;
+  if (top <= 1) {
+    const n = counts.size;
+    return `the ${prompts} ${total === 1 ? "involves" : "involve"} ${n} ${n === 1 ? "medicine" : "medicines"}.`;
+  }
+  const leaders = [...counts.entries()].filter(([, c]) => c === top).map(([id]) => names.get(id)!);
+  const who = leaders.length === 1 ? leaders[0] : `${leaders.slice(0, -1).join(", ")} and ${leaders[leaders.length - 1]}`;
+  const verb = leaders.length === 1 ? "comes up" : "each come up";
+  const tail = leaders.length === 1 ? ", more than any other medicine." : ".";
+  return `${who} ${verb} in ${top} of the ${prompts}${tail}`;
+}

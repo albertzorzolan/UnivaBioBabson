@@ -188,3 +188,11 @@ describe("browser-cache check without the WebLLM runtime", () => {
     expect(await isTensorCacheComplete(`https://huggingface.co/mlc-ai/${id}`, store({ [`${base}tensor-cache.json`]: { records: [] } }))).toBe(false);
   });
 });
+
+describe("model notes (shown in Settings) match the recorded runs", () => {
+  it("the recommended model's note does not claim every sentence passed (eval/results/llm-batch.json blocks some)", () => {
+    const note = getModelOption(DEFAULT_MODEL_ID)!.note;
+    expect(note).toBe("Best rule-following in our on-device tests; the code check still removes some sentences (see How it works).");
+    expect(note).not.toMatch(/\bevery\b|\ball\b|passed verification/);
+  });
+});

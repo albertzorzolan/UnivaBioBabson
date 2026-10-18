@@ -161,8 +161,9 @@ instead, ask us to walk through any module.
 ### 13. "Is it a medical device? Is it FDA-cleared?"
 
 No clearance or exemption is claimed. It is designed toward FDA's published examples of record-keeping and
-communication tools: it records, displays and prompts questions, never diagnoses, never asserts causation and
-never recommends a medicine change. The safety-net line is static (the same wording for every record; only the name
+communication tools: its rules and templates record, display and prompt questions, never diagnose, never assert
+causation and never recommend a medicine change; the optional AI is checked for the same, but the check is not
+airtight (`eval/results/ai-live.json`). The safety-net line is static (the same wording for every record; only the name
 changes), so the app does not triage.
 
 - Open: `docs/REGULATORY.md` §2, `src/engine/brief/safetyNet.ts › safetyNetLine`

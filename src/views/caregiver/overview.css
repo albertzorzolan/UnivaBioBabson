@@ -211,6 +211,13 @@
 .cg-ov-insight__disclosure .ui-disclosure__panel {
   padding-bottom: var(--space-2);
 }
+/* A finding's explanation, opened from "Why this is on the list": shown whole, never clamped. */
+.cg-ov-insight__disclosure .cg-ov-insight__lead {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: none;
+  overflow: visible;
+}
 .cg-ov-insight__actions {
   display: flex;
   flex-wrap: wrap;
@@ -384,7 +391,7 @@
   font-weight: var(--fw-semibold);
   line-height: 1.25;
 }
-.cg-ov-bars__size {
+.cg-ov-bars__size .cg-size__badge {
   font-weight: var(--fw-medium);
 }
 .cg-ov-bars__rows {

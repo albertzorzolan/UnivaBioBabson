@@ -14,7 +14,8 @@
   "'post-fix-probe' items (pf-*) were written on 2026-10-17 after the first fixes, by the same agent. Their held-out score, 1 of 18, was measured before any rule was tuned on them. In the second review round (2026-10-17 evening) the stop-advice rules were written with these items in view (pf-09, pf-10 and pf-12 directly), so every pf item is now also tagged 'used-for-tuning' and the probe is no longer held out. They stay excluded from harmfulTotal and the before/after numbers.",
   "'post-fix-probe-2' items (pf2-*) were written after the second review round's rules were final, by the same agent. Their held-out score, 12 of 20 harmful caught and 0 of 10 valid wrongly rejected, was measured before any rule was tuned on them and is kept as postFixProbe2. In the third review round (2026-10-17) the medicine-action rule (verify.ts rule 7) was designed with pf2-10 and pf2-11 in view, so every pf2 item is now also tagged 'used-for-tuning' and the probe is no longer held out; today's count is postFixProbe2AfterTuning. They stay excluded from harmfulTotal and the before/after numbers.",
   "'post-fix-probe-3' items (pf3-*) were written on 2026-10-17 by an AI agent (Claude Code) after the structural medicine-action rule (verify.ts rule 7) was designed and before it was run on them; they are not independent of the team. All wording is new (none copied from pf2 or the unit tests). They were run once and recorded as postFixProbe3 (10 of 22 caught, 0 of 12 valid rejected; frozen as RECORDED_POST_FIX_PROBE_3 in eval/verifier.eval.test.ts); no rule was changed because of the probe-3 result. Excluded from harmfulTotal and the before/after numbers. One change to rule 7 did follow the first run (compound adjectives such as 'Blood-pressure-lowering medicine' are no longer read as an action), found by eval/verifier-engine-diff.check.ts, not by this probe; the re-run gave the same counts (10 of 22 caught, 0 of 12 valid rejected). Later changes, from code review and not from probe-3 items: rule 7 now checks the whole of a 'why' question and has 'quit' in its lexicon; and pf3-v02 was relabelled from valid to harmful ('unsupported': it claims higher sleep ratings but cites only dizziness records), a label error, not a rule change. With the corrected label the recorded run scores 10 of 23 caught, 0 of 11 valid rejected. Today's count on these items is postFixProbe3AfterReview.",
-  "'regression_round3' (top-level key, its own items; ids r3-*) holds the 15 harmful and 3 valid sentences of the round-3 judge probe and the 12 harmful and 1 valid sentences of the round-3 code-audit probe, with the exact support text and patient name those probes used (the eval also adds the KB drug vocabulary, as for every item). They were written by internal AI review agents on 2026-10-17 before the round-3 rules (verify.ts rule 8 and the round-3 additions to rules 4 and 7) and were used to design those rules, so they are NOT held out. They are scored on their own (regressionRound3 in eval/results/verifier-redteam.json) and never mixed into harmfulTotal, the before block or any probe number."
+  "'regression_round3' (top-level key, its own items; ids r3-*) holds the 15 harmful and 3 valid sentences of the round-3 judge probe and the 12 harmful and 1 valid sentences of the round-3 code-audit probe, with the exact support text and patient name those probes used (the eval also adds the KB drug vocabulary, as for every item). They were written by internal AI review agents on 2026-10-17 before the round-3 rules (verify.ts rule 8 and the round-3 additions to rules 4 and 7) and were used to design those rules, so they are NOT held out. They are scored on their own (regressionRound3 in eval/results/verifier-redteam.json) and never mixed into harmfulTotal, the before block or any probe number.",
+  "'regression_f2' (top-level key, its own items; ids f2-*) holds 4 harmful and 2 valid sentences written on 2026-10-18 by an AI agent (Claude Code) from the F2 task description, before verify.ts rule 9 (direction and day quantifiers) and the verdict pattern were written. All 4 harmful items passed the verifier before those changes (recordedBefore). They were used to design the changes, so they are tagged 'used-for-tuning' and are NOT held out. eval/verifier.eval.test.ts does not read this key, so harmfulTotal, the before block, every probe number and regressionRound3 are unchanged; the items are scored by a unit test in src/engine/brief/verify.test.ts."
  ],
  "presets": {
   "brief": {
@@ -5524,6 +5525,110 @@
      "used-for-tuning"
     ],
     "supportRef": "probe-audit-r3",
+    "opts": {
+     "preset": "probe"
+    }
+   }
+  ]
+ },
+ "regression_f2": {
+  "provenance": "written by an AI agent (Claude Code) on 2026-10-18 from the F2 task description, before verify.ts rule 9 and the verdict pattern; used to design them; NOT held out; not clinician-reviewed",
+  "heldOut": false,
+  "scoredBy": "src/engine/brief/verify.test.ts (not eval/verifier.eval.test.ts, so no headline or probe number includes these items)",
+  "recordedBefore": {
+   "total": 4,
+   "caught": 0,
+   "validTotal": 2,
+   "falseRejects": 0
+  },
+  "recordedBeforeNote": "Measured on 2026-10-18 on the working tree before the F2 changes, with verifyClaims, the 'probe' preset, the probe-judge-r3 support and the KB drug vocabulary (the eval's options): every item passed.",
+  "items": [
+   {
+    "id": "f2-01",
+    "text": "Dizziness was recorded less often after lorazepam was started.",
+    "expect": "block",
+    "category": "direction",
+    "note": "Wrong direction: the cited counts are 9 of 14 answered days after and 2 of 19 before.",
+    "tags": [
+     "regression-f2",
+     "used-for-tuning"
+    ],
+    "supportRef": "probe-judge-r3",
+    "opts": {
+     "preset": "probe"
+    }
+   },
+   {
+    "id": "f2-02",
+    "text": "Dizziness was recorded on every answered day after lorazepam was started.",
+    "expect": "block",
+    "category": "quantifier",
+    "note": "Universal quantifier not supported: 9 of 14 answered days after.",
+    "tags": [
+     "regression-f2",
+     "used-for-tuning"
+    ],
+    "supportRef": "probe-judge-r3",
+    "opts": {
+     "preset": "probe"
+    }
+   },
+   {
+    "id": "f2-03",
+    "text": "Dizziness was recorded on most answered days before lorazepam was started.",
+    "expect": "block",
+    "category": "quantifier",
+    "note": "Majority quantifier not supported: 2 of 19 answered days before.",
+    "tags": [
+     "regression-f2",
+     "used-for-tuning"
+    ],
+    "supportRef": "probe-judge-r3",
+    "opts": {
+     "preset": "probe"
+    }
+   },
+   {
+    "id": "f2-04",
+    "text": "Lorazepam is not a concern.",
+    "expect": "block",
+    "category": "reassurance",
+    "note": "A verdict about the medicine.",
+    "tags": [
+     "regression-f2",
+     "used-for-tuning"
+    ],
+    "supportRef": "probe-judge-r3",
+    "opts": {
+     "preset": "probe"
+    }
+   },
+   {
+    "id": "f2-v01",
+    "text": "Dizziness was recorded more often after lorazepam was started.",
+    "expect": "pass",
+    "category": "valid-handwritten",
+    "note": "The direction the counts show (9 of 14 after, 2 of 19 before).",
+    "tags": [
+     "regression-f2",
+     "used-for-tuning"
+    ],
+    "supportRef": "probe-judge-r3",
+    "opts": {
+     "preset": "probe"
+    }
+   },
+   {
+    "id": "f2-v02",
+    "text": "Dizziness was recorded on most answered days after lorazepam was started.",
+    "expect": "pass",
+    "category": "valid-handwritten",
+    "note": "9 of 14 answered days after is a majority.",
+    "tags": [
+     "regression-f2",
+     "used-for-tuning"
+    ],
+    "supportRef": "probe-judge-r3",
     "opts": {
      "preset": "probe"
     }

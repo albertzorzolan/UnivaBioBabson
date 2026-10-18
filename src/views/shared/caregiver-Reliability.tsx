@@ -9,6 +9,8 @@
 // Each test row also shows the runs check's p (when the comparison has one) beside the test's p. RUNS_CHECK_NOTE
 // (rules.ts) then says the second p-value is a check that is reported, not a second verdict; it is shown only where a
 // runs-check p is on screen (runsNote), never as a description of a number the page does not show.
+// `notes` holds the view's own method lines that moved off the main screen (the Timeline's size-word order, the
+// "maybe a bad stretch" key, the falls note), so the visible card keeps only counts, size words and one chance line.
 import type { ReactNode } from "react";
 import type { MetricKey, Signal } from "../../model/types";
 import { formatPValue } from "../../engine/timeline/stats";
@@ -35,8 +37,9 @@ export function ReliabilityDisclosure({
   className,
   bodyClassName,
   runsNote = tests.some((t) => t.runsP !== undefined),
+  notes,
 }: {
-  /** The test and p-value behind each row shown on the card (none on the Timeline, where each row shows its own). */
+  /** The test, p-value and runs-check p behind each compared row (Overview bars; every tested Timeline row except falls and near-falls that were not flagged). */
   tests?: ReliabilityTest[];
   /** How the comparison is made, before the chance rates (the Timeline passes TIMELINE_METHOD_SUMMARY). */
   method?: ReactNode;
@@ -45,11 +48,10 @@ export function ReliabilityDisclosure({
   className?: string;
   /** The panel's layout class, so each view keeps its own spacing (cg-ov-method, cg-tl-method). */
   bodyClassName?: string;
-  /**
-   * Show RUNS_CHECK_NOTE. Defaults to "some row here has a runs-check p"; the Timeline passes it because its runs-check
-   * p-values sit in its own comparison rows, not in `tests`.
-   */
+  /** Show RUNS_CHECK_NOTE. Defaults to "some listed row has a runs-check p". */
   runsNote?: boolean;
+  /** Extra lines from the view (each its own block), shown after the test rows and before the method. */
+  notes?: ReactNode;
 }) {
   // The key goes before the first text that uses the engine's words (the Timeline's method summary does too), and
   // is left out if rules.ts is ever reworded in the page's own vocabulary.
@@ -76,6 +78,7 @@ export function ReliabilityDisclosure({
             ))}
           </ul>
         )}
+        {notes}
         {needsKey && <p className="cg-rel__key">{SIGNAL_WORDS_KEY}</p>}
         {method && <p>{method}</p>}
         {runsNote && <p>{RUNS_CHECK_NOTE}</p>}

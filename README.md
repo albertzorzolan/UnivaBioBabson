@@ -8,6 +8,27 @@ what changes after a medicine change and bring a clear, evidence-backed question
 **Code walkthrough:** [5 minutes](#walk-through-the-code-in-5-minutes) · [code tour PDF](submission/kinwise-code-tour.pdf)<br>
 **Run locally:** `npm ci && npm run dev`, then open http://127.0.0.1:5174/ ([details](#try-it))
 
+## Rigor at a glance
+
+**Rules decide; the model only rewords.** A deterministic engine over a cited knowledge base (427 medicines, 89 Beers
+rules, 26 cascades) computes every flag and number. An optional on-device LLM (Qwen2.5-3B, WebGPU) may reword them,
+and a code checker is designed to drop unsupported, causal or advice sentences; the claim-checker row shows how far
+that holds. All test data is synthetic and not clinician-reviewed.
+
+| Measured | Result | Source |
+|---|---|---|
+| Symptom extraction, 70 held-out stories | micro-F1 0.942 (95% CI 0.907–0.971) vs 0.703 (0.625–0.778) for a lexicon-only baseline (ConText off) | [nlp-eval.json](eval/results/nlp-eval.json) |
+| Medication review | 57/57 synthetic medication cases (a written spec, not a blind test); with one piece of knowledge removed, 54, 49 or 33 of 57 | [meds-eval.json](eval/results/meds-eval.json), [meds-ablation.json](eval/results/meds-ablation.json) |
+| Claim checker | catches all 163 harmful sentences it was tuned on but only 10 of 23 on a later held-out probe; full history in [eval/VERIFIER-REDTEAM.md](eval/VERIFIER-REDTEAM.md) | [verifier-redteam.json](eval/results/verifier-redteam.json) |
+| Timeline chance rate | with no real change, 11.2% of simulated medicine changes showed a clear or large difference, and 85.8% if symptoms come in long runs of days (an assumed level), so a flag is only ever a question | [timeline-null.json](eval/results/timeline-null.json) |
+
+**On-device model, batch of 40 prompts** ([LLM-BATCH.md](https://github.com/albertzorzolan/UnivaBioBabson/blob/medwatch-v2/eval/LLM-BATCH.md)): the checker blocked 27.6% of 76 AI sentences; 3 of 30 shown sentences were flawed (95% CI 3.5–25.6%; audit by an AI agent, not a clinician); median 5.0 s per Ask answer, 45.9 s per brief draft.
+
+**The demo's headline difference** (dizziness on 9 of 14 answered days
+after lorazepam started vs 2 of 19 before): Fisher p = 0.0023, and runs check p = 0.007 when whole 4-day runs of days
+are shuffled (seeded demo diary). Every row in full, with its caveats:
+[Evaluation (headline numbers)](#evaluation-headline-numbers) and [docs/EVALUATION.md](docs/EVALUATION.md).
+
 Also: [one-page summary](submission/kinwise-one-pager.pdf) · [sample visit brief](submission/kinwise-sample-visit-brief.pdf)
 · [demo script](docs/DEMO-SCRIPT.md). Submission to the UnivaBio "AI for Human Health" hackathon (2026) by Albert
 Zorzolan and Neil Shah, Babson College. The code for this build is on the `medwatch-v2` branch:
@@ -167,7 +188,7 @@ What each item means in this repository:
 
 | | | |
 |---|---|---|
-| ![Welcome screen with one-click demo logins](docs/screenshots/01-welcome.png) | ![Caregiver overview with the lorazepam before/after finding](docs/screenshots/02-caregiver-overview.png) | ![Timeline before/after comparison with counts and p-values](docs/screenshots/03-timeline.png) |
+| ![Welcome screen with one-click demo logins](docs/screenshots/01-welcome.png) | ![Caregiver overview with the lorazepam before/after finding](docs/screenshots/02-caregiver-overview.png) | ![Timeline before/after comparison with counts and size labels](docs/screenshots/03-timeline.png) |
 | Welcome | Caregiver overview | Symptoms & timeline |
 | ![Medication review with ACB score, fall-risk list and Beers prompts](docs/screenshots/04-review.png) | ![Visit brief for the clinician](docs/screenshots/05-visit-brief.png) | ![Patient check-in at 390 px with highlighted words](docs/screenshots/06-patient-today-390.png) |
 | Medication review | Visit brief | Patient check-in (390 px wide) |

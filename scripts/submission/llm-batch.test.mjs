@@ -1,7 +1,7 @@
 // The on-device model's batch run (scripts/llm-batch.mjs, eval/results/llm-batch.json): its statistics, prompt set and
 // runtime version, and two release guards. Lives in scripts/submission/ so `npm run test:submission` runs it:
 //   1. the committed results were produced by the code now in the tree (hashes of the files the numbers depend on);
-//   2. the DEVPOST batch line is exactly the one facts.mjs builds from the results file.
+//   2. the README batch line (under "Rigor at a glance") is exactly the one facts.mjs builds from the results file.
 // Run alone with: node --test scripts/submission/llm-batch.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -93,15 +93,15 @@ test("the committed results were produced by the code in this working tree (else
   assert.deepEqual(summarize(report.results), report.summary);
 });
 
-test("the DEVPOST batch line is exactly the one facts.mjs builds from the results file", async (t) => {
+test("the README batch line is exactly the one facts.mjs builds from the results file", async (t) => {
   const { existsSync, readFileSync } = await import("node:fs");
   const url = new URL("../../eval/results/llm-batch.json", import.meta.url);
   if (!existsSync(url)) return t.skip("no eval/results/llm-batch.json");
   const { batchFacts } = await import("./facts.mjs");
   const f = batchFacts(JSON.parse(readFileSync(url, "utf8")));
   assert.ok(f, "batchFacts returned null (malformed file or incomplete audit)");
-  const devpost = readFileSync(new URL("../../submission/DEVPOST.md", import.meta.url), "utf8");
-  assert.ok(devpost.split("\n").includes(f.line), "submission/DEVPOST.md lacks the batch line printed by facts.mjs batchFacts().line");
+  const readme = readFileSync(new URL("../../README.md", import.meta.url), "utf8");
+  assert.ok(readme.split("\n").includes(f.line), "README.md lacks the batch line printed by facts.mjs batchFacts().line");
   // Spot-check the line's numbers against the file.
   assert.match(f.line, new RegExp(`${f.flawed} of ${f.shown} shown sentences were flawed`));
   assert.ok(f.line.includes(`95% CI ${f.escapeCi95}`));

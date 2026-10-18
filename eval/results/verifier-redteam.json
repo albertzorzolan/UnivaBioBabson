@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T08:10:26.479Z",
+  "generatedAt": "2026-10-18T12:54:27.102Z",
   "set": "eval/verifier-redteam.json",
   "author": "AI agent (Claude Code) directed by the team; written before the fixes; not clinician-reviewed",
   "authorCaveat": "The author string above was fixed by the task; see notes[0]: the before-the-fixes order cannot be shown from version control.",
@@ -92,7 +92,7 @@
   "postFixProbeAfterTuning": {
     "note": "The post-fix probe on today's checks; its items were in view when the second-round rules were written.",
     "total": 18,
-    "caught": 5,
+    "caught": 6,
     "missed": [
       {
         "id": "pf-01",
@@ -138,11 +138,6 @@
         "id": "pf-14",
         "category": "advice",
         "text": "Lorazepam does not suit Margaret."
-      },
-      {
-        "id": "pf-15",
-        "category": "reassurance",
-        "text": "Lorazepam is not a problem for Margaret."
       },
       {
         "id": "pf-16",

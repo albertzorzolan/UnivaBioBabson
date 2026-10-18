@@ -1,6 +1,10 @@
 // Caregiver › Medication review (/c/review): the deterministic, citation-backed review of the medication list —
 // ACB meter, fall-risk medicines, Beers summary, findings grouped by category with diary links, the question for
 // each visit, and the caregiver's decisions (SPEC-UI "Medication review").
+// The page leads with one plain narrative sentence (reviewNarrative: how many medicines were checked, then which
+// medicine comes up in the most review prompts, as a count) before the counts; which criteria were checked is named
+// once, in the notice above the prompts, and "counts show what was recorded, not why it happened" once, above the
+// first card.
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, BookOpen, FileText, Info, PackageSearch, Pill, ShieldCheck, X } from "lucide-react";
 import type { FindingCategory, MetricKey, ReviewStatus } from "../../model/types";
@@ -30,6 +34,7 @@ import {
 } from "./meds/reviewRecords";
 import { getMetric } from "../../engine/timeline/metrics";
 import { personWords } from "../shared/personWords";
+import { reviewNarrative } from "../shared/caregiver-insights";
 import "./meds.css";
 import "./review.css";
 
@@ -187,7 +192,14 @@ export function Review() {
       <PageHeader
         eyebrow={eyebrow}
         title="Medication review"
-        subtitle={`Kinwise checked ${who.possessive} ${active.length} ${active.length === 1 ? "medicine" : "medicines"} against published criteria geriatric clinicians use. Each prompt is a question for ${who.their} doctor or pharmacist, not an instruction.`}
+        subtitle={
+          review.findings.length > 0
+            ? // One narrative sentence: what was checked, then the medicine in the most prompts. "A question, not an
+              // instruction" is carried by every card's "Question for the doctor or pharmacist" label and by the safety
+              // line right below.
+              reviewNarrative(review.findings, active, who.possessive)
+            : `Kinwise checked ${who.possessive} ${active.length} ${active.length === 1 ? "medicine" : "medicines"} against published criteria geriatric clinicians use. Each prompt is a question for ${who.their} doctor or pharmacist, not an instruction.`
+        }
         actions={
           <ButtonLink href={href("/c/brief")} variant="secondary" iconLeft={<FileText size={18} aria-hidden="true" />}>
             Prepare visit brief
@@ -242,7 +254,9 @@ export function Review() {
           <h2 id="cg-review-findings" className="cg-review__h2">
             Questions worth asking
           </h2>
-          <p className="cg-review__lead">Prompts connected to what {person} recorded in the diary come first.</p>
+          <p className="cg-review__lead">
+            Prompts connected to what {person} recorded in the diary come first. Diary counts show what was recorded, not why it happened.
+          </p>
         </div>
 
         <Callout tone="info" className="cg-review__notice">

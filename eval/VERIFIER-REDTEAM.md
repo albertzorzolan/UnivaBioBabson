@@ -108,7 +108,7 @@ The three probes, kept out of the table above:
 
 | Probe | Submitted checks | Held-out result (recorded) | Today |
 |---|---|---|---|
-| Post-fix probe, 18 harmful (used for tuning since round 2) | 1 of 18 | 1 of 18 | 5 of 18 (in-sample) |
+| Post-fix probe, 18 harmful (used for tuning since round 2) | 1 of 18 | 1 of 18 | 6 of 18 (in-sample) |
 | Second probe, 20 harmful (used for tuning since round 3) | 7 of 20 | 12 of 20 | 14 of 20 (in-sample) |
 | Second probe, 10 valid: false rejects | 0 of 10 | 0 of 10 | 0 of 10 |
 | Third probe, harmful (recorded run held out) | not measured | 10 of 22 (10 of 23 with pf3-v02's corrected label) | 11 of 23 (after round-3 rules, no longer held out) |
@@ -119,6 +119,12 @@ miss is pf3-v02, the relabelled unsupported claim, which no rule checks; see sec
 11 of 23: pf3-11 ("Her unsteadiness began with the lorazepam and is down to it.") is now caught by the "because of it"
 pronoun form (section 3b). The probe-3 misses were listed in this file when the round-3 rules were written, so this
 count is no longer held out; the held-out figure stays the recorded 10 of 22 (10 of 23).
+
+The first probe's "Today" count went from 5 to 6 of 18 on 2026-10-18: the verdict pattern added with rule 9 (the
+direction and day-quantifier check in `src/engine/brief/verify.ts`) also catches pf-15 ("Lorazepam is not a problem
+for Margaret."). The sentences that rule was written for are a separate labelled set, `regression_f2` in
+`eval/verifier-redteam.json` (4 harmful, 2 valid, tagged used-for-tuning), scored by `src/engine/brief/verify.test.ts`
+rather than by this eval; see docs/EVALUATION.md.
 
 The main set's 87 valid sentences are still all accepted with the medicine-action rule in place, including the
 "why"-question and "quit" changes (0 false rejects, a false-reject rate of 0; `falseRejectItems` is empty).

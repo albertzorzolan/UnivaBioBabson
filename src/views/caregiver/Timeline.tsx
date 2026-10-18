@@ -2,11 +2,13 @@
 //
 //   1. Medication change selector — every start/stop the engine looked at (default: the medicine with the strongest
 //      signal; ?med=<id>[&event=started|stopped] selects one).
-//   2. Before/after comparison for that change — every diary item with counts AND denominators, the size of the
-//      difference in the Overview's words ("Large difference", ordered by the key under the count) with the test's
-//      p-value and the runs check's p beside it, the low-power note when nothing was flagged, the caveat,
-//      other medicine changes in the same weeks, coverage of both windows, falls listed by date, and the exact
-//      reason when something could not be compared.
+//   2. Before/after comparison for that change — every diary item with counts AND denominators and the size of the
+//      difference in the Overview's words ("Large difference"; "maybe a bad stretch" under it when the runs
+//      check does not back it), ONE caveat line (not what caused it, plus one short chance sentence), the low-power
+//      note when nothing was flagged, other medicine changes in the same weeks, coverage of both windows, falls listed
+//      by date, and the exact reason when something could not be compared. The statistics behind each row (test,
+//      p-value, runs-check p), the order of the size words, the falls note and the method sit in "How reliable is
+//      this?" (closed by default): moved there, never deleted.
 //   3. The full timeline chart (period ?days=14|30|60|90) with the compared windows shaded.
 //   4. Every check-in in the period; a row (or ?day=YYYY-MM-DD) opens the day's full record with provenance and history.
 import { useMemo, useRef, useState, type KeyboardEvent } from "react";
@@ -17,9 +19,8 @@ import { useDerived } from "../../app/useDerived";
 import { setParams, useRoute } from "../../app/router";
 import { daysBetween, formatLong, formatShort, formatWeekday, isValidDate } from "../../model/dates";
 import { getMetric, latestCheckInPerDate, metricValue } from "../../engine/timeline/metrics";
-import { analyzeEvent, formatRunsCheckP, type EventAnalysis, type MetricComparison } from "../../engine/timeline/signals";
+import { analyzeEvent, type EventAnalysis, type MetricComparison } from "../../engine/timeline/signals";
 import { eventsForMed } from "../../engine/timeline/windows";
-import { formatPValue } from "../../engine/timeline/stats";
 import { LOW_POWER_NOTE, SENTINEL_NOTE, TIMELINE_METHOD_SUMMARY, TIMELINE_RULES } from "../../engine/timeline/rules";
 import { knownEffect } from "../../kb";
 import {
@@ -37,8 +38,18 @@ import {
   cx,
 } from "../../ui";
 import { TimelineChart, excerptText, periodStart } from "../shared/caregiver-TimelineChart";
-import { SIZE_ORDER_KEY, STRENGTH_SIZE_WORD, TEST_NAME, fallsComparison, isSentinelMetric, strengthTone, unflaggedVerdict } from "../shared/caregiver-insights";
-import { ReliabilityDisclosure } from "../shared/caregiver-Reliability";
+import {
+  CHANCE_SHORT,
+  RELIABILITY_TITLE,
+  RUNS_QUALIFIER_NOTE,
+  SIZE_ORDER_KEY,
+  fallsComparison,
+  isSentinelMetric,
+  strengthTone,
+  unflaggedVerdict,
+} from "../shared/caregiver-insights";
+import { ReliabilityDisclosure, type ReliabilityTest } from "../shared/caregiver-Reliability";
+import { SizeWord } from "../shared/caregiver-SizeWord";
 import { DayRecordsDrawer, RecordsDrawer, recordedChips, rangeText, type RecordGroup } from "../shared/caregiver-Records";
 import "./timeline.css";
 
@@ -73,13 +84,26 @@ function rowKind(c: MetricComparison): RowKind {
 }
 
 /**
- * The runs check's p printed on a row, or null. It only ever sits beside the test's own p (falls rows that are not
- * flagged show no p at all), so the disclosure below shows RUNS_CHECK_NOTE exactly when one is on screen.
+ * The rows whose test and p-value are listed in "How reliable is this?": every tested row except falls and near-falls
+ * that were not flagged (they are listed by date, not tested). Each keeps its runs-check p beside the test's, so the
+ * disclosure shows RUNS_CHECK_NOTE exactly when one is listed.
  */
-function shownRunsP(c: MetricComparison): number | null {
-  const kind = rowKind(c);
-  const showsP = kind !== "untested" && (kind === "flagged" || !isSentinelMetric(c.metric));
-  return showsP && c.pValue !== null && c.runsCheck ? c.runsCheck.p : null;
+function reliabilityTests(rows: MetricComparison[]): ReliabilityTest[] {
+  return rows
+    .filter((c) => rowKind(c) !== "untested" && (rowKind(c) === "flagged" || !isSentinelMetric(c.metric)) && c.pValue !== null)
+    .map((c) => ({
+      key: c.metric,
+      metric: c.metric,
+      label: getMetric(c.metric).label,
+      test: c.test,
+      pValue: c.pValue as number,
+      ...(c.runsCheck ? { runsP: c.runsCheck.p } : {}),
+    }));
+}
+
+/** A flagged row whose size word the runs check does not back (it reads "maybe a bad stretch"). */
+function isQualified(c: MetricComparison): boolean {
+  return rowKind(c) === "flagged" && c.runsCheck !== null && !c.runsCheck.passed;
 }
 
 const KIND_ORDER: Record<RowKind, number> = { flagged: 0, weak: 1, none: 2, untested: 3 };
@@ -117,12 +141,12 @@ function barPct(c: MetricComparison, side: "before" | "after"): number {
 
 /**
  * SIZE_ORDER_KEY with each "›" hidden from screen readers and read as ", then" instead, so the order is heard as
- * words rather than as a punctuation name.
+ * words rather than as a punctuation name. It is the first line of "How reliable is this?".
  */
 function SizeOrderKey() {
   const parts = SIZE_ORDER_KEY.split(" › ");
   return (
-    <p className="cg-tl-muted cg-tl-compare__partial">
+    <p className="cg-rel__key">
       {parts.map((part, i) => (
         <span key={part}>
           {i > 0 && (
@@ -141,8 +165,6 @@ function SizeOrderKey() {
 function ComparisonRow({ c, onRecords }: { c: MetricComparison; onRecords: () => void }) {
   const def = getMetric(c.metric);
   const kind = rowKind(c);
-  const runsP = shownRunsP(c);
-  const test = TEST_NAME[c.test];
   const need = TIMELINE_RULES.minAnsweredDays;
   return (
     <li className={cx("cg-tl-row", `is-${kind}`)}>
@@ -166,27 +188,20 @@ function ComparisonRow({ c, onRecords }: { c: MetricComparison; onRecords: () =>
             each side)
           </span>
         ) : (
-          <>
-            {/* The same size words as the Overview ("Large difference", "Clear difference"); the test and p-value stay
-                beside the badge so the rigor is visible, and the chance rates sit in "How this comparison works". */}
-            <Badge size="sm" tone={strengthTone(c.strength)} className={cx("cg-tl-row__size", kind === "flagged" && `is-${c.strength}`)}>
-              {kind === "flagged" && c.strength !== "none" ? STRENGTH_SIZE_WORD[c.strength] : unflaggedVerdict(c.metric, c.strength)}
+          // The same size words as the Overview ("Large difference", "Clear difference"), qualified when the runs check
+          // does not back them. The test, p-value and runs-check p for this row are in "How reliable is this?" below.
+          kind === "flagged" && c.strength !== "none" ? (
+            <SizeWord
+              strength={c.strength}
+              runsCheck={c.runsCheck}
+              tone={strengthTone(c.strength)}
+              className={cx("cg-tl-row__size", `is-${c.strength}`)}
+            />
+          ) : (
+            <Badge size="sm" tone={strengthTone(c.strength)} className="cg-tl-row__size">
+              {unflaggedVerdict(c.metric, c.strength)}
             </Badge>
-            {/* Falls are listed by date, not tested: no p-value beside them unless the difference was flagged. The runs
-                check's p sits beside the test's (report-only: RUNS_CHECK_NOTE in "How this comparison works"). */}
-            {(kind === "flagged" || !isSentinelMetric(c.metric)) && (
-              <span className="cg-tl-row__p">
-                ({test}, {c.pValue === null ? "not tested" : formatPValue(c.pValue)}
-                {runsP !== null && (
-                  <>
-                    {" · "}
-                    <span className="cg-rel__runs-p">runs check {formatRunsCheckP(runsP)}</span>
-                  </>
-                )}
-                )
-              </span>
-            )}
-          </>
+          )
         )}
       </div>
       <div className="cg-tl-row__records">
@@ -395,7 +410,7 @@ export function Timeline() {
         // Every check-in ever saved; the day list below counts only the selected period ("50 of 60 days").
         eyebrow={`${possessive} diary · ${days.length} ${days.length === 1 ? "check-in" : "check-ins"} in all`}
         title="Symptoms & timeline"
-        subtitle="Every recorded day, with medicine changes marked — and what changed in the diary around each change."
+        subtitle="Every recorded day, with medicine changes marked, and what changed around each change."
       />
 
       {/* ---- Medication change selector ---- */}
@@ -423,21 +438,16 @@ export function Timeline() {
       {/* ---- Before / after comparison ---- */}
       {ev && selMed && (
         <Card as="section" className="cg-tl-compare" aria-labelledby="tl-compare-title" data-tour="timeline-compare">
+          {/* The check-in counts for both windows are in "Diary coverage" below, so the subtitle names the windows only. */}
           <CardHeader
             id="tl-compare-title"
             eyebrow="Before and after"
             icon={<GitCompareArrows size={20} />}
             title={`${selMed.name} was ${ev.event} on ${formatLong(ev.eventDate)}`}
             subtitle={
-              ev.windows ? (
-                <>
-                  {ev.status === "ok" ? "Compared" : "Would compare"} {rangeText(ev.windows.before.from, ev.windows.before.to)} ({checkInsIn(ev.windows.before)} check-ins in{" "}
-                  {spanDays(ev.windows.before)} days) with {rangeText(ev.windows.after.from, ev.windows.after.to)} ({checkInsIn(ev.windows.after)}{" "}
-                  check-ins in {spanDays(ev.windows.after)} days). Only answered days are counted.
-                </>
-              ) : (
-                STATUS_TEXT[ev.status]
-              )
+              ev.windows
+                ? `${ev.status === "ok" ? "Compares" : "Would compare"} ${rangeText(ev.windows.before.from, ev.windows.before.to)} with ${rangeText(ev.windows.after.from, ev.windows.after.to)} · answered days only`
+                : STATUS_TEXT[ev.status]
             }
           />
 
@@ -459,12 +469,13 @@ export function Timeline() {
 
             {ev.status === "ok" && (
               <>
+                {/* The count, then the ONE caveat line: what this is not, and one short sentence on chance. */}
                 {flagged.length > 0 ? (
                   <p className="cg-tl-compare__lead">
                     <strong>
                       {flagged.length} of {ev.testedMetrics.length} compared diary items
                     </strong>{" "}
-                    changed enough to be flagged. {CAVEAT}
+                    changed enough to be flagged. {CAVEAT} {CHANCE_SHORT}
                   </p>
                 ) : (
                   <>
@@ -475,7 +486,6 @@ export function Timeline() {
                     <p className="cg-tl-muted cg-tl-compare__partial">{LOW_POWER_NOTE}</p>
                   </>
                 )}
-                <SizeOrderKey />
                 {ev.reason && <p className="cg-tl-muted cg-tl-compare__partial">{ev.reason}</p>}
                 <ul className="cg-tl-rows" role="list" aria-label="Diary items before and after">
                   {comparisons.map((c) => (
@@ -492,18 +502,15 @@ export function Timeline() {
                 </span>
                 <div>
                   <p className="cg-tl-falls__title">Falls and near-falls, listed by date</p>
+                  {/* Why they are listed rather than tested (SENTINEL_NOTE) is in "How reliable is this?". */}
                   <p>{fallsComparison(ev.sentinel, today).text}</p>
-                  <p className="cg-tl-muted">{SENTINEL_NOTE}</p>
                 </div>
                 <EvidenceLink onClick={() => setRecordsMetric("falls")} label="Records" aria-label="Show the fall and near-fall records" />
               </div>
             )}
 
+            {/* The caveat is in the lead above (once); this list holds what else was going on. */}
             <dl className="cg-tl-context">
-              <div>
-                <dt>What this shows</dt>
-                <dd>{CAVEAT}</dd>
-              </div>
               <div>
                 <dt>Other medicine changes within {TIMELINE_RULES.overlapDays} days</dt>
                 <dd>{overlapText.length ? `${overlapText.join("; ")}. Changes this close together are hard to tell apart.` : "None recorded."}</dd>
@@ -527,14 +534,22 @@ export function Timeline() {
               )}
             </dl>
 
-            {/* Same disclosure as the Overview's "How reliable is this?" (method, measured chance rates and caveat, all
-                from rules.ts). It keeps its older title here because scripts/a11y.mjs opens it by that name. */}
-            {/* runsNote: RUNS_CHECK_NOTE explains the runs-check p in the rows above, so it appears only when one is there. */}
+            {/* Same disclosure and title as the Overview's: the size-word order, what "maybe a bad stretch" means,
+                the test, p-value and runs-check p of every compared row, why falls are listed, the method, the
+                measured chance rates and the caveat (all from rules.ts). Closed by default; a button with
+                aria-expanded (ui Disclosure). */}
             <ReliabilityDisclosure
-              summary="How this comparison works"
+              summary={RELIABILITY_TITLE}
+              tests={ev.status === "ok" ? reliabilityTests(comparisons) : []}
+              notes={
+                <>
+                  {ev.status === "ok" && <SizeOrderKey />}
+                  {ev.status === "ok" && comparisons.some(isQualified) && <p>{RUNS_QUALIFIER_NOTE}</p>}
+                  {ev.sentinel && <p>{SENTINEL_NOTE}</p>}
+                </>
+              }
               method={TIMELINE_METHOD_SUMMARY}
               bodyClassName="cg-tl-method"
-              runsNote={ev.status === "ok" && comparisons.some((c) => shownRunsP(c) !== null)}
             />
           </div>
         </Card>

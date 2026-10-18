@@ -12,7 +12,8 @@ import { getDrug, getSource } from "../../../kb";
 import { aiExplainFinding, AIValidationError, useLLM, type DroppedSentence } from "../../../ai";
 import { AIBadge, Badge, Button, Disclosure, Segmented, SourceCitation, Spinner, cx } from "../../../ui";
 import { getMetric } from "../../../engine/timeline/metrics";
-import { STRENGTH_SIZE_LABEL, strengthTone } from "../../shared/caregiver-insights";
+import { STRENGTH_SIZE_LABEL, signalCountsLine, strengthTone } from "../../shared/caregiver-insights";
+import { SizeWord } from "../../shared/caregiver-SizeWord";
 import { CATEGORY_CHIP, STATUS_LABEL } from "./reviewRecords";
 import { DIARY_SIGNALS_SHOWN } from "./diaryRepeats";
 import { CheckRemoved } from "../brief/CheckRemoved";
@@ -225,13 +226,14 @@ export function FindingCard({
                   )}
                 </p>
                 <div id={diaryId} className="cg-finding__diary-body" hidden={diaryCollapsed}>
+                  {/* Each timeline pattern as a counts line ("Dizziness: 9 of 14 answered days after … vs 2 of 19
+                      before"); both windows in full, the test and p-value are on the Timeline, in "How reliable is this?". The size
+                      label is qualified when the runs check does not back it ("maybe a bad stretch"). */}
                   {findingSignals.slice(0, DIARY_SIGNALS_SHOWN).map((s) => (
                     <p key={s.id} className="cg-finding__signal">
-                      <span>{s.text}</span>
+                      <span>{signalCountsLine(s, meds.get(s.medicationId)?.name ?? "the medicine")}</span>
                       <span className="cg-finding__signal-meta">
-                        <Badge size="sm" tone={strengthTone(s.strength)}>
-                          {STRENGTH_SIZE_LABEL[s.strength]}
-                        </Badge>
+                        <SizeWord strength={s.strength} runsCheck={s.runsCheck} tone={strengthTone(s.strength)} label={STRENGTH_SIZE_LABEL[s.strength]} />
                         <button type="button" className="cg-finding__link" onClick={() => onOpenTimeline(s.medicationId)}>
                           See on timeline
                         </button>
@@ -260,7 +262,8 @@ export function FindingCard({
                       })}
                     </ul>
                   )}
-                  {f.relatedSymptoms.length > 0 && <p className="cg-finding__caveat">Last 30 days. Counts show what was recorded, not why it happened.</p>}
+                  {/* "Counts show what was recorded, not why it happened" is said once, above the first card (Review.tsx). */}
+                  {f.relatedSymptoms.length > 0 && <p className="cg-finding__caveat">Counts from the last 30 days.</p>}
                 </div>
               </section>
             )}

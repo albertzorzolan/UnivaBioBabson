@@ -9,6 +9,7 @@ import { join } from "node:path";
 import { CODE_URL, DEFAULT_TEAM, DEMO_URL, REPO_BRANCH, ROOT, fileUrl, launchBrowser, pdfPageCount, readJson, shortUrl } from "./lib.mjs";
 import * as lib from "./lib.mjs";
 import {
+  batchFacts,
   branchOnlyFacts,
   collectFacts,
   demoFacts,
@@ -22,7 +23,7 @@ import {
 } from "./facts.mjs";
 import { DEMO_CTA, SHOT_HEIGHT_IN, changeStep, e2eText, evidenceItems, falseAlarmText, onePagerHtml, overflowProbe, testsItem } from "./onepager.mjs";
 import { fixedCaptureTime, unionBox } from "./capture.mjs";
-import { PARTIAL_KB, STALE, numberChecks, pasteRegion, pasteRegionProblems, renderedWordCount, staleRegex, testRecordWarnings } from "./check-facts.mjs";
+import { PARTIAL_KB, PASTE_WORDS, STALE, numberChecks, pasteRegion, pasteRegionProblems, renderedWordCount, staleRegex, testRecordWarnings } from "./check-facts.mjs";
 
 const PHRASE = "at least 6 flawed AI sentences (from 5 outputs)";
 
@@ -652,25 +653,55 @@ test("check-facts: paste region (no comment, no TODO, canonical Partial wording)
   assert.equal(renderedWordCount("**Live demo:** [the site](https://example.com/a b) | --- | → go"), 5);
 });
 
-test("DEVPOST files: paste region clean, 1,100–1,450 words (about 1,400 plus room for the teammate lines), 4 rigor rows, canonical Partial row, team notes in the top block", () => {
+test("DEVPOST files: paste region clean, 650–830 words, status on the first screen, rigor table linked from the README, canonical Partial row, team notes in the top block", () => {
+  assert.deepEqual(PASTE_WORDS, { min: 650, target: 800, max: 830 });
   for (const rel of ["submission/DEVPOST.md", "submission/DEVPOST-if-not-pushed.md"]) {
     const md = readFileSync(join(ROOT, rel), "utf8");
     assert.deepEqual(pasteRegionProblems(md), [], rel);
     const region = pasteRegion(md).text;
     const words = renderedWordCount(region);
-    // The text is written to about 1,100–1,400 words; the upper bound adds about 50 for the one-line-per-teammate
-    // notes the team writes under "Team" (TODO(team) in the file's top block says so).
-    assert.ok(words >= 1100 && words <= 1450, `${rel}: ${words} words in the paste region`);
-    // Problem first: the region opens with the gap line, then "Try it in 30 seconds".
+    // Judges asked for about 700 words. The text is written to 650–800; the upper bound adds about 30–45 for the
+    // one-line-per-teammate notes the team writes under "Team" (TODO(team) in the file's top block says so).
+    assert.ok(words >= PASTE_WORDS.min && words <= PASTE_WORDS.max, `${rel}: ${words} words in the paste region`);
+    // First screen: the problem (gap line), what it does, an honest status line, then "Try it in 30 seconds" with
+    // the live demo link.
     assert.match(region.trimStart(), /^\*\*The doctor sees the medicine list, the family sees the symptoms, and nobody lines them up\.\*\*/);
+    const firstScreen = region.slice(0, region.indexOf("## What it does"));
     assert.ok(region.indexOf("## Try it in 30 seconds") > 0);
-    // "AI and rigor at a glance": exactly 4 data rows.
-    const rigor = region.slice(region.indexOf("## AI and rigor at a glance"), region.indexOf("\n## ", region.indexOf("## AI and rigor at a glance") + 5));
-    const rows = rigor.split("\n").filter((l) => l.startsWith("|") && !/^\|\s*Measured\b/.test(l) && !/^\|[-| ]+\|$/.test(l));
-    assert.equal(rows.length, 4, `${rel}: rigor rows ${rows.length}`);
+    assert.match(firstScreen, /\*\*Status:\*\* a working prototype on fictional data, not yet tested with real patients, caregivers or clinicians\./);
+    assert.match(firstScreen, /\*\*Live demo:\*\* \[albertzorzolan\.github\.io\/UnivaBioBabson\]\(https:\/\/albertzorzolan\.github\.io\/UnivaBioBabson\/\)/);
+    // "AI and rigor at a glance" is a short paragraph that links the README's table; the table itself is not pasted.
+    const at = region.indexOf("## AI and rigor at a glance");
+    const rigor = region.slice(at, region.indexOf("\n## ", at + 5));
+    assert.equal(rigor.split("\n").filter((l) => l.startsWith("|")).length, 0, `${rel}: rigor table rows in the paste region`);
+    assert.match(rigor, /\]\(https:\/\/github\.com\/albertzorzolan\/UnivaBioBabson\/blob\/medwatch-v2\/README\.md#(?:rigor-at-a-glance|evaluation-headline-numbers)\)/);
+    // The checker is described by design, not as a guarantee; p-values stay in the README (plain language here).
+    assert.ok(rigor.includes("a code checker is designed to drop unsupported, causal or advice sentences"), rel);
+    assert.doesNotMatch(region, /checker drops\b/);
+    assert.doesNotMatch(region, /\bp = 0\./);
+    // "How it differs": the general-AI clause is the one sourced in kb-src/research/market-evidence.md §2 (row
+    // "ChatGPT Health" and finding 4: cloud-based, non-deterministic, no geriatric criteria engine documented).
+    assert.ok(region.includes("general AI assistants (ChatGPT Health) are cloud-based and non-deterministic, with no documented geriatric criteria engine"), rel);
+    // Safety scope: the never-claim covers only the deterministic rules and templates, because flawed AI sentences
+    // (a "can cause" one among them, eval/results/ai-live.json) got past the checker in a live run. The AI caveat sits
+    // in the same paragraph, and the app's do-not-stop line (src/engine/brief/template.ts) is stated.
+    assert.ok(region.includes("Its rules and templates record, display and prompt questions; they never recommend changing a medicine, diagnose or say a medicine caused a symptom."), rel);
+    assert.ok(!region.includes("It records, displays and prompts questions; it never"), `${rel}: unscoped never-claim`);
+    assert.ok(region.includes("The optional AI is checked for the same, but not airtight: in "), rel);
+    assert.ok(region.includes("tells families not to stop or change any medicine without the prescriber"), rel);
+    // The 70 held-out stories are synthetic, and the local record is not yet encrypted (Planned row).
+    assert.ok(region.includes("micro-F1 0.942 on 70 held-out synthetic stories"), rel);
+    assert.match(region, /\| \*\*Planned\*\* \|[^\n]*encryption of the local record/);
+    // The two visits take family input only under conditions (kb-src/research/regulatory.md §5, market-evidence.md
+    // row 15, README "Who it's for"): the AWV's cognitive check weighs family concerns; a Part D review includes the
+    // caregiver if cognitive impairment prevents the patient taking part.
+    assert.ok(!region.includes("both already ask for what the family sees"), `${rel}: overstated regulation`);
+    assert.ok(region.includes("(its cognitive check weighs family concerns, 42 CFR 410.15)"), rel);
+    assert.ok(region.includes("(it can include the caregiver if cognitive impairment prevents the patient taking part, 42 CFR 423.153)"), rel);
     // Every TODO(team) sits in the leading comment block, before "# Kinwise".
     const head = md.slice(0, md.indexOf("\n# Kinwise"));
     assert.equal(md.split("TODO(team)").length, head.split("TODO(team)").length, `${rel}: TODO(team) outside the top block`);
+    assert.match(head, /TODO\(team\)[^]*add one true line per teammate/);
     assert.match(region, /## Path to users \(hypothesis, not validated\)/);
     assert.match(region, /## Team\n\nAlbert Zorzolan and Neil Shah, Babson College\.\n/);
   }
@@ -678,12 +709,47 @@ test("DEVPOST files: paste region clean, 1,100–1,450 words (about 1,400 plus r
   // The live-escape caveat is stated once; the fallback has no count (its source is not at 375e1e0).
   assert.equal(pasteRegion(main).text.split(PHRASE).length - 1, 1);
   assert.ok(!readFileSync(join(ROOT, "submission/DEVPOST-if-not-pushed.md"), "utf8").includes("flawed AI sentences ("));
+  // The primary text pairs "designed to drop" with the held-out result, so the design claim is not read as a guarantee.
+  assert.ok(pasteRegion(main).text.includes("but only 10 of 23 on a later held-out probe"));
+  assert.ok(pasteRegion(main).text.includes("README.md#rigor-at-a-glance"));
   // DEVPOST.md links repo files on the medwatch-v2 branch instead of printing bare backtick paths.
   assert.doesNotMatch(pasteRegion(main).text, /`[\w./-]+\.(?:json|md|ts|pdf)`/);
   const fallback = readFileSync(join(ROOT, "submission/DEVPOST-if-not-pushed.md"), "utf8");
-  assert.ok(fallback.includes("The live demo is the build submitted on Oct 16; its status table still lists the on-device model as working; we now rate it Partial."));
-  assert.ok(fallback.includes("the code tour PDF uploaded with this submission"));
-  assert.ok(!pasteRegion(fallback).text.includes("blob/medwatch-v2/submission/kinwise-code-tour.pdf"));
+  const fallbackRegion = pasteRegion(fallback).text;
+  assert.ok(fallbackRegion.includes("its status table still calls on-device AI working (now Partial)."));
+  assert.ok(fallbackRegion.includes("Timeline runs check: computed for every comparison, not yet gating. (Runs check: not in the Oct 16 build.)"));
+  assert.ok(fallbackRegion.includes("The video was recorded from our Oct 18 build; the live demo and linked code are the Oct 16 build, so a few screens differ."));
+  assert.ok(fallbackRegion.includes("the code tour PDF uploaded with this submission"));
+  // The fallback links the README section that exists at 375e1e0, not the newer "Rigor at a glance".
+  assert.ok(fallbackRegion.includes("README.md#evaluation-headline-numbers"));
+  assert.ok(!fallbackRegion.includes("#rigor-at-a-glance"));
+  assert.ok(!fallbackRegion.includes("blob/medwatch-v2/submission/kinwise-code-tour.pdf"));
+});
+
+test("README first screen: what it is, live demo, video, 5-minute walkthrough, how to run, then the 4-row rigor table", () => {
+  const md = readFileSync(join(ROOT, "README.md"), "utf8");
+  const firstScreen = md.slice(0, md.indexOf("## The problem"));
+  assert.ok(firstScreen.length > 0);
+  const order = ["**Kinwise is a private, in-browser co-pilot", "**Try it live", "**Demo video", "**Code walkthrough:** [5 minutes](#walk-through-the-code-in-5-minutes)", "**Run locally:**", "## Rigor at a glance"];
+  const at = order.map((s) => firstScreen.indexOf(s));
+  assert.ok(at.every((i) => i >= 0), `missing: ${order.filter((_, i) => at[i] < 0).join(", ")}`);
+  assert.deepEqual([...at].sort((a, b) => a - b), at, "first-screen items out of order");
+  // The video link is still the repo .mp4 until the team adds the YouTube link (agents do not invent one).
+  assert.match(firstScreen, /\*\*Demo video[^\n]*TODO\(team\): replace with YouTube link/);
+  const rigorAt = firstScreen.indexOf("## Rigor at a glance");
+  const rigor = firstScreen.slice(rigorAt, firstScreen.indexOf("\nAlso:", rigorAt));
+  const rows = rigor.split("\n").filter((l) => l.startsWith("|") && !/^\|\s*Measured\b/.test(l) && !/^\|[-| ]+\|$/.test(l));
+  assert.equal(rows.length, 4, `README rigor rows ${rows.length}`);
+  assert.deepEqual(rows.map((r) => r.split("|")[1].trim()), ["Symptom extraction, 70 held-out stories", "Medication review", "Claim checker", "Timeline chance rate"]);
+  assert.ok(rigor.includes("a code checker is designed to drop unsupported, causal or advice sentences"));
+  assert.ok(rigor.includes("[Evaluation (headline numbers)](#evaluation-headline-numbers)"));
+  // The on-device batch line moved here from the Devpost text: it must be exactly the line facts.mjs builds.
+  const batchUrl = join(ROOT, "eval/results/llm-batch.json");
+  const batch = batchFacts(JSON.parse(readFileSync(batchUrl, "utf8")));
+  assert.ok(batch && md.split("\n").includes(batch.line), "README.md lacks the batch line printed by facts.mjs batchFacts().line");
+  assert.ok(rigor.includes(batch.line));
+  assert.match(md, /\n## Walk through the code in 5 minutes\n/);
+  assert.match(md, /\n## Evaluation \(headline numbers\)\n/);
 });
 
 test("testRecordWarnings: the dated §7 counts against the last local reports", () => {

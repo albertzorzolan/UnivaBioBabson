@@ -28,6 +28,14 @@
 //   8. Unsupported condition terms (added after the round-3 internal review probe, see "Unsupported condition
 //      terms" below): a statement that names a condition from a short fixed list ("toxicity", "dehydration",
 //      "withdrawal", or an "-itis"/"-osis" noun) that the cited text does not name is dropped.
+//   9. Direction and day quantifiers (added in F2, 2026-10-18, see "Direction and day quantifiers" below): wording
+//      about how a recorded count changed ("less often after lorazepam was started", "has decreased") must point
+//      the way the cited before/after counts changed, and a day quantifier ("on every answered day", "on most
+//      answered days", "rarely") must hold for the count it describes. A negated wording ("has not increased")
+//      claims the opposite; when the cited text compares one symptom for two medicines, the comparison for the
+//      medicine the sentence names is used; the asked part of a yes/no question is not a claim. Verdicts
+//      ("Lorazepam is not a concern.", "isn't a problem", "The dizziness is fine.") joined the reassurance patterns
+//      of rule 4 at the same time, except inside a "whether" clause or a restatement of what the cited text says.
 //
 // Failing sentences are dropped by the caller (src/ai/tasks.ts) and counted in GenerationInfo.
 
@@ -62,6 +70,12 @@ export interface BannedPattern {
    * "her medicines may cause …"), so the rule holds even when the caller passes no patient names.
    */
   medicineScoped?: boolean;
+  /**
+   * true = a match is not a verdict when it sits inside a "whether"/"if" clause ("Ask whether this is okay."), or
+   * after a reporting verb when the cited text has the same word ("Mom wrote that she is fine", citing her note).
+   * See EMBEDDED_LEAD and REPORTING_LEAD.
+   */
+  skipEmbedded?: boolean;
 }
 
 export type SentenceForm = "statement" | "question";
@@ -122,6 +136,72 @@ const MED_WORDS =
 /** Word stems for the diary symptoms ("dizzy", "drowsier", "near-falls", …), used to anchor causal phrasing. */
 const SYMPTOM_STEMS =
   "(?:dizz|drows|sleep|confus|fall|fell|near[- ]?fall|unsteady|wobbl|fogg|tired|woozy|groggy|sick|weak|light-?headed|swell|spells?\\b|symptoms?\\b)";
+
+/**
+ * Pieces of the verdict pattern (reassurance, F2). VERDICT_NOUN: "concern", "big concern", "problem", "big deal".
+ * VERDICT_NOT: what may follow "not"/"isn't"/"no longer" ("a concern", "an issue", "concerning", "something to worry
+ * about", "anything to worry about"). VERDICT_NOTHING: "nothing to worry about", "nothing to be worried about".
+ * VERDICT_OK: the words of a verdict that something is fine ("fine", "okay", "under control").
+ */
+const VERDICT_NOUN = "(?:(?:(?:big|real|major)\\s+)?(?:concern|problem|issue|worry)|big deal)";
+const VERDICT_NOT = `(?:(?:(?:a|an)\\s+)?${VERDICT_NOUN}|concerning|(?:some|any)thing to (?:be )?worr(?:y|ied) about)`;
+const VERDICT_NOTHING = "nothing to (?:be )?worr(?:y|ied) about";
+const VERDICT_OK = "(?:fine|okay|ok|alright|all right|under control)";
+
+/**
+ * Where a verdict-like phrase is not a verdict (skipEmbedded). Both are tested on the clause before the match only
+ * (back to the last comma, semicolon or "but"), so "She wrote on Oct 5, but lorazepam is fine." is still a verdict.
+ *   EMBEDDED_LEAD    "Ask the clinician whether this amount of dizziness is okay." (an embedded question)
+ *   REPORTING_LEAD   "Mom wrote on Oct 14 that she is fine today." (what someone said; kept only when the cited
+ *                    text has the verdict word too, so "The pharmacist said lorazepam is fine." stays blocked)
+ */
+const EMBEDDED_LEAD = /\b(?:whether|if)\b/i;
+const REPORTING_LEAD = /\b(?:said|says|wrote|writes|reported|reports|noted|notes|mentioned|mentions|told\s+\w+)\b/i;
+const VERDICT_CLAUSE_BREAK = /[,;:]|\bbut\b/gi;
+/**
+ * Reporters whose reported verdict is never a restatement: "The pharmacist said that lorazepam is not a concern." An
+ * invented reassurance from a clinician or a source is the most misleading thing this check could let through, and
+ * the cited records never hold a clinician's verdict, so these are always checked.
+ */
+const CLINICIAN_REPORTER = /\b(?:doctors?|dr\.?|pharmacists?|nurses?|clinicians?|prescribers?|providers?|cardiolog\w*|urolog\w*|reference set|kinwise|label)\b/i;
+/** A negated verdict ("not a concern", "isn't a problem", "nothing to worry about"). */
+const NEGATED_VERDICT = /\b(?:not|no|nothing)\b|n't\b/i;
+
+/**
+ * Is a verdict after a reporting verb a faithful restatement of the cited text? Three named checks, all needed:
+ *   1. the reporter is not a clinician or a source (CLINICIAN_REPORTER);
+ *   2. a negated verdict ("Margaret reported that the dizziness is not a concern") needs the same negated phrase in
+ *      the cited text ("not a concern"), not just the noun (a family "Concern: …" note does not say "not a concern");
+ *   3. a "fine"/"okay" verdict needs the word in the cited text, and its subject must be the person ("Margaret wrote
+ *      on Oct 14 that she is fine today"), not a symptom or a medicine ("Mom wrote that the dizziness is fine").
+ */
+function isReportedRestatement(verdict: string, clause: string, citedLower: string): boolean {
+  const lead = REPORTING_LEAD.exec(clause);
+  // The verdict word itself ("fine", "okay", "concern", "worry"), which the cited text must also contain.
+  const word = /\b(?:fine|okay|ok|alright|all right|concern\w*|problem|issue|worr\w*|deal|control)\b/i.exec(verdict)?.[0].toLowerCase();
+  if (!lead || !word || CLINICIAN_REPORTER.test(clause)) return false;
+  if (NEGATED_VERDICT.test(verdict)) {
+    return new RegExp(`(?:\\bnot|n't|\\bno|\\bnothing)\\s+(?:[\\w'-]+\\s+){0,3}?${escapeRegExp(word)}`).test(citedLower);
+  }
+  const subject = clause.slice((lead.index ?? 0) + lead[0].length);
+  const aboutSymptomOrMedicine =
+    new RegExp(SYMPTOM_STEMS, "i").test(subject) || new RegExp(`\\b${MED_WORDS}\\b`, "i").test(subject) || detectDrugNames(subject).length > 0;
+  return !aboutSymptomOrMedicine && new RegExp(`\\b${escapeRegExp(word)}\\b`).test(citedLower);
+}
+
+/** The first match of a verdict pattern that is not inside a "whether"/"if" clause or a restatement (see above). */
+function firstVerdict(pattern: RegExp, scope: string, citedLower: string): RegExpExecArray | null {
+  for (const m of scope.matchAll(new RegExp(pattern.source, `${pattern.flags.replace("g", "")}g`))) {
+    const before = scope.slice(0, m.index);
+    const breaks = [...before.matchAll(VERDICT_CLAUSE_BREAK)];
+    const last = breaks[breaks.length - 1];
+    const clause = last ? before.slice((last.index ?? 0) + last[0].length) : before;
+    if (EMBEDDED_LEAD.test(clause)) continue;
+    if (isReportedRestatement(m[0], clause, citedLower)) continue;
+    return m as RegExpExecArray;
+  }
+  return null;
+}
 
 /** How a sentence can refer to the person, as an object ("making her …") or a subject ("the reason she …"). */
 const PERSON_OBJECT = "her|him|them|me|you|mom|mum|dad";
@@ -429,6 +509,31 @@ const STATIC_PATTERNS: BannedPattern[] = [
     category: "reassurance",
     reason: "says the medicines look fine",
     pattern: new RegExp(`\\b${MED_WORDS}\\s+(?:look|looks|seem|seems|are|is)\\s+(?:\\w+\\s+)?(?:fine|okay|ok|alright|good|appropriate)\\b`, "i"),
+  },
+  {
+    category: "reassurance",
+    reason: "gives a verdict that something is fine or not a concern",
+    // F2 (2026-10-18): "Lorazepam is not a concern.", "The dizziness is fine.", "The near-falls are not concerning."
+    // Any subject, present tense only, so a record of what the family wrote ("Mom said she was fine on Tuesday") is
+    // not read as a verdict. A question to the clinician keeps the allowance, like the other reassurance wording.
+    // Four forms, built from the VERDICT_* pieces above:
+    //   a verb, then the verdict        "is fine", "seems okay", "is under control", "is not a big concern",
+    //                                   "'s not a problem", "is no longer a concern", "There's no concern",
+    //                                   "is no big deal", "is nothing to be worried about"
+    //   a negated verb, then the noun   "isn't a concern", "isn't anything to worry about", "doesn't seem to be a concern"
+    //   a negated modal and "be"        "should not be a concern", "won't be a problem"
+    //   "less of a" + the noun          "Dizziness was less of a problem after …" (any tense)
+    // A "whether"/"if" clause and a restatement of what someone wrote are skipped (skipEmbedded).
+    pattern: new RegExp(
+      `(?:\\b(?:is|are|seems?|looks?|appears?|sounds?)|(?<=\\w)'(?:s|re))\\s+(?:to be\\s+)?(?:\\w+\\s+)?` +
+        `(?:${VERDICT_OK}|(?:not|no\\s+longer)\\s+${VERDICT_NOT}|no\\s+${VERDICT_NOUN}|of no (?:concern|consequence)|${VERDICT_NOTHING})\\b` +
+        `|\\b(?:(?:is|are)n't|(?:does|do)(?:n't|\\s+not)\\s+(?:seem|appear|look))\\s+(?:to be\\s+)?${VERDICT_NOT}\\b` +
+        `|\\b(?:(?:should|would|will|need)(?:n't|\\s+not)|won't)\\s+be\\s+${VERDICT_NOT}\\b` +
+        `|\\bless of an?\\s+${VERDICT_NOUN}\\b`,
+      "i",
+    ),
+    allowInQuestion: true,
+    skipEmbedded: true,
   },
 
   // --- diagnosis ----------------------------------------------------------------------------------
@@ -1156,6 +1261,308 @@ export function extractNumericFacts(input: string): NumericFacts {
 }
 
 // ---------------------------------------------------------------------------
+// Direction and day quantifiers (see header, rule 9)
+//
+// The number rules check that each count is in the cited text, but not what a sentence says *about* the counts. In
+// F2 (2026-10-18) these passed although the cited signal shows dizziness on 9 of 14 answered days after lorazepam was
+// started and on 2 of 19 before: "Dizziness was recorded less often after lorazepam was started." and "Dizziness
+// was recorded on every answered day after lorazepam was started." Rule 9 reads the cited counts and checks two
+// kinds of wording against them:
+//
+//   direction    "more often", "fewer days", "has decreased", "higher" …   must point the way the counts changed
+//   quantifier   "every answered day", "most answered days", "rarely" …    must hold for the count it describes
+//
+// The cited before/after comparison is the engine's own sentence: "<Symptom> was recorded on A of B answered days
+// <after window>, compared with C of D answered days <before window>." (signalSentence in
+// src/engine/timeline/signals.ts). Ratings read "averaged A out of 5 …, compared with C out of 5 …" and compare the
+// same way (the Ask answers' "compared with 3.5 in the 21 days before", with no "out of 5", too). The engine always
+// writes the after window first; an explicit "before" in the first part swaps them. The symptom a wording is about
+// is the nearest symptom word before it in the sentence (or else the first after it).
+//
+// After the F2 code review the rule also: skips body parts ("lower legs"), answered-day totals ("fewer days were
+// answered") and quantifiers with no symptom ("0.5 mg each night"); reads a negated wording the other way
+// (NEGATION_LEAD); uses the comparison for the medicine the sentence names when the cited text has several for one
+// symptom; and skips the asked part of a yes/no question (askedSpan).
+
+type Side = "before" | "after";
+type Direction = "more" | "less";
+
+/** One cited count: A of B answered days (or an average of A out of B) for a symptom, in one window. */
+interface CitedCount {
+  metric: string | null;
+  side: Side | null;
+  a: number;
+  b: number;
+  /** An average rating ("averaged 2.4 out of 5"), which a day quantifier cannot describe. */
+  rating: boolean;
+}
+interface CitedCounts {
+  counts: CitedCount[];
+  /** Before/after comparisons of one symptom, read from "…, compared with …" sentences. */
+  /** `source` is the comparison's sentence (lowercase), to match the medicine a claim names. */
+  comparisons: { metric: string; after: CitedCount; before: CitedCount; source: string }[];
+}
+
+/**
+ * Words after "lower"/"higher" that are not a recorded count: risk and dose wording ("a higher risk of falls", "lower
+ * the dose", "lower blood pressure") and body parts ("swelling in her lower legs", "lower back pain"), a place.
+ */
+const NOT_A_COUNT_WORDS = "risk|chance|likelihood|dose|dosage|the|her|his|its|blood|sodium|mortality";
+const BODY_PART = "legs?|back|limbs?|body|abdomen|belly|arms?|extremit(?:y|ies)|spine|jaw";
+// The risk and dose words match as prefixes ("doses", "risks", "therapy"); a body part must be the whole word.
+const NOT_A_COUNT = `(?!\\s+(?:${NOT_A_COUNT_WORDS}|(?:${BODY_PART})\\b))`;
+/** "fewer days were answered" is about the answered days (the B of "A of B"), not the symptom count. */
+const NOT_ANSWERED = "(?!\\s+(?:were\\s+|was\\s+)?answered\\b)";
+/** Symptom words that "less"/"fewer"/"more" can count directly ("less dizziness", "fewer dizzy days"). */
+const SYMPTOM_NOUN = "(?:dizz\\w*|light-?headed\\w*|drows\\w*|sleepy|groggy|confus\\w*|swell\\w*|swollen|near[- ]?falls?|falls|energy|appetite)";
+
+/**
+ * Wording that says which way a count went. `says` is the direction of the window the wording is about; `change`
+ * marks verbs of change ("has decreased"), which compare after with before even when no side word follows;
+ * `metricInMatch` means the symptom is named inside the match ("less dizziness"), not looked up around it.
+ * "better" and "worse" are left out on purpose: their direction depends on the symptom (better energy is higher,
+ * better dizziness is lower). So is "worsened", which would need the same per-symptom table.
+ */
+const DIRECTION_WORDS: { says: Direction; change: boolean; metricInMatch?: boolean; pattern: RegExp }[] = [
+  // "more often", "more frequent", "more days" (not "more days were answered"), "more of the answered days".
+  { says: "more", change: false, pattern: new RegExp(`\\bmore\\s+(?:often|frequently|frequent|commonly|common)\\b|\\bmore\\s+(?:days|nights)\\b${NOT_ANSWERED}|\\bmore\\s+of\\s+the\\s+(?:answered\\s+)?(?:days|nights)\\b`, "gi") },
+  { says: "less", change: false, pattern: new RegExp(`\\b(?:less|fewer)\\s+(?:often|frequently|frequent|commonly|common)\\b|\\b(?:fewer|less)\\s+(?:days|nights)\\b${NOT_ANSWERED}|\\b(?:fewer|less)\\s+of\\s+the\\s+(?:answered\\s+)?(?:days|nights)\\b`, "gi") },
+  // "recorded less after …", "more since …": the comparative right before a side word.
+  { says: "more", change: false, pattern: /\bmore(?=\s+(?:after|before|since|following)\b)/gi },
+  { says: "less", change: false, pattern: /\bless(?=\s+(?:after|before|since|following)\b)/gi },
+  // "…, which is fewer than before", "more than before": the comparative, then "than" and a side word (claimSide reads
+  // the side word after "than" as the reference window).
+  { says: "more", change: false, pattern: /\bmore(?=\s+than\s+(?:before|earlier|previously|after)\b)/gi },
+  { says: "less", change: false, pattern: /\b(?:fewer|less)(?=\s+than\s+(?:before|earlier|previously|after)\b)/gi },
+  // "less dizziness", "fewer dizzy days", "more swelling".
+  { says: "more", change: false, metricInMatch: true, pattern: new RegExp(`\\bmore\\s+${SYMPTOM_NOUN}`, "gi") },
+  { says: "less", change: false, metricInMatch: true, pattern: new RegExp(`\\b(?:less|fewer)\\s+${SYMPTOM_NOUN}`, "gi") },
+  // "a larger share of days", "a smaller proportion" ("higher/lower share" is covered by the next two entries).
+  { says: "more", change: false, pattern: /\b(?:larger|bigger|greater)\s+(?:share|proportion|fraction|percentage)\b/gi },
+  { says: "less", change: false, pattern: /\bsmaller\s+(?:share|proportion|fraction|percentage)\b/gi },
+  { says: "more", change: false, pattern: new RegExp(`\\bhigher\\b${NOT_A_COUNT}`, "gi") },
+  { says: "less", change: false, pattern: new RegExp(`\\blower\\b${NOT_A_COUNT}`, "gi") },
+  { says: "more", change: true, pattern: new RegExp(`\\b(?:increase[ds]?|rose|risen|go up|goes up|went up|gone up|climbed|up from)\\b${NOT_A_COUNT}`, "gi") },
+  {
+    says: "less",
+    change: true,
+    pattern: new RegExp(`\\b(?:decrease[ds]?|declined|dropped|go down|goes down|went down|gone down|eased|reduced|lessened|subsided|down from)\\b${NOT_A_COUNT}`, "gi"),
+  },
+];
+
+/** Day quantifiers and the share of answered days each one needs (A of B). Unlike QUANTIFIER_RE these are counted. */
+const DAY_QUANTIFIERS: { label: string; holds: (a: number, b: number) => boolean; pattern: RegExp }[] = [
+  // "every answered day", "each night". Not "each check-in", which is how the app works ("asks at each check-in").
+  // "every one of the answered days", "consistently", "throughout the period" say the same.
+  {
+    label: "every day",
+    holds: (a, b) => b > 0 && a === b,
+    pattern: /\b(?:(?:every|each)\s+(?:single\s+)?(?:one\s+of\s+the\s+)?(?:answered\s+|recorded\s+)?(?:days?|nights?)|consistently|throughout\s+the\s+(?:period|window))\b/gi,
+  },
+  // "all answered days", "all 14 answered days".
+  { label: "all days", holds: (a, b) => b > 0 && a === b, pattern: /\ball\s+(?:of\s+)?(?:the\s+|her\s+|his\s+)?(?:\d+\s+)?(?:answered\s+|recorded\s+)?(?:days|nights)\b/gi },
+  // "most answered days", "most of the 19 answered days".
+  { label: "most days", holds: (a, b) => a * 2 > b, pattern: /\b(?:most|the\s+majority)\s+(?:of\s+)?(?:the\s+|her\s+|his\s+)?(?:\d+\s+)?(?:answered\s+|recorded\s+)?(?:days|nights|check-ins)\b/gi },
+  {
+    label: "few days",
+    holds: (a, b) => a > 0 && a * 2 < b,
+    // "on a few days" counts days; "for a few nights" is a length of time, not a count, so it needs the "on". "rare",
+    // "uncommon" and "infrequent" describe a symptom's count ("Dizziness was rare after …"), but not in "a rare side
+    // effect" or "in rare cases", which is reference wording.
+    pattern:
+      /\b(?:rarely|seldom|hardly\s+ever|almost\s+never|(?:rare|uncommon|infrequent(?:ly)?)\b(?!\s+(?:(?:possible|side)\s+)?(?:effects?|cases?|instances?|reactions?|events?)\b)|on\s+(?:only\s+|just\s+)?(?:a\s+)?(?:few|handful\s+of)\s+(?:of\s+the\s+)?(?:\d+\s+)?(?:answered\s+|recorded\s+)?(?:days|nights|check-ins))\b/gi,
+  },
+  // "on only a couple of days": one to three days.
+  { label: "a couple of days", holds: (a) => a > 0 && a <= 3, pattern: /\bon\s+(?:only\s+)?(?:a\s+)?couple\s+(?:of\s+)?(?:the\s+)?(?:answered\s+|recorded\s+)?(?:days|nights)\b/gi },
+];
+
+/** Side words, and a lead that makes the side word the reference window ("than before", "up from 2 of 19 before"). */
+const SIDE_WORD = /\b(before|prior|earlier|after|since|following|afterwards)\b/gi;
+const REFERENCE_LEAD = /\b(?:than|compared\s+(?:with|to)|versus|vs\.?|relative\s+to|from)(?:\s+[\w'()-]+){0,8}\s+$/i;
+const flipSide = (s: Side): Side => (s === "after" ? "before" : "after");
+const flipDirection = (d: Direction): Direction => (d === "more" ? "less" : "more");
+
+/**
+ * Negation: a "not", "n't", "never" or "no longer" up to three words before a match, in the same clause ("has not
+ * increased", "was not recorded on most days"). A negated wording claims the opposite: "has not decreased" is true
+ * when the counts went up or stayed the same, and "not on every day" is true when some day had no record.
+ */
+const NEGATION_LEAD = /(?:\bnot|n't|\bnever|\bno\s+longer)\s+(?:[\w-]+\s+){0,3}$/i;
+const COUNT_CLAUSE_BREAK = /[,;:]|\b(?:and|but|while|whereas|though|although)\b/gi;
+function negatedAt(sentence: string, at: number): boolean {
+  const before = sentence.slice(0, at);
+  const breaks = [...before.matchAll(COUNT_CLAUSE_BREAK)];
+  const last = breaks[breaks.length - 1];
+  return NEGATION_LEAD.test(last ? before.slice((last.index ?? 0) + last[0].length) : before);
+}
+
+/**
+ * A yes/no question asks about its content instead of stating it ("Has her dizziness decreased since lorazepam was
+ * started?"), so rule 9 skips the asked part: from the auxiliary that opens it to the first premise break (a comma
+ * other than ", or", or "given", "because" …). A premise after the break ("…, given dizziness was recorded less
+ * often?") and every other question ("When did it decrease?" says that it did) are checked like a statement.
+ */
+const YES_NO_START = /^(?:could|can|should|would|will|is|are|was|were|do|does|did|has|have|had|may|might|must|whether)\b/i;
+const PREMISE_BREAK = /,(?!\s*or\b)|;|\b(?:given|because|considering|now that|seeing that)\b/i;
+function askedSpan(sentence: string, shape: SentenceShape): [number, number] | null {
+  if (shape.form !== "question" || shape.presupposing || !YES_NO_START.test(shape.clause)) return null;
+  const start = sentence.length - shape.clause.length;
+  const brk = PREMISE_BREAK.exec(shape.clause);
+  return [start, brk ? start + brk.index : sentence.length];
+}
+
+/**
+ * An embedded question inside a statement asks about its content instead of stating it, like the asked part of a
+ * yes/no question (askedSpan): "Ask whether dizziness has decreased since lorazepam was started.", "Discuss whether
+ * …", "Check if …". Rule 9 skips a wording whose clause holds "whether", or "if" after an asking verb. The clause runs
+ * back to the last comma, semicolon, colon or premise word ("given", "because" …), so a premise is still checked:
+ * "Ask whether this matters, given dizziness was recorded less often after …". A bare conditional ("If …, dizziness
+ * was recorded less often after …") is checked too: its comma ends the clause, and "if" with no asking verb is not a lead.
+ */
+const EMBEDDED_QUESTION_LEAD = /\bwhether\b|\b(?:ask|asking|check|checking|discuss|note|find\s+out|bring\s+up|see|confirm|consider)\s+(?:[\w'-]+\s+){0,3}?if\b/i;
+const EMBEDDED_CLAUSE_BREAK = /[,;:]|\b(?:but|while|whereas|though|although|given|because|considering|now\s+that|seeing\s+that)\b/gi;
+function inEmbeddedQuestion(sentence: string, at: number): boolean {
+  const before = sentence.slice(0, at);
+  const breaks = [...before.matchAll(EMBEDDED_CLAUSE_BREAK)];
+  const last = breaks[breaks.length - 1];
+  return EMBEDDED_QUESTION_LEAD.test(last ? before.slice((last.index ?? 0) + last[0].length) : before);
+}
+
+/** The before value of a rating in the Ask wording, which has no "out of 5": "…, compared with 3.5 in the 21 days before." */
+const RATING_BEFORE = /^\s*(\d+(?:\.\d+)?)\b(?!\s*(?:of|out|answered|days?)\b)/i;
+
+/** Every count in the cited text, with its symptom and before/after side. */
+function citedCounts(supportTexts: string[]): CitedCounts {
+  const out: CitedCounts = { counts: [], comparisons: [] };
+  for (const text of supportTexts) {
+    for (const sentence of splitSentences(text)) {
+      const rating = /\baverag\w*|\bratings?\b/i.test(sentence);
+      const cmp = /\bcompared\s+(?:with|to)\b/i.exec(sentence);
+      if (cmp) {
+        const left = sentence.slice(0, cmp.index);
+        const right = sentence.slice(cmp.index + cmp[0].length);
+        const lp = extractNumericFacts(left).pairs;
+        const rp = extractNumericFacts(right).pairs;
+        const metrics = metricsIn(left);
+        // A rating's before value without "out of 5" (qa.ts) is read on the same scale as the after value.
+        const ratingBefore = rating && lp.length === 1 && !rp.length ? RATING_BEFORE.exec(right) : null;
+        if (ratingBefore) rp.push({ ...lp[0], a: Number(ratingBefore[1]) });
+        if (lp.length === 1 && rp.length === 1 && metrics.length === 1) {
+          const firstIsBefore = sideIn(left) === "before" && sideIn(right) !== "before";
+          const first: CitedCount = { metric: metrics[0], side: firstIsBefore ? "before" : "after", a: lp[0].a, b: lp[0].b, rating };
+          const second: CitedCount = { metric: metrics[0], side: flipSide(first.side as Side), a: rp[0].a, b: rp[0].b, rating };
+          out.counts.push(first, second);
+          out.comparisons.push({
+            metric: metrics[0],
+            after: firstIsBefore ? second : first,
+            before: firstIsBefore ? first : second,
+            source: sentence.toLowerCase(),
+          });
+          continue;
+        }
+      }
+      for (const p of extractNumericFacts(sentence).pairs) {
+        const metrics = p.metrics.length ? p.metrics : p.sentenceMetrics;
+        if (!metrics.length) out.counts.push({ metric: null, side: p.side, a: p.a, b: p.b, rating });
+        for (const metric of metrics) out.counts.push({ metric, side: p.side, a: p.a, b: p.b, rating });
+      }
+    }
+  }
+  return out;
+}
+
+/** The symptom a wording at `at` is about: the nearest symptom word before it, else the first one after it. */
+function metricAt(sentence: string, at: number): string | null {
+  const mentions: { metric: string; at: number; end: number }[] = [];
+  for (const [metric, re] of METRIC_KEYWORDS) {
+    for (const m of sentence.matchAll(new RegExp(re.source, "gi"))) mentions.push({ metric, at: m.index ?? 0, end: (m.index ?? 0) + m[0].length });
+  }
+  // "near-falls" also matches the fall pattern: a fall mention inside a near-fall mention is the near-fall.
+  const near = mentions.filter((m) => m.metric === "nearFall");
+  const kept = mentions.filter((m) => m.metric !== "fall" || !near.some((n) => m.at >= n.at && m.at < n.end)).sort((x, y) => x.at - y.at);
+  const before = kept.filter((m) => m.at < at).pop();
+  return (before ?? kept.find((m) => m.at >= at))?.metric ?? null;
+}
+
+/** The window a wording at [start, end) is about: the next side word after it, else the nearest one before it. */
+function claimSide(sentence: string, start: number, end: number): Side | null {
+  const words = [...sentence.matchAll(SIDE_WORD)];
+  const m = words.find((w) => (w.index ?? 0) >= end) ?? words.filter((w) => (w.index ?? 0) < start).pop();
+  if (!m) return null;
+  const side: Side = /before|prior|earlier/i.test(m[1]) ? "before" : "after";
+  return REFERENCE_LEAD.test(sentence.slice(0, m.index)) ? flipSide(side) : side;
+}
+
+const rateOf = (c: CitedCount) => (c.b ? c.a / c.b : 0);
+const describeCount = (c: CitedCount) => `${c.a} of ${c.b}${c.side ? ` ${c.side}` : ""}`;
+
+/**
+ * Rule 9 for one sentence: direction words and day quantifiers that the cited counts do not support.
+ * `meds` are the medicine names in the sentence (lowercase): when the cited text compares one symptom for several
+ * medicines, only the comparisons whose sentence names the same medicine count. `asked` is a yes/no question's
+ * asked part, which is skipped (askedSpan).
+ */
+function countWordingIssues(sentence: string, cited: CitedCounts, supportLower: string, meds: string[], asked: [number, number] | null): VerifyIssue[] {
+  const issues: VerifyIssue[] = [];
+  // The asked part of a yes/no question, or an embedded "whether" question, is not a claim.
+  const inAsked = (at: number) => (!!asked && at >= asked[0] && at < asked[1]) || inEmbeddedQuestion(sentence, at);
+  for (const w of DIRECTION_WORDS) {
+    for (const m of sentence.matchAll(w.pattern)) {
+      const at = m.index ?? 0;
+      if (inAsked(at)) continue;
+      const metric = w.metricInMatch ? (metricsIn(m[0])[0] ?? null) : metricAt(sentence, at);
+      const ofMetric = cited.comparisons.filter((c) => c.metric === metric);
+      const sameMedicine = ofMetric.filter((c) => meds.some((d) => new RegExp(`\\b${escapeRegExp(d)}\\b`).test(c.source)));
+      const comparisons = sameMedicine.length ? sameMedicine : ofMetric;
+      if (!metric || !comparisons.length) continue;
+      const side = claimSide(sentence, at, at + m[0].length) ?? (w.change ? "after" : null);
+      if (!side) continue;
+      // The direction of the after window compared with the before window, as the sentence states it.
+      const claimed = side === "after" ? w.says : flipDirection(w.says);
+      const negated = negatedAt(sentence, at);
+      const wrong = comparisons.every((c) => {
+        const shown = rateOf(c.after) > rateOf(c.before) ? "more" : rateOf(c.after) < rateOf(c.before) ? "less" : "same";
+        // "more often" is wrong unless the counts show more; "not more often" is wrong only when they do.
+        return negated ? shown === claimed : shown !== claimed;
+      });
+      if (wrong) {
+        const c = comparisons[0];
+        issues.push({
+          code: "pair_context",
+          detail: `direction: says ${metric} ${negated ? "not " : ""}"${m[0]}" ${side}, but the cited counts are ${describeCount(c.after)} and ${describeCount(c.before)}`,
+        });
+      }
+    }
+  }
+  const literal = new RegExp(`^(?:${QUANTIFIER_RE.source})$`, "i");
+  for (const q of DAY_QUANTIFIERS) {
+    for (const m of sentence.matchAll(q.pattern)) {
+      // Words already on the stated-in-the-text list ("every day", "most days") keep that stricter rule only.
+      if (literal.test(m[0]) || supportLower.includes(m[0].toLowerCase())) continue;
+      const at = m.index ?? 0;
+      const metric = metricAt(sentence, at);
+      // No symptom named ("0.5 mg each night at bedtime"): the quantifier is not about a recorded count.
+      if (!metric || inAsked(at)) continue;
+      const side = claimSide(sentence, at, at + m[0].length);
+      const ofMetric = cited.counts.filter((c) => c.metric === metric && !c.rating);
+      const sameSide = ofMetric.filter((c) => c.side === side);
+      // With a side named, the count for that window (or an unsided count); with none, every count must agree.
+      const relevant = side ? (sameSide.length ? sameSide : ofMetric.filter((c) => c.side === null)) : ofMetric;
+      const negated = negatedAt(sentence, at);
+      if (!relevant.length) {
+        issues.push({ code: "quantifier_unsupported", detail: `"${m[0]}" has no count for ${metric} in the cited evidence` });
+      } else if (relevant.every((c) => q.holds(c.a, c.b)) === negated) {
+        issues.push({
+          code: "quantifier_unsupported",
+          detail: `${negated ? "not " : ""}"${m[0]}" does not match the cited count (${relevant.map(describeCount).join(", ")})`,
+        });
+      }
+    }
+  }
+  return issues;
+}
+
+// ---------------------------------------------------------------------------
 // Medication names
 
 /**
@@ -1278,6 +1685,9 @@ export function verifyClaims(
     medTokens.some((x) => new RegExp(`\\b${escapeRegExp(x)}\\b`, "i").test(s));
   const sentences = splitSentences(t);
   const expect = opts.expect ?? "any";
+  // Rule 9 reads the cited counts once for every sentence.
+  const cited = citedCounts(supportTexts);
+  const citedLower = supportJoined.toLowerCase();
   for (const sentence of sentences) {
     const shape = sentenceShape(sentence);
     const asStatement = expect === "statement" || shape.form === "statement";
@@ -1288,7 +1698,7 @@ export function verifyClaims(
     const checkPattern = (b: BannedPattern) => {
       if (b.patientScoped && !mentionsPatient && !(b.medicineScoped && mentionsMedicine)) return;
       const scope = b.allowInQuestion && !shape.presupposing ? statementPart : `${statementPart} ${questionPart}`;
-      const m = b.pattern.exec(scope);
+      const m = b.skipEmbedded ? firstVerdict(b.pattern, scope, citedLower) : b.pattern.exec(scope);
       if (m) issues.push({ code: "banned", detail: `${b.category}: ${b.reason} ("${m[0].trim()}")` });
     };
     for (const b of BANNED_PATTERNS) checkPattern(b);
@@ -1339,6 +1749,12 @@ export function verifyClaims(
         issues.push({ code: "unresolved_reference", detail: `"${ref[0].replace(/[,.?!]$/, "").trim()}" has no date or medicine start in the same sentence` });
       }
     }
+
+    // Rule 9: which way a count went, and day quantifiers, must agree with the cited counts. The whole sentence is
+    // checked, as for the number rules (a false premise inside a question is still a misstatement), except the asked
+    // part of a yes/no question ("Has her dizziness decreased since …?").
+    const asked = asStatement ? null : askedSpan(sentence, shape);
+    issues.push(...countWordingIssues(sentence, cited, citedLower, named.map((n) => n.toLowerCase()), asked));
   }
 
   // Named conditions must be in the cited text ("delirium", "stroke", "fractures"; synonyms count).

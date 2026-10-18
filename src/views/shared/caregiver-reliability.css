@@ -10,9 +10,14 @@
   color: var(--ink);
 }
 .cg-rel__tests li {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  align-items: flex-start;
   gap: 0.4rem;
+}
+/* The series dot sits on the first line when a row wraps (phones), not halfway down the wrapped text. */
+.cg-rel__tests li > :first-child {
+  flex: none;
+  margin-top: 0.4em;
 }
 /* The key from the engine's "strong"/"moderate" to the badges' size words: ink, so it reads as the lead line. */
 .cg-rel__key {

@@ -559,7 +559,7 @@ export function batchFacts(b) {
     brief,
     explain,
   };
-  // One plain line under DEVPOST's "AI and rigor at a glance" table (the table keeps its 4 rows).
+  // One plain line under the README's "Rigor at a glance" table (the table keeps its 4 rows).
   facts.line =
     `**On-device model, batch of ${facts.prompts} prompts** ([LLM-BATCH.md](https://github.com/albertzorzolan/UnivaBioBabson/blob/${REPO_BRANCH}/eval/LLM-BATCH.md)): ` +
     `the checker blocked ${blockedPct} of ${facts.generated} AI sentences; ${facts.flawed} of ${facts.shown} shown sentences were flawed ` +
