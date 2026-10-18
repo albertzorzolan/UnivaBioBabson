@@ -26,6 +26,7 @@ import { AIBadge, Badge, Button, Callout, cx, type Tone } from "../../ui";
 import { layoutStory, type MarkKind, type StoryMark } from "./highlight";
 import { MedSafetyLine, needsPoisonLine } from "./MedSafetyLine";
 import { EmergencyLine, describesEmergencySign } from "./EmergencyLine";
+import { CrisisLine, describesSelfHarm } from "./CrisisLine";
 import { FIELD_LABEL, FIELD_TAG, MAIN_FIELDS, answerWords, dedupeSkipped, isAccepted, type CheckInForm } from "./checkin";
 
 const NO_TAG: Partial<Record<DiaryField, string>> = {
@@ -263,6 +264,7 @@ export function HeardPanel(props: HeardPanelProps) {
 
       {/* Read from the words this panel shows (the reading's story), before anything to check or accept. */}
       {describesEmergencySign(story) && <EmergencyLine className="pt-emergency--top" />}
+      {describesSelfHarm(story) && <CrisisLine className="pt-emergency--top" />}
 
       {stale && (
         <p className="pt-heard__stale" role="status">

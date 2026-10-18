@@ -55,6 +55,8 @@ export {
   parseQuestion,
   redirectText,
   EMERGENCY_REDIRECT,
+  CRISIS_REDIRECT,
+  CRISIS_RULE,
   NOT_FOUND_TEXT,
   MAX_ANSWER_SENTENCES,
 } from "./qa";

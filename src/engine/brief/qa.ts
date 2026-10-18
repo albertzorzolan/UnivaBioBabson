@@ -35,6 +35,7 @@ import { matchDrug } from "../../kb/normalize";
 import { getMetric, latestCheckInPerDate, metricValue, windowStatFromDays } from "../timeline/metrics";
 import { eventWindows } from "../timeline/windows";
 import { TIMELINE_RULES } from "../timeline/rules";
+import { SELF_HARM_SOURCE } from "../safety/emergencySigns";
 import {
   coverageText,
   evidenceId,
@@ -103,6 +104,13 @@ export function redirectText(patientName?: string): string {
 /** Shown instead of an answer when the question contains emergency words (the same numbers as the Help dialog). */
 export const EMERGENCY_REDIRECT =
   `If something feels like an emergency, call 911 now. If someone took too much of a medicine or the wrong one, call Poison Control at 1-800-222-1222 (US, free, 24/7). ${PRODUCT_NAME} can't help in an emergency — it only answers questions about the records.`;
+
+/** The emergency form whose card is the crisis card (Ask shows a 988 button for it). */
+export const CRISIS_RULE = "thoughts of dying or self-harm";
+
+/** The crisis card's fixed text: the Help dialog's 988 row (src/app/Help.tsx CRISIS_LINE) plus the 911 line. */
+export const CRISIS_REDIRECT =
+  `If someone is thinking about dying or about harming themselves, call or text 988 (Suicide & Crisis Lifeline, US, any time). If they are in immediate danger, call 911. ${PRODUCT_NAME} can't help in a crisis — it only answers questions about the records.`;
 
 /**
  * Words for the person the questions are about. The scope rules put this in their "person" slot; routeQuestion adds
@@ -189,6 +197,8 @@ interface ScopeForm {
   test?: (t: string) => boolean;
   /** A reason line for this form instead of the category's (fixed text, like every reason). */
   reason?: string;
+  /** Emergency forms only: fixed card text instead of EMERGENCY_REDIRECT (the crisis form uses CRISIS_REDIRECT). */
+  redirect?: string;
 }
 
 /** A category of question Kinwise does not answer, its reason line, and its forms (checked in order). */
@@ -662,12 +672,16 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
     category: "emergency",
     reason: "This sounds like it could be an emergency.",
     forms: [
+      // First, so "she keeps saying she wants to die" or "suicidal" gets the 988 card, not a records answer (or the
+      // 911 card without 988). The pattern is shared with the check-in's 988 line (engine/safety/emergencySigns.ts).
+      { name: CRISIS_RULE, pattern: new RegExp(SELF_HARM_SOURCE), redirect: CRISIS_REDIRECT },
       rx(
         "emergency words (911, not breathing, chest pain, stroke, overdose, seizure, poison…)",
         "\\b(?:911|emergency|ambulance|paramedics?|unconscious|unresponsive|not breathing|can'?t breathe|cannot breathe|trouble breathing|struggling to breathe|gasping|chest pains?|heart attack|stroke|mini[- ]?stroke|tia|droop\\w*|slurr\\w*|overdos\\w*|swallowed (?:a|the|too|all|her|his)|seizures?|seiz(?:ing|ed)|having a fit|convuls\\w*|passed out|fainted|collaps\\w*|hit (?:her|his|my) head|bleeding (?:a lot|heavily|badly|won'?t stop)|won'?t wake|can'?t wake|(?:hard|difficult) to (?:wake|rouse)|barely (?:wake\\w*|rous\\w*)|(?:can'?t|won'?t|cannot) (?:be )?rous\\w*|not rousable|unrousable|can'?t get up|cannot get up|can'?t move|cannot move|unable to move|suicid\\w*|kill (?:her|him|my)self|poison\\w*|choking|anaphyla\\w*|throat (?:is )?(?:swelling|closing)|(?:vomiting|throwing up|coughing up) blood)\\b",
       ),
       // "she can't breath" (no final e: a common slip), "she can't catch her breath".
-      rx("can't breath (no final e)", "\\b(?:can'?t|cannot|can not|couldn'?t) (?:catch (?:her|his|my|their) )?breath\\b"),
+      // Also with a softening adverb: "she can't really catch her breath", "couldn't really breathe".
+      rx("can't breath (no final e)", "\\b(?:can'?t|cannot|can not|couldn'?t)(?: (?:really|quite|properly|even))? (?:catch (?:her|his|my|their) )?breathe?\\b"),
       // "she is breathing strangely", "breathing very fast": abnormal breathing described now.
       rx("breathing strangely", "\\b(?:is|she'?s|he'?s|they'?re|are) breathing (?:very |really |so )?(?:strangely|strange|oddly|odd|funny|weird(?:ly)?|noisily|shallow(?:ly)?|fast|slowly)\\b"),
       // "She is dizzy and short of breath", "she's out of breath" (the person, in the present; see the rule).
@@ -1124,7 +1138,7 @@ function routeText(t: string, opts: RouteOptions): QuestionRoute {
     const form = rule.forms.find((f) => Boolean(f.pattern?.test(t)) || Boolean(f.test?.(t)));
     if (!form) continue;
     if (rule.category === "emergency") {
-      return { inScope: false, category: "emergency", reason: rule.reason, redirect: EMERGENCY_REDIRECT, offerVisitQuestion: false, rule: form.name };
+      return { inScope: false, category: "emergency", reason: rule.reason, redirect: form.redirect ?? EMERGENCY_REDIRECT, offerVisitQuestion: false, rule: form.name };
     }
     const reason = rule.category === "safety" ? safetyReason(t, med, MED, opts) : (form.reason ?? rule.reason);
     return { inScope: false, category: rule.category, reason, redirect: redirectText(opts.patientName), offerVisitQuestion: true, rule: form.name };

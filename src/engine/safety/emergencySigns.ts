@@ -16,8 +16,9 @@
 //     (anaphylaxis), serious bleeding. qa.ts keeps its own copy for questions (its patterns are pinned by
 //     eval/results/llm-batch.json); these are tuned for a first-person diary note, where "confused" or "short of
 //     breath" alone is an everyday symptom Kinwise tracks.
-//   - Not here: too much or the wrong medicine (MedSafetyLine.tsx shows Poison Control for that) and thoughts of
-//     self-harm (the Help dialog's 988 row).
+//   - Not here: too much or the wrong medicine (MedSafetyLine.tsx shows Poison Control for that). Thoughts of
+//     dying or self-harm are not a 911 sign either: describesSelfHarm (below) decides whether the check-in shows the
+//     Help dialog's static 988 row instead (CrisisLine.tsx), and the Ask screen uses the same pattern.
 //
 // Negation and history (describesEmergencySign): a missed emergency is worse than a false alarm, so a sign stays
 // quiet only when the clause plainly negates it ("no chest pain", "didn't have any chest pain", "no chest pain or
@@ -47,6 +48,8 @@ export interface EmergencySignRule {
 const CANT =
   "(?:can'?t|cannot|can not|couldn'?t|could not|unable to|(?:wasn'?t|isn'?t|haven'?t been|hasn'?t been|was not|is not|not) able to)";
 const WHOSE = "(?:my|her|his|their|the|a)";
+/** An adverb that softens without denying: "I can't really catch my breath", "couldn't quite breathe" is still can't. */
+const SOFTENER = "(?: (?:really|quite|properly|even|seem to|seem to really))?";
 /** "breathe", but not through a blocked nose ("can't breathe through my nose" is a cold, not this sign). */
 const BREATHE = `breathe(?! (?:through|out of|in through) ${WHOSE} nose)`;
 /** "suddenly", "all of a sudden", "out of nowhere" (misspellings on purpose, as in qa.ts SUDDEN). */
@@ -65,7 +68,7 @@ export const EMERGENCY_SIGN_RULES: readonly EmergencySignRule[] = [
   // breath" or "out of breath" on their own (an everyday symptom she logs), and not a blocked nose.
   rule(
     "trouble breathing",
-    `${CANT} (?:${BREATHE}|catch ${WHOSE} breath|get (?:${WHOSE} |enough |any )?(?:breath|air))` +
+    `${CANT}${SOFTENER} (?:${BREATHE}|catch ${WHOSE} breath|get (?:${WHOSE} |enough |any )?(?:breath|air))` +
       // "I can barely breathe", "could hardly catch my breath", "barely able to breathe": nearly can't is can't.
       `|(?:can|could) (?:barely|hardly|scarcely) (?:${BREATHE}|catch ${WHOSE} breath|get (?:any |enough )?air)` +
       `|(?:barely|hardly|scarcely) able to (?:${BREATHE}|catch ${WHOSE} breath)` +
@@ -80,7 +83,7 @@ export const EMERGENCY_SIGN_RULES: readonly EmergencySignRule[] = [
   // ("discomfort" is how many people, often older women, describe a heart attack).
   rule(
     "chest pain or pressure",
-    "chest (?:pains?|pressure|tightness|discomfort|is (?:tight|hurting|aching|sore)|feels? (?:[a-z]+ )?(?:tight|heavy|crushed|squeezed)|hurts?|aches?|aching)" +
+    "chest (?:pains?|pressure|tightness|discomfort|(?:is|was|has been|had been|got|went) (?:really |very |so )?(?:tight|hurting|aching|sore|heavy)|(?:feels?|felt|feeling) (?:[a-z]+ )?(?:tight|heavy|crushed|squeezed)|hurts?|hurt|aches?|ached|aching)" +
       `|(?:pains?|pressure|tightness|discomfort|ache|aching|squeezing) (?:in|across|on) ${WHOSE} chest|tight chest|heart attack` +
       // Pain that spreads from the chest ("pain spreading from my chest to my left arm", "pain going down my left arm
       // from my chest"), and heavy or crushing chest sensations in everyday words ("crushing feeling in my chest",
@@ -382,4 +385,28 @@ export function findEmergencySigns(text: string): string[] {
 /** True when the note describes one of the app's listed emergency signs: the check-in then shows the static 911 line. */
 export function describesEmergencySign(text: string): boolean {
   return findEmergencySigns(text).length > 0;
+}
+
+/**
+ * Thoughts of dying or self-harm, in everyday words ("she keeps saying she wants to die", "doesn't want to live
+ * anymore", "better off dead", "talking about ending it all"). Not a 911 sign: the check-in shows the Help dialog's
+ * static 988 row (views/patient/CrisisLine.tsx) and Ask shows its crisis card (engine/brief/qa.ts CRISIS_REDIRECT).
+ * Like the other lines, only whether it appears depends on the words. "I don't want to die" and "never wants to die"
+ * are not this sign, nor is "hurt herself" (how a fall is usually described); anything else that matches is shown
+ * (a false alarm costs one glance).
+ */
+export const SELF_HARM_SOURCE =
+  "(?<!(?:don'?t|do not|doesn'?t|does not|didn'?t|did not|never) )\\bwant(?:s|ed|ing)? to (?:die|be dead)\\b" +
+  "|\\b(?:doesn'?t|does not|don'?t|do not|didn'?t|did not) want to (?:live|be alive|be here anymore|go on|wake up)\\b" +
+  "|\\bbetter off dead\\b|\\bwish(?:es|ed)? (?:she|he|i|they|we) (?:was|were) dead\\b" +
+  "|\\bwish(?:es|ed)? (?:she|he|i|they) (?:could|would) (?:just )?(?:die|not wake up)\\b" +
+  "|\\b(?:end|ending|take|taking) (?:her|his|my|their) (?:own )?life\\b|\\b(?:end|ending) it all\\b" +
+  "|\\b(?:harm|kill)(?:ing)? (?:her|him|my|them|your)sel(?:f|ves)\\b|\\bself[- ]?harm\\w*|\\bsuicid\\w*" +
+  "|\\bno (?:reason|point) (?:to|in) (?:live|living|go(?:ing)? on)\\b|\\bnothing (?:left )?to live for\\b|\\btired of (?:living|being alive)\\b";
+
+const SELF_HARM = new RegExp(SELF_HARM_SOURCE);
+
+/** Whether a note or question describes thoughts of dying or self-harm (see SELF_HARM_SOURCE). */
+export function describesSelfHarm(text: string): boolean {
+  return SELF_HARM.test(text.toLowerCase().replace(/[\u2018\u2019]/g, "'").replace(/\s+/g, " "));
 }

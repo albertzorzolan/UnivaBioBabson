@@ -19,11 +19,11 @@ used anywhere.
 | 2 | Medication review | 57 separately written cases, 295 expectations | 57/57 cases, 295/295 expectations; removing one piece of knowledge drops it to 54, 49 or 33 of 57 | [meds-eval.json](../eval/results/meds-eval.json), [meds-ablation.json](../eval/results/meds-ablation.json) |
 | 3 | Timeline statistics | Reference values + simulated diaries (1,000 changes per row) | Matches R reference values; ≥1 moderate-or-strong false alarm on 11.2% of changes with independent days, 34.6% and 85.8% at assumed clustering levels (stay 0.3 and 0.8); the runs check gives 7.3% (independent days) and 57.2% (stay 0.8) but is measured, not yet gating | `src/engine/timeline/stats.test.ts`, [timeline-null.json](../eval/results/timeline-null.json) |
 | 4 | On-device LLM smoke test | 1 fixture, 12 task cases, 3 models | Qwen2.5-3B: one brief draft: 9 of 9 sentences kept, about 60 s (n = 1); record answers 4 of 4 | [eval/results/llm-smoke.json](../eval/results/llm-smoke.json) |
-| 4b | On-device LLM batch run (§4b) | 40 fixed prompts on the demo record (30 Ask questions, 5 brief drafts, 5 explanations), Qwen2.5-3B | 21 of 76 AI sentences (27.6%) blocked by the checker, 30 (39.5%) shown; 3 of the 30 shown sentences flawed (10.0%, 95% CI 3.5–25.6%; audit labelled by an AI agent, not a clinician); median 4.9 s per Ask answer, 45.4 s per brief draft | [eval/results/llm-batch.json](../eval/results/llm-batch.json) |
+| 4b | On-device LLM batch run (§4b) | 40 fixed prompts on the demo record (30 Ask questions, 5 brief drafts, 5 explanations), Qwen2.5-3B | 21 of 76 AI sentences (27.6%) blocked by the checker, 30 (39.5%) shown; 3 of the 30 shown sentences flawed (10.0%, 95% CI 3.5–25.6%; audit labelled by an AI agent, not a clinician); median 4.9 s per Ask answer, 45.9 s per brief draft | [eval/results/llm-batch.json](../eval/results/llm-batch.json) |
 | 5 | Live in-app AI run | The running app on real WebGPU | 0 external requests (model files served from a local copy; the live demo downloads them once, and no diary data is sent); at least 6 flawed AI sentences (from 5 outputs) got past the checker (live-01…06) | [eval/results/ai-live.json](../eval/results/ai-live.json), [eval/verifier-redteam.json](../eval/verifier-redteam.json) |
 | 5b | Claim-checker red team (§5) | 163 harmful + 87 valid sentences written by an AI agent; later probes of 18, 20 and 22 | 72 of 163 caught as submitted; 163 of 163 after fixes tuned on the set, 0 of 87 valid rejected; on probes written after the rules, when first run: 1 of 18 (first probe; later used for tuning), 12 of 20 (second; two items later used to design a rule, so no longer held out) and 10 of 22 (held-out third; 10 of 23 after a label correction), 0 valid rejected | [verifier-redteam.json](../eval/results/verifier-redteam.json) |
 | 6 | FHIR export | Seed record, 270 resources | Validated against base R4 structure with the HAPI validator: 0 errors; codes not terminology-checked (25 warnings); no US Core/IPS profile | [samples/kinwise-fhir-validation.json](samples/kinwise-fhir-validation.json) |
-| 7 | Engineering gates | Unit, E2E, accessibility, KB build | Last recorded 2026-10-18: 2,782 unit tests passed, 1 skipped (87 files); 22 of 22 end-to-end checks; 46 axe scans, 0 violations. Run the commands in §7 for current results | see §7 |
+| 7 | Engineering gates | Unit, E2E, accessibility, KB build | Last recorded 2026-10-18: 2,815 unit tests passed, 1 skipped (87 files); 22 of 22 end-to-end checks; 46 axe scans, 0 violations. Run the commands in §7 for current results | see §7 |
 
 ---
 
@@ -433,8 +433,8 @@ concern), 5 finding explanations (one of each kind).
 
 | Task | Sentences written | Blocked | Shown | Median / 95th percentile time |
 |---|---|---|---|---|
-| Ask (30) | 38 | 3 | 15 | 4.9 s / 8.7 s |
-| Brief (5) | 24 | 10 | 12 | 45.4 s / 49.9 s |
+| Ask (30) | 38 | 3 | 15 | 4.9 s / 8.8 s |
+| Brief (5) | 24 | 10 | 12 | 45.9 s / 50.4 s |
 | Explain (5) | 14 | 8 | 3 | 6.9 s / 7.3 s |
 | All (40) | 76 | 21 (27.6%) | 30 (39.5%) | |
 
@@ -656,7 +656,7 @@ that file. Limitation: base FHIR R4 validation only; no US Core or IPS profile c
 
 | Gate | Command | What it covers | Last recorded result |
 |---|---|---|---|
-| Unit and eval tests | `npm test` (`npx vitest run`) | Engines, KB integrity and a 150-row name-matching table, AI guards and verifier, router, view logic, the NLP, medication, ablation, verifier and timeline-null evaluations. One opt-in test (the FHIR sample writer) is skipped by default | 2,783 tests: 2,782 passed, 1 skipped (the opt-in FHIR sample writer; 87 files), 2026-10-18 |
+| Unit and eval tests | `npm test` (`npx vitest run`) | Engines, KB integrity and a 150-row name-matching table, AI guards and verifier, router, view logic, the NLP, medication, ablation, verifier and timeline-null evaluations. One opt-in test (the FHIR sample writer) is skipped by default | 2,816 tests: 2,815 passed, 1 skipped (the opt-in FHIR sample writer; 87 files), 2026-10-18 |
 | End-to-end | `npm run test:e2e` | Playwright checks in system Chrome: one-click and credential logins, wrong password, check-in from a story, adding "Ativan" / a misspelling / an unknown name, review citation and saved decision, timeline counts with denominators, Ask with redirect, brief print gate, FHIR download, How-it-works eval run, 8-step tour, restore demo, every route without console errors, SPEC §3 wording, no horizontal scroll at 390 px, no request to any other origin | 22 of 22 passed, 2026-10-18 |
 | Accessibility | `npm run test:a11y` | axe-core scans with WCAG 2.0/2.1/2.2 A and AA rules: every route in light and dark theme plus open dialogs, drawers, the "Here's what I heard" panel, Ask answers, the tour and eval results (the gate fails on serious or critical violations) | 46 scans, 0 violations reported (the gate fails on serious or critical), 2026-10-18 |
 | Types | `npm run typecheck` | TypeScript strict | not recorded here (run the command) |

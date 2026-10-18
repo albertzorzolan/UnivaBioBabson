@@ -36,6 +36,7 @@ import {
 import { HeardPanel, conceptLabel, type AiState } from "./HeardPanel";
 import { MedSafetyLine, needsPoisonLine } from "./MedSafetyLine";
 import { EmergencyLine, describesEmergencySign } from "./EmergencyLine";
+import { CrisisLine, describesSelfHarm } from "./CrisisLine";
 import { QuickForm } from "./QuickForm";
 import { DaySummary, NoteComposer, pickWeeklySentence } from "./SavedDay";
 import { clearStoryDraft, readStoryDraft, writeStoryDraft } from "./storyDraft";
@@ -396,6 +397,8 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
         )}
         {/* The same static 911 line as in "Here's what I heard", read from the words that will be saved. */}
         {describesEmergencySign(story) && <EmergencyLine />}
+        {/* The Help dialog's static 988 row, when her words describe thoughts of dying or self-harm. */}
+        {describesSelfHarm(story) && <CrisisLine />}
         {/* The same static Poison Control line as in "Here's what I heard" (all notes read, kept or taken off). */}
         {needsPoisonLine(medNotes) && <MedSafetyLine />}
         {story.trim() && (
@@ -433,6 +436,7 @@ function Day({ date, example }: { date: ISODate; example: number | null }) {
         />
         {/* The saved words keep the static 911 line next to them, like the editor and the "Is this right?" dialog. */}
         {describesEmergencySign(saved.story) && <EmergencyLine className="pt-medsafety--flow" />}
+        {describesSelfHarm(saved.story) && <CrisisLine className="pt-medsafety--flow" />}
         {/* The saved day keeps only the notes she kept; the static Poison Control line stays next to them. */}
         {needsPoisonLine(saved.medNotes) && <MedSafetyLine className="pt-medsafety--flow" />}
         <NoteComposer date={date} />

@@ -39,6 +39,14 @@ export function useHelp(): HelpApi {
  */
 export const EMERGENCY_NUMBER = { text: "911", tel: "911" } as const;
 export const POISON_CONTROL = { text: "1\u2011800\u2011222\u20111222", tel: "18002221222" } as const;
+/** The 988 row, written once: shown here and, statically, next to a check-in note about thoughts of dying or
+ * self-harm (views/patient/CrisisLine.tsx) and on Ask's crisis card (engine/brief/qa.ts CRISIS_REDIRECT). */
+export const CRISIS_LINE = {
+  title: "988 Suicide & Crisis Lifeline",
+  detail: "Call or text 988 to talk with someone, any time (US).",
+  tel: "988",
+  telLabel: "Call 988",
+} as const;
 
 /**
  * A static line under the 911 row: everyday warning signs in an older adult that can be an emergency. Like the
@@ -80,10 +88,10 @@ const LINES: { icon: ReactNode; title: string; detail: string; note?: string; te
   },
   {
     icon: <HeartHandshake size={22} />,
-    title: "988 Suicide & Crisis Lifeline",
-    detail: "Call or text 988 to talk with someone, any time (US).",
-    tel: "988",
-    telLabel: "Call 988",
+    title: CRISIS_LINE.title,
+    detail: CRISIS_LINE.detail,
+    tel: CRISIS_LINE.tel,
+    telLabel: CRISIS_LINE.telLabel,
   },
 ];
 
