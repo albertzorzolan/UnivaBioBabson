@@ -18,8 +18,8 @@ check without recording.
   varying time. Renders come out longer than planned (an earlier render of 2026-10-18, `blocked` verify line, ran
   2:39.4 for a 2:29 plan). This script adds a few seconds of on-screen actions (Margaret's medicine list, one confirm
   click, waiting for toasts): the current submission/kinwise-demo.mp4 (rendered 2026-10-18 with the on-device model,
-  `removedBlocked` verify line, `runs` timeline line, `model` honesty line) runs 2:49.9 for the 2:37.7 plan.
-  On-screen actions can only make a shot longer. Each render writes the real start, end and narration
+  `removedBlocked` verify line, `runs` timeline line, `model` honesty line) runs 2:50.0 (169.95 s)
+  for the 2:37.7 plan. On-screen actions can only make a shot longer. Each render writes the real start, end and narration
   time of every shot to `timings.json` (see [Re-recording](#re-recording)), and prints a warning if the result is
   over 3:00.
 - **Order:** judges mostly watch the first minute, so the problem, what Kinwise is and the people, her check-in and
@@ -197,7 +197,7 @@ changes between shots add about a second each on top). The real times of each re
 | 13 | `close` · (no label) | 2:30 · 8.0 s | End card | No cursor. "Notice what changes after a medicine change, and bring a clear question to the visit." One call to action, the same as the Devpost text and the Welcome button: **Take the 2-minute guided tour →** albertzorzolan.github.io/UnivaBioBabson (no sign-up · fictional data). Code: github.com/albertzorzolan/UnivaBioBabson/tree/medwatch-v2. Albert Zorzolan and Neil Shah, Babson College. Footer: "Fictional demo data. Not medical advice. Knowledge base not yet clinician-reviewed." plus, in the model cut, "On-device model (Qwen2.5 3B Instruct, WebGPU) used only for the review explanation (shown only if it passes the source check) and the Ask Kinwise draft; the visit brief uses the standard template." (true whichever way shot 7 went), or "Template mode shown (on-device model not loaded)." | Kinwise. Records stay in your browser. Not yet clinician-reviewed; not medical advice. Try it at the link on screen. |
 
 Planned total with the model: 2:37.7 (`say`); the 2026-10-18 render with page changes, the Ask draft and the on-screen
-actions runs 2:49.9; template-only cut 2:23.2 (planned). The earlier
+actions runs 2:50.0; template-only cut 2:23.2 (planned). The earlier
 cut's Add-medication preview and "What is AI here" shots are no longer in the video, to reach the medication review
 sooner; the app still has both (Medications › Add medication, and How it works › "The right tool for each job"). Their
 points are said elsewhere: "Deterministic code, not AI" (review), "code checks every number and medicine name"
