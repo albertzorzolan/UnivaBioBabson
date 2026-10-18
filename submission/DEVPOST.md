@@ -48,7 +48,7 @@ at 2026-10-17 21:30 EDT):
 - AI table, timeline result: "at least one moderate-or-strong signal on 11.2% of changes with independent days
   (19.2% with frequent symptoms); 85.8% when each answer repeats the previous day's 80% of the time"
   [timeline-null.json independent, additional frequent stay 0, clustered]; source file: eval/results/timeline-null.json
-- Challenges, replace "These are being fixed." with: "The 6 listed outputs are now regression tests the checker
+- Challenges, replace "These are being fixed." with: "The 6 listed sentences are now regression tests the checker
   rejects, but it still misses 8 of 20 paraphrases written after the latest rules: pattern checks narrow what the
   model can say but do not guarantee it." [verifier-redteam.json liveEscapes.nowBlocked 6/6, postFixProbe2]
 - Team, replace the last sentence with: "The code tour PDF and the README's 5-minute walkthrough are how we walk
@@ -128,7 +128,7 @@ A separate AI agent wrote the synthetic medication cases from the primary source
 
 ## Challenges we ran into
 
-- **The claim checker is not airtight.** In a live in-app run, at least 6 flawed AI outputs got through, among them a garbled sentence, diary suggestions quoted from unrelated words, a "can cause" explanation, a suggestion that some medicines "might be" replaced, and one predicting "another fall" (`eval/results/ai-live.json`). These are being fixed; meanwhile the model stays optional.
+- **The claim checker is not airtight.** In a live in-app run, at least 6 flawed AI sentences got through, among them a garbled sentence, diary suggestions quoted from unrelated words, a "can cause" explanation, a suggestion that some medicines "might be" replaced, and one predicting "another fall" (`eval/results/ai-live.json`). These are being fixed; meanwhile the model stays optional.
 - **Multiple comparisons and confounding.** Comparing 9 diary items per medicine change creates false alarms, so we measure their rate and require a sizeable difference with p < 0.05. That measurement treats days as independent, but symptoms come in runs, a medicine may start during a bad spell, and doses are not logged. So Kinwise reports a difference, never a cause.
 
 ## Status
