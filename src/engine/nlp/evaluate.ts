@@ -3,6 +3,10 @@
 //              FN = gold field not proposed, or value differs.
 // Conflict proposals (value null — "which is right?") are questions to the user, not predictions.
 // Pure and browser-safe so the How-it-works page can run it live on the bundled dev corpus.
+//
+// compareWithBaseline() answers "F1 versus what?": it scores the same corpus with ConText switched off
+// (lexicon-only baseline: every match counts as affirmed, current and the patient's own) and puts story-level
+// bootstrap 95% confidence intervals on both micro-F1s and on their paired difference.
 
 import type { ConceptId, DiaryField, ISODate, Medication } from "../../model/types";
 import { FIELD_ORDER, NLP_ENGINE_VERSION, extractCheckIn, warmUpNlp } from "./extract";
@@ -90,6 +94,7 @@ export function evaluateCorpus(
   name: string,
   corpus: Corpus,
   ctx: { meds: Medication[]; today: ISODate; patientNames?: string[] },
+  opts: { noContext?: boolean } = {},
 ): EvalReport {
   warmUpNlp();
   const counts = Object.fromEntries(FIELD_ORDER.map((f) => [f, { tp: 0, fp: 0, fn: 0, support: 0 }])) as Record<
@@ -110,7 +115,7 @@ export function evaluateCorpus(
   let conflictsSurfaced = 0;
 
   for (const c of corpus.cases) {
-    const ex = extractCheckIn(c.story, { meds: ctx.meds, today: ctx.today, patientNames: ctx.patientNames });
+    const ex = extractCheckIn(c.story, { meds: ctx.meds, today: ctx.today, patientNames: ctx.patientNames, noContext: opts.noContext });
     latencies.push(ex.durationMs);
     const tags = c.tags ?? [];
     for (const t of tags) subsets[t] ??= { cases: 0, errors: 0, fp: 0, fn: 0 };
@@ -232,4 +237,159 @@ export function evaluateCorpus(
 /** Core-field false positives in cases carrying `tag` (used for the experiencer/hypothetical gates). */
 export function falsePositivesInSubset(report: EvalReport, tag: string): FieldError[] {
   return report.errors.filter((e) => !e.field.startsWith("other:") && e.tags.includes(tag) && e.kind !== "false_negative");
+}
+
+// ---------------------------------------------------------------------------
+// Lexicon-only baseline and story-level bootstrap confidence intervals
+
+/** Engine name recorded for the baseline run. */
+export const BASELINE_NAME = "lexicon-only baseline (same lexicon and field resolution, ConText switched off)";
+/** Bootstrap settings: fixed seed so the committed intervals are reproducible. */
+export const BOOTSTRAP = { resamples: 2000, seed: 20261010 } as const;
+/** Subsets whose error counts are compared between the engine and the baseline. */
+export const CONTEXT_SUBSETS = ["negation", "experiencer_other", "hypothetical", "historical", "pseudo_negation", "double_negation"] as const;
+
+/** mulberry32: tiny, well-distributed 32-bit PRNG (same generator as src/model/seed.ts and the timeline tests). */
+function mulberry32(seed: number): () => number {
+  let a = seed | 0;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export interface CaseCounts {
+  tp: number;
+  fp: number;
+  fn: number;
+}
+
+/**
+ * Core-field TP/FP/FN per story, recovered from the report: FP = false-positive or wrong-value errors,
+ * FN = false-negative or wrong-value errors, TP = labelled fields − FN (a labelled field is either right or an FN).
+ */
+export function countsPerCase(corpus: Corpus, report: EvalReport): CaseCounts[] {
+  const byId = new Map<string, CaseCounts>();
+  for (const c of corpus.cases) {
+    const support = FIELD_ORDER.filter((f) => c.expect[f] !== undefined && c.expect[f] !== null).length;
+    byId.set(c.id, { tp: support, fp: 0, fn: 0 });
+  }
+  for (const e of report.errors) {
+    if (e.field.startsWith("other:")) continue;
+    const k = byId.get(e.id);
+    if (!k) continue;
+    if (e.kind !== "false_negative") k.fp++;
+    if (e.kind !== "false_positive") {
+      k.fn++;
+      k.tp--;
+    }
+  }
+  return corpus.cases.map((c) => byId.get(c.id) as CaseCounts);
+}
+
+const microF1 = (k: CaseCounts) => prf(k.tp, k.fp, k.fn, 0).f1;
+
+/** Percentile of a sorted array, linear interpolation between order statistics (type 7, R's default). */
+function quantile(sorted: number[], q: number): number {
+  if (sorted.length === 0) return NaN;
+  const h = (sorted.length - 1) * q;
+  const lo = Math.floor(h);
+  const hi = Math.min(sorted.length - 1, lo + 1);
+  return sorted[lo] + (h - lo) * (sorted[hi] - sorted[lo]);
+}
+
+export interface Ci95 {
+  f1: [number, number];
+  resamples: number;
+  seed: number;
+  unit: "story";
+}
+
+export interface SubsetDelta {
+  cases: number;
+  engineErrors: number;
+  baselineErrors: number;
+  /** baselineErrors − engineErrors: how many errors ConText removes on this subset (negative = it adds errors). */
+  errorsAvoided: number;
+}
+
+export interface BaselineComparison {
+  baseline: {
+    engine: string;
+    micro: Prf;
+    macroF1: number;
+    subsets: Record<string, SubsetReport>;
+    negation: EvalReport["negation"];
+    exactCases: number;
+  };
+  /** Engine micro-F1 interval. */
+  ci95: Ci95;
+  baselineCi95: Ci95;
+  /** Paired interval of engine F1 − baseline F1 (the same resampled stories for both). */
+  deltaCi95: Ci95 & { pointEstimate: number };
+  subsetDeltas: Partial<Record<(typeof CONTEXT_SUBSETS)[number], SubsetDelta>>;
+}
+
+/**
+ * Score the lexicon-only baseline on the same corpus and bootstrap both micro-F1s.
+ * Bootstrap: resample stories with replacement (`resamples` times, fixed `seed`), recompute micro-F1 from the
+ * summed core-field TP/FP/FN of the drawn stories; 95% interval = 2.5th and 97.5th percentiles. The difference
+ * uses the same draws for both systems (paired), so it reflects only the effect of ConText.
+ */
+export function compareWithBaseline(
+  name: string,
+  corpus: Corpus,
+  ctx: { meds: Medication[]; today: ISODate; patientNames?: string[] },
+  engineReport: EvalReport,
+  settings: { resamples: number; seed: number } = BOOTSTRAP,
+): BaselineComparison {
+  const base = evaluateCorpus(name, corpus, ctx, { noContext: true });
+  const eng = countsPerCase(corpus, engineReport);
+  const bas = countsPerCase(corpus, base);
+  const n = corpus.cases.length;
+  const rand = mulberry32(settings.seed);
+  const fe: number[] = [];
+  const fb: number[] = [];
+  const fd: number[] = [];
+  for (let b = 0; b < settings.resamples; b++) {
+    const se = { tp: 0, fp: 0, fn: 0 };
+    const sb = { tp: 0, fp: 0, fn: 0 };
+    for (let i = 0; i < n; i++) {
+      const j = Math.floor(rand() * n);
+      se.tp += eng[j].tp; se.fp += eng[j].fp; se.fn += eng[j].fn;
+      sb.tp += bas[j].tp; sb.fp += bas[j].fp; sb.fn += bas[j].fn;
+    }
+    const e = microF1(se);
+    const x = microF1(sb);
+    fe.push(e);
+    fb.push(x);
+    fd.push(e - x);
+  }
+  const ci = (xs: number[]): Ci95 => {
+    const sorted = [...xs].sort((a, z) => a - z);
+    return { f1: [round(quantile(sorted, 0.025)), round(quantile(sorted, 0.975))], resamples: settings.resamples, seed: settings.seed, unit: "story" };
+  };
+  const subsetDeltas: BaselineComparison["subsetDeltas"] = {};
+  for (const t of CONTEXT_SUBSETS) {
+    const e = engineReport.subsets[t];
+    const x = base.subsets[t];
+    if (!e || !x) continue;
+    subsetDeltas[t] = { cases: e.cases, engineErrors: e.errors, baselineErrors: x.errors, errorsAvoided: x.errors - e.errors };
+  }
+  return {
+    baseline: {
+      engine: BASELINE_NAME,
+      micro: base.micro,
+      macroF1: base.macroF1,
+      subsets: base.subsets,
+      negation: base.negation,
+      exactCases: base.exactCases,
+    },
+    ci95: ci(fe),
+    baselineCi95: ci(fb),
+    deltaCi95: { ...ci(fd), pointEstimate: round(engineReport.micro.f1 - base.micro.f1) },
+    subsetDeltas,
+  };
 }

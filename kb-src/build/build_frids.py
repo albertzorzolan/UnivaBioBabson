@@ -1,10 +1,16 @@
-import sys, json
+import sys, json, os
 sys.path.insert(0, '.')
 import apis, labels
 from brandcheck import brand_check
 from frid_data import FRID, STOPPFALL_NO_CONSENSUS, DEPRESCRIBE
 from concurrent.futures import ThreadPoolExecutor
-OUT = "/private/tmp/claude-501/-Users-mb-pro-Desktop-UnivaBio-Hackathon/c6caa03c-8210-4b85-9270-2eab2bd171d9/scratchpad/research/frids.json"
+# Paths are relative to this script (originally an absolute path into a session scratch folder);
+# see kb-src/build/README.md. Helper modules and intermediate files are still read from the working
+# directory, so run this from kb-src/build.
+HERE = os.path.dirname(os.path.abspath(__file__))
+RES = os.path.join(HERE, "..", "research")  # kb-src/research (committed)
+# Writes the committed research file in place: review `git diff kb-src/research/frids.json` after a rerun.
+OUT = os.path.join(RES, "frids.json")
 pairs = [(g, b) for c in FRID for g, bs in c["examples"] for b in bs]
 with ThreadPoolExecutor(4) as ex:
     BC = dict(zip(pairs, ex.map(lambda p: brand_check(*p), pairs)))

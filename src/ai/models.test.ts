@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 import type { ModelRecord } from "@mlc-ai/web-llm";
-import { DEFAULT_MODEL_ID, MODEL_OPTIONS, getModelOption, localModelUrl, resolveModelSource } from "./models";
+import {
+  DEFAULT_MODEL_ID,
+  MODEL_OPTIONS,
+  cachedModelUrls,
+  getModelOption,
+  isTensorCacheComplete,
+  localModelUrl,
+  localModelsEnabled,
+  remoteModelUrl,
+  resolveModelSource,
+  webllmModelBase,
+} from "./models";
 
 const PREBUILT: ModelRecord[] = [
   {
@@ -112,5 +123,68 @@ describe("resolveModelSource", () => {
 
   it("errors for a model that is neither local nor prebuilt", async () => {
     await expect(resolveModelSource("Nope-1B", { baseUrl: "/", origin, prebuilt: PREBUILT, fetchFn: fakeFetch({}) })).rejects.toThrow(/not available/);
+  });
+});
+
+describe("localModelsEnabled", () => {
+  it("probes the local folder in development only", () => {
+    expect(localModelsEnabled({ DEV: true })).toBe(true);
+    expect(localModelsEnabled({ DEV: false })).toBe(false);
+  });
+  it("can be switched on for a production build with VITE_LOCAL_MODELS=1", () => {
+    expect(localModelsEnabled({ DEV: false, VITE_LOCAL_MODELS: "1" })).toBe(true);
+    expect(localModelsEnabled({ DEV: false, VITE_LOCAL_MODELS: "0" })).toBe(false);
+  });
+});
+
+describe("browser-cache check without the WebLLM runtime", () => {
+  const origin = "https://albertzorzolan.github.io";
+  const id = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
+  const option = getModelOption(id)!;
+
+  it("uses the same Hugging Face URL as WebLLM's prebuilt record for every model", async () => {
+    const { prebuiltAppConfig } = await import("@mlc-ai/web-llm");
+    for (const m of MODEL_OPTIONS) {
+      const rec = prebuiltAppConfig.model_list.find((r) => r.model_id === m.id);
+      expect(rec, m.id).toBeDefined();
+      expect(remoteModelUrl(m.id)).toBe(rec!.model);
+    }
+  });
+
+  it("cleans model URLs the way WebLLM does (trailing slash, resolve/main/ when missing)", () => {
+    expect(webllmModelBase("https://huggingface.co/mlc-ai/X-MLC")).toBe("https://huggingface.co/mlc-ai/X-MLC/resolve/main/");
+    expect(webllmModelBase("https://huggingface.co/mlc-ai/X-MLC/")).toBe("https://huggingface.co/mlc-ai/X-MLC/resolve/main/");
+    expect(webllmModelBase("http://127.0.0.1:5174/models/resolve/qwen2.5-1.5b/")).toBe("http://127.0.0.1:5174/models/resolve/qwen2.5-1.5b/");
+  });
+
+  it("checks only the Hugging Face copy when local models are off (production)", () => {
+    expect(cachedModelUrls(option, { baseUrl: "/UnivaBioBabson/", origin, local: false })).toEqual([`https://huggingface.co/mlc-ai/${id}`]);
+  });
+
+  it("also checks the local folder when local models are on (development)", () => {
+    expect(cachedModelUrls(option, { baseUrl: "/", origin, local: true })).toEqual([`${origin}/models/resolve/qwen2.5-1.5b/`, `https://huggingface.co/mlc-ai/${id}`]);
+  });
+
+  /** In-memory stand-in for WebLLM's IndexedDB "urls" store: url → stored value. */
+  function store(entries: Record<string, unknown>) {
+    return { keys: async () => new Set(Object.keys(entries)), json: async (key: string) => entries[key] ?? null };
+  }
+  const base = `https://huggingface.co/mlc-ai/${id}/resolve/main/`;
+  const manifest = { records: [{ dataPath: "params_shard_0.bin" }, { dataPath: "params_shard_1.bin" }] };
+
+  it("is complete when the manifest and every shard it lists are stored", async () => {
+    const s = store({ [`${base}tensor-cache.json`]: manifest, [`${base}params_shard_0.bin`]: 1, [`${base}params_shard_1.bin`]: 1 });
+    expect(await isTensorCacheComplete(`https://huggingface.co/mlc-ai/${id}`, s)).toBe(true);
+  });
+
+  it("is incomplete when a shard is missing (an interrupted download)", async () => {
+    const s = store({ [`${base}tensor-cache.json`]: manifest, [`${base}params_shard_0.bin`]: 1 });
+    expect(await isTensorCacheComplete(`https://huggingface.co/mlc-ai/${id}`, s)).toBe(false);
+  });
+
+  it("is incomplete without a manifest, or with an unreadable one", async () => {
+    expect(await isTensorCacheComplete(`https://huggingface.co/mlc-ai/${id}`, store({}))).toBe(false);
+    expect(await isTensorCacheComplete(`https://huggingface.co/mlc-ai/${id}`, store({ [`${base}tensor-cache.json`]: { nope: 1 } }))).toBe(false);
+    expect(await isTensorCacheComplete(`https://huggingface.co/mlc-ai/${id}`, store({ [`${base}tensor-cache.json`]: { records: [] } }))).toBe(false);
   });
 });

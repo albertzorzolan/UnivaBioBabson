@@ -1,8 +1,9 @@
 // Fixed synthetic inputs for the AI harness, unit tests and the LLM smoke/evaluation script.
 // Mirrors the fictional Margaret Rivera story (SPEC §2) with "today" = 2026-10-11: lorazepam started
-// Sep 25 (today-16) followed by more dizziness, drowsiness, confusion and near-falls; Beers findings for
-// lorazepam, diphenhydramine (Tylenol PM), oxybutynin and omeprazole; ACB 7; the amlodipine →
-// furosemide cascade. Item texts follow the wording the deterministic engines render.
+// Sep 25 (today-16) followed by more dizziness, drowsiness, confusion and near-falls; Beers "avoid" findings
+// for lorazepam, diphenhydramine (Tylenol PM) and omeprazole; oxybutynin through the Beers combination of two
+// strong anticholinergics (it is not a Beers Table 2 "avoid" medicine); 5 fall-risk medicines; ACB 7; the
+// amlodipine → furosemide cascade. Item texts follow the wording the deterministic engines render.
 // All data is fictional.
 
 import type { BriefContent, EvidencePackage, Extraction, Finding } from "../model/types";
@@ -17,7 +18,8 @@ export const MARGARET_PACKAGE: EvidencePackage = {
   from: "2026-08-28",
   to: "2026-10-11",
   generatedAt: "2026-10-11T09:00:00.000Z",
-  hash: "fixture-margaret-v1",
+  // v2 (2026-10-17): oxybutynin and fall-risk items corrected to match the KB; the 2026-10-11 LLM smoke run used v1.
+  hash: "fixture-margaret-v2",
   items: [
     { id: "fact:coverage", kind: "fact", text: "Check-ins were answered on 38 of 45 days from Aug 28 through Oct 11." },
     { id: "fact:falls", kind: "fact", text: "A fall was recorded on 1 day and a near-fall on 2 days from Sep 25 through Oct 11." },
@@ -51,14 +53,18 @@ export const MARGARET_PACKAGE: EvidencePackage = {
       text: "Diphenhydramine (in Tylenol PM) is listed in the AGS Beers Criteria 2023 as a medicine older adults should generally avoid because it is strongly anticholinergic and sedating.",
     },
     {
-      id: "find:beers-pim-antimuscarinic|med-oxybutynin",
+      // Oxybutynin is not a Beers Table 2 "avoid" medicine: the KB reaches it through the anticholinergic rules
+      // (this combination, history of falls, ACB). Id and wording as the real engine renders this finding.
+      id: "find:ddi-anticholinergic-2:med-oxybutynin+med-tylenolpm",
       kind: "finding",
-      text: "Oxybutynin is listed in the AGS Beers Criteria 2023 as a strongly anticholinergic medicine that older adults should generally avoid.",
+      text: "2 medicines with strong anticholinergic effects together. AGS Beers 2023 lists taking 2 or more medicines with strong anticholinergic effects together as a combination older adults should generally avoid; Margaret takes 2: the diphenhydramine in Tylenol PM (OTC) and Oxybutynin. Each of these medicines blocks acetylcholine, and together the effects (confusion, constipation, dry mouth, falls) add up. Source: AGS Beers Criteria® 2023.",
     },
     {
-      id: "find:fall-risk|med-amlodipine+med-furosemide+med-lorazepam+med-tylenolpm",
+      // 5, as the app shows for the seed: the KB's STOPPFall classes (overactive-bladder and strongly
+      // anticholinergic medicines) include oxybutynin as well.
+      id: "find:fall-risk:med-amlodipine+med-furosemide+med-lorazepam+med-oxybutynin+med-tylenolpm",
       kind: "finding",
-      text: "4 medicines on the list are fall-risk-increasing drugs (lorazepam, diphenhydramine, furosemide, amlodipine), and a fall and 2 near-falls were recorded in the last 30 days.",
+      text: "5 of Margaret's medicines are on published lists of medicines linked to falls in older adults (CDC STEADI-Rx and STOPPFall 2021): Lorazepam (Ativan), Furosemide (Lasix), Amlodipine, Tylenol PM (OTC) and Oxybutynin. A fall and 2 near-falls were recorded in the last 30 days.",
     },
     {
       id: "find:cascade-ccb-edema-loop|med-amlodipine+med-furosemide",

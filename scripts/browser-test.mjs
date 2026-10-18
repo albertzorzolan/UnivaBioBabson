@@ -551,6 +551,46 @@ const CHECKS = [
     },
   },
   {
+    id: "settings-no-webgpu",
+    title: "Settings without WebGPU: no AI runtime or model fetch, the reason shown once, models collapsed, no console errors",
+    async run({ open, base, sink }) {
+      const { page } = await open("caregiver", {
+        // A browser without WebGPU: remove navigator.gpu before any app code runs.
+        extraInit: () => {
+          try {
+            delete Navigator.prototype.gpu;
+            delete navigator.gpu;
+          } catch {
+            /* ignore */
+          }
+        },
+      });
+      const urls = [];
+      page.on("request", (r) => urls.push(r.url()));
+      const errBefore = sink.consoleErrors.length;
+      await go(page, base, "/c/settings");
+      expect(await page.evaluate(() => !("gpu" in navigator)), "setup: navigator.gpu is still present");
+      const card = page.locator('section[aria-labelledby="set-ai-title"]');
+      await card.getByText("This browser can’t run the on-device model").waitFor({ timeout: 8000 });
+      await page.waitForTimeout(500);
+      // The WebLLM runtime chunk (assets/webllm-*.js in a build, @mlc-ai_web-llm.js in dev) and the local model folder.
+      const ai = urls.filter((u) => /models\/resolve|@mlc-ai|mlc-ai_web-llm|\/webllm[-.]/.test(u));
+      expect(ai.length === 0, `AI files fetched without WebGPU:\n${ai.slice(0, 8).join("\n")}`);
+      const text = await card.innerText();
+      const reasons = text.match(/does not support WebGPU/g) ?? [];
+      expect(reasons.length === 1, `the WebGPU reason appears ${reasons.length} times in the AI card`);
+      expect(/Everything else in Kinwise, including the review, timeline, visit brief and FHIR export, works in this browser\./.test(text), "no line about what still works");
+      const see = card.getByRole("button", { name: "See models" });
+      expect((await see.getAttribute("aria-expanded")) === "false", "model list is not collapsed behind 'See models'");
+      expect((await card.getByRole("radio").count()) === 0 || !(await card.getByRole("radio").first().isVisible()), "model radios visible while collapsed");
+      expect(!(await card.getByRole("button", { name: /Download and load|^Load / }).count()), "a load button is offered without WebGPU");
+      const errs = sink.consoleErrors.slice(errBefore);
+      expect(errs.length === 0, `console errors: ${errs.map((e) => e.text).join(" | ").slice(0, 300)}`);
+      await shot(page, "settings-no-webgpu");
+      return `${urls.length} requests, none for the AI runtime or model files; reason shown once; models collapsed`;
+    },
+  },
+  {
     id: "routes-no-console-errors",
     title: "Every route, both roles: renders an h1 with no console errors",
     async run({ open, base, sink }) {

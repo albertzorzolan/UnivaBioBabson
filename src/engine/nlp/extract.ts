@@ -56,6 +56,12 @@ export interface ExtractContext {
   patientNames?: string[];
   /** Who is typing. "auto" (default) infers it from the text. */
   voice?: "auto" | Voice;
+  /**
+   * Evaluation baseline only (evaluate.ts): switch ConText off, so every lexicon match counts as affirmed,
+   * current and about the patient (no negation, history, hypothetical, someone-else, question or correction
+   * handling). Default false. Never set by the app.
+   */
+  noContext?: boolean;
 }
 
 export interface DetailedExtraction extends Extraction {
@@ -96,6 +102,8 @@ interface Item {
   certainty: "explicit" | "inferred";
   anchored: boolean;
   precursor: boolean;
+  /** TermDef.guess: low-confidence wording ("legs felt wobbly"), proposed only as a best guess. */
+  guess: string | null;
   changeOnly: boolean;
   invalid: string | null;
   ctx: ContextResult;
@@ -111,7 +119,21 @@ interface Built {
   sentences: Segment[];
   scs: SentenceContext[];
   items: Item[];
+  /** ExtractContext.noContext: the lexicon-only evaluation baseline. */
+  noContext: boolean;
 }
+
+/** What every mention looks like with ConText switched off: affirmed, current, the patient's own. */
+const NO_CONTEXT: ContextResult = {
+  negated: false,
+  temporality: "current",
+  experiencer: "patient",
+  uncertain: false,
+  question: false,
+  corrected: false,
+  anchor: null,
+  triggers: [],
+};
 
 function span(view: TextView, story: string, start: number, end: number): Span {
   const o = view.toOriginal(start, end);
@@ -190,13 +212,17 @@ function buildItems(story: string, ctx: ExtractContext): Built & { voice: VoiceI
     return i >= 0 ? i : Math.max(0, sentences.findIndex((s) => pos < s.end));
   };
 
+  const noContext = !!ctx.noContext;
+  const contextOf = (sc: SentenceContext, m: { start: number; end: number }): ContextResult =>
+    noContext ? { ...NO_CONTEXT, triggers: [] } : analyzeInSentence(sc, m, text);
+
   const items: Item[] = [];
   for (const m of concepts) {
     const concept = m.term.concept as ConceptKey;
     const si = sentenceOf(m.start);
     const sc = scs[si];
     if (!sc) continue;
-    const c = analyzeInSentence(sc, m, text);
+    const c = contextOf(sc, m);
     const isScale = concept === "energy" || concept === "sleep" || concept === "appetite";
     items.push({
       source: "lexicon",
@@ -209,11 +235,13 @@ function buildItems(story: string, ctx: ExtractContext): Built & { voice: VoiceI
       certainty: isScale && !m.term.explicitValue ? "inferred" : "explicit",
       anchored: !!m.term.anchored,
       precursor: m.term.role === "precursor",
+      guess: m.term.guess ?? null,
       changeOnly: !!m.term.changeOnly,
       invalid: null,
       ctx: c,
       sentence: si,
-      severity: concept === "dizziness" ? dizzinessSeverity(text, m.start, m.end, sc.seg.start, sc.seg.end) : null,
+      // No severity from a guess: "a bit off balance" says nothing about how dizzy.
+      severity: concept === "dizziness" && !m.term.guess ? dizzinessSeverity(text, m.start, m.end, sc.seg.start, sc.seg.end) : null,
       skip: null,
     });
   }
@@ -232,16 +260,17 @@ function buildItems(story: string, ctx: ExtractContext): Built & { voice: VoiceI
       certainty: "explicit",
       anchored: true,
       precursor: false,
+      guess: null,
       changeOnly: false,
       invalid: r.valid ? null : r.problem,
-      ctx: analyzeInSentence(sc, r, text),
+      ctx: contextOf(sc, r),
       sentence: si,
       severity: null,
       skip: null,
     });
   }
   items.sort((a, b) => a.start - b.start);
-  return { view, story, sentences, scs, items, voice, medView: { tokens } };
+  return { view, story, sentences, scs, items, noContext, voice, medView: { tokens } };
 }
 
 // ---------------------------------------------------------------------------
@@ -275,6 +304,9 @@ function classify(b: Built): void {
       for (const t of it.ctx.triggers) if (t.kind === "negation" && t.end <= it.start && it.start - t.end <= 40) it.start = Math.min(it.start, t.start);
     } else if (isScale && it.ctx.negated) {
       it.skip = `Negative wording does not map to a ${CONCEPTS[it.concept].label} level ("${q()}")`;
+    } else if (it.guess && it.ctx.negated) {
+      // "I wasn't off balance" is not a "no" to the dizziness question, so a denied guess proposes nothing.
+      it.skip = `Denied ${it.guess} is not an answer about ${CONCEPTS[it.concept].label} ("${q()}")`;
     }
   }
   // Trip/slip/lost-balance cues that are part of an actual fall in the same sentence.
@@ -292,7 +324,7 @@ type Resolved<V> = { kind: "value"; value: V; items: Item[]; certainty: "explici
 
 /** Later statements in a corrective sentence ("Actually…") win; otherwise disagreement = conflict. */
 function correctiveWinner(cands: Item[], b: Built): Item | null {
-  const isCorrective = (c: Item) => !!b.scs[c.sentence]?.corrective || c.ctx.corrected;
+  const isCorrective = (c: Item) => !b.noContext && (!!b.scs[c.sentence]?.corrective || c.ctx.corrected);
   const corrective = cands.filter(isCorrective);
   if (corrective.length === 0) return null;
   const last = corrective[corrective.length - 1];
@@ -380,7 +412,10 @@ export function extractCheckIn(story: string, ctx: ExtractContext): DetailedExtr
   // Boolean core fields.
   let dizzinessTrue: Item[] = [];
   for (const field of ["dizziness", "drowsiness", "confusion", "fall", "nearFall", "swelling"] as const) {
-    const r = resolveBoolean(candidates((it) => it.field === field), b);
+    // Best-guess wordings ("legs felt wobbly") count only when nothing explicit was said about the field.
+    const all = candidates((it) => it.field === field);
+    const firm = all.filter((it) => !it.guess);
+    const r = resolveBoolean(firm.length > 0 ? firm : all, b);
     if (!r) continue;
     if (r.kind === "conflict") {
       const quotes = r.items.map((it) => {
@@ -397,10 +432,14 @@ export function extractCheckIn(story: string, ctx: ExtractContext): DetailedExtr
     const lead = r.items[0];
     const e = evidence(b, lead, false);
     const sp = toSpan(e.start, e.end);
+    // Only guesses left (firm is empty): shown as "My best guess — please check" and never auto-accepted.
+    const guess = lead.guess;
     proposals.push({
-      field, value: r.value, certainty: "explicit", origin: "nlp",
+      field, value: r.value, certainty: guess ? "inferred" : "explicit", origin: "nlp",
       spans: [sp, ...r.items.slice(1, 3).map((it) => { const x = evidence(b, it, false); return toSpan(x.start, x.end); })],
-      reason: `From "${sp.quote}"${correctionNote(b, e.start, e.end)}`,
+      reason: guess
+        ? `"${sp.quote}" suggests ${guess}, filed under ${CONCEPTS[field].label} — please check${correctionNote(b, e.start, e.end)}`
+        : `From "${sp.quote}"${correctionNote(b, e.start, e.end)}`,
     });
     if (field === "dizziness" && r.value === true) dizzinessTrue = r.items;
   }

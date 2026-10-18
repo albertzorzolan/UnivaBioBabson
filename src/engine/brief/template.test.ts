@@ -14,7 +14,7 @@ import {
   templateGenerationInfo,
   toVisitBrief,
 } from "./template";
-import { verifySentence } from "./verify";
+import { verifyClaims, verifySentence } from "./verify";
 import { BANNED_IN_TEMPLATE, FAKE_KB, FROM, TODAY, margaret } from "./test-fixtures";
 
 const W = margaret();
@@ -48,10 +48,87 @@ describe("templateBrief", () => {
 
   it("notices the strongest signals, their window coverage and the falls since the newest medicine", () => {
     const ids = B.content.noticed.flatMap((s) => s.evidenceIds);
-    expect(ids.filter((id) => id.startsWith("sig:"))).toHaveLength(TEMPLATE_LIMITS.noticedSignals);
+    // The top signals plus one "Also recorded" line for the same medicine's sleep comparison (next test).
+    expect(ids.filter((id) => id.startsWith("sig:"))).toHaveLength(TEMPLATE_LIMITS.noticedSignals + TEMPLATE_LIMITS.alsoRecorded);
     expect(ids[0]).toBe("sig:med-lorazepam:dizziness:started");
     expect(ids).toContain("fact:coverage:med-lorazepam:started");
     expect(ids[ids.length - 1]).toBe("fact:falls-since:med-lorazepam");
+  });
+
+  describe("recorded benefit alongside harms", () => {
+    const SLEEP = "sig:med-lorazepam:sleep:started";
+    const line = (c: BriefContent) => c.noticed.find((s) => s.text.startsWith("Also recorded"));
+
+    it("adds one neutral 'Also recorded' line for a medicine whose shown change is worse but which also has a better one", () => {
+      const s = line(B.content)!;
+      expect(s.text).toBe(
+        "Also recorded around the time Lorazepam (Ativan) was started: sleep quality ratings averaged 3.4 out of 5 on 14 answered " +
+          "days after, compared with 2.6 out of 5 on 20 answered days before.",
+      );
+      expect(s.evidenceIds).toEqual([SLEEP]);
+      expect(B.content.noticed.filter((x) => x.text.startsWith("Also recorded"))).toHaveLength(TEMPLATE_LIMITS.alsoRecorded);
+      // Placed right after the signals, before the window-coverage line.
+      const at = B.content.noticed.indexOf(s);
+      expect(B.content.noticed[at - 1].evidenceIds[0]).toMatch(/^sig:/);
+      expect(B.content.noticed[at + 1].evidenceIds[0]).toBe("fact:coverage:med-lorazepam:started");
+    });
+
+    it("passes the claim checker against its own cited evidence", () => {
+      const s = line(B.content)!;
+      const support = B.pkg.items.filter((i) => s.evidenceIds.includes(i.id));
+      expect(verifyClaims(s.text, support, { medNames: MED_NAMES, patientNames: ["Margaret"] })).toEqual([]);
+      expect(verifySentence(s, B.pkg, { medNames: MED_NAMES, patientNames: ["Margaret"] }).issues).toEqual([]);
+    });
+
+    it("is built from the signal's own numbers, not fixed text", () => {
+      const sleep = W.timeline.signals.find((x) => x.id === SLEEP)!;
+      const edited = {
+        ...sleep,
+        before: { ...sleep.before, answered: 18, value: 2.2 },
+        after: { ...sleep.after, answered: 12, value: 3.9 },
+        text: sleep.text.replace("3.4 out of 5 on 14", "3.9 out of 5 on 12").replace("2.6 out of 5 on 20", "2.2 out of 5 on 18"),
+      };
+      const timeline = { ...W.timeline, signals: W.timeline.signals.map((x) => (x.id === SLEEP ? edited : x)) };
+      const { pkg, content } = brief(W.data, W.review, timeline);
+      const s = line(content)!;
+      expect(s.text).toContain("averaged 3.9 out of 5 on 12 answered days after, compared with 2.2 out of 5 on 18 answered days before");
+      expect(verifySentence(s, pkg, { medNames: MED_NAMES, patientNames: ["Margaret"] }).issues).toEqual([]);
+    });
+
+    it("is left out when no 'better' change was recorded", () => {
+      const timeline = { ...W.timeline, signals: W.timeline.signals.filter((x) => x.direction !== "better") };
+      expect(line(brief(W.data, W.review, timeline).content)).toBeUndefined();
+    });
+
+    it("words a stop event as 'was stopped', like the signal sentences", () => {
+      // The seed has no stop event, so relabel the started comparisons as a stop of the same medicine.
+      const asStopped = (x: (typeof W.timeline.signals)[number]) => ({
+        ...x,
+        id: x.id.replace(/:started$/, ":stopped"),
+        event: "stopped" as const,
+        text: x.text.replace("was started", "was stopped"),
+      });
+      const keep = ["dizziness", "drowsiness", "confusion", "sleep"].map((m) => `sig:med-lorazepam:${m}:started`);
+      const signals = W.timeline.signals.filter((x) => keep.includes(x.id)).map(asStopped);
+      expect(signals).toHaveLength(4);
+      const { pkg, content } = brief(W.data, W.review, { ...W.timeline, signals });
+      const s = line(content)!;
+      expect(s.text).toBe(
+        "Also recorded around the time Lorazepam (Ativan) was stopped: sleep quality ratings averaged 3.4 out of 5 on 14 answered " +
+          "days after, compared with 2.6 out of 5 on 20 answered days before.",
+      );
+      expect(s.evidenceIds).toEqual(["sig:med-lorazepam:sleep:stopped"]);
+      expect(verifySentence(s, pkg, { medNames: MED_NAMES, patientNames: ["Margaret"] }).issues).toEqual([]);
+    });
+
+    it("is left out when the better change is already among the signals shown", () => {
+      // Only two signals left (dizziness worse, sleep better): both fit in the top 3, so sleep is shown as written.
+      const keep = new Set(["sig:med-lorazepam:dizziness:started", SLEEP]);
+      const timeline = { ...W.timeline, signals: W.timeline.signals.filter((x) => keep.has(x.id)) };
+      const { content } = brief(W.data, W.review, timeline);
+      expect(content.noticed.flatMap((s) => s.evidenceIds)).toContain(SLEEP);
+      expect(line(content)).toBeUndefined();
+    });
   });
 
   it("picks review prompts for breadth: Beers, ACB, fall-risk and the prescribing cascade", () => {
@@ -59,7 +136,7 @@ describe("templateBrief", () => {
     expect(keys).toHaveLength(TEMPLATE_LIMITS.reviewPrompts);
     expect(keys).toContain("beers-pim-benzodiazepine|med-lorazepam");
     expect(keys).toContain("acb|med-furosemide+med-oxybutynin+med-tylenolpm");
-    expect(keys).toContain("fall-risk|med-amlodipine+med-furosemide+med-lorazepam+med-tylenolpm");
+    expect(keys).toContain("fall-risk:med-amlodipine+med-furosemide+med-lorazepam+med-oxybutynin+med-tylenolpm");
     expect(keys).toContain("cascade-ccb-edema-loop|med-amlodipine+med-furosemide");
     expect(B.content.reviewPrompts[0].sourceShort).toBe("AGS Beers Criteria® 2023");
     expect(B.content.reviewPrompts[0].text).toMatch(/^Lorazepam is a benzodiazepine\. The AGS Beers Criteria 2023 list/);
@@ -101,6 +178,15 @@ describe("templateBrief", () => {
     expect(content.limitations.filter((l) => /published criteria/.test(l))).toHaveLength(1);
     expect(content.limitations[content.limitations.length - 1]).toBe(LIMITATION_LINES.family);
     expect(content.limitations.join(" ")).not.toMatch(/\bsafe\b/i);
+  });
+
+  it("says that as-needed doses are not recorded day by day, only when an as-needed medicine is on the list", () => {
+    expect(LIMITATION_LINES.asNeeded).toBe("Doses taken are not logged, so as-needed medicines cannot be separated.");
+    // The seed's Tylenol PM is taken "at bedtime as needed".
+    expect(B.content.limitations).toContain(LIMITATION_LINES.asNeeded);
+    expect(B.content.limitations.indexOf(LIMITATION_LINES.asNeeded)).toBeLessThan(B.content.limitations.indexOf(LIMITATION_LINES.chance));
+    const scheduled: StoreData = { ...W.data, medications: W.data.medications.map((m) => ({ ...m, asNeeded: false })) };
+    expect(brief(scheduled).content.limitations).not.toContain(LIMITATION_LINES.asNeeded);
   });
 
   it("names medicines that were not reviewed, without implying anything about them", () => {

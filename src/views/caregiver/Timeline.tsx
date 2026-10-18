@@ -34,10 +34,9 @@ import {
   SERIES_VAR,
   TimelineDot,
   cx,
-  type Tone,
 } from "../../ui";
 import { TimelineChart, excerptText, periodStart } from "../shared/caregiver-TimelineChart";
-import { fallsComparison, isSentinelMetric, unflaggedVerdict } from "../shared/caregiver-insights";
+import { fallsComparison, isSentinelMetric, strengthTone, unflaggedVerdict } from "../shared/caregiver-insights";
 import { DayRecordsDrawer, RecordsDrawer, recordedChips, rangeText, type RecordGroup } from "../shared/caregiver-Records";
 import "./timeline.css";
 
@@ -104,12 +103,6 @@ function barPct(c: MetricComparison, side: "before" | "after"): number {
   return w.positive > 0 ? Math.max(pct, 2.5) : pct;
 }
 
-function strengthTone(c: MetricComparison): Tone {
-  if (c.strength === "strong") return c.direction === "worse" ? "caution" : "success";
-  if (c.strength === "moderate") return c.direction === "worse" ? "info" : "success";
-  return "neutral";
-}
-
 function ComparisonRow({ c, onRecords }: { c: MetricComparison; onRecords: () => void }) {
   const def = getMetric(c.metric);
   const kind = rowKind(c);
@@ -138,7 +131,7 @@ function ComparisonRow({ c, onRecords }: { c: MetricComparison; onRecords: () =>
           </span>
         ) : (
           <>
-            <Badge size="sm" tone={strengthTone(c)}>
+            <Badge size="sm" tone={strengthTone(c.strength)}>
               {kind === "flagged" ? `Pattern strength: ${c.strength}` : unflaggedVerdict(c.metric, c.strength)}
             </Badge>
             {/* Falls are listed by date, not tested: no p-value beside them unless the difference was flagged. */}
@@ -348,7 +341,8 @@ export function Timeline() {
   return (
     <div className="cg-tl">
       <PageHeader
-        eyebrow={`${possessive} diary · ${days.length} ${days.length === 1 ? "check-in" : "check-ins"}`}
+        // Every check-in ever saved; the day list below counts only the selected period ("50 of 60 days").
+        eyebrow={`${possessive} diary · ${days.length} ${days.length === 1 ? "check-in" : "check-ins"} in all`}
         title="Symptoms & timeline"
         subtitle="Every recorded day, with medicine changes marked — and what changed in the diary around each change."
       />

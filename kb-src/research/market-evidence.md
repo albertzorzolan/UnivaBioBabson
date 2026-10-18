@@ -1,5 +1,7 @@
 # MedWatch: evidence base, problem sizing and competitive landscape
 
+> Kinwise (formerly MedWatch): written on 2026-10-10 under the working name; "MedWatch" in this note means the product now called Kinwise.
+
 Prepared 2026-10-10 for the UnivaBio "AI for Human Health" submission (pitch, one-page PDF, demo video).
 Every number has a source URL. Abstract-level facts were read directly from PubMed / PMC records or the primary
 publisher page on 2026-10-10. Anything not confirmed from a primary source is marked **UNVERIFIED**. Numbers marked
@@ -9,7 +11,7 @@ Legend: [P] = primary source (journal/government/official vendor page). [S] = se
 
 ---
 
-## 0. Pitch-ready numbers (the 12 strongest, with safe wording)
+## 0. Pitch-ready numbers (the 12 strongest problem statistics, then intervention and policy evidence in rows 13-16, with safe wording)
 
 | # | Safe wording for slides / PDF / voice-over | Source |
 |---|---|---|
@@ -25,6 +27,10 @@ Legend: [P] = primary source (journal/government/official vendor page). [S] = se
 | 10 | Highest cumulative strong-anticholinergic exposure was associated with **1.49 times** the odds of dementia (UK, 284,343 people) and a **1.54** hazard ratio (US cohort); the population-attributable fraction was estimated at **10.3%**. Association, not proof of causation. | Coupland et al., JAMA Intern Med 2019 [P] https://pubmed.ncbi.nlm.nih.gov/31233095/ ; Gray et al., JAMA Intern Med 2015 [P] https://pubmed.ncbi.nlm.nih.gov/25621434/ |
 | 11 | **92%** of older Medicare beneficiaries would be willing to stop one or more medicines if their doctor said it was possible; **66.6%** want to take fewer. | Reeve et al., JAMA Intern Med 2018 [P] https://pubmed.ncbi.nlm.nih.gov/30326004/ |
 | 12 | **79%** (19 of 24) of sampled medicines-related apps shared user data with other entities. | Grundy et al., BMJ 2019 [P] https://pubmed.ncbi.nlm.nih.gov/30894349/ |
+| 13 | **EMPOWER** (cluster RCT, n=303, aged 65-95, long-term benzodiazepine users): a **direct-to-patient** educational brochure (the brochure included a stepwise taper plan, which Kinwise leaves to the clinician) led to 62% of participants starting a conversation about stopping, and to **27% vs 5% discontinuation** at 6 months (risk difference 23%, NNT 4). Kinwise is **not** proven to replicate this; say "inspired by", not "proven". | Tannenbaum et al., *JAMA Intern Med* 2014 [P] doi:10.1001/jamainternmed.2014.949, https://pubmed.ncbi.nlm.nih.gov/24733354/ (from regulatory.md §5.5; intervention detail per the PubMed abstract, as in docs/REGULATORY.md §6) |
+| 14 | **D-PRESCRIBE** (cluster RCT, n=489, mean age 75, taking one of 4 **Beers** medicine classes: sedative-hypnotics, first-generation antihistamines, glyburide, NSAIDs): a consumer-targeted, pharmacist-led educational intervention (education to patients plus a pharmaceutical opinion sent to their physicians) led to **43% vs 12%** no longer filling the inappropriate prescription at 6 months. Same caveat: "inspired by", not "proven". | Martin et al., *JAMA* 2018 [P] doi:10.1001/jama.2018.16131, https://pubmed.ncbi.nlm.nih.gov/30422193/ (from regulatory.md §5.5; intervention detail per the PubMed abstract, as in docs/REGULATORY.md §6) |
+| 15 | Medicare Part D: *"If a beneficiary is offered the annual comprehensive medication review and is unable to accept the offer to participate due to cognitive impairment, the pharmacist or other qualified provider may perform the comprehensive medication review with the beneficiary's prescriber, **caregiver**, or other authorized individual."* | 42 CFR 423.153(d)(1)(vii)(B)(2), eCFR current text [P] https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-B/part-423/subpart-D/section-423.153 (from regulatory.md) |
+| 16 | **Caution, not a selling point:** in the **MedSafer** cluster RCT (5,698 patients), rule-based personalized deprescribing reports for hospital clinicians led to **more deprescribing but no reduction in 30-day ADEs**. The honest outcome claim is better-informed conversations, not fewer ADEs (yet). | McDonald et al., JAMA Intern Med 2022 [P] https://pmc.ncbi.nlm.nih.gov/articles/PMC8767487/ (from §2 of this file; not in regulatory.md) |
 
 **DERIVED (label as estimates):**
 - About **24 million** US adults 65+ take 5+ prescription drugs: 43.0% (NCHS, 2017 to Mar 2020) x 55.8 million people 65+ (2020 Census, https://www.census.gov/library/stories/2023/05/2020-census-united-states-older-population-grew.html). The two figures come from different years, so the result is approximate.
@@ -107,7 +113,7 @@ Source for all bullets: [P] report PDF https://www.aarp.org/content/dam/aarp/ppi
 - **Specific minutes spent on medication review within a primary-care visit: UNVERIFIED.** We found no strong US source. Do not quote a number. Use the "1.1 minutes per secondary topic" finding instead.
 
 ### 1.9 Under-reporting and recall of symptoms and side effects
-- **Gandhi et al., NEJM 2003 (4 Boston primary-care practices, 661 survey respondents):** **25%** had an ADE (27 per 100 patients). 13% of events were serious, 28% ameliorable and 11% preventable. Of the ameliorable events, **63%** came from the physician failing to respond to medication-related symptoms and **37%** from the patient failing to tell the physician. The number of medications was the only significant predictor. The authors conclude that "monitoring for and acting on symptoms are important". [P] https://pubmed.ncbi.nlm.nih.gov/12700376/
+- **Gandhi et al., NEJM 2003 (4 Boston primary-care practices, 661 survey respondents):** **25%** had an ADE (27 per 100 patients). 13% of events were serious, 28% ameliorable and 11% preventable. Of the ameliorable events, **63%** came from the physician failing to respond to medication-related symptoms and **37%** from the patient failing to tell the physician. (The app and README quote the counts behind these percentages: 19 and 32 of 51 ameliorable events. They match the percentages here, 28% of the 181 events being 51, but were not re-checked against the abstract when this note was added on 2026-10-17; confirm at the PubMed link before quoting the counts in new material.) The number of medications was the only significant predictor. The authors conclude that "monitoring for and acting on symptoms are important". [P] https://pubmed.ncbi.nlm.nih.gov/12700376/
 - **CDC:** less than half of older adults who fall tell their doctor. [P] https://www.cdc.gov/falls/data-research/facts-stats/index.html
 - **Basch et al., JNCI 2009 (lung cancer):** patients reported symptoms **earlier and more frequently** than clinicians, and patient reports tracked daily health status better. The authors call the two perspectives complementary. [P] https://pubmed.ncbi.nlm.nih.gov/19920223/ ; commentary: Basch, "The missing voice of patients in drug-safety reporting", NEJM 2010 https://pubmed.ncbi.nlm.nih.gov/20220181/
 - **Kessels, J R Soc Med 2003 (review):** "40-80% of medical information provided by healthcare practitioners is forgotten" immediately. This supports a written, structured brief rather than memory. [P] https://pmc.ncbi.nlm.nih.gov/articles/PMC539473/

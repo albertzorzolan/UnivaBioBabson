@@ -10,14 +10,30 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-export const OUT_DIR = join(ROOT, "submission");
-/** Intermediate HTML + screenshots (gitignored via tmp/). */
-export const BUILD_DIR = join(ROOT, "tmp", "submission-build");
+/** Where the PDFs go. PDF_OUT_DIR (relative to the repo root) sends a trial build to e.g. tmp/ instead of submission/. */
+export const OUT_DIR = process.env.PDF_OUT_DIR ? resolve(ROOT, process.env.PDF_OUT_DIR) : join(ROOT, "submission");
+/** Intermediate HTML + screenshots (gitignored via tmp/). BUILD_DIR overrides it, also relative to the repo root. */
+export const BUILD_DIR = process.env.BUILD_DIR ? resolve(ROOT, process.env.BUILD_DIR) : join(ROOT, "tmp", "submission-build");
 export const STORE_KEY = "kinwise.v1.store";
 export const SESSION_KEY = "kinwise.v1.session";
+
+// Public links printed in the submission materials. Keep them in this one place.
 export const REPO_URL = "https://github.com/albertzorzolan/UnivaBioBabson";
+/** The submitted code lives on this branch; the repo's default branch ("main") still holds the older Prototype 1. */
 export const REPO_BRANCH = "medwatch-v2";
-export const PLANNED_DEMO_URL = "https://albertzorzolan.github.io/UnivaBioBabson/";
+/** Link judges should use for the code: the branch view, not the repo root (which opens the default branch). */
+export const CODE_URL = `${REPO_URL}/tree/${REPO_BRANCH}`;
+/** Live demo on GitHub Pages, deployed from medwatch-v2 (live since 2026-10-11). */
+export const DEMO_URL = "https://albertzorzolan.github.io/UnivaBioBabson/";
+/** Public video link (e.g. YouTube). A person uploads the video, so it is passed in: VIDEO_URL="https://…". */
+export const VIDEO_URL = process.env.VIDEO_URL?.trim() || null;
+export const DEFAULT_TEAM = "Albert Zorzolan and Neil Shah, Babson College";
+export const PLANNED_DEMO_URL = DEMO_URL; // deprecated alias, codetour.mjs migrates in P2
+
+/** A URL without its scheme or trailing slash, for printing ("github.com/…"). */
+export function shortUrl(url) {
+  return String(url).replace(/^https?:\/\//, "").replace(/\/$/, "");
+}
 
 export function ensureDir(dir) {
   mkdirSync(dir, { recursive: true });

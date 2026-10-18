@@ -1,6 +1,8 @@
 // Welcome: the product story + one-click entry into both demo views (SPEC §8).
-// Left: value proposition and privacy promise. Right: "Try as Margaret / Alex", the guided tour, and a
-// demo-credential form. Below: an HTML/CSS walk-through of one check-in becoming a clinician question.
+// Left: value proposition, privacy promise and checked results. Right: the guided tour (the main way in),
+// "Try as Margaret / Alex", and a demo-credential form. Below: an HTML/CSS walk-through of one check-in
+// becoming a clinician question. On phones the access card comes straight after the headline, and a
+// "Try the demo" button in the top bar jumps to it, so a way in is always on the first screen.
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import {
   ArrowRight,
@@ -20,9 +22,10 @@ import { DEMO_ACCOUNTS, login, loginAs, logout, useSession } from "../../app/ses
 import { homeFor, href, isRoute, navigate, ROUTES, routeRole, useRoute, type Route } from "../../app/router";
 import { useShellAttribute } from "../../app/layouts/useDocumentSettings";
 import { SkipLink } from "../../app/layouts/ShellParts";
-import { Badge, Button, Callout, DemoDataChip, Logo, TextInput } from "../../ui";
+import { Badge, Button, Callout, DemoDataChip, Logo, TextInput, useMediaQuery } from "../../ui";
 import { JOURNEY_AFTER_LABEL, JOURNEY_AFTER_PCT, JOURNEY_BEFORE_LABEL, JOURNEY_BEFORE_PCT, JOURNEY_QUESTION } from "./journeyFigures";
 import { PROOF_POINTS } from "./proofPoints";
+import { SOURCE_CODE_URL } from "./links";
 import "./public.css";
 
 const ROLE_NAME: Record<Role, string> = { patient: "Margaret (patient view)", caregiver: "Alex (caregiver view)" };
@@ -91,6 +94,15 @@ export function Welcome() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const tourCaptionId = useId();
+  const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+
+  /** Phones: bring the access card into view and move focus to its heading. */
+  const showAccess = () => {
+    const heading = document.getElementById("access-title");
+    heading?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    heading?.focus({ preventScroll: true });
+  };
 
   const enter = (r: Role) => {
     loginAs(r);
@@ -126,6 +138,10 @@ export function Welcome() {
               How it works
             </a>
             <DemoDataChip />
+            {/* Phones and tablets only (CSS): the access card is below the headline there. */}
+            <Button variant="primary" size="sm" className="pub-top__try" onClick={showAccess}>
+              Try the demo
+            </Button>
           </nav>
         </div>
       </header>
@@ -145,9 +161,13 @@ export function Welcome() {
               Kinwise helps families caring for an older adult on many medicines notice possible side effects early — and
               bring a clear, evidence-backed question to the doctor or pharmacist.
             </p>
+          </section>
+
+          {/* Privacy promise + checked results: its own grid item so phones show the access card first. */}
+          <div className="pub-hero-proof">
             <p className="pub-privacy">
               <Lock size={16} aria-hidden="true" />
-              <span>Runs entirely in your browser. No accounts, no servers, no tracking.</span>
+              <span>Runs in your browser. No Kinwise server, no accounts, no tracking.</span>
             </p>
             <ul role="list" className="pub-proof" aria-label="Checked results">
               {PROOF_POINTS.map((pt) => (
@@ -159,7 +179,7 @@ export function Welcome() {
                 </li>
               ))}
             </ul>
-          </section>
+          </div>
 
           <section className="pub-values" aria-labelledby="values-title">
             <h2 id="values-title" className="ui-visually-hidden">
@@ -203,14 +223,29 @@ export function Welcome() {
               {!role && nextLabel && (
                 <Callout tone="info" className="pub-access__session" title={`Choose a view to open “${nextLabel}”.`} />
               )}
-              <p className="ui-eyebrow">Explore the demo</p>
-              <h2 id="access-title" className="pub-access__title">
+              <h2 id="access-title" className="pub-access__title" tabIndex={-1}>
                 See it from both sides
               </h2>
               <p className="pub-access__lead">
                 Margaret Rivera (78) and her daughter Alex are fictional. One click, no sign-up.
               </p>
 
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                className="pub-tour"
+                iconLeft={<PlayCircle size={22} aria-hidden="true" />}
+                aria-describedby={tourCaptionId}
+                onClick={startTour}
+              >
+                Take the 2-minute guided tour
+              </Button>
+              <p className="pub-tour__caption" id={tourCaptionId}>
+                8 steps, both views, about 2 minutes
+              </p>
+
+              <p className="pub-roles__label">Or explore on your own</p>
               <div className="pub-roles">
                 <RoleButton
                   role="patient"
@@ -227,12 +262,6 @@ export function Welcome() {
                   onChoose={enter}
                 />
               </div>
-
-              <button type="button" className="pub-tour" onClick={startTour}>
-                <PlayCircle size={22} aria-hidden="true" />
-                <span>Take the 2-minute guided tour</span>
-                <ArrowRight size={18} aria-hidden="true" />
-              </button>
 
               <div className="pub-divider" role="presentation">
                 <span>or sign in with a demo account</span>
@@ -299,10 +328,20 @@ export function Welcome() {
       </main>
 
       <footer className="pub-footer-welcome">
-        <p>Fictional data · Student prototype for UnivaBio 2026 · Not medical advice</p>
-        <p>
-          <a href={href("/how-it-works")}>How Kinwise works</a>
-        </p>
+        <div>
+          <p>Fictional data · Student prototype for UnivaBio 2026 · Not medical advice</p>
+          <p className="pub-footer-welcome__fine">Demo dates are generated relative to today.</p>
+        </div>
+        <ul role="list" className="pub-footer-welcome__links">
+          <li>
+            <a href={href("/how-it-works")}>How Kinwise works</a>
+          </li>
+          <li>
+            <a href={SOURCE_CODE_URL} target="_blank" rel="noreferrer noopener">
+              Source code on GitHub<span className="ui-visually-hidden"> (opens in a new tab)</span>
+            </a>
+          </li>
+        </ul>
       </footer>
     </div>
   );

@@ -1,7 +1,8 @@
 // Concept lexicon for the on-device clinical NLP engine.
 //
-// - CONCEPTS: one table with every concept the engine can emit, its diary field (if any) and its
-//   SNOMED CT coding. Codes are listed in one place so they can be verified before export (FHIR).
+// - CONCEPTS: one table with every concept the engine can emit, its diary field (if any) and a
+//   descriptive SNOMED CT reference. The engine uses only `label` and `field`; the FHIR export does not
+//   read these codes (it has its own table, src/engine/brief/fhir.ts DIARY_CODES / CONCEPT_CODES).
 // - TERMS: surface patterns (regular expressions over the normalised, lower-cased view text) with
 //   colloquialisms ("woozy", "took a tumble", "slept like a log"), multi-word variants and
 //   value mappings for the scale fields. `concept: null` entries are *blockers*: phrases that
@@ -21,17 +22,19 @@ export interface ConceptCoding {
   label: string;
   /** Diary field this concept fills, or null for "other symptom" concepts. */
   field: DiaryField | null;
-  /** SNOMED CT concept id (null = not yet verified; export as text only). */
+  /** Descriptive SNOMED CT concept id (null = none confirmed; see `verify`). Not exported. */
   snomed: string | null;
   /** SNOMED CT fully specified name / preferred display. */
   display: string;
-  /** Verification note for the clinical lead. */
+  /** Coding decision and how the export handles this concept. */
   verify?: string;
 }
 
 /**
  * Concept → coding table. SNOMED CT ids are the well-known international-edition ids for these
- * findings; all entries should be double-checked against the SNOMED browser before release.
+ * findings, kept here as a readable reference for each concept. They are not what Kinwise exports:
+ * the FHIR export codes diary items and other symptoms from its own table in src/engine/brief/fhir.ts
+ * (looked up on tx.fhir.org, SNOMED CT International 2025-02-01), which is the one to change for coding.
  * For scale fields the code describes the *problem* end of the scale (fatigue, poor sleep,
  * loss of appetite) and is only meaningful when the value is at that end.
  */
@@ -42,11 +45,11 @@ export const CONCEPTS: Record<ConceptKey, ConceptCoding> = {
   fall: { label: "a fall", field: "fall", snomed: "1912002", display: "Fall (event)" },
   nearFall: {
     label: "a near-fall", field: "nearFall", snomed: null, display: "Near fall (tripping / loss of balance)",
-    verify: "TODO-verify: no confirmed SNOMED CT id for 'near fall'; export as text until the lead confirms one.",
+    verify: "Near fall: no SNOMED CT concept was confirmed when the codes were looked up on tx.fhir.org, so it is exported as text only, by design (fhir.ts DIARY_CODES.nearFall has coding: null).",
   },
   swelling: {
     label: "swelling", field: "swelling", snomed: "271809000", display: "Peripheral edema (finding)",
-    verify: "Alternative: 267039000 'Swelling of ankle (finding)' when the text names the ankles — lead to confirm.",
+    verify: "Exported as 267039000 'Swollen ankle region', matching the diary's ankle-swelling question (fhir.ts); 271809000 here is descriptive only.",
   },
   energy: {
     label: "energy", field: "energy", snomed: "84229001", display: "Fatigue (finding)",
@@ -77,11 +80,11 @@ export const CONCEPTS: Record<ConceptKey, ConceptCoding> = {
   palpitations: { label: "palpitations", field: null, snomed: "80313002", display: "Palpitations (finding)" },
   bleeding_or_bruising: {
     label: "bleeding or bruising", field: null, snomed: "131148009", display: "Bleeding (finding)",
-    verify: "Combined concept (SPEC §12 monitoring). Bruising-only mentions may be better coded as easy bruising — lead to confirm.",
+    verify: "Combined concept by design (SPEC §12 monitoring): bleeding and bruising share one code, 131148009 'Bleeding', with the patient's words kept as text.",
   },
   black_stools: {
     label: "black stools", field: null, snomed: "2901004", display: "Melena (disorder)",
-    verify: "Patient wording is 'black/tarry stools'; confirm 2901004 vs a 'black stool' finding code.",
+    verify: "Patient wording is 'black/tarry stools', so the export uses the finding 35064005 'Dark stools' (fhir.ts), not the diagnosis melena; 2901004 here is descriptive only.",
   },
   shakiness_or_sweating: {
     label: "shakiness or sweating", field: null, snomed: "415690000", display: "Sweating (finding)",
@@ -122,6 +125,13 @@ export interface TermDef {
    * "up three times to pee" = poor sleep AND a bladder problem). Blockers still remove them.
    */
   secondary?: boolean;
+  /**
+   * Low-confidence wording: the phrase is related to the field but does not name it ("my legs felt wobbly" is not
+   * "dizzy"). Value = what was heard, shown in the reason ("unsteadiness"). Such a mention is proposed only as a
+   * best guess for the person to check, only when nothing explicit was said about the field, and a denied guess
+   * proposes nothing (extract.ts).
+   */
+  guess?: string;
 }
 
 const MACROS: Record<string, string> = {
@@ -200,6 +210,9 @@ export const TERMS: readonly TermDef[] = [
     "(?:since|after|before) (?:my|her|his|the|that) (?:last |previous |recent |big |bad )?(?:fall|tumble)",
     "(?:don't|do not|no need to|not to|try not to) worry",
     "no worries",
+    // Pushed or knocked off balance by something outside the body is not a dizziness symptom, so the
+    // unsteadiness guess below must not fire. A fall in the same sentence is still matched on its own.
+    "(?:knock(?:ed|s|ing)?|push(?:ed|es|ing)?|bump(?:ed|s|ing)?|threw|thrown|throws?|throwing|tip(?:ped|s|ping)?|jostled|jolted) (?:(?:me|her|him|{PRO} \\w+) )?off[- ]balance",
   ]),
 
   // ----- Dizziness ---------------------------------------------------------------------------
@@ -224,6 +237,23 @@ export const TERMS: readonly TermDef[] = [
     "seeing stars",
     "swimmy",
   ]),
+  // Unsteadiness without the word "dizzy". The annotation guide counts unsteadiness as dizziness only when it is due
+  // to dizziness ("unsteady because of dizziness"); from "my legs felt wobbly" alone Kinwise cannot tell the reason
+  // (weakness, tiredness and low blood sugar are also possible), and the diary has no unsteadiness question. So these
+  // wordings go beyond the guide and are offered only as a low-confidence "please check" guess under the dizziness
+  // question, which the person confirms or rejects. (Dev case d203 pairs "off balance" with "not as dizzy as
+  // yesterday"; its dizziness label comes from "not as dizzy".) Secondary layer, so "legs felt shaky" is still coded
+  // as tremor too. "off my balance" stays a near-fall cue (below); "knocked me off balance" is blocked (above).
+  ...t(
+    "dizziness",
+    [
+      "legs? (?:{WAS} )?(?:{INT} )?(?:wobbly|unsteady|shaky|like jelly|jelly)",
+      "(?:wobbly|jelly) legs",
+      "off[- ]balance",
+      "unsteady on (?:{PRO} )?(?:feet|legs)",
+    ],
+    { guess: "unsteadiness", secondary: true },
+  ),
 
   // ----- Drowsiness --------------------------------------------------------------------------
   ...t("drowsiness", [

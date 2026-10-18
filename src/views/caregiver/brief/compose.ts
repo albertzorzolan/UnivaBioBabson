@@ -6,6 +6,7 @@
 //   - Every sentence keeps the evidence ids it was built from; edits change the words, never the citations.
 //   - Any change to the content clears the "reviewed" mark (the family reviews what will actually print).
 //   - Review prompts are engine text (title + first plain sentence + citation) and are never reworded.
+//   - Quoted concerns get typographic quotes (“…”, ’) for print; the claim checker folds them back to ASCII.
 
 import type {
   BriefContent,
@@ -79,6 +80,20 @@ export const MAX_STORED_BRIEFS = 8;
 
 function norm(text: string): string {
   return oneLine(text).toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Straight quotes to typographic ones: `"` opens after the start, a space or a bracket and closes elsewhere; an
+ * apostrophe between letters becomes ’ ("Mom's" → "Mom’s"). Already-curly text is unchanged. Typography only: the
+ * claim checker's foldText maps these back, so quoted words still match their evidence.
+ */
+export function curlyQuotes(text: string): string {
+  return text.replace(/(\p{L})'(?=\p{L})/gu, "$1’").replace(/"/g, (_, at: number, all: string) => (at === 0 || /[\s([{]/.test(all[at - 1]) ? "“" : "”"));
+}
+
+/** A "Why we're coming in" sentence for a pinned concern, worded as the evidence package has it. */
+function concernSentence(c: { id: string; text: string }): BriefSentence {
+  return { text: curlyQuotes(c.text), evidenceIds: [c.id] };
 }
 
 const SAVED_PREFIX = "note:question:";
@@ -251,7 +266,9 @@ export function composeTemplate(inp: BriefInputs, opts: ComposeOptions): { pkg: 
   const savedIds = (opts.savedIds ?? (inp.data.savedQuestions ?? []).map((q) => q.id)).slice(0, MAX_SAVED_IN_BRIEF);
   const pkg = briefPackage(inp, { from: opts.from, to: opts.to, includedConcernIds: opts.includedConcernIds, includedSavedIds: savedIds });
   const pkgIds = new Set(pkg.items.map((i) => i.id));
-  const base = templateBrief(pkg, { data: dataForPackage(inp.data, savedIds), review: inp.review, timeline: inp.timeline });
+  const template = templateBrief(pkg, { data: dataForPackage(inp.data, savedIds), review: inp.review, timeline: inp.timeline });
+  const isConcern = (s: BriefSentence) => s.evidenceIds.length === 1 && s.evidenceIds[0].startsWith(CONCERN_PREFIX);
+  const base = { ...template, reason: template.reason.map((s) => (isConcern(s) ? { ...s, text: curlyQuotes(s.text) } : s)) };
   const ranked = selectableFindings(inp, pkg);
   // A kept selection whose prompts all disappeared (the medicine list changed) falls back to the template's pick;
   // an explicit empty selection stays empty.
@@ -351,7 +368,7 @@ export function reasonFor(current: BriefSentence[], pkg: EvidencePackage, fallba
     const general = current.filter((s) => !s.evidenceIds.some((id) => id.startsWith(CONCERN_PREFIX)));
     return general.length ? general : fallback;
   }
-  return concerns.map((c) => current.find((s) => s.evidenceIds.includes(c.id)) ?? { text: c.text, evidenceIds: [c.id] });
+  return concerns.map((c) => current.find((s) => s.evidenceIds.includes(c.id)) ?? concernSentence(c));
 }
 
 // ---------------------------------------------------------------------------

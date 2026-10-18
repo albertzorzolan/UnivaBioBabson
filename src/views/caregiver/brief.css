@@ -896,7 +896,12 @@
 
 /* Before/after strip */
 .cg-vb-strip {
+  position: relative;
   margin: 0;
+}
+/* Pinned row labels (BeforeAfterStrip.tsx): hidden unless the strip scrolls on a phone (below). */
+.cg-vb-strip__pinned {
+  display: none;
 }
 .cg-vb-strip__svg {
   display: block;
@@ -1016,6 +1021,20 @@
   .cg-vb-strip-scroll .cg-vb-strip__svg {
     min-width: calc(var(--strip-w, 488px) * 1.15);
   }
+  /* The strip opens on its "after" end (ScrollRegion startAtEnd); the labels stay pinned at the same 1.15 scale. */
+  .cg-vb-strip:has(.cg-vb-scroll.is-scrollable) .cg-vb-strip__pinned {
+    display: block;
+    position: absolute;
+    top: calc(var(--strip-label-top, 22px) * 1.15);
+    left: 0;
+    width: calc(var(--strip-label-w, 88px) * 1.15);
+    height: auto;
+    padding-right: 0.25rem;
+    box-sizing: content-box;
+    background: var(--surface);
+    box-shadow: 0.375rem 0 0.375rem -0.25rem color-mix(in srgb, var(--ink) 18%, transparent);
+    pointer-events: none;
+  }
 }
 @media print {
   .cg-vb-scroll::after {
@@ -1092,6 +1111,24 @@
   font-weight: var(--fw-semibold);
   line-height: 1.5;
   white-space: nowrap;
+}
+/* Screen: a compound flag wraps between its parts (FlagText) instead of pushing the table wider than the page.
+   Print keeps every flag on one line (brief-print.css). */
+@media screen {
+  .cg-vb-flag {
+    white-space: normal;
+  }
+  .cg-vb-flag__part {
+    white-space: nowrap;
+  }
+  /* Preferred widths for the auto-sized table: less room for long medicine names, enough for "Dr. Lee (primary
+     care)" on two lines, so the table fits the page at 1280–1512px without scrolling sideways. */
+  .cg-vb-col-med {
+    width: 28%;
+  }
+  .cg-vb-col-pres {
+    width: 19%;
+  }
 }
 .cg-vb-flag--strong {
   border-color: var(--attention);

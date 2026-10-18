@@ -2,8 +2,10 @@
 // evidence item and cites it, so the template obeys the same rules the AI draft is checked against.
 //
 //   reason        pinned concerns, in the writer's own words, quoted and attributed
-//   noticed       top 3 timeline signals (strength, then KB-known effect, then worsening), the check-in coverage
-//                 of the windows behind them, and falls/near-falls since the most recent medicine start
+//   noticed       top 3 timeline signals (strength, then KB-known effect, then worsening), then at most 1 "Also
+//                 recorded" line when a shown medicine's same before/after comparison also recorded a change the
+//                 other way (so a clinician weighs both, e.g. better sleep ratings next to more dizziness), the
+//                 check-in coverage of the windows behind them, and falls/near-falls since the most recent start
 //   reviewPrompts 5 findings, dismissed ones left out: ranked (linked to recorded symptoms first, then category order)
 //                 and then picked for breadth — at most 2 AGS Beers prompts and 1 of every other kind on the first
 //                 pass, skipping a Beers prompt whose medicines are already covered — so ACB, fall-risk and cascade
@@ -12,7 +14,8 @@
 //                 A finding question longer than one 280-character sentence is split into its question sentences
 //                 (the follow-up is kept while there is room); each part cites what its numbers need and must pass
 //                 verifySentence with the same options as the AI draft, or it is left out.
-//   limitations   fixed, honest lines (coverage, chance/expectation, what the review does not check, provenance)
+//   limitations   fixed, honest lines (coverage, as-needed doses, chance/expectation, what the review does not
+//                 check, provenance)
 
 import type {
   BriefContent,
@@ -22,13 +25,15 @@ import type {
   GenerationInfo,
   ISODate,
   MedReview,
+  Medication,
   Signal,
   StoreData,
   TimelineAnalysis,
   VisitBrief,
 } from "../../model/types";
 import { daysBetween } from "../../model/dates";
-import { latestCheckInPerDate } from "../timeline/metrics";
+import { getMetric, latestCheckInPerDate } from "../timeline/metrics";
+import { oneDecimal } from "../timeline/text";
 import { evidenceById, evidenceId, mostRecentStart, rankFindings, rankSignals } from "./evidence";
 import type { BriefEvidenceItem } from "./evidence";
 import {
@@ -56,7 +61,7 @@ export interface TemplateInput {
   kb?: BriefKb;
 }
 
-export const TEMPLATE_LIMITS = { noticedSignals: 3, reviewPrompts: 5, findingQuestions: 4, findingQuestionItems: 5, savedQuestions: 3 } as const;
+export const TEMPLATE_LIMITS = { noticedSignals: 3, alsoRecorded: 1, reviewPrompts: 5, findingQuestions: 4, findingQuestionItems: 5, savedQuestions: 3 } as const;
 
 /** Fixed limitation lines (verbatim; reviewed against SPEC §3 and the regulatory fact-check). */
 export const LIMITATION_LINES = {
@@ -65,6 +70,11 @@ export const LIMITATION_LINES = {
     "This review checks published criteria (AGS Beers 2023, ACB scale, fall-risk medicines, known prescribing cascades). " +
     "It does not check doses, kidney function unless provided, allergies, or every interaction. No flag is not an all-clear for any medicine.",
   family: "Prepared by family from home records; not a clinical assessment.",
+  /**
+   * Shown when an as-needed medicine is on the list: the diary records symptoms, not doses (for any medicine;
+   * scheduled ones are only assumed taken from their start date), so there is no per-day dose record to line up with. Kept to one printed line of the limitations column (the brief is one page).
+   */
+  asNeeded: "Doses taken are not logged, so as-needed medicines cannot be separated.",
 } as const;
 
 /** The persistent safety line (SPEC §3), for print and "Copy as text" footers. */
@@ -118,6 +128,22 @@ function normalizeQuestion(text: string): string {
 function windowCoverage(data: StoreData, from: ISODate, to: ISODate): { n: number; d: number } {
   const n = latestCheckInPerDate(data.checkIns).filter((c) => c.date >= from && c.date <= to).length;
   return { n, d: daysBetween(from, to) + 1 };
+}
+
+/**
+ * "Also recorded around the time Lorazepam (Ativan) was started: sleep quality ratings averaged 3.4 out of 5 on 14
+ * answered days after, compared with 2.6 out of 5 on 20 answered days before." Restates a signal's own numbers, in
+ * the signal sentence's wording ("was started" / "was stopped"), and says nothing about why or whether it is good.
+ * "after"/"before" sit right after each count so the claim checker reads each pair on its own side.
+ */
+export function alsoRecordedText(s: Signal, med: Medication | undefined): string {
+  const def = getMetric(s.metric);
+  const subject = def.subject.charAt(0).toLowerCase() + def.subject.slice(1);
+  const lead = `Also recorded around the time ${medName(med)} was ${s.event === "started" ? "started" : "stopped"}: ${subject}`;
+  const { before: b, after: a } = s;
+  return def.kind === "boolean"
+    ? `${lead} was recorded on ${a.positive} of ${a.answered} answered days after, compared with ${b.positive} of ${b.answered} answered days before.`
+    : `${lead} averaged ${oneDecimal(a.value)} out of 5 on ${a.answered} answered days after, compared with ${oneDecimal(b.value)} out of 5 on ${b.answered} answered days before.`;
 }
 
 /** Longest sentence the claim checker accepts (verify.ts default). */
@@ -192,6 +218,15 @@ export function templateBrief(pkg: EvidencePackage, input: TemplateInput): Brief
   const noticed: BriefSentence[] = [];
   const topSignals = rankSignals(timeline.signals.filter((s) => has(s.id))).slice(0, TEMPLATE_LIMITS.noticedSignals);
   for (const s of topSignals) noticed.push({ text: oneLine(s.text), evidenceIds: [s.id] });
+  // Benefit next to harm: for a medicine shown with a 'worse' change, the strongest 'better' change from the same
+  // before/after comparison (same medicine and event) that is not already shown. Described, never weighed.
+  const shownIds = new Set(topSignals.map((s) => s.id));
+  const otherWay = rankSignals(timeline.signals.filter((s) => has(s.id) && !shownIds.has(s.id) && s.direction === "better"))
+    .filter((b) => topSignals.some((w) => w.direction === "worse" && w.medicationId === b.medicationId && w.event === b.event))
+    .slice(0, TEMPLATE_LIMITS.alsoRecorded);
+  for (const s of otherWay) {
+    noticed.push({ text: alsoRecordedText(s, data.medications.find((m) => m.id === s.medicationId)), evidenceIds: [s.id] });
+  }
   const events: Signal[] = [];
   for (const s of topSignals) if (!events.some((e) => e.medicationId === s.medicationId && e.event === s.event)) events.push(s);
   for (const e of events) {
@@ -277,6 +312,10 @@ export function templateBrief(pkg: EvidencePackage, input: TemplateInput): Brief
           "a change in how often the diary is kept can change how often symptoms appear in it.",
       );
     }
+  }
+  // Any as-needed medicine taken during the period (the diary records symptoms, not doses).
+  if (data.medications.some((m) => m.asNeeded && m.startDate <= pkg.to && (!m.endDate || m.endDate >= pkg.from))) {
+    limitations.push(LIMITATION_LINES.asNeeded);
   }
   limitations.push(LIMITATION_LINES.chance, LIMITATION_LINES.scope);
   const unmatched = (review.unmatchedMedIds ?? [])

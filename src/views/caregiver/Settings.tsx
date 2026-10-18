@@ -17,13 +17,15 @@ import {
   Trash2,
   Upload,
   UserRound,
+  X,
 } from "lucide-react";
 import type { ConditionTag, PatientProfile, Settings as SettingsData, StoreData } from "../../model/types";
 import { validateStore, DEFAULT_SETTINGS } from "../../model/store";
 import { useStore } from "../../app/StoreProvider";
 import { useDerived } from "../../app/useDerived";
 import { startTour } from "../../app/Tour";
-import { MODEL_OPTIONS, DEFAULT_MODEL_ID, isModelCached, loadModel, removeModelCache, unloadModel, useLLM } from "../../ai";
+import { MODEL_OPTIONS, DEFAULT_MODEL_ID, LLMError, isModelCached, loadModel, probeWebGPU, removeModelCache, unloadModel, useLLM } from "../../ai";
+import { loadPhaseLabel } from "../../ai/llm";
 import {
   Badge,
   Button,
@@ -312,12 +314,20 @@ function AiCard() {
   const loadedOption = MODEL_OPTIONS.find((m) => m.id === llm.model);
   const [showAll, setShowAll] = useState(false);
   const hidden = MODEL_OPTIONS.filter((m, i) => !(i < PRIMARY_MODELS || m.id === selected || m.id === llm.model)).length;
+  const unsupported = llm.status === "unsupported";
+  // Still fetching files from Hugging Face (or about to): "Cancel download"; once they are cached, or when they
+  // come from a local copy, the button only stops the loading.
+  const downloading = llm.source !== "local" && (llm.phase === "download" || (llm.phase === null && !cached[selected]));
 
+  // "Downloaded" badges. Only checked where the model could run (WebGPU): without it there is nothing to show.
+  // isModelCached reads the browser cache directly, so this fetches neither the AI runtime nor any model URL.
   useEffect(() => {
     let alive = true;
-    Promise.all(MODEL_OPTIONS.map(async (m) => [m.id, await isModelCached(m.id).catch(() => false)] as const)).then((rows) => {
+    void (async () => {
+      if (!(await probeWebGPU())) return;
+      const rows = await Promise.all(MODEL_OPTIONS.map(async (m) => [m.id, await isModelCached(m.id).catch(() => false)] as const));
       if (alive) setCached(Object.fromEntries(rows));
-    });
+    })();
     return () => {
       alive = false;
     };
@@ -332,8 +342,19 @@ function AiCard() {
       await loadModel(selected);
       toast.show({ title: `${option.label} is ready`, description: "It runs on this device. Your records stay here.", tone: "success" });
     } catch (e) {
+      // Cancelled with the button below, which says so itself.
+      if (e instanceof LLMError && e.code === "cancelled") return;
       toast.show({ title: "The model did not load", description: e instanceof Error ? e.message : String(e), tone: "caution" });
     }
+  };
+  const cancelLoad = async () => {
+    const wasDownloading = downloading;
+    await unloadModel();
+    toast.show(
+      wasDownloading
+        ? { title: "Download cancelled", description: "Files downloaded so far stay in this browser, so the next try continues from there." }
+        : { title: "Loading cancelled", description: "The downloaded files stay in this browser." },
+    );
   };
   const unload = async () => {
     await unloadModel();
@@ -349,13 +370,63 @@ function AiCard() {
     }
   };
 
+  const modelPicker = (
+    <fieldset className="cg-set-fieldset" disabled={busy}>
+      <legend className="cg-set-legend">Choose a model</legend>
+      <ul className="cg-set-models" role="list">
+        {MODEL_OPTIONS.filter((m, i) => showAll || i < PRIMARY_MODELS || m.id === selected || m.id === llm.model).map((m) => {
+          const isSel = m.id === selected;
+          return (
+            <li key={m.id}>
+              <label className={cx("cg-set-model", isSel && "is-selected")}>
+                <input type="radio" name="ai-model" value={m.id} checked={isSel} onChange={() => choose(m.id)} />
+                <span className="cg-set-model__radio" aria-hidden="true" />
+                <span className="cg-set-model__main">
+                  <span className="cg-set-model__name">
+                    {m.label}
+                    {m.recommended && (
+                      <Badge tone="primary" size="sm">
+                        Recommended
+                      </Badge>
+                    )}
+                    {cached[m.id] && (
+                      <Badge tone="success" size="sm" icon={<HardDriveDownload size={12} aria-hidden="true" />}>
+                        Downloaded
+                      </Badge>
+                    )}
+                    {llm.model === m.id && loaded && (
+                      <Badge tone="success" size="sm" icon>
+                        Loaded
+                      </Badge>
+                    )}
+                  </span>
+                  <span className="cg-set-model__note">{m.note}</span>
+                </span>
+                <span className="cg-set-model__specs ui-num">
+                  <span>{formatMB(m.sizeMB)} download</span>
+                  <span>{formatMB(m.vramMB)} GPU memory</span>
+                  <span>{m.license}</span>
+                </span>
+              </label>
+            </li>
+          );
+        })}
+      </ul>
+      {!showAll && hidden > 0 && (
+        <button type="button" className="cg-set-more" onClick={() => setShowAll(true)}>
+          Show {hidden} more {hidden === 1 ? "model" : "models"}
+        </button>
+      )}
+    </fieldset>
+  );
+
   return (
     <Card as="section" padding="lg" aria-labelledby="set-ai-title" className="cg-set-card">
       <CardHeader
         id="set-ai-title"
         icon={<Cpu size={20} />}
         title="On-device AI"
-        subtitle="Optional. Kinwise works fully without it; with it, wording gets friendlier."
+        subtitle="Optional. Kinwise works fully without it. When loaded, it can draft the visit brief and some answers in plainer words; code checks every sentence first."
         actions={
           <Badge tone={loaded ? "success" : llm.status === "error" ? "caution" : llm.status === "unsupported" ? "neutral" : busy ? "info" : "neutral"} icon>
             {loaded ? "On" : busy ? "Loading" : llm.status === "unsupported" ? "Not available here" : llm.status === "error" ? "Didn’t load" : "Off"}
@@ -363,90 +434,64 @@ function AiCard() {
         }
       />
       <CardBody className="cg-set-ai">
-        <p className="cg-set-privacy-line">
-          <LockKeyhole size={16} aria-hidden="true" />
-          <span>Model files download once from Hugging Face; your records never leave this device.</span>
-        </p>
+        {!unsupported && (
+          <p className="cg-set-privacy-line">
+            <LockKeyhole size={16} aria-hidden="true" />
+            <span>Model files download once from Hugging Face; your records never leave this device.</span>
+          </p>
+        )}
 
-        {llm.status === "unsupported" && (
+        {unsupported && (
           <Callout tone="info" title="This browser can’t run the on-device model">
-            {llm.message} Use a recent Chrome or Edge on a laptop or desktop with a graphics card that supports WebGPU.
+            <p>{llm.message}</p>
+            <p>Everything else in Kinwise, including the review, timeline, visit brief and FHIR export, works in this browser.</p>
           </Callout>
         )}
 
-        <fieldset className="cg-set-fieldset" disabled={busy}>
-          <legend className="cg-set-legend">Choose a model</legend>
-          <ul className="cg-set-models" role="list">
-            {MODEL_OPTIONS.filter((m, i) => showAll || i < PRIMARY_MODELS || m.id === selected || m.id === llm.model).map((m) => {
-              const isSel = m.id === selected;
-              return (
-                <li key={m.id}>
-                  <label className={cx("cg-set-model", isSel && "is-selected")}>
-                    <input type="radio" name="ai-model" value={m.id} checked={isSel} onChange={() => choose(m.id)} />
-                    <span className="cg-set-model__radio" aria-hidden="true" />
-                    <span className="cg-set-model__main">
-                      <span className="cg-set-model__name">
-                        {m.label}
-                        {m.recommended && (
-                          <Badge tone="primary" size="sm">
-                            Recommended
-                          </Badge>
-                        )}
-                        {cached[m.id] && (
-                          <Badge tone="success" size="sm" icon={<HardDriveDownload size={12} aria-hidden="true" />}>
-                            Downloaded
-                          </Badge>
-                        )}
-                        {llm.model === m.id && loaded && (
-                          <Badge tone="success" size="sm" icon>
-                            Loaded
-                          </Badge>
-                        )}
-                      </span>
-                      <span className="cg-set-model__note">{m.note}</span>
-                    </span>
-                    <span className="cg-set-model__specs ui-num">
-                      <span>{formatMB(m.sizeMB)} download</span>
-                      <span>{formatMB(m.vramMB)} GPU memory</span>
-                      <span>{m.license}</span>
-                    </span>
-                  </label>
-                </li>
-              );
-            })}
-          </ul>
-          {!showAll && hidden > 0 && (
-            <button type="button" className="cg-set-more" onClick={() => setShowAll(true)}>
-              Show {hidden} more {hidden === 1 ? "model" : "models"}
-            </button>
-          )}
-        </fieldset>
+        {unsupported ? <Disclosure summary="See models">{modelPicker}</Disclosure> : modelPicker}
 
-        <div className="cg-set-ai-status" aria-live="polite">
-          {busy ? (
-            <ProgressBar label={llm.message} value={llm.progress > 0 ? llm.progress : null} detail="You can keep using Kinwise while this loads." />
-          ) : (
-            <p className={cx("cg-set-ai-message", llm.status === "error" && "is-error")}>{llm.message}</p>
-          )}
-          {loaded && llm.lastMs != null && <p className="cg-set-help">Last answer took {(llm.lastMs / 1000).toFixed(1)} s.</p>}
-        </div>
+        {!unsupported && (
+          <>
+            <div className="cg-set-ai-status" aria-live="polite">
+              {busy ? (
+                <ProgressBar
+                  label={llm.phase ? loadPhaseLabel(llm.phase, llm.source) : llm.message}
+                  value={llm.phase ? llm.phaseProgress : null}
+                  detail={
+                    llm.phase === "download" && llm.source !== "local"
+                      ? "A one-time download; no personal data is sent. You can keep using Kinwise meanwhile."
+                      : "You can keep using Kinwise while this loads."
+                  }
+                />
+              ) : (
+                <p className={cx("cg-set-ai-message", llm.status === "error" && "is-error")}>{llm.message}</p>
+              )}
+              {loaded && llm.lastMs != null && <p className="cg-set-help">Last answer took {(llm.lastMs / 1000).toFixed(1)} s.</p>}
+            </div>
 
-        <div className="cg-set-actions cg-set-actions--start">
-          {loaded && loadedOption?.id === selected ? (
-            <Button variant="secondary" iconLeft={<Power size={18} />} onClick={unload}>
-              Turn off the model
-            </Button>
-          ) : (
-            <Button variant="primary" iconLeft={<Download size={18} />} onClick={load} loading={busy} disabled={llm.status === "unsupported"}>
-              {loaded ? `Switch to ${option.label}` : cached[selected] ? `Load ${option.label}` : `Download and load ${option.label} (${formatMB(option.sizeMB)})`}
-            </Button>
-          )}
-          {cached[selected] && !(loaded && llm.model === selected) && !busy && (
-            <Button variant="ghost" iconLeft={<Trash2 size={18} />} onClick={remove}>
-              Remove downloaded files
-            </Button>
-          )}
-        </div>
+            <div className="cg-set-actions cg-set-actions--start">
+              {loaded && loadedOption?.id === selected ? (
+                <Button variant="secondary" iconLeft={<Power size={18} />} onClick={unload}>
+                  Turn off the model
+                </Button>
+              ) : (
+                <Button variant="primary" iconLeft={<Download size={18} />} onClick={load} loading={busy}>
+                  {loaded ? `Switch to ${option.label}` : cached[selected] ? `Load ${option.label}` : `Download and load ${option.label} (${formatMB(option.sizeMB)})`}
+                </Button>
+              )}
+              {busy && (
+                <Button variant="ghost" iconLeft={<X size={18} />} onClick={cancelLoad}>
+                  {downloading ? "Cancel download" : "Cancel loading"}
+                </Button>
+              )}
+              {cached[selected] && !(loaded && llm.model === selected) && !busy && (
+                <Button variant="ghost" iconLeft={<Trash2 size={18} />} onClick={remove}>
+                  Remove downloaded files
+                </Button>
+              )}
+            </div>
+          </>
+        )}
 
         <div className="cg-set-does">
           <div>

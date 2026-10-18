@@ -52,6 +52,15 @@
   color: var(--primary-text);
   text-decoration: underline;
 }
+/* "Try the demo" jump button: only where the access card is not beside the headline. */
+.pub-top__try.ui-btn {
+  min-height: 2.75rem;
+}
+@media (min-width: 64rem) {
+  .pub-top__try {
+    display: none;
+  }
+}
 
 .pub-main-welcome {
   flex: 1;
@@ -61,14 +70,21 @@
   outline: none;
 }
 
+/* Phones/tablets: headline, then the way in, then the evidence. Desktop: the access card beside all three. */
 .pub-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "hero" "access" "values";
+  grid-template-areas: "hero" "access" "proof" "values";
   gap: var(--space-6);
 }
 .pub-hero {
   grid-area: hero;
+}
+.pub-hero-proof {
+  grid-area: proof;
+}
+.pub-hero-proof > .pub-privacy {
+  margin-top: 0;
 }
 .pub-values {
   grid-area: values;
@@ -81,8 +97,9 @@
     grid-template-columns: minmax(0, 1.12fr) minmax(23rem, 0.88fr);
     grid-template-areas:
       "hero access"
+      "proof access"
       "values access";
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     column-gap: clamp(var(--space-7), 6vw, 6rem);
     row-gap: var(--space-6);
     align-items: start;
@@ -202,30 +219,56 @@
   flex-wrap: wrap;
 }
 .pub-access__title {
+  scroll-margin-top: var(--space-5);
   font-family: var(--font-serif);
   font-size: var(--fs-2xl);
   font-weight: var(--fw-semibold);
   letter-spacing: -0.015em;
   line-height: 1.15;
 }
+.pub-access__title:focus {
+  outline: none;
+}
+.pub-access__title:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: var(--radius-xs);
+}
 .pub-access__lead {
   margin-top: var(--space-2);
   font-size: var(--fs-sm);
   color: var(--ink-muted);
 }
+
+/* The guided tour is the main way in; the two role cards are the self-guided alternative. */
+.pub-tour {
+  margin-top: var(--space-5);
+}
+.pub-tour__caption {
+  margin-top: var(--space-2);
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
+.pub-roles__label {
+  margin-top: var(--space-5);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+}
 .pub-roles {
   display: grid;
-  gap: var(--space-3);
-  margin-top: var(--space-5);
+  gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 .pub-role {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   width: 100%;
-  min-height: 5rem;
-  padding: var(--space-4) 1.125rem;
+  min-height: 4rem;
+  padding: var(--space-3) var(--space-4);
   border: 1.5px solid var(--line);
   border-radius: 1.125rem;
   background: var(--surface);
@@ -247,8 +290,8 @@
 .pub-role__icon {
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
 }
 .pub-role--patient .pub-role__icon {
@@ -274,50 +317,28 @@
   font-size: var(--fs-sm);
   color: var(--ink-muted);
 }
+/* Secondary weight: a soft arrow, so the tour button stays the one solid action on the card. */
 .pub-role__go {
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
-  background: var(--primary);
-  color: var(--primary-ink);
+  background: var(--primary-soft);
+  color: var(--primary-text);
   transition: transform var(--dur-med) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 .pub-role:hover .pub-role__go {
   transform: translateX(3px);
-  background: var(--primary-hover);
-}
-
-.pub-tour {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  min-height: 3rem;
-  margin-top: var(--space-3);
-  border-radius: var(--radius-pill);
-  color: var(--primary-text);
-  font-weight: var(--fw-semibold);
-}
-.pub-tour span {
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
-  text-underline-offset: 0.22em;
-}
-.pub-tour:hover {
-  background: var(--primary-soft);
-}
-.pub-tour:hover span {
-  text-decoration-color: currentColor;
+  background: var(--primary);
+  color: var(--primary-ink);
 }
 
 .pub-divider {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin: var(--space-4) 0;
+  margin: var(--space-5) 0 var(--space-3);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.06em;
@@ -334,16 +355,17 @@
 
 .pub-form {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 .pub-form__fields {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
   gap: var(--space-3);
 }
 
 .pub-creds {
   width: 100%;
-  margin-top: var(--space-4);
+  margin-top: var(--space-3);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   border-collapse: separate;
@@ -655,16 +677,60 @@
   font-size: var(--fs-sm);
   color: var(--ink-muted);
 }
+.pub-footer-welcome__fine {
+  margin-top: 0.125rem;
+  font-size: var(--fs-xs);
+}
+.pub-footer-welcome__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-footer-welcome__links a {
+  color: var(--primary-text);
+  font-weight: var(--fw-semibold);
+  text-underline-offset: 0.2em;
+}
 
 @media (max-width: 40rem) {
   .pub-top__inner {
     padding-block: var(--space-3);
   }
+  /* One row on phones: logo, "How it works", "Try the demo". */
+  .pub-top__nav {
+    flex-wrap: nowrap;
+    gap: var(--space-1);
+  }
+  .pub-top__link,
+  .pub-top__try.ui-btn {
+    white-space: nowrap;
+  }
+  .pub-top__try.ui-btn {
+    padding-inline: var(--space-3);
+  }
   .pub-top__nav .ui-demo-chip {
     display: none;
   }
+  /* The headline leads on phones; the event label is in the footer. */
+  .pub-kicker {
+    display: none;
+  }
+  .pub-hero__title {
+    margin-top: var(--space-2);
+  }
+  .pub-hero__lead {
+    margin-top: var(--space-4);
+  }
   .pub-access__card {
+    padding: var(--space-5) var(--space-4);
     border-radius: var(--radius-xl);
+  }
+  .pub-tour.ui-btn {
+    padding-inline: var(--space-4);
+    font-size: var(--fs-md);
   }
   .pub-role {
     gap: var(--space-3);
@@ -839,5 +905,11 @@
     flex: none;
     min-width: 5.75rem;
     font-size: var(--fs-lg);
+  }
+}
+/* Very narrow phones (320 px): the top bar keeps the logo and "Try the demo"; "How it works" stays in the footer. */
+@media (max-width: 23rem) {
+  .pub-top__link {
+    display: none;
   }
 }

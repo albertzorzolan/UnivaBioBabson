@@ -1,0 +1,507 @@
+/* How it works: the shorter default page (HowItWorks.tsx). Adds the three-step flow, "Who it's for", the
+   recorded model run, the canonical status table, collapsed reference blocks and denser section spacing.
+   Loads after public-how.css and builds on its tokens and classes. Prefix: pub-how-. */
+
+/* ---- Density ------------------------------------------------------------------- */
+.pub-how {
+  gap: var(--space-3);
+}
+.pub-how .pub-how-section {
+  gap: var(--space-4);
+  padding-top: var(--space-5);
+}
+.pub-how .pub-how-section__head {
+  max-width: 62rem;
+}
+.pub-how .pub-how-section__lead {
+  max-width: 62rem;
+  font-size: var(--fs-md);
+}
+
+/* ---- Problem ------------------------------------------------------------------- */
+@media (min-width: 64rem) {
+  .pub-how-stats--four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.pub-how-stats--four .pub-how-stat {
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+}
+.pub-how-stats--four .pub-how-stat__value {
+  font-size: clamp(2rem, 1.7rem + 1vw, 2.5rem);
+}
+.pub-how-stats--four .pub-how-stat__text {
+  font-size: var(--fs-sm);
+}
+.pub-how-position--compact {
+  padding: var(--space-4) var(--space-5) var(--space-4) calc(var(--space-5) + var(--space-6));
+  border-radius: var(--radius-lg);
+}
+.pub-how-position--compact blockquote {
+  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.3125rem);
+}
+.pub-how-position--compact .pub-how-position__mark {
+  top: var(--space-4);
+  left: var(--space-5);
+}
+
+/* ---- Three steps + who it's for ---------------------------------------------------- */
+.pub-how-flow {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+@media (min-width: 64rem) {
+  .pub-how-flow__steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  .pub-how-for__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-5);
+  }
+  /* The evidence line (with its source) reads better at full width. */
+  .pub-how-for__wide {
+    grid-column: 1 / -1;
+  }
+}
+.pub-how-flow__steps {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-how-flow__step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+.pub-how-flow__num {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+}
+.pub-how-flow__title {
+  margin: 0.125rem 0 0;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+}
+.pub-how-flow__text {
+  margin: var(--space-1) 0 0;
+  max-width: 34rem;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink-muted);
+}
+.pub-how-for {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-tint);
+}
+.pub-how-for__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+}
+.pub-how-for__list {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+}
+.pub-how-for__list > div {
+  display: grid;
+  align-content: start;
+  gap: 0.125rem;
+}
+.pub-how-for__list dt {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--primary-text);
+}
+.pub-how-for__list dd {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink);
+}
+
+/* ---- What is AI here: give the "how it works" column the room, so rows stay short ------------- */
+@media (min-width: 64rem) {
+  .pub-how-table--ai th:first-child {
+    width: 22%;
+  }
+  .pub-how-table--ai thead th:nth-child(2) {
+    width: 44%;
+  }
+}
+
+/* ---- Live evaluation: the two benchmarks side by side until one has results ---------- */
+@media (min-width: 64rem) {
+  .pub-how-eval:not(:has(.pub-how-results)) .pub-how-eval__card {
+    padding: var(--space-5);
+  }
+  .pub-how-eval:not(:has(.pub-how-results)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+  .pub-how-eval:not(:has(.pub-how-results)) > .pub-how-fine {
+    grid-column: 1 / -1;
+  }
+  .pub-how-eval:not(:has(.pub-how-results)) .ui-card__header {
+    flex-wrap: wrap;
+  }
+}
+/* Idle state: one quiet line instead of a dashed box, so both cards stay short before a run. */
+.pub-how-eval .pub-how-idle:not([role="status"]) {
+  padding: 0;
+  border: 0;
+  font-size: var(--fs-sm);
+}
+.pub-how-baseline {
+  color: var(--ink);
+}
+
+/* ---- Recorded model run -------------------------------------------------------------- */
+.pub-how-run {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.pub-how-run__stamp {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink);
+}
+.pub-how-run__stamp svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--primary-text);
+}
+.pub-how-run__stamp code {
+  overflow-wrap: anywhere;
+}
+.pub-how-run__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+.pub-how-run__pair {
+  display: grid;
+  gap: var(--space-4);
+  align-items: start;
+}
+@media (min-width: 64rem) {
+  .pub-how-run__pair {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+}
+.pub-how-run__pair .pub-how-run__asks,
+.pub-how-run__flaws--stack {
+  grid-template-columns: minmax(0, 1fr);
+}
+.pub-how-run__block {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.pub-how-run__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+}
+.pub-how-run__flawed .pub-how-run__title svg {
+  color: var(--attention-ink);
+}
+.pub-how-run__lead,
+.pub-how-run__meta {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.pub-how-run__asks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: var(--space-3);
+  margin: var(--space-1) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-how-run__ask {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.pub-how-run__q {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+}
+.pub-how-run__outcome {
+  margin: 0;
+}
+.pub-how-run__quote {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  font-family: var(--font-serif);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--ink);
+}
+/* App messages (not model text) in the UI face, so the two never look alike. */
+.pub-how-run__quote--system {
+  font-family: inherit;
+  color: var(--ink-muted);
+}
+.pub-how-run__flaws {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-how-run__flaws li {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--attention) 35%, var(--line));
+  border-radius: var(--radius-sm);
+  background: var(--attention-soft);
+  font-size: var(--fs-sm);
+}
+.pub-how-run__flaws--full li {
+  border-color: var(--line);
+  background: var(--surface-sunken);
+}
+.pub-how-run__where {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--attention-ink);
+}
+.pub-how-run__flaws--full .pub-how-run__where {
+  color: var(--ink-muted);
+}
+.pub-how-run__flaw-quote {
+  font-family: var(--font-serif);
+  line-height: 1.5;
+  color: var(--ink);
+}
+.pub-how-run__verdict {
+  margin: 0;
+}
+.pub-how-run__verdict figcaption {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--ink-muted);
+}
+.pub-how-run__verdict blockquote {
+  margin: var(--space-1) 0 0;
+  max-width: 72ch;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--ink);
+}
+
+/* ---- Canonical Working / Partial / Planned table ---------------------------------------- */
+.pub-how-table--canon tbody th {
+  width: 1%;
+  white-space: nowrap;
+}
+.pub-how-canon {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(15.5rem, 100%), 1fr));
+  gap: var(--space-1) var(--space-5);
+}
+.pub-how-canon__item {
+  display: block;
+  line-height: 1.45;
+}
+@media (min-width: 64rem) {
+  .pub-how-canon__item--wide {
+    grid-column: span 2;
+  }
+}
+.pub-how-canon__detail {
+  color: var(--ink-muted);
+}
+@media (max-width: 720px) {
+  .pub-how-table--canon thead {
+    display: none;
+  }
+  .pub-how-table--canon tr {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .pub-how-table--canon tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .pub-how-table--canon th,
+  .pub-how-table--canon td {
+    display: block;
+    width: auto;
+    padding: 0;
+    border: 0;
+  }
+}
+.pub-how-limits {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+}
+.pub-how-limits__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.pub-how-limits__title svg {
+  color: var(--primary-text);
+}
+.pub-how-limits__list {
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+}
+.pub-how-limits .pub-how-more {
+  background: transparent;
+}
+
+/* ---- Privacy + never, side by side -------------------------------------------------------- */
+.pub-how-trust--pair .ui-card__body {
+  gap: var(--space-3);
+}
+.pub-how-trust--pair .pub-how-bullets {
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+}
+
+/* ---- Collapsed reference blocks (native <details>) ------------------------------------------- */
+.pub-how-more-list {
+  display: grid;
+  gap: var(--space-3);
+  align-items: start;
+}
+/* Wide screens: the closed blocks sit side by side; an open one takes the full row. */
+@media (min-width: 64rem) {
+  .pub-how-more-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .pub-how-more-list > .pub-how-more[open] {
+    grid-column: 1 / -1;
+  }
+  .pub-how-more-list > .pub-how-more:not([open]) {
+    height: 100%;
+  }
+  .pub-how-more-list > .pub-how-more:not([open]) > .pub-how-more__summary {
+    height: 100%;
+    align-items: flex-start;
+  }
+}
+.pub-how-more {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.pub-how-more__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 3rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: inherit;
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+}
+.pub-how-more__summary::-webkit-details-marker {
+  display: none;
+}
+.pub-how-more__summary:hover {
+  color: var(--primary-text);
+  background: var(--primary-soft);
+}
+.pub-how-more__summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.pub-how-more__chevron {
+  flex: none;
+  color: var(--primary-text);
+  transition: transform var(--dur-med) var(--ease-out);
+}
+.pub-how-more[open] > .pub-how-more__summary .pub-how-more__chevron {
+  transform: rotate(180deg);
+}
+.pub-how-more[open] > .pub-how-more__summary {
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.pub-how-more__body {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-4);
+}
+.pub-how-more__lead {
+  margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pub-how-more__chevron {
+    transition: none;
+  }
+}
+
+/* ---- Team: links to the code ------------------------------------------------------------------ */
+.pub-how .pub-how-team .pub-how-person {
+  padding: var(--space-3) var(--space-4);
+}
+.pub-how-code {
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+}
+.pub-how-code .pub-how-fine {
+  flex-basis: 100%;
+}
+
+@media print {
+  .pub-how-more:not([open]) {
+    display: none;
+  }
+}

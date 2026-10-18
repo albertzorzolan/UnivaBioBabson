@@ -242,6 +242,16 @@ export function verifySection(
     }
     const v = verifySentence(s, pkg, opts);
     const issues = HANDLE_ECHO.test(s.text) ? [...v.issues, "id_echo: evidence handles belong in evidenceIds, not in the sentence"] : v.issues;
+    // A question's evidence chips must be about what it asks: the runtime audit found every AI question
+    // citing the same "Before vs after · dizziness" chip, including one about Tylenol PM and drowsiness.
+    if (opts.expect === "question") {
+      for (const id of s.evidenceIds) {
+        const item = pkg.items.find((i) => i.id === id);
+        if (item && !sharesTopic(s.text, item, opts.knownDrugNames)) {
+          issues.push(`evidence_topic: ${id} is about something other than what the question asks`);
+        }
+      }
+    }
     if (issues.length === 0) kept.push(s);
     else dropped.push({ section, text: s.text, issues });
   }
@@ -466,6 +476,31 @@ export function isRelevant(question: string, s: BriefSentence, pkg: EvidencePack
   return qm.length > 0 && metricsIn(answer).some((m) => qm.includes(m));
 }
 
+/** Word stems too common in questions and evidence to say what either is about. */
+const GENERIC_TOPIC_STEMS = new Set(
+  "recor diary answe medic contr still neede revie could would shoul given after befor there which other alter optio choic best worth inclu since start check".split(" "),
+);
+
+/**
+ * Is one cited evidence item about what a question asks? Medicines decide first: when both name medicines,
+ * they must share one ("Tylenol PM" ≠ the lorazepam signal; "Ativan" = "Lorazepam (Ativan)"). Otherwise the
+ * same diary symptom, or a shared uncommon word stem ("anticholinergic"), is enough. Two kinds of item fit
+ * any question, as the app's own questions use them: a general fact with no medicine or symptom (diary
+ * coverage, behind "on 26 answered days"), and any medicine item when the question asks about "these
+ * medicines" without naming one. Exported for tests.
+ */
+export function sharesTopic(question: string, item: EvidenceItem, vocab: string[] = KB_DRUG_NAMES): boolean {
+  const qDrugs = detectDrugNames(question, vocab);
+  const iDrugs = new Set(detectDrugNames(item.text, vocab));
+  if (item.kind === "fact" && !iDrugs.size && !metricsIn(item.text).length) return true;
+  if (qDrugs.length && iDrugs.size) return qDrugs.some((d) => iDrugs.has(d));
+  if (!qDrugs.length && iDrugs.size && /\b(?:medicines?|medications?|meds)\b/i.test(question)) return true;
+  const qm = metricsIn(question);
+  if (qm.length && metricsIn(item.text).some((m) => qm.includes(m))) return true;
+  const a = stems(item.text);
+  return [...stems(question)].some((w) => !GENERIC_TOPIC_STEMS.has(w) && a.has(w));
+}
+
 function emptyReport(): TaskReport {
   return { raw: "", model: getLLMState().model ?? "", ms: 0, promptTokens: null, completionTokens: null, salvaged: false, dropped: [], evidenceShown: [], edits: [], perf: null };
 }
@@ -482,6 +517,36 @@ const INSTRUCTION_CUE =
 const NEAR_FALL_CUE = /\b(?:nearly|almost|near|caught (?:my|her|him)sel(?:f|ves)|lost (?:my|her|his) (?:balance|footing)|stumbl|trip(?:ped)?|wobbl|grab(?:bed)?)/i;
 const OVERNIGHT_CUE = /\b(?:last night|overnight|during the night|in the night|this morning)\b/i;
 const EXPLICIT_RATING = /\b([1-5])\s*(?:out of|\/|of)\s*(?:5|five)\b/i;
+
+/**
+ * Words a quote needs before it can support a field. The live run accepted dizziness = yes quoted from
+ * "Slept like a log last night" and a sleep rating from "Pretty tired today, no energy at all".
+ */
+const DIZZY_CUE = /\bdizz|\bwoozy|\blight-?headed|\bspinning|\bunsteady|\bwobbl|\bgiddy|\bvertigo|\boff balance|\bhead (?:was )?swimming/i;
+const FIELD_CUES: Record<DiaryField, RegExp> = {
+  dizziness: DIZZY_CUE,
+  dizzinessSeverity: DIZZY_CUE,
+  drowsiness: /\bdrows|\bsleepy|\bnodd(?:ing|ed) off|\bnod off|\bdoz(?:e|ed|ing)|\bgroggy|\beyes open|\bstay awake|\bnap|\bdrift(?:ing|ed)? off/i,
+  confusion: /\bconfus|\bmuddl|\bfogg?y?\b|\bmemory|\bforg[eo]t|\bmixed up|\bdisorient|\blost track|\bcouldn't find|\bcould not find/i,
+  fall: /\bfell\b|\bfalls?\b|\btumble|\bon the floor|\bwent down|\bslipped/i,
+  nearFall: new RegExp(`${NEAR_FALL_CUE.source}|\\bfell\\b|\\bfalls?\\b|\\bbalance`, "i"),
+  swelling: /\bswell|\bswollen|\bpuffy|\bo?edema|\bankles?\b|\bshoes? (?:felt |were )?tight/i,
+  energy: /\benergy|\btired|\bwiped out|\bexhaust|\bfatigue|\bworn out|\bsluggish|\bdrained|\bget up and go|\bpep\b|\blively|\bwhacked|\bknackered/i,
+  sleep: /\bslept|\bsleep|\bnight|\bawake|\binsomnia|\bbed\b|\bwink|\btoss|\brestless|\bwoke|\brested/i,
+  appetite: /\bappetite|\beat(?:ing|en)?\b|\bate\b|\bhungry|\bfood|\bmeals?\b|\bbreakfast|\blunch|\bdinner|\bpeckish/i,
+};
+const FIELD_LABELS: Record<DiaryField, string> = {
+  dizziness: "dizziness",
+  dizzinessSeverity: "dizziness",
+  drowsiness: "drowsiness",
+  confusion: "confusion",
+  fall: "a fall",
+  nearFall: "a near-fall",
+  swelling: "swelling",
+  energy: "energy",
+  sleep: "sleep",
+  appetite: "appetite",
+};
 
 export interface RefineRejection {
   field: string;
@@ -621,6 +686,11 @@ export function checkRefinements(
         continue;
       }
     }
+    // Last, so the more specific reasons above are reported first.
+    if (!FIELD_CUES[field].test(span.quote)) {
+      reject(field, span.quote, `the quoted words do not mention ${FIELD_LABELS[field]}`);
+      continue;
+    }
     added.push({
       field,
       value,
@@ -667,11 +737,15 @@ interface ExplainOutput {
   sentences?: unknown;
 }
 
-/** Verify explanation sentences against the finding + KB text only. Pure; exported for tests. */
+/**
+ * Verify explanation sentences against the finding + KB text only. Pure; exported for tests.
+ * `patientNames` turns on the patient-scoped rules for "Margaret"; without them the medicine-scoped rule
+ * still bans "can cause" in any sentence that names a medicine (the live run's escape).
+ */
 export function checkExplanation(
   f: Finding,
   rawSentences: unknown,
-  opts: { kbText?: string[]; medNames?: string[] } = {},
+  opts: { kbText?: string[]; medNames?: string[]; patientNames?: string[] } = {},
 ): { kept: string[]; dropped: DroppedSentence[] } {
   const support = [f.title, f.plain, f.clinician, f.question, f.evidenceGrade ?? "", ...(opts.kbText ?? [])].filter(Boolean);
   const kept: string[] = [];
@@ -680,6 +754,7 @@ export function checkExplanation(
     const text = normalizeSentence(typeof raw === "string" ? raw : String((raw as { text?: unknown })?.text ?? ""));
     const issues = verifyClaims(text, support, {
       medNames: opts.medNames,
+      patientNames: opts.patientNames,
       knownDrugNames: KB_DRUG_NAMES,
       expect: "statement",
       maxLength: 260,
@@ -697,7 +772,7 @@ export function checkExplanation(
  */
 export async function aiExplainFinding(
   f: Finding,
-  opts: { kbText?: string[]; medNames?: string[]; timeoutMs?: number } = {},
+  opts: { kbText?: string[]; medNames?: string[]; patientNames?: string[]; timeoutMs?: number } = {},
 ): Promise<{ text: string; sentences: string[]; dropped: number; ms: number; report: TaskReport } | null> {
   if (!isModelReady()) return null;
   const r = await generateJSON<ExplainOutput>({

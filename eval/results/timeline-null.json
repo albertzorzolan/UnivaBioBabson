@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-10-18T00:27:10.221Z",
+  "method": "src/engine/timeline/signals.null.test.ts: 45-day simulated diaries, 15% of days unanswered, a medicine started 16 days ago, no real effect. Independent: every day drawn afresh. Clustered: each item repeats yesterday's answer with probability `stay`, otherwise it is drawn from the same base rate (same long-run rates). Rates are the share of simulated changes with at least one moderate-or-strong signal (moderateRate), at least one strong signal (strongRate), or any weak-or-stronger difference. Each row uses n = 1,000 simulated changes, so it is noisier than the 8,000-change figures in rules.ts and docs/EVALUATION.md (e.g. independent strongRate 0.003 = 3 of 1,000 vs about 0.8% with 8,000; the app's 'about 1 in 100' rounds the 8,000-change figure). stay values are assumed levels of clustering, not measured from real diaries.",
+  "independent": {
+    "scenario": "typical",
+    "moderateRate": 0.112,
+    "strongRate": 0.003,
+    "weakOrStrongerRate": 0.505,
+    "n": 1000
+  },
+  "clustered": {
+    "scenario": "typical",
+    "stay": 0.8,
+    "moderateRate": 0.858,
+    "strongRate": 0.61,
+    "weakOrStrongerRate": 0.97,
+    "n": 1000
+  },
+  "additional": [
+    {
+      "scenario": "typical",
+      "stay": 0.5,
+      "moderateRate": 0.584,
+      "strongRate": 0.201,
+      "weakOrStrongerRate": 0.907,
+      "n": 1000
+    },
+    {
+      "scenario": "typical",
+      "stay": 0.3,
+      "moderateRate": 0.346,
+      "strongRate": 0.074,
+      "weakOrStrongerRate": 0.793,
+      "n": 1000
+    },
+    {
+      "scenario": "frequent",
+      "stay": 0,
+      "moderateRate": 0.192,
+      "strongRate": 0.036,
+      "weakOrStrongerRate": 0.677,
+      "n": 1000
+    },
+    {
+      "scenario": "frequent",
+      "stay": 0.8,
+      "moderateRate": 0.96,
+      "strongRate": 0.811,
+      "weakOrStrongerRate": 0.996,
+      "n": 1000
+    }
+  ]
+}

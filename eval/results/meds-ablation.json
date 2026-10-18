@@ -1,0 +1,90 @@
+{
+  "generatedAt": "2026-10-17T23:32:10.445Z",
+  "method": "eval/meds.ablation.test.ts: every case in eval/med-cases.json scored by the eval/medsRunner.ts case runner against the production engine and against stub engines (eval/ablations/*.ts) that remove one piece of knowledge from the knowledge base. passed/total count cases (a case passes when all its expectations pass).",
+  "caseFileVersion": "1.0.0",
+  "runs": [
+    {
+      "name": "production",
+      "description": "None (production engine and knowledge base)",
+      "passed": 57,
+      "total": 57,
+      "expectationsPassed": 295,
+      "expectationsTotal": 295,
+      "failedCases": []
+    },
+    {
+      "name": "reversed-order",
+      "description": "Medication list given in reverse order (control: nothing removed)",
+      "passed": 57,
+      "total": 57,
+      "expectationsPassed": 295,
+      "expectationsTotal": 295,
+      "failedCases": []
+    },
+    {
+      "name": "no-falls-rule",
+      "description": "Beers \"history of falls\" rule for anticholinergics, antipsychotics, benzodiazepines and Z-drugs removed (KB rule cond-falls)",
+      "passed": 54,
+      "total": 57,
+      "expectationsPassed": 289,
+      "expectationsTotal": 295,
+      "failedCases": [
+        "mc-falls-profile-cns",
+        "mc-cascade-oab-chei-falls",
+        "mc-seed-margaret"
+      ]
+    },
+    {
+      "name": "no-cascades",
+      "description": "All prescribing-cascade rules removed",
+      "passed": 49,
+      "total": 57,
+      "expectationsPassed": 287,
+      "expectationsTotal": 295,
+      "failedCases": [
+        "mc-haloperidol-benztropine-cascade",
+        "mc-cascade-ccb-loop",
+        "mc-cascade-acei-cough",
+        "mc-cascade-chei-oab",
+        "mc-cascade-oab-chei-falls",
+        "mc-cascade-metoclopramide-levodopa",
+        "mc-cascade-thiazide-allopurinol",
+        "mc-seed-margaret"
+      ]
+    },
+    {
+      "name": "acb-zero",
+      "description": "ACB scores set to 0 for every ingredient",
+      "passed": 33,
+      "total": 57,
+      "expectationsPassed": 267,
+      "expectationsTotal": 295,
+      "failedCases": [
+        "mc-ativan-seroquel-sleep",
+        "mc-advil-pm-combo",
+        "mc-paxil-zoloft-duplicate",
+        "mc-dabigatran-digoxin",
+        "mc-ui-woman-alpha-estrogen-nitrofurantoin",
+        "mc-haloperidol-benztropine-cascade",
+        "mc-falls-profile-cns",
+        "mc-dementia",
+        "mc-delirium",
+        "mc-parkinson",
+        "mc-bph-men",
+        "mc-opioid-benzo",
+        "mc-cns-three-muscle-relaxant",
+        "mc-cns-two-plus-antihistamine",
+        "mc-acb-seven",
+        "mc-ras-ksparing-ckd",
+        "mc-warfarin-theophylline-cimetidine-cipro",
+        "mc-phenytoin-warfarin-tmpsmx",
+        "mc-lithium-acei-loop",
+        "mc-acb-low",
+        "mc-frid-cardiovascular-ticagrelor",
+        "mc-cascade-chei-oab",
+        "mc-cascade-oab-chei-falls",
+        "mc-seed-margaret"
+      ]
+    }
+  ]
+}

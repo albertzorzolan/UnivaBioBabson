@@ -32,6 +32,19 @@ function Cell({ x, y, kind }: { x: number; y: number; kind: StripCell }) {
   }
 }
 
+/** The row labels ("Dizzy", "Drowsy", …) at their row positions; shared by the chart and its pinned phone copy. */
+function RowLabels({ chart }: { chart: StripChart }) {
+  return (
+    <>
+      {chart.rows.map((r, ri) => (
+        <text key={r.key} className="cg-vb-strip__label" x={0} y={TOP + ri * ROW_H + ROW_H / 2 + 3.5}>
+          {r.label}
+        </text>
+      ))}
+    </>
+  );
+}
+
 function describe(chart: StripChart): string {
   const verb = chart.event === "started" ? "start" : "stop";
   const rows = chart.rows
@@ -44,14 +57,18 @@ export function BeforeAfterStrip({ chart, idPrefix }: { chart: StripChart; idPre
   const n = chart.days.length;
   const width = LABEL_W + n * CELL + COUNT_W;
   const height = TOP + chart.rows.length * ROW_H + BOTTOM;
+  // The pinned label copy covers only the rows band, so the "After · started …" heading above it stays readable.
+  const pinnedH = chart.rows.length * ROW_H + 8;
   const gridX = LABEL_W;
   const eventX = gridX + chart.eventIndex * CELL;
   const titleId = `${idPrefix}-strip-title`;
   const verb = chart.event === "started" ? "started" : "stopped";
   return (
     <figure className="cg-vb-strip">
-      {/* On a phone the strip keeps a readable size and scrolls sideways instead of shrinking (brief.css). */}
-      <ScrollRegion className="cg-vb-strip-scroll" label="Before and after chart (scrolls sideways)">
+      {/* On a phone the strip keeps a readable size and scrolls sideways instead of shrinking (brief.css). It opens
+          on its right end, so the "after" days and the before/after counts are what a phone shows first. On wider
+          screens the strip fits and startAtEnd has nothing to scroll. */}
+      <ScrollRegion className="cg-vb-strip-scroll" label="Before and after chart (scrolls sideways)" startAtEnd>
         <svg
           className="cg-vb-strip__svg"
           viewBox={`0 0 ${width} ${height}`}
@@ -77,13 +94,11 @@ export function BeforeAfterStrip({ chart, idPrefix }: { chart: StripChart; idPre
           <text className="cg-vb-strip__colhead" x={gridX + n * CELL + 52} y={TOP - 9}>
             After
           </text>
+          <RowLabels chart={chart} />
           {chart.rows.map((r, ri) => {
             const y = TOP + ri * ROW_H;
             return (
               <g key={r.key}>
-                <text className="cg-vb-strip__label" x={0} y={y + ROW_H / 2 + 3.5}>
-                  {r.label}
-                </text>
                 {r.cells.map((c, i) => (
                   <Cell key={i} x={gridX + i * CELL} y={y} kind={c} />
                 ))}
@@ -105,6 +120,18 @@ export function BeforeAfterStrip({ chart, idPrefix }: { chart: StripChart; idPre
           </text>
         </svg>
       </ScrollRegion>
+      {/* Phone only, while the strip scrolls (brief.css): a copy of the label column pinned over the left edge of the
+          rows band, at the strip's phone scale, so the rows stay named when the strip opens on its "after" end.
+          Decorative: the chart's <title> already describes every row. */}
+      <svg
+        className="cg-vb-strip__pinned"
+        viewBox={`0 ${TOP - 4} ${LABEL_W - 4} ${pinnedH}`}
+        aria-hidden="true"
+        focusable="false"
+        style={{ "--strip-label-w": `${LABEL_W - 4}px`, "--strip-label-top": `${TOP - 4}px` } as CSSProperties}
+      >
+        <RowLabels chart={chart} />
+      </svg>
       <figcaption className="cg-vb-strip__legend">
         <span>
           <svg width="9" height="9" aria-hidden="true">

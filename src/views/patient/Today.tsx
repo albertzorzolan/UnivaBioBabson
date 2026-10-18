@@ -4,7 +4,8 @@
 //             ──► quick form (pre-filled only where she said it outright) ──► "Is this right?" ──► saved
 //
 // ?date=YYYY-MM-DD opens one of the last 7 days for changes; ?example=1|2|3 fills and reads one of the
-// example stories (used by the guided tour). Nothing is saved until she confirms.
+// example stories (used by the guided tour). Nothing is saved until she confirms; words she has typed but not
+// saved yet survive a refresh (storyDraft.ts, sessionStorage only).
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Lock, MessageSquareQuote, Sparkles } from "lucide-react";
 import type { CheckIn, DiaryAnswers, DiaryField, ISODate, OtherSymptom, Proposal } from "../../model/types";
@@ -35,6 +36,7 @@ import {
 import { HeardPanel, conceptLabel, type AiState } from "./HeardPanel";
 import { QuickForm } from "./QuickForm";
 import { DaySummary, NoteComposer, pickWeeklySentence } from "./SavedDay";
+import { clearStoryDraft, readStoryDraft, writeStoryDraft } from "./storyDraft";
 import "./patient.css";
 
 /** Example days in Margaret's voice. Each one exercises a different part of the reading. */
@@ -97,7 +99,10 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
   const { data, today, update } = useStore();
   const { active } = useDerived();
   const llm = useLLM();
-  const [story, setStory] = useState(existing?.story ?? "");
+  // An unsaved draft for this day (kept across a refresh) wins over the saved story.
+  const [draft] = useState(() => readStoryDraft(date));
+  const [story, setStory] = useState(draft ?? existing?.story ?? "");
+  const restoredDraft = draft !== null && draft !== (existing?.story ?? "") && story === draft;
   const [reading, setReading] = useState<Reading | null>(null);
   const [form, setForm] = useState<CheckInForm>(() => (existing ? formFromCheckIn(existing) : emptyForm()));
   const [others, setOthers] = useState<OtherSymptom[]>(existing?.otherSymptoms ?? []);
@@ -114,6 +119,12 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
   const dayWord = isToday ? "today" : weekday(date);
 
   useEffect(() => warmUpNlp(), []);
+
+  // Keep what she is typing until it is saved; text equal to the saved story is not a draft.
+  useEffect(() => {
+    if (story === (existing?.story ?? "")) clearStoryDraft(date);
+    else writeStoryDraft(date, story);
+  }, [story, date, existing]);
 
   const read = (text: string) => {
     if (!text.trim()) {
@@ -210,6 +221,7 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
       setError(r.error);
       return;
     }
+    clearStoryDraft(date);
     onSaved();
   };
 
@@ -239,6 +251,7 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
           rows={4}
           maxLength={2000}
           value={story}
+          hint={restoredDraft ? "We kept the words you hadn’t saved yet." : undefined}
           error={storyError ?? undefined}
           placeholder="e.g. Felt a bit woozy getting up this morning, slept badly, no falls."
           onChange={(e) => {
@@ -314,7 +327,14 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
         </div>
         <div className="pt-savebar__actions">
           {onCancel && (
-            <Button variant="ghost" size="lg" onClick={onCancel}>
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => {
+                clearStoryDraft(date);
+                onCancel();
+              }}
+            >
               Keep my saved answers
             </Button>
           )}

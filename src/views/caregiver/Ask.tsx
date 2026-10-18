@@ -6,7 +6,8 @@
 //                      with evidence chips that open the records behind it.
 //   aiAnswer           only when the on-device model is loaded: a plainer-language draft labelled
 //                      "AI draft · on this device · <model> · <time>", checked sentence by sentence. If it fails or
-//                      every sentence is dropped, the records-based answer simply stays.
+//                      every sentence is dropped, the records-based answer simply stays. A draft that only repeats
+//                      the records answer (or is empty) is not shown twice: one muted line says so instead.
 // The conversation lives in component state (nothing is stored); saved visit questions go to data.savedQuestions.
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { ArrowUp, BookOpenCheck, Check, FileText, ListChecks, MessageCircleQuestion, PhoneCall, RotateCcw, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
@@ -20,6 +21,7 @@ import { useDerived } from "../../app/useDerived";
 import { href } from "../../app/router";
 import { AIBadge, Badge, Button, ButtonLink, PageHeader, Skeleton, cx, useToast } from "../../ui";
 import { EvidenceChips, EvidenceDrawer } from "./brief/EvidenceDrawer";
+import { normalize, repeatsRecords } from "./askDraft";
 import "./ask.css";
 
 const MAX_CHARS = 400;
@@ -42,9 +44,8 @@ interface Turn {
   savedId: string | null;
 }
 
-function normalize(t: string): string {
-  return t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-}
+/** Shown instead of an AI draft that is empty or adds nothing to the records answer. */
+const ALREADY_PLAIN = "The records answer is already plain.";
 
 export function Ask() {
   const { data, today, update } = useStore();
@@ -113,10 +114,11 @@ export function Ask() {
         patchTurn(id, (t) => ({ ...t, ai: null }));
         return;
       }
-      if (res.status === "not_in_records" || res.sentences.length === 0) {
+      // Nothing to add (empty, or the same words as the records answer): one muted line, not a duplicate block.
+      if (res.status === "not_in_records" || res.sentences.length === 0 || repeatsRecords(res.sentences, result.deterministicAnswer)) {
         patchTurn(id, (t) => ({
           ...t,
-          ai: { status: "empty", sentences: [], ms: res.ms, model: modelLabel, dropped: res.dropped, note: "The on-device AI had nothing to add beyond the records above." },
+          ai: { status: "empty", sentences: [], ms: res.ms, model: modelLabel, dropped: res.dropped, note: ALREADY_PLAIN },
         }));
         return;
       }
@@ -319,7 +321,7 @@ export function Ask() {
             </h2>
             <p className="cg-ask-card__text" aria-live="polite">
               {aiReady
-                ? `${modelLabel ?? "The model"} adds a plainer-language draft under each answer. Every sentence is checked against the records first.`
+                ? `${modelLabel ?? "The model"} adds a plainer-language draft under an answer when it can say it more simply. Every sentence is checked against the records first.`
                 : llm.status === "loading"
                   ? `Loading (${Math.round(llm.progress * 100)}%). Answers from the records work meanwhile.`
                   : "Answers come straight from the records. Optionally, load the on-device AI in Settings for a plainer-language draft."}

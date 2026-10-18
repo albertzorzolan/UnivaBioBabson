@@ -1,33 +1,39 @@
 // How Kinwise works — the page for judges and clinicians (SPEC §4, §5, §9, §12; SPEC-UI "Public").
 //
-//   problem anchor → architecture → "What is AI here?" → LIVE evaluation (NLP benchmark + medication-review
-//   case suite, both run in this browser) → knowledge-base coverage + source register → finished vs planned
-//   + limitations → privacy, regulatory positioning, what Kinwise never does → team.
+// Visible by default (what a judge needs in a few minutes):
+//   problem → three steps + who it's for → "What is AI here?" → LIVE evaluation (NLP benchmark + medication-review
+//   case suite, both run in this browser) → a recorded real model run → finished / partial / planned + limits
+//   → privacy and what Kinwise never does → team and source code.
+// Behind native <details> in "Reference": the architecture diagram, knowledge-base coverage with every source,
+// and the regulatory notes. Deep links (?section=…) open the block they point to.
 //
 // Every number about Kinwise itself (scores, KB counts) is computed on this page from the code and data that
-// ship with it; the research figures in the problem section are quoted with their sources.
+// ship with it, or read from a committed results file named next to it; the research figures are quoted with
+// their sources (howContent.ts).
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   BookOpenCheck,
+  ChevronDown,
   CircleCheck,
   CircleDashed,
   CircleSlash,
   Clock3,
+  Code,
   Cpu,
+  FileText,
   FlaskConical,
   Gauge,
-  Landmark,
+  History,
   ListChecks,
   LockKeyhole,
   PlayCircle,
-  Quote,
   ScanText,
   ShieldCheck,
   Sparkles,
   Timer,
-  UsersRound,
+  TriangleAlert,
 } from "lucide-react";
-import { Avatar, Badge, Button, Callout, Card, CardBody, CardHeader, Disclosure, PageHeader, SourceCitation, useMediaQuery } from "../../ui";
+import { Avatar, Badge, Button, ButtonLink, Callout, Card, CardBody, CardHeader, cx, Disclosure, PageHeader, SourceCitation, useMediaQuery } from "../../ui";
 import { KB, kbCoverage } from "../../kb";
 import { CATEGORY_LABEL } from "../../engine/meds/review";
 import type { DiaryField, FindingCategory } from "../../model/types";
@@ -36,50 +42,31 @@ import { startTour } from "../../app/Tour";
 import { useRoute } from "../../app/router";
 import { HowArchitecture } from "./HowArchitecture";
 import { runMedSuite, runNlpBenchmark, type CorpusRun, type MedRun, type NlpRun } from "./howEval";
+import { FLOW_STEPS, PROBLEM_STATS, REFS, WHO_FOR, type Ref } from "./howContent";
+import { LIMITATIONS, statusGroups, type Status } from "./howStatus";
+import { RECORDED_RUN, RED_TEAM, RED_TEAM_SENTENCE, type RecordedAsk } from "./modelRun";
+import { HELDOUT_BASELINE_F1 } from "./proofPoints";
+import { CODE_TOUR_URL, SOURCE_CODE_URL } from "./links";
 import "./public-how.css";
+import "./how-extras.css";
 
 // ---------------------------------------------------------------------------------------------
-// Static content (research quotes — each with its source)
-
-interface Ref {
-  short: string;
-  citation: string;
-  url: string;
-}
-
-const REFS = {
-  gandhi: { short: "Gandhi, NEJM 2003", citation: "Gandhi TK et al. Adverse drug events in ambulatory care. N Engl J Med 2003;348:1556–64.", url: "https://pubmed.ncbi.nlm.nih.gov/12700376/" },
-  cdcFalls: { short: "CDC, Older Adult Falls", citation: "CDC. Facts About Older Adult Falls (updated 2026).", url: "https://www.cdc.gov/falls/data-research/facts-stats/index.html" },
-  nchs: { short: "NCHS, Health, United States", citation: "NCHS. Health, United States — Prescription drug use (2017–March 2020).", url: "https://www.cdc.gov/nchs/hus/topics/rx-drug-use.htm" },
-  budnitz2011: { short: "Budnitz, NEJM 2011", citation: "Budnitz DS et al. Emergency hospitalizations for adverse drug events in older Americans. N Engl J Med 2011;365:2002–12.", url: "https://pubmed.ncbi.nlm.nih.gov/22111719/" },
-  shehab: { short: "Shehab, JAMA 2016", citation: "Shehab N et al. US emergency department visits for outpatient adverse drug events, 2013–2014. JAMA 2016;316:2115–25.", url: "https://pubmed.ncbi.nlm.nih.gov/27893129/" },
-  gallifant: { short: "Gallifant, JCO CCI 2025", citation: "Gallifant J et al. Reliability of large language model knowledge across brand and generic cancer drug names. JCO Clin Cancer Inform 2025;9:e2400257.", url: "https://pubmed.ncbi.nlm.nih.gov/40523223/" },
-  blotske: { short: "Blotske, JMCP 2026", citation: "Blotske K et al. Drug-drug interaction identification using large language models. J Manag Care Spec Pharm 2026;32(9):1076–89.", url: "https://pubmed.ncbi.nlm.nih.gov/41503479/" },
-  socrates: { short: "Socrates, JMIR Aging 2025", citation: "Socrates V, Wright DS et al. Identifying deprescribing opportunities with large language models in older adults. JMIR Aging 2025;8:e69504.", url: "https://pubmed.ncbi.nlm.nih.gov/40215480/" },
-  ong: { short: "Ong, Cell Rep Med 2025", citation: "Ong JCL et al. Large language model as clinical decision support system augments medication safety in 16 clinical specialties. Cell Rep Med 2025;6(10):102323.", url: "https://pubmed.ncbi.nlm.nih.gov/40997804/" },
-  harkema: { short: "Harkema, JBI 2009", citation: "Harkema H et al. ConText: an algorithm for determining negation, experiencer, and temporal status from clinical reports. J Biomed Inform 2009;42:839–51.", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2757457/" },
-  grundy: { short: "Grundy, BMJ 2019", citation: "Grundy Q et al. Data sharing practices of medicines related apps and the mobile ecosystem. BMJ 2019;364:l920.", url: "https://pubmed.ncbi.nlm.nih.gov/30894349/" },
-  fdaMma: { short: "FDA, Device Software Functions (2022)", citation: "FDA. Policy for Device Software Functions and Mobile Medical Applications (Sept 2022), Appendices A and B.", url: "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/policy-device-software-functions-and-mobile-medical-applications" },
-  fdaCds: { short: "FDA, CDS guidance (Jan 2026)", citation: "FDA. Clinical Decision Support Software — final guidance (Jan 29, 2026).", url: "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software" },
-} satisfies Record<string, Ref>;
-
-const PROBLEM_STATS: { value: string; text: string; source: Ref }[] = [
-  { value: "37%", text: "of fixable side effects in primary care persisted because the patient never told the doctor about the symptom.", source: REFS.gandhi },
-  { value: "63%", text: "persisted because medication-related symptoms were not acted on. Noticing is not enough — it has to reach the visit.", source: REFS.gandhi },
-  { value: "< 1 in 2", text: "older adults who fall tell their doctor, though more than 1 in 4 fall each year.", source: REFS.cdcFalls },
-  { value: "43%", text: "of US adults 65 and older took five or more prescription medicines in the past month.", source: REFS.nchs },
-];
+// Static content (research quotes live in howContent.ts, each with its source)
 
 const SECTIONS: { id: string; label: string }[] = [
-  { id: "how-problem", label: "The problem" },
-  { id: "how-architecture", label: "Architecture" },
+  { id: "how-problem", label: "Problem" },
+  { id: "how-flow", label: "Who it’s for" },
   { id: "how-ai", label: "What is AI here?" },
   { id: "how-evaluation", label: "Live evaluation" },
-  { id: "how-knowledge", label: "Knowledge base" },
+  { id: "how-model-run", label: "Recorded AI run" },
   { id: "how-honesty", label: "Finished vs planned" },
-  { id: "how-trust", label: "Privacy & regulation" },
-  { id: "how-team", label: "Team" },
+  { id: "how-trust", label: "Privacy" },
+  { id: "how-reference", label: "Sources" },
+  { id: "how-team", label: "Team & code" },
 ];
+
+/** Collapsed reference blocks that ?section= may also open (older links used these ids as sections). */
+const REFERENCE_BLOCKS = ["how-architecture", "how-knowledge", "how-regulation"];
 
 const FIELD_LABEL: Record<DiaryField, string> = {
   energy: "Energy (1–5)",
@@ -139,16 +126,15 @@ function RefLink({ r }: { r: Ref }) {
   return <SourceCitation source={{ short: r.short, url: r.url, citation: r.citation }} variant="inline" />;
 }
 
+/** One page section. The h2 carries the section's name (no separate label above it), so the page stays short. */
 function Section({
   id,
-  eyebrow,
   title,
   lead,
   tour,
   children,
 }: {
   id: string;
-  eyebrow: string;
   title: ReactNode;
   lead?: ReactNode;
   tour?: string;
@@ -157,7 +143,6 @@ function Section({
   return (
     <section id={id} className="pub-how-section" aria-labelledby={`${id}-title`} data-tour={tour}>
       <header className="pub-how-section__head">
-        <p className="ui-eyebrow">{eyebrow}</p>
         <h2 id={`${id}-title`} className="pub-how-section__title" tabIndex={-1}>
           {title}
         </h2>
@@ -182,7 +167,11 @@ function ScoreBar({ value }: { value: number }) {
 
 type RunState<T> = { status: "idle" } | { status: "running" } | { status: "done"; run: T } | { status: "error"; message: string };
 
-function Scorecard({ title, note, c }: { title: string; note: string; c: CorpusRun }) {
+/**
+ * One corpus' scores. `baseline` (held-out only) is the lexicon-only F1 from the committed results file, shown for
+ * comparison when that file has one; it is not re-run live.
+ */
+function Scorecard({ title, note, c, baseline = null }: { title: string; note: string; c: CorpusRun; baseline?: number | null }) {
   const r = c.report;
   return (
     <div className="pub-how-score">
@@ -196,6 +185,14 @@ function Scorecard({ title, note, c }: { title: string; note: string; c: CorpusR
           micro-F1 over {r.micro.support} labelled answers
           <br />
           precision {pct(r.micro.precision)} · recall {pct(r.micro.recall)}
+          {baseline !== null && (
+            <>
+              <br />
+              <span className="pub-how-baseline">
+                versus lexicon-only baseline {pct(baseline)} <span className="pub-how-muted">(ConText off; committed results)</span>
+              </span>
+            </>
+          )}
         </span>
       </div>
       <dl className="pub-how-score__grid">
@@ -262,7 +259,12 @@ function NlpResults({ run }: { run: NlpRun }) {
       <div className="pub-how-scores" data-tour="how-eval-scores">
         <Scorecard title="Development set" note={`${dev.report.cases} stories, used while building the rules`} c={dev} />
         {heldout ? (
-          <Scorecard title="Held-out set" note={`${heldout.report.cases} stories written independently, never used for tuning`} c={heldout} />
+          <Scorecard
+            title="Held-out set"
+            note={`${heldout.report.cases} stories written independently, never used for tuning`}
+            c={heldout}
+            baseline={HELDOUT_BASELINE_F1}
+          />
         ) : (
           <Callout tone="neutral" title="Held-out set not found">
             Only the development set was available in this build.
@@ -548,7 +550,7 @@ function LiveEvaluation() {
           icon={<ScanText size={20} />}
           eyebrow="Benchmark 1 · clinical language processing"
           title="Does it hear her correctly?"
-          subtitle="Hundreds of fictional check-in stories, each labelled by hand with the answers a careful reader would record — including negations, other people’s falls, past events and “what ifs”."
+          subtitle="Hundreds of fictional check-in stories, labelled by hand, including negations, other people’s falls, past events and “what ifs”."
           actions={
             <Button variant="primary" iconLeft={<PlayCircle size={18} />} loading={nlp.status === "running"} onClick={runNlp}>
               {nlp.status === "done" ? "Run again" : "Run the extraction benchmark now"}
@@ -575,7 +577,7 @@ function LiveEvaluation() {
           icon={<ListChecks size={20} />}
           eyebrow="Benchmark 2 · medication review"
           title="Does it flag what the criteria say?"
-          subtitle="Independent test cases written from the published criteria (AGS Beers 2023, ACB, STEADI/STOPPFall, ThinkCascades, STOPP/START) by an author who did not read the engine. Medicine names are typed the way a family would."
+          subtitle="Test cases written from the published criteria (AGS Beers 2023, ACB, STEADI/STOPPFall, ThinkCascades, STOPP/START) by an author who did not read the engine."
           actions={
             <Button variant="secondary" iconLeft={<PlayCircle size={18} />} loading={med.status === "running"} onClick={runMed}>
               {med.status === "done" ? "Run again" : "Run the medication-review suite"}
@@ -596,8 +598,8 @@ function LiveEvaluation() {
       </Card>
 
       <p className="pub-how-fine">
-        Both suites also run in continuous testing (<code>npm run eval:nlp</code>, <code>npm run eval:meds</code>). These
-        are fictional, author-written cases: they show the software does what the criteria say, not that it improves care.
+        Both also run in continuous testing (<code>npm run eval:nlp</code>, <code>npm run eval:meds</code>). Fictional,
+        author-written cases: they show the software does what the criteria say, not that it improves care.
       </p>
     </div>
   );
@@ -669,9 +671,150 @@ function KnowledgeBase() {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Honesty, trust, team
+// A recorded model run (eval/results/ai-live.json via modelRun.ts)
 
-type Status = "working" | "partial" | "planned";
+/** One recorded Ask outcome: the question, what happened, and the AI panel's text exactly as logged. */
+function AskOutcome({ a, tone, label }: { a: RecordedAsk; tone: "success" | "caution"; label: string }) {
+  // Line 0 of a passed answer is the panel header ("AI draft · on this device · … · 5.1 s"); the evidence chips
+  // and the closing "Checked against the records…" note follow the sentence.
+  const [header, sentence, ...rest] = a.lines;
+  const chips = rest.filter((l) => !/^Checked against/.test(l));
+  return (
+    <li className="pub-how-run__ask">
+      <p className="pub-how-run__q">“{a.question}”</p>
+      <p className="pub-how-run__outcome">
+        <Badge tone={tone} size="sm">
+          {label}
+        </Badge>
+      </p>
+      {a.lines.length > 1 ? (
+        <>
+          <p className="pub-how-run__meta">{header}</p>
+          <blockquote className="pub-how-run__quote">{sentence.trim()}</blockquote>
+          {chips.length > 0 && <p className="pub-how-run__meta">Evidence linked: {chips.join(", ")}</p>}
+        </>
+      ) : (
+        <blockquote className="pub-how-run__quote pub-how-run__quote--system">{a.lines[0]}</blockquote>
+      )}
+    </li>
+  );
+}
+
+/** A long recorded quote shortened to its first sentence; the ellipsis sits outside the quote marks. */
+function firstSentence(text: string): { quote: string; cut: boolean } {
+  const sentence = text.match(/^[^.!?]+[.!?]/)?.[0].trim();
+  return sentence && sentence.length < text.trim().length ? { quote: sentence, cut: true } : { quote: text, cut: false };
+}
+
+function ModelRun() {
+  const r = RECORDED_RUN;
+  return (
+    <div className="pub-how-run">
+      <p className="pub-how-run__stamp">
+        <History size={16} aria-hidden="true" />
+        <span>
+          Recorded on <strong>{r.dateLabel}</strong> with <code>{r.model}</code> on {r.machine} (headless Chrome via
+          Playwright, with WebGPU), from <code>eval/results/ai-live.json</code>. External network requests during the run:{" "}
+          <span className="ui-num">{r.externalRequests}</span> (model files were served from a local copy for this run; the
+          public demo downloads them once from Hugging Face). Quoted exactly as logged.
+        </span>
+      </p>
+
+      <div className="pub-how-run__pair">
+        <section aria-labelledby="run-ask-title" className="pub-how-run__block">
+          <h3 id="run-ask-title" className="pub-how-run__title">
+            Ask Kinwise: the AI draft panel as logged
+          </h3>
+          <p className="pub-how-run__meta">The run logged only the AI panel; the records-based answer above it was not recorded.</p>
+          <ul className="pub-how-run__asks" role="list">
+            <AskOutcome a={r.ask.passed} tone="success" label="AI draft passed the code check" />
+            <AskOutcome a={r.ask.blocked} tone="caution" label="AI draft blocked by the code check" />
+          </ul>
+        </section>
+
+        <section aria-labelledby="run-flawed-title" className="pub-how-run__block pub-how-run__flawed">
+          <h3 id="run-flawed-title" className="pub-how-run__title">
+            <TriangleAlert size={18} aria-hidden="true" /> What the code check let through
+          </h3>
+          <ul className="pub-how-run__flaws pub-how-run__flaws--stack" role="list">
+            {r.flawed.map((f) => {
+              const { quote, cut } = firstSentence(f.quote);
+              return (
+                <li key={f.where}>
+                  <span className="pub-how-run__where">{f.where}</span>
+                  <span className="pub-how-run__flaw-quote">
+                    <q>{quote}</q>
+                    {cut && <span className="pub-how-muted"> … (shortened; full text below)</span>}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </div>
+
+      <More id="how-model-run-more" summary={`The rest of the run: out-of-scope questions, the brief, a blocked explanation${RED_TEAM_SENTENCE ? ", the verdict and the red-team test" : " and the verdict"}`}>
+        <div className="pub-how-run__grid">
+          <section aria-labelledby="run-routed-title" className="pub-how-run__block">
+            <h3 id="run-routed-title" className="pub-how-run__title">
+              Out-of-scope questions
+            </h3>
+            <p className="pub-how-run__meta">
+              <span className="ui-num">{r.routedOutOfScope}</span> questions in the run asked about treatment or cause. For
+              each, the app said this is one for the doctor or pharmacist and offered an “Add to visit questions” button; no
+              AI ran and nothing was sent.
+            </p>
+          </section>
+          <section aria-labelledby="run-brief-title" className="pub-how-run__block">
+            <h3 id="run-brief-title" className="pub-how-run__title">
+              Visit brief draft
+            </h3>
+            <p className="pub-how-run__lead">What the app reported after checking every AI sentence:</p>
+            <blockquote className="pub-how-run__quote pub-how-run__quote--system">{r.brief.notice}</blockquote>
+            <p className="pub-how-run__meta">
+              <span className="ui-num">{r.brief.evidenceChips}</span> evidence links in the draft. The garbled “Why we’re
+              coming in” sentence above was one of the sentences it kept.
+            </p>
+          </section>
+          <section aria-labelledby="run-explain-title" className="pub-how-run__block">
+            <h3 id="run-explain-title" className="pub-how-run__title">
+              Explanation blocked by the source check
+            </h3>
+            <p className="pub-how-run__q">{r.blockedExplain.finding}</p>
+            <blockquote className="pub-how-run__quote pub-how-run__quote--system">{r.blockedExplain.message}</blockquote>
+          </section>
+        </div>
+        <ul className="pub-how-run__flaws pub-how-run__flaws--full" role="list" aria-label="The flawed outputs in full">
+          {r.flawed.map((f) => (
+            <li key={f.where}>
+              <span className="pub-how-run__where">{f.where}, in full</span>
+              <q className="pub-how-run__flaw-quote">{f.quote}</q>
+            </li>
+          ))}
+        </ul>
+        <figure className="pub-how-run__verdict">
+          <figcaption>Verdict written with the run</figcaption>
+          <blockquote>{r.verdict}</blockquote>
+        </figure>
+        <p className="pub-how-fine">
+          The run’s demo dates differ from today’s because the demo record is generated relative to the current date.
+          {/* Shown only with its post-fix probe (modelRun.ts redTeamSentence): the score alone would overstate the check. */}
+          {RED_TEAM && RED_TEAM_SENTENCE && (
+            <>
+              {" "}
+              {RED_TEAM_SENTENCE} Source: <code>eval/results/verifier-redteam.json</code>
+              {RED_TEAM.generatedAt ? ` (${fmtDate(RED_TEAM.generatedAt)})` : ""}.
+            </>
+          )}
+        </p>
+      </More>
+
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------
+// Honesty, trust, team
 
 function StatusBadge({ status }: { status: Status }) {
   if (status === "working")
@@ -693,42 +836,43 @@ function StatusBadge({ status }: { status: Status }) {
   );
 }
 
+/** How many limitations stay visible (howStatus.ts puts first: not tested with people, then the AI code-check gap). */
+const LIMITS_SHOWN = 2;
+
+/**
+ * The canonical Working / Partial / Planned table: one row per status (the same split as README.md and the
+ * Devpost text). Items are spans, not list items, so each status stays one row for the demo recorder.
+ */
 function Honesty() {
   const coverage = useMemo(() => kbCoverage(), []);
-  const rows: { item: string; detail: string; status: Status }[] = [
-    { item: "Daily check-in in her own words", detail: "On-device clinical language processing proposes answers; she confirms each one.", status: "working" },
-    { item: "Medication list with name matching", detail: "Brands, generics, combination products, dose text and spelling suggestions.", status: "working" },
-    { item: "Medication review with citations", detail: "Beers 2023, anticholinergic burden, fall-risk drugs, prescribing cascades, “what to watch for”.", status: "working" },
-    { item: "Before/after timeline statistics", detail: "Answered-day denominators, Fisher’s exact and Mann–Whitney tests, overlapping changes listed.", status: "working" },
-    { item: "Visit brief, print and FHIR R4 export", detail: "Template brief always available; caregiver must review it before printing.", status: "working" },
-    { item: "Optional on-device language model", detail: "Drafts wording only; every sentence is checked by code and reviewed by a person.", status: "working" },
-    { item: "Knowledge-base coverage", detail: `${coverage.drugs ?? 0} medicines and ${coverage.beersRules ?? 0} Beers rules today — not the full criteria or a full interaction database.`, status: "partial" },
-    { item: "Clinical validation", detail: "Usability and accuracy study with geriatric pharmacists and family caregivers.", status: "planned" },
-    { item: "Import medicines from pharmacy or patient portal", detail: "SMART on FHIR patient access and Medicare Blue Button.", status: "planned" },
-    { item: "Sharing between family members", detail: "End-to-end encrypted sync; today the record lives in one browser.", status: "planned" },
-    { item: "More languages and voice check-ins", detail: "Spanish first; the language engine is English-only today.", status: "planned" },
-    { item: "FDA MedWatch report draft", detail: "Pre-fill Form 3500B for the family to submit themselves — never automatically.", status: "planned" },
-  ];
+  const groups = statusGroups(coverage);
   return (
     <div className="pub-how-honesty">
       <div className="pub-how-table-wrap">
-        <table className="pub-how-table pub-how-table--status">
-          <caption className="ui-visually-hidden">What is finished and what is planned</caption>
-          <thead>
+        <table className="pub-how-table pub-how-table--canon">
+          <caption className="ui-visually-hidden">What is working, partial and planned</caption>
+          {/* The status badges label each row, so the column headings are for screen readers only. */}
+          <thead className="ui-visually-hidden">
             <tr>
-              <th scope="col">Capability</th>
               <th scope="col">Status</th>
+              <th scope="col">What</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
-              <tr key={r.item}>
+            {groups.map((g) => (
+              <tr key={g.status}>
                 <th scope="row">
-                  <span className="pub-how-status__item">{r.item}</span>
-                  <span className="pub-how-status__detail">{r.detail}</span>
+                  <StatusBadge status={g.status} />
                 </th>
                 <td>
-                  <StatusBadge status={r.status} />
+                  <span className="pub-how-canon">
+                    {g.items.map((i) => (
+                      <span key={i.item} className={cx("pub-how-canon__item", (i.detail?.length ?? 0) > 110 && "pub-how-canon__item--wide")}>
+                        <strong>{i.item}</strong>
+                        {i.detail && <span className="pub-how-canon__detail">: {i.detail}</span>}
+                      </span>
+                    ))}
+                  </span>
                 </td>
               </tr>
             ))}
@@ -736,20 +880,23 @@ function Honesty() {
         </table>
       </div>
 
-      <Card as="section" padding="lg" tone="sunken" aria-labelledby="limits-title">
-        <CardHeader id="limits-title" level={3} icon={<FlaskConical size={20} />} title="Limitations we want you to know" />
-        <CardBody>
-          <ul className="pub-how-bullets">
-            <li>All people and records in this demo are fictional. Kinwise has not been tested with real patients or clinicians.</li>
-            <li>The benchmarks are small and written by the team (the held-out set by a separate author); they show the software follows its rules, not that it improves care.</li>
-            <li>The diary is self-reported. Unanswered days are left out of every rate — never counted as “no”.</li>
-            <li>Before/after comparisons describe a change in what was recorded. They do not show that a medicine was responsible, they are not adjusted for other changes (those are listed instead), and short windows have little statistical power.</li>
-            <li>The language engine is rule-based and English-only; unusual phrasing can be missed, which is why every answer is confirmed.</li>
-            <li>A medicine outside the knowledge base is “not reviewed”. That says nothing about the medicine — ask the pharmacist.</li>
-            <li>Records live in this browser only. Clearing site data deletes them; export a copy first.</li>
+      <section className="pub-how-limits" aria-labelledby="limits-title">
+        <h3 id="limits-title" className="pub-how-subtitle pub-how-limits__title">
+          <FlaskConical size={20} aria-hidden="true" /> Limitations we want you to know
+        </h3>
+        <ul className="pub-how-bullets pub-how-limits__list">
+          {LIMITATIONS.slice(0, LIMITS_SHOWN).map((l) => (
+            <li key={l}>{l}</li>
+          ))}
+        </ul>
+        <More id="how-limits-more" summary={`${LIMITATIONS.length - LIMITS_SHOWN} more limitations: benchmarks, diary data, language, coverage, storage`}>
+          <ul className="pub-how-bullets pub-how-limits__list">
+            {LIMITATIONS.slice(LIMITS_SHOWN).map((l) => (
+              <li key={l}>{l}</li>
+            ))}
           </ul>
-        </CardBody>
-      </Card>
+        </More>
+      </section>
     </div>
   );
 }
@@ -764,8 +911,8 @@ const NEVER = [
 
 function Trust() {
   return (
-    <div className="pub-how-trust">
-      <Card as="section" padding="lg" aria-labelledby="privacy-title">
+    <div className="pub-how-trust pub-how-trust--pair">
+      <Card as="section" padding="md" aria-labelledby="privacy-title">
         <CardHeader id="privacy-title" level={3} icon={<LockKeyhole size={20} />} title="Privacy by architecture" />
         <CardBody>
           <ul className="pub-how-bullets pub-how-bullets--icons">
@@ -780,8 +927,8 @@ function Trust() {
             <li>
               <CircleCheck size={18} aria-hidden="true" />
               <span>
-                The only download Kinwise can start is the optional AI model: model files come once from Hugging Face (and
-                the WebLLM project’s GitHub for the graphics library). Your records never leave this device.
+                The app’s files come from GitHub Pages, like any web page. The optional AI model downloads once from Hugging
+                Face (its graphics library from the WebLLM project’s GitHub). Your records never leave this device.
               </span>
             </li>
             <li>
@@ -795,40 +942,7 @@ function Trust() {
         </CardBody>
       </Card>
 
-      <Card as="section" padding="lg" aria-labelledby="reg-title">
-        <CardHeader id="reg-title" level={3} icon={<Landmark size={20} />} title="Regulatory positioning" subtitle="Student research for a prototype — not legal advice." />
-        <CardBody>
-          <ul className="pub-how-bullets">
-            <li>
-              <strong>What it is:</strong> a family’s preparation and documentation tool for medicine conversations — not a
-              diagnostic or treatment tool.
-            </li>
-            <li>
-              <strong>Records and communication:</strong> keeping a medication list and symptom diary and sharing it with a
-              clinician match FDA’s examples of software that is not a medical device (Appendix A, #12–13). <RefLink r={REFS.fdaMma} />
-            </li>
-            <li>
-              <strong>Caregiver medication report:</strong> information about interactions and side effects based on age,
-              conditions and current medicines is FDA’s Appendix B example #18 (enforcement discretion).
-            </li>
-            <li>
-              <strong>Clinician brief:</strong> shows its basis — rule, source and version, inputs and missing data — as the
-              Clinical Decision Support guidance asks. <RefLink r={REFS.fdaCds} />
-            </li>
-            <li>
-              <strong>Lines we do not cross:</strong> dose advice, stop instructions, cause-and-effect claims, triage or
-              personal risk scores (the ACB total is a sum of published per-medicine scores, shown with its sources). No
-              FDA clearance is claimed.
-            </li>
-            <li>
-              <strong>Privacy law:</strong> a consumer tool with no clinic relationship is generally outside HIPAA, so we make
-              no HIPAA claim; keeping data on the device keeps the FTC Health Breach Notification Rule exposure minimal.
-            </li>
-          </ul>
-        </CardBody>
-      </Card>
-
-      <Card as="section" padding="lg" tone="tint" aria-labelledby="never-title">
+      <Card as="section" padding="md" tone="tint" aria-labelledby="never-title">
         <CardHeader id="never-title" level={3} icon={<ShieldCheck size={20} />} title="What Kinwise never does" />
         <CardBody>
           <ul className="pub-how-bullets pub-how-bullets--icons">
@@ -848,6 +962,51 @@ function Trust() {
   );
 }
 
+function Regulatory() {
+  return (
+    <ul className="pub-how-bullets">
+      <li>
+        <strong>What it is:</strong> a family’s preparation and documentation tool for medicine conversations — not a
+        diagnostic or treatment tool.
+      </li>
+      <li>
+        <strong>Records and communication:</strong> keeping a medication list and symptom diary and sharing it with a
+        clinician match FDA’s examples of software that is not a medical device (Appendix A, #12–13). <RefLink r={REFS.fdaMma} />
+      </li>
+      <li>
+        <strong>Caregiver medication report:</strong> information about interactions and side effects based on age,
+        conditions and current medicines is FDA’s Appendix B example #18 (enforcement discretion).
+      </li>
+      <li>
+        <strong>Clinician brief:</strong> shows its basis — rule, source and version, inputs and missing data — as the
+        Clinical Decision Support guidance asks. <RefLink r={REFS.fdaCds} />
+      </li>
+      <li>
+        <strong>Lines we do not cross:</strong> dose advice, stop instructions, cause-and-effect claims, triage or
+        personal risk scores (the ACB total is a sum of published per-medicine scores, shown with its sources). No FDA
+        clearance is claimed.
+      </li>
+      <li>
+        <strong>Privacy law:</strong> a consumer tool with no clinic relationship is generally outside HIPAA, so we make
+        no HIPAA claim; keeping data on the device keeps the FTC Health Breach Notification Rule exposure minimal.
+      </li>
+    </ul>
+  );
+}
+
+/** A collapsed reference block: native <details>, so it opens with the keyboard and in find-in-page. */
+function More({ id, summary, children, tour }: { id: string; summary: ReactNode; children: ReactNode; tour?: string }) {
+  return (
+    <details id={id} className="pub-how-more" data-tour={tour}>
+      <summary className="pub-how-more__summary">
+        <span>{summary}</span>
+        <ChevronDown size={20} aria-hidden="true" className="pub-how-more__chevron" />
+      </summary>
+      <div className="pub-how-more__body">{children}</div>
+    </details>
+  );
+}
+
 const TEAM = [
   { name: "Albert Zorzolan", school: "Babson College" },
   { name: "Neil Shah", school: "Babson College" },
@@ -857,18 +1016,21 @@ const TEAM = [
 
 export function HowItWorks() {
   const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const coverage = useMemo(() => kbCoverage(), []);
   const jump = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
+    // Reference blocks are closed <details>: open the one asked for (and any it sits in) before scrolling.
+    for (let d = el.closest("details"); d; d = d.parentElement?.closest("details") ?? null) d.open = true;
     el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-    el.querySelector<HTMLElement>("h2")?.focus({ preventScroll: true });
+    (el.querySelector<HTMLElement>("h2") ?? el.querySelector<HTMLElement>("summary"))?.focus({ preventScroll: true });
   };
 
   // Deep links from the Welcome page: #/how-it-works?section=how-evaluation opens that section. Waits until
   // the router's own "new page" scroll-to-top and heading focus have run.
   const section = useRoute().params.get("section");
   useEffect(() => {
-    if (!section || !SECTIONS.some((s) => s.id === section)) return;
+    if (!section || !(SECTIONS.some((s) => s.id === section) || REFERENCE_BLOCKS.includes(section))) return;
     const timer = window.setTimeout(() => jump(section), 250);
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -879,7 +1041,7 @@ export function HowItWorks() {
       <PageHeader
         eyebrow="How Kinwise works"
         title="Private by design. Checkable by anyone."
-        subtitle="Every number Kinwise shows links to the records behind it, every review prompt to a published source — and all of it runs in this browser. This page lets you check the work yourself."
+        subtitle="Every number links to its records and every review prompt to a published source, all in this browser. Check the work yourself."
         actions={
           <>
             <Button variant="secondary" iconLeft={<PlayCircle size={18} />} onClick={() => startTour()}>
@@ -906,11 +1068,10 @@ export function HowItWorks() {
 
       <Section
         id="how-problem"
-        eyebrow="The problem"
-        title="Side effects are noticed at home — and lost before the visit"
-        lead="Families see the dizziness, the near-fall, the new fogginess. Clinicians have a few minutes and a medication list. The connection between the two is where harm slips through."
+        title="The problem: noticed at home, lost before the visit"
+        lead="Families see the dizziness, the near-fall, the new fogginess. Clinicians have minutes and a medication list."
       >
-        <ul className="pub-how-stats" role="list">
+        <ul className="pub-how-stats pub-how-stats--four" role="list">
           {PROBLEM_STATS.map((s) => (
             <li key={s.value + s.text} className="pub-how-stat">
               <p className="pub-how-stat__value ui-num">{s.value}</p>
@@ -921,44 +1082,63 @@ export function HowItWorks() {
             </li>
           ))}
         </ul>
-        <figure className="pub-how-position">
-          <Quote size={28} aria-hidden="true" className="pub-how-position__mark" />
-          <blockquote>
-            Clinician tools have the criteria but not the home observations. Diary apps have the observations but not the
-            criteria. <em>Kinwise connects the two for the visit.</em>
-          </blockquote>
-        </figure>
-        <p className="pub-how-fine pub-how-rigor">
-          <Sparkles size={16} aria-hidden="true" />
-          <span>
-            A rigor note: medicines on the Beers “avoid” list account for only 1–2% of emergency visits for medication harm;
-            blood thinners, diabetes medicines and opioids account for most (<RefLink r={REFS.budnitz2011} />,{" "}
-            <RefLink r={REFS.shehab} />). So Kinwise also lists “what to watch for” on those medicines — without calling them
-            wrong.
-          </span>
-        </p>
       </Section>
 
       <Section
-        id="how-architecture"
-        tour="how-arch"
-        eyebrow="Architecture"
-        title="Code decides. AI only helps with words. People approve."
-        lead="Everything runs in the browser. Every box in the top band is deterministic and unit-tested; the language model in the lower band is optional, and nothing it writes reaches the brief without passing a code check and a person."
+        id="how-flow"
+        title="Three steps, and who it’s for"
+        lead={
+          <>
+            Clinician tools have the criteria but not the home observations. Diary apps have the observations but not the
+            criteria. <strong>Kinwise connects the two for the visit.</strong>
+          </>
+        }
       >
-        <Card padding="lg" className="pub-how-arch-card">
-          <HowArchitecture />
-        </Card>
+        <div className="pub-how-flow">
+          <ol className="pub-how-flow__steps" role="list">
+            {FLOW_STEPS.map((f, i) => (
+              <li key={f.title} className="pub-how-flow__step">
+                <span className="pub-how-flow__num" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <div>
+                  <h3 className="pub-how-flow__title">{f.title}</h3>
+                  <p className="pub-how-flow__text">{f.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <section className="pub-how-for" aria-labelledby="how-for-title">
+            <h3 id="how-for-title" className="pub-how-for__title">
+              Who it’s for and where it fits
+            </h3>
+            <dl className="pub-how-for__list">
+              {WHO_FOR.map((w) => (
+                <div key={w.label} className={w.source ? "pub-how-for__wide" : undefined}>
+                  <dt>{w.label}</dt>
+                  <dd>
+                    {w.text}
+                    {w.source && (
+                      <>
+                        {" "}
+                        <RefLink r={w.source} />
+                      </>
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
       </Section>
 
       <Section
         id="how-ai"
-        eyebrow="What is AI here?"
-        title="The right tool for each job"
-        lead="Published studies show general language models are unreliable at drug-safety judgments. So they make none here."
+        title="What is AI here? The right tool for each job"
+        lead="Published studies show general language models are unreliable at drug-safety judgments, so they make none here."
       >
         <div className="pub-how-table-wrap">
-          <table className="pub-how-table pub-how-table--ai">
+          <table className="pub-how-table pub-how-table--ai pub-how-table--compact">
             <caption className="ui-visually-hidden">The three kinds of logic in Kinwise</caption>
             <thead>
               <tr>
@@ -999,79 +1179,114 @@ export function HowItWorks() {
                 </th>
                 <td>
                   Optional small open model in a WebGPU worker, constrained to a JSON schema. Every sentence must cite evidence
-                  IDs; a verifier checks numbers, medicine names and banned phrases.
+                  IDs; a code check tests numbers, medicine names and banned phrases.
                 </td>
                 <td>
                   <strong>Language only</strong>: drafting brief sentences, answering questions about the records, plainer
-                  explanations. Nothing about medicines.
+                  explanations. It decides nothing about medicines.
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <ul className="pub-how-research" role="list">
-          <li>
-            <p className="pub-how-research__finding">Interaction detection below 26% accuracy, even when brand/generic names were matched well.</p>
-            <RefLink r={REFS.gallifant} />
-          </li>
-          <li>
-            <p className="pub-how-research__finding">Interaction performance and consistency fell as medication lists grew — exactly the polypharmacy case.</p>
-            <RefLink r={REFS.blotske} />
-          </li>
-          <li>
-            <p className="pub-how-research__finding">A deprescribing pipeline found the right criteria but often misapplied them (PPV 0.47 for applicability).</p>
-            <RefLink r={REFS.socrates} />
-          </li>
-          <li>
-            <p className="pub-how-research__finding">Best results came from a grounded model working alongside a pharmacist — not on its own.</p>
-            <RefLink r={REFS.ong} />
-          </li>
-        </ul>
+        <More id="how-ai-studies" summary="Why: what four published studies found when language models judged medicines">
+          <ul className="pub-how-research" role="list">
+            <li>
+              <p className="pub-how-research__finding">Interaction detection below 26% accuracy, even when brand/generic names were matched well.</p>
+              <RefLink r={REFS.gallifant} />
+            </li>
+            <li>
+              <p className="pub-how-research__finding">Interaction performance and consistency fell as medication lists grew — exactly the polypharmacy case.</p>
+              <RefLink r={REFS.blotske} />
+            </li>
+            <li>
+              <p className="pub-how-research__finding">A deprescribing pipeline found the right criteria but often misapplied them (PPV 0.47 for applicability).</p>
+              <RefLink r={REFS.socrates} />
+            </li>
+            <li>
+              <p className="pub-how-research__finding">Best results came from a grounded model working alongside a pharmacist — not on its own.</p>
+              <RefLink r={REFS.ong} />
+            </li>
+          </ul>
+        </More>
       </Section>
 
       <Section
         id="how-evaluation"
-        eyebrow="Live evaluation"
-        title="Don’t take our word for it — run it"
+        title="Live evaluation: don’t take our word for it, run it"
         lead="Both test suites ship with the app. Press Run and the real engines score every case in this browser, in a second or two."
       >
         <LiveEvaluation />
       </Section>
 
       <Section
-        id="how-knowledge"
-        eyebrow="Knowledge base"
-        title="What the review knows — and where it comes from"
-        lead="Counted live from the knowledge base bundled with this page."
+        id="how-model-run"
+        title="See a real model run (recorded, not live)"
+        lead="The optional on-device model needs WebGPU and a 1.7 GB download, so most visitors never see it. Here is one real run."
       >
-        <KnowledgeBase />
+        <ModelRun />
       </Section>
 
-      <Section id="how-honesty" eyebrow="Honesty" title="What’s finished, what’s planned, and the limits">
+      <Section id="how-honesty" title="Finished vs planned, and the limits">
         <Honesty />
       </Section>
 
-      <Section id="how-trust" eyebrow="Privacy & regulation" title="Built to stay on the right side of the line">
+      <Section id="how-trust" title="Privacy, and the lines Kinwise never crosses">
         <Trust />
       </Section>
 
-      <Section id="how-team" eyebrow="Team" title="Who built Kinwise">
+      <Section id="how-reference" title="Reference: architecture, sources and regulation">
+        <div className="pub-how-more-list">
+          <More id="how-architecture" tour="how-arch" summary="Architecture: code decides, AI only helps with words, people approve">
+            <p className="pub-how-section__lead pub-how-more__lead">
+              Everything runs in the browser. Every box in the top band is deterministic and unit-tested; the language model
+              in the lower band is optional, and nothing it writes reaches the brief without passing a code check and a person.
+            </p>
+            <Card padding="lg" className="pub-how-arch-card">
+              <HowArchitecture />
+            </Card>
+          </More>
+          <More
+            id="how-knowledge"
+            summary={`Knowledge base: ${coverage.drugs ?? 0} medicines, ${coverage.beersRules ?? 0} Beers rules and all ${KB.sources.length} sources`}
+          >
+            <p className="pub-how-section__lead pub-how-more__lead">Counted live from the knowledge base bundled with this page.</p>
+            <KnowledgeBase />
+            <p className="pub-how-fine pub-how-rigor">
+              <Sparkles size={16} aria-hidden="true" />
+              <span>
+                A rigor note: medicines on the Beers “avoid” list account for only 1–2% of emergency visits for medication harm;
+                blood thinners, diabetes medicines and opioids account for most (<RefLink r={REFS.budnitz2011} />,{" "}
+                <RefLink r={REFS.shehab} />). So Kinwise also lists “what to watch for” on those medicines — without calling them
+                wrong.
+              </span>
+            </p>
+          </More>
+          <More id="how-regulation" summary="Regulatory positioning (student research, not legal advice)">
+            <Regulatory />
+          </More>
+        </div>
+      </Section>
+
+      <Section id="how-team" title="Team and source code" lead="Built for UnivaBio “AI for Human Health” 2026. Margaret, Alex and every record in the demo are fictional.">
         <ul className="pub-how-team" role="list">
           {TEAM.map((t) => (
             <li key={t.name} className="pub-how-person">
-              <Avatar name={t.name} size="lg" />
+              <Avatar name={t.name} size="md" />
               <div>
                 <p className="pub-how-person__name">{t.name}</p>
                 <p className="pub-how-person__meta">{t.school}</p>
               </div>
             </li>
           ))}
-          <li className="pub-how-person pub-how-person--note">
-            <UsersRound size={22} aria-hidden="true" />
-            <p>
-              Built for UnivaBio “AI for Human Health” 2026. Margaret, Alex and every record in the demo are fictional. Not
-              medical advice.
-            </p>
+          <li className="pub-how-person pub-how-code">
+            <ButtonLink href={SOURCE_CODE_URL} variant="secondary" size="sm" iconLeft={<Code size={17} aria-hidden="true" />}>
+              Source code on GitHub<span className="ui-visually-hidden"> (opens in a new tab)</span>
+            </ButtonLink>
+            <ButtonLink href={CODE_TOUR_URL} variant="ghost" size="sm" iconLeft={<FileText size={17} aria-hidden="true" />}>
+              Code tour (PDF)<span className="ui-visually-hidden"> (opens in a new tab)</span>
+            </ButtonLink>
+            <p className="pub-how-fine">Branch medwatch-v2, the version this demo is built from.</p>
           </li>
         </ul>
       </Section>

@@ -18,4 +18,4 @@ export { ToastProvider, useToast, type ToastOptions } from "./components/Toast";
 export { PageHeader, Callout, EmptyState, Skeleton, Disclosure, Tooltip, Avatar, type PageHeaderProps, type CalloutProps, type EmptyStateProps, type SkeletonProps, type DisclosureProps, type TooltipProps } from "./components/Display";
 export { SourceCitation, EvidenceLink, AIBadge, formatDuration, type CitationSource, type SourceCitationProps, type EvidenceLinkProps, type AIBadgeProps } from "./components/Evidence";
 export { TimelineDot, TimelineLegend, MedEventMarker, SERIES_VAR, SERIES_SHAPE, readToken, type MarkerShape, type LegendItem, type TimelineDotProps } from "./components/TimelineKit";
-export { DemoDataChip, ViewPlaceholder, type ViewPlaceholderProps } from "./components/Demo";
+export { DemoDataChip } from "./components/Demo";

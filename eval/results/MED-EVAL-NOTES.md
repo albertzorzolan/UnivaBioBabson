@@ -25,20 +25,26 @@ None. Every expectation passes against the real compiled KB and the production `
 1. **No special-casing.** We read the engine (`src/engine/meds/engine.ts`, `context.ts`, `rules/*.ts`). Every rule is
    driven by KB data (selectors, classes, thresholds, qualifiers). Nothing refers to case ids, case names or eval
    fixtures, and the KB generator does not read the case file.
-2. **The eval can fail.** We ran the same runner against stub engines that remove one piece of knowledge, using
-   the runner's `KINWISE_MED_EVAL_REVIEW` / `KINWISE_MED_EVAL_RESULTS` hooks so the docs results file was not
-   touched. Results:
+2. **The eval can fail.** `eval/meds.ablation.test.ts` runs the same case runner (`eval/medsRunner.ts`) against
+   committed stub engines in `eval/ablations/`. Each stub is the production engine over a knowledge base with one
+   piece of knowledge removed (the reversed-order stub is a control that removes nothing). Run it with
+   `npx vitest run eval/meds.ablation.test.ts`; it writes `eval/results/meds-ablation.json`, which these numbers are
+   copied from:
 
-   | Change to the engine | Cases passed | Expectations passed |
+   | Change to the engine (stub) | Cases passed | Expectations passed |
    |---|---|---|
    | None (production) | 57/57 | 295/295 |
-   | Medication list given in reverse order | 57/57 | 295/295 |
-   | Beers "history of falls" rule for anticholinergics, antipsychotics, benzodiazepines and Z-drugs removed | 54/57 | 289/295 |
-   | All prescribing-cascade rules removed | 49/57 | 287/295 |
-   | ACB scores set to 0 | 33/57 | 267/295 |
+   | Medication list given in reverse order (`reversed-order.ts`) | 57/57 | 295/295 |
+   | Beers "history of falls" rule for anticholinergics, antipsychotics, benzodiazepines and Z-drugs removed (`no-falls-rule.ts`, KB rule `cond-falls`) | 54/57 | 289/295 |
+   | All prescribing-cascade rules removed (`no-cascades.ts`) | 49/57 | 287/295 |
+   | ACB scores set to 0 (`acb-zero.ts`) | 33/57 | 267/295 |
 
    The reversed list shows that the output does not depend on input order. Each removal breaks the cases that
-   depend on it.
+   depend on it (the failing case ids are listed in the results file). These are the same figures as the first,
+   uncommitted stub run on 2026-10-11; that run is now reproducible from committed code.
+   The case file was in the repository while the engine was developed, so 57/57 shows that the code meets this
+   written specification, not that it passed a blind test. The cases were separately written by an AI agent
+   directed by the team (not the engine author) and are not clinician-reviewed (`eval/MED-CASES-METHOD.md`).
 3. **We checked judgement calls against the primary source.** Some results are plausible but easy to get wrong,
    so we checked the 2023 Beers full text (PMC12478568) directly:
    - *Anticholinergics count in "history of falls or fractures" (Table 3).* This is why oxybutynin, Tylenol PM

@@ -3,7 +3,19 @@
 **Kinwise is a private, in-browser co-pilot that helps families caring for an older adult on many medicines notice
 what changes after a medicine change and bring a clear, evidence-backed question to the doctor or pharmacist.**
 
-Submission to the UnivaBio "AI for Human Health" hackathon (2026). All data in the demo is fictional.
+**Try it live (no install, fictional data):** https://albertzorzolan.github.io/UnivaBioBabson/ → click **Try as Alex**<br>
+**Demo video (under 3 minutes, captions):** [submission/kinwise-demo.mp4](submission/kinwise-demo.mp4) ([captions .srt](submission/kinwise-demo.srt)) <!-- TODO(team): replace with YouTube link --><br>
+**Code walkthrough:** [5 minutes](#walk-through-the-code-in-5-minutes) · [code tour PDF](submission/kinwise-code-tour.pdf)<br>
+**Run locally:** `npm ci && npm run dev`, then open http://127.0.0.1:5174/ ([details](#try-it))
+
+Also: [one-page summary](submission/kinwise-one-pager.pdf) · [sample visit brief](submission/kinwise-sample-visit-brief.pdf)
+· [demo script](docs/DEMO-SCRIPT.md). Submission to the UnivaBio "AI for Human Health" hackathon (2026) by Albert
+Zorzolan and Neil Shah, Babson College. The code for this build is on the `medwatch-v2` branch:
+https://github.com/albertzorzolan/UnivaBioBabson/tree/medwatch-v2 (the repository's `main` branch holds an earlier
+prototype).
+<!-- TODO(team): this README describes the kinwise-final tree. Commit it together with eval/results/timeline-null.json,
+kb-src/README.md, .github/workflows/ci.yml and the timeline null-study changes. If they are not merged into medwatch-v2
+(and the demo redeployed), change this branch link and the live-demo-branch wording to match. -->
 
 > Kinwise is a hackathon prototype. It has not been reviewed or cleared by the FDA and gives no medical advice. Its
 > knowledge base has **not** been reviewed by a licensed clinician or pharmacist. Every finding is phrased as a
@@ -12,25 +24,16 @@ Submission to the UnivaBio "AI for Human Health" hackathon (2026). All data in t
 
 ![Caregiver overview: dizziness recorded on 9 of 14 answered days after lorazepam started vs 2 of 19 before](docs/screenshots/02-caregiver-overview.png)
 
-**Watch:** [demo video, under 3 minutes](submission/kinwise-demo.mp4) (captions: [.srt](submission/kinwise-demo.srt))
-· **Read:** [one-page summary](submission/kinwise-one-pager.pdf) · [sample visit brief](submission/kinwise-sample-visit-brief.pdf)
-· [code tour PDF](submission/kinwise-code-tour.pdf) · [demo script](docs/DEMO-SCRIPT.md)
-
-**Run it:** `npm ci && npm run dev`, open http://127.0.0.1:5174/ and click **Try as Alex**. More in [Try it](#try-it).
-**Code:** https://github.com/albertzorzolan/UnivaBioBabson/tree/medwatch-v2 (branch `medwatch-v2`).
-
 ---
 
 ## The problem
 
 - **43.0%** of US adults 65+ used five or more prescription drugs in the past 30 days (2017 to March 2020), up from
-  33.3% in 2001–2004. *(NCHS, Health, United States)*
-- In primary care, **25%** of outpatients had an adverse drug event. Of the ameliorable ones, **63%** persisted because
-  medication-related symptoms were not acted on and **37%** because the patient never told the physician.
-  *(Gandhi et al., NEJM 2003)*
-- **More than 1 in 4** older adults fall each year, and **less than half** tell their doctor. *(CDC, Older Adult Falls)*
-- **55%** of America's 63 million family caregivers give medicines, pills or injections, and **22%** received
-  training for medical or nursing tasks. *(AARP & National Alliance for Caregiving, Caregiving in the US 2025)*
+  33.3% in 2001–2004. *([NCHS, Health, United States](https://www.cdc.gov/nchs/hus/topics/rx-drug-use.htm))*
+- In a primary-care study, **19 of 51** (37%) ameliorable adverse drug events (harm that could have been reduced)
+  were attributed to the patient not telling the physician about the symptoms. *([Gandhi et al., NEJM 2003](https://pubmed.ncbi.nlm.nih.gov/12700376/))*
+- **More than 1 in 4** older adults fall each year, and **less than half** tell their doctor.
+  *([CDC, Facts About Older Adult Falls](https://www.cdc.gov/falls/data-research/facts-stats/index.html))*
 
 Clinician tools (Beers Criteria checkers, deprescribing tools) have the criteria but not what the family sees at
 home. Diary apps have the home observations but not the criteria. Kinwise puts the two side by side for the visit.
@@ -66,6 +69,71 @@ An optional on-device language model (Qwen2.5-3B via WebLLM and WebGPU) can draf
 decides a flag or a number, and every sentence it writes is checked by code against the evidence before a person
 sees it. Without it, everything above works from deterministic templates.
 
+## Who it's for and why it could help
+
+- **Primary user:** an adult child helping a parent on five or more medicines (Alex in the demo); 55% of US family
+  caregivers give medicines, pills or injections (AARP & NAC, Caregiving in the US 2025). The parent (Margaret)
+  checks in on a large-text screen; the brief is written for her doctor or pharmacist, who decides.
+- **When it is used:** before a Medicare Annual Wellness Visit, or a Part D pharmacist's Comprehensive Medication
+  Review, which CMS lets the pharmacist do with the caregiver when the beneficiary cannot take part because of
+  cognitive impairment ([kb-src/research/regulatory.md](kb-src/research/regulatory.md) §5).
+- **Reasons to test it, not proof it works:** in **EMPOWER** (Tannenbaum et al., JAMA Intern Med 2014; cluster RCT,
+  n=303), a direct-to-patient educational brochure led to **27% vs 5%** benzodiazepine discontinuation at 6 months
+  (the brochure included a taper plan, which Kinwise leaves to the clinician). In **D-PRESCRIBE** (Martin et al.,
+  JAMA 2018; cluster RCT, n=489), a consumer-targeted, pharmacist-led educational intervention (education to patients plus a pharmaceutical opinion sent to their physicians) led to **43% vs 12%**
+  no longer filling the inappropriate prescription at 6 months. Kinwise is inspired by these trials and has not been
+  shown to replicate them.
+- **A caution:** in the MedSafer cluster RCT (5,698 patients; McDonald et al., JAMA Intern Med 2022), rule-based
+  flags increased deprescribing without reducing 30-day adverse drug events, so we claim better-informed
+  conversations, not fewer adverse events. Kinwise has not been tested with real patients, caregivers or clinicians.
+- **How the clinician receives it:** the printed brief is what the clinician receives today; FHIR R4 is
+  interoperability readiness (SMART on FHIR planned).
+
+## How it differs
+
+From our review of vendor pages on 2026-10-10 ([market-evidence.md §2](kb-src/research/market-evidence.md)).
+"Not documented" means we did not find the feature on the vendor's own pages; it does not prove absence.
+
+| Kind of tool | Examples we checked | What we found |
+|---|---|---|
+| Medication and symptom-diary apps | MyTherapy, CareClinic, Apple Health Medications | Lining symptoms up against medicine start and stop dates with denominators: not documented. Applying Beers, ACB or fall-risk criteria to the person's list: not documented. |
+| Clinician deprescribing tools | MedStopper, MedSafer, deprescribing.org | Apply geriatric criteria, but rely on the clinician to supply the list; use of what the family observes at home: not documented. |
+| General AI health assistants | ChatGPT Health | Cloud-based and non-deterministic; no deterministic timeline method and no geriatric criteria engine documented. |
+
+## Status: working, partial, planned
+
+| | |
+|---|---|
+| **Working** | Public live demo; check-in with on-device language processing; medicine matching (brands, misspellings); cited review; before/after timeline; Ask Kinwise; visit brief with review gate; medication list; FHIR export; backup and delete-all |
+| **Partial** | On-device AI: desktop Chrome or Edge with WebGPU, tested on one Apple M1 Pro, checker not airtight; the default Qwen2.5-3B has a research-only (non-commercial) licence, and Apache-2.0 models are selectable in Settings. Patient-to-caregiver hand-off: one shared device today, or a backup file. FHIR: no receiving system yet. Knowledge base: not clinician-reviewed, no dose or allergy checks. English only |
+| **Planned** | Encrypted family sharing; encryption of the local record; pharmacist review of the knowledge base; a validation pilot; pharmacy and portal import; voice and Spanish |
+
+What each item means in this repository:
+
+- **Public live demo:** https://albertzorzolan.github.io/UnivaBioBabson/, built from the `medwatch-v2` branch by
+  [.github/workflows/pages.yml](.github/workflows/pages.yml) and live since 2026-10-11.
+- **Medicine matching and cited review:** 427 medicines, 766 brand names and 124 combination products in the
+  reference set; 89 AGS Beers 2023 rules (Tables 2–6), the ACB scale (100 scored medicines), 15 fall-risk classes,
+  26 prescribing cascades and 5 "what to watch for" rules, each with citations
+  ([src/kb/data/meta.json](src/kb/data/meta.json)).
+- **Visit brief, medication list and FHIR:** the template brief is always available and prints only after the
+  caregiver marks it as reviewed; a sample FHIR R4 export returned 0 errors from the public HAPI FHIR R4 validator
+  ([docs/samples](docs/samples/kinwise-fhir-validation.json)).
+- **Backup, delete-all and the patient-to-caregiver hand-off:** the patient and caregiver views share one browser.
+  Caregiver Settings can export the whole record as one JSON file and import such a file; an imported file is
+  validated and shown for confirmation, and then **replaces** the record on that device (no merge, no sync). The
+  file is not encrypted. Delete-all leaves an empty record.
+- **On-device AI:** brief drafting, record answers, finding explanations and extra check-in suggestions, each
+  checked by the claim verifier, with a deterministic fallback. In the live run the verifier let at least 3 flawed
+  AI outputs through, and cancelling a draft mid-way was fragile ([EVALUATION.md §5](docs/EVALUATION.md)). The
+  default model, Qwen2.5-3B-Instruct, is under the Qwen Research License; the Apache-2.0 options in Settings are
+  Qwen2.5-1.5B, Qwen3-4B, Qwen3.5-2B and Qwen3.5-4B, and the two we smoke-tested (Qwen2.5-1.5B, Qwen3.5-2B) were less
+  reliable ([eval/results/llm-smoke.json](eval/results/llm-smoke.json)).
+- **Knowledge base:** dose-, formulation- and indication-dependent criteria are not encoded, and drug–drug
+  interactions are limited to Beers Table 5. A medicine without a flag has not been shown to be free of risk. Any
+  non-educational use would need a licence for the AGS Beers Criteria®.
+- **Also planned:** a Form FDA 3500B (MedWatch) draft that the family submits themselves, never automatically.
+
 ## Screenshots
 
 | | | |
@@ -80,9 +148,9 @@ relative to the day you open the app, so the dates you see will differ; the coun
 
 ## Try it
 
-**Live demo (planned, not yet deployed):** https://albertzorzolan.github.io/UnivaBioBabson/ — the GitHub Pages
-workflow in [.github/workflows/pages.yml](.github/workflows/pages.yml) will publish it from the `medwatch-v2`
-branch.
+**Live demo:** https://albertzorzolan.github.io/UnivaBioBabson/ (no install). The GitHub Pages workflow in
+[.github/workflows/pages.yml](.github/workflows/pages.yml) runs the tests, builds the app from the `medwatch-v2`
+branch and publishes it; it has served the demo since 2026-10-11.
 
 **Run locally** (Node 22):
 
@@ -105,38 +173,34 @@ The optional AI needs a browser with WebGPU (recent desktop Chrome or Edge). Loa
 about 1.66 GB of model files from Hugging Face; no personal data is sent. We have measured it only on an Apple M1 Pro
 (16 GB).
 
-## Working now vs planned
+## Walk through the code in 5 minutes
 
-**Working now (in this repository)**
+Five stops, about a minute each, in the same order as the [code tour PDF](submission/kinwise-code-tour.pdf).
 
-- Patient check-in from free text with on-device NLP, span highlighting and confirmation; My week; My medicines.
-- Medication list with brand, generic, combination-product and misspelling matching (427 medicines, 766 brand
-  names, 124 combination products in the reference set).
-- Deterministic medication review: 89 AGS Beers 2023 rules (Tables 2–6), ACB scale (100 scored medicines), 15
-  fall-risk classes, 26 prescribing cascades, 5 "what to watch for" rules, each with citations.
-- Before/after timeline statistics (Fisher's exact, Mann–Whitney U) with answered-day denominators, overlapping
-  medicine changes listed, falls and near-falls listed by date.
-- Ask Kinwise over the person's own records, with scope routing.
-- Visit brief (template, always available), print gate on caregiver review, Personal Medication List, FHIR R4
-  export. A sample export validated against the public HAPI FHIR R4 server with 0 errors
-  ([docs/samples](docs/samples/kinwise-fhir-validation.json)).
-- Optional on-device LLM (WebLLM) for brief drafting, record answers, finding explanations and extra check-in
-  suggestions, all checked by a claim verifier; deterministic fallback when it is off or fails.
-- How it works page that re-runs the NLP benchmark and medication-review suite in the browser.
-- Export, import and delete-all of the local record; light and dark themes; three text sizes; guided tour.
+1. **Before/after statistics:** [`compareMetric`](src/engine/timeline/signals.ts) in `src/engine/timeline/signals.ts`
+   and [`fisherExact`](src/engine/timeline/stats.ts) in `src/engine/timeline/stats.ts`. For one diary item it counts
+   answered days in the window before and after a medicine change, compares only when both windows have enough
+   answered days, and runs a two-sided Fisher's exact test (yes/no items, checked against R's `fisher.test` values)
+   or a Mann–Whitney U test (1–5 ratings).
+2. **Medication review:** [`reviewWithKb`](src/engine/meds/engine.ts) in `src/engine/meds/engine.ts` and
+   [`cascadeFindings`](src/engine/meds/rules/cascades.ts) in `src/engine/meds/rules/cascades.ts`. The whole review
+   pipeline (Beers, cascades, duplicates, watch-for rules, ACB, fall risk → dedupe → language guard → stable sort)
+   is one short function; the cascade rule reports a "marker" medicine started after an "index" medicine whose
+   known effect it may be treating, such as amlodipine → ankle swelling → furosemide.
+3. **Clinical NLP:** [`analyzeInSentence`](src/engine/nlp/context.ts) in `src/engine/nlp/context.ts`. Our ConText
+   implementation decides for one symptom mention whether it is negated ("didn't fall"), historical or
+   hypothetical ("last week", "if"), or about someone else ("my granddaughter fell").
+4. **Checking the AI:** [`verifySection`](src/ai/tasks.ts) in `src/ai/tasks.ts` →
+   [`verifyClaims`](src/engine/brief/verify.ts) in `src/engine/brief/verify.ts`. Every sentence the model writes is
+   split, matched to its cited evidence, and is designed to drop any sentence with an unsupported number or
+   medicine, missing evidence, or causal, advice or urgency wording. The patterns are not exhaustive: in the live run
+   at least 3 flawed outputs got through ([EVALUATION.md §5](docs/EVALUATION.md)), so the template stays the default
+   and a person reviews every AI draft.
+5. **Ask Kinwise scope:** [`routeQuestion`](src/engine/brief/qa.ts) in `src/engine/brief/qa.ts`. Before any model
+   call, ordered keyword rules route questions about treatment, changing a dose, diagnosis, cause, prediction or
+   emergencies to a fixed redirect to the clinician (or 911); looking up the recorded dose is answered from the list.
 
-**Planned / not done**
-
-- Clinician review of the knowledge base and a validation study with pharmacists and family caregivers.
-- Sharing between family members (end-to-end encrypted sync). Today the record lives in one browser, so the patient
-  and caregiver views share one device.
-- Encryption of the local record at rest (it is stored as plain JSON in `localStorage`).
-- Import from pharmacies or patient portals (SMART on FHIR, Medicare Blue Button).
-- Voice check-ins and languages other than English (the NLP engine is English-only).
-- An FDA MedWatch (Form 3500B) report draft for the family to submit themselves.
-- Dose checks, allergy checks and a full drug–drug interaction database (interactions are limited to Beers Table 5).
-- A licence for the AGS Beers Criteria® for any non-educational use.
-- Public deployment of the demo (workflow written, not yet run).
+**Proof:** `npm ci && npm test` runs the unit tests and both evaluations.
 
 ## Architecture
 
@@ -185,14 +249,14 @@ Full detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Product contract: [do
 | Symptom extraction, held-out set (70 fictional stories, never used for tuning) | micro-F1 **0.942** (precision 0.972, recall 0.914) over 116 labelled core diary fields | [eval/results/nlp-eval.json](eval/results/nlp-eval.json) |
 | Symptom extraction, development set (245 stories, used for tuning) | micro-F1 0.998 | same file |
 | Negation on held-out set | 21 of 23 negated mentions correct | same file |
-| Medication review, independent case file | **57 of 57** cases, **295 of 295** expectations pass | [eval/results/meds-eval.json](eval/results/meds-eval.json), [notes](eval/results/MED-EVAL-NOTES.md) |
-| Timeline false alarms (simulated diaries with no real change) | about 1 in 10 medicine changes show a moderate signal and about 1 in 100 a strong one; nearly 1 in 5 and about 1 in 35 when symptoms are recorded often | `src/engine/timeline/signals.null.test.ts`, `rules.ts` |
-| On-device LLM, Qwen2.5-3B on M1 Pro | brief 9 of 9 sentences kept; record answers 4 of 4 cases; ~60 s per brief | [eval/results/llm-smoke.json](eval/results/llm-smoke.json) |
-| Live in-app AI run (real WebGPU) | 0 external requests; cached model load 13.7 s; answered Ask questions took 4.1–12.0 s | [eval/results/ai-live.json](eval/results/ai-live.json) |
+| Medication review, separately written case file (not blind; same team directed both agents, see [method](eval/MED-CASES-METHOD.md)) | **57 of 57** cases, **295 of 295** expectations pass | [eval/results/meds-eval.json](eval/results/meds-eval.json), [notes](eval/results/MED-EVAL-NOTES.md) |
+| Timeline false alarms (simulated diaries with no real change) | At least one moderate-or-strong signal on about 11% of changes with independent days (about 18–19% with frequent symptoms) and at least one strong signal on about 0.8% (about 2.7%) in the 8,000-change run ([rules.ts](src/engine/timeline/rules.ts), [EVALUATION.md §3](docs/EVALUATION.md); the 1,000-change re-check in timeline-null.json gives 11.2% / 0.3%). If each answer copies the previous day's with probability 0.8: 85.8% and 61.0% (timeline-null.json; an assumed level of clustering). How clustered real diaries are has not been measured. | [eval/results/timeline-null.json](eval/results/timeline-null.json), [signals.null.test.ts](src/engine/timeline/signals.null.test.ts) (fails if the rates drift), [rules.ts](src/engine/timeline/rules.ts) |
+| On-device LLM smoke test, Qwen2.5-3B on M1 Pro | brief 9 of 9 sentences kept; record answers 4 of 4 cases; ~60 s per brief | [eval/results/llm-smoke.json](eval/results/llm-smoke.json) |
+| Live in-app AI run (real WebGPU) | 0 external requests; cached model load 13.7 s; answered Ask questions took 4.1–12.0 s; at least 3 flawed AI outputs got past the verifier | [eval/results/ai-live.json](eval/results/ai-live.json), [EVALUATION.md §5](docs/EVALUATION.md) |
 
-All cases and stories were written by the team (with AI assistance) and are synthetic. These numbers show the
-software does what it was designed to do on test data; they are not clinical validation. Method, caveats and the
-errors we found: [docs/EVALUATION.md](docs/EVALUATION.md).
+All cases and stories are synthetic (see [How we built it](#how-we-built-it-and-how-we-used-ai)). These numbers show
+the software does what it was designed to do on test data; they are not clinical validation. Method, caveats, the
+errors we found and any later baseline, CI and red-team results: [docs/EVALUATION.md](docs/EVALUATION.md).
 
 ## Privacy and guardrails
 
@@ -203,8 +267,8 @@ errors we found: [docs/EVALUATION.md](docs/EVALUATION.md).
 - **Rules decide, the model writes.** Every flag, count and comparison is computed by deterministic code with a
   citation. The language model only rephrases evidence, and a claim verifier is designed to drop sentences with an
   unsupported number, an unknown medicine, causal or advice wording, or missing evidence. In our live WebGPU run it
-  still let 3 flawed outputs through (including one "can cause"), which is why the deterministic template stays the
-  default and every AI output needs a person's review ([EVALUATION.md §5](docs/EVALUATION.md)).
+  still let at least 3 flawed outputs through (including one "can cause"), which is why the deterministic template
+  stays the default and every AI output needs a person's review ([EVALUATION.md §5](docs/EVALUATION.md)).
 - **Health-language rules** (SPEC §3) are enforced in the KB build, the engines, the verifier and an end-to-end test:
   counts always come with denominators, findings are questions, nothing tells anyone to start, stop or change a
   medicine, and nothing assigns urgency.
@@ -214,44 +278,71 @@ errors we found: [docs/EVALUATION.md](docs/EVALUATION.md).
 Regulatory positioning (designed toward FDA's published examples of record-keeping and communication tools; no
 clearance or exemption is claimed): [docs/REGULATORY.md](docs/REGULATORY.md).
 
+## How we built it (and how we used AI)
+
+- **AI coding assistants.** We used AI coding assistants (Claude Code) extensively, under our direction, to write
+  code, tests and synthetic evaluation data, as the organizers encourage. We can walk through every module; start
+  with the [5-minute walkthrough](#walk-through-the-code-in-5-minutes).
+- **Our design decisions.** Rules decide and the model only writes; counts use answered-day denominators (an
+  unanswered day is never counted as a "no"); the false-alarm rate of the before/after comparison is measured by
+  simulation and shown on screen; the caregiver must review the brief before it prints; causal and advice wording
+  is banned and checked by code.
+- **Evaluation data.** The evaluation sets were written by separate AI agents directed by the team and are not
+  clinician-reviewed. The medication case file's author did not read the engine, but the case file was available
+  while the engine was developed, so 57 of 57 is a consistency check, not a blind test
+  ([eval/MED-CASES-METHOD.md](eval/MED-CASES-METHOD.md)).
+- **Development history.** Each of us first built a prototype (Neil's `prototype-v1-neil`, commit `fc2c5d5`, and
+  Albert's Prototype 1); both are kept unchanged in [archive/](archive/README.md). Their ideas were merged into the
+  v2 rebuild (the archived code does not run in this build), which was committed in one commit (`375e1e0`) from Albert's `Mendrapp`
+  git identity. The git history therefore does not show the step-by-step work.
+- **Team:** Albert Zorzolan and Neil Shah, Babson College.
+
 ## Tech stack
 
 React 19, TypeScript 5.9 (strict), Vite 7, Recharts 3, lucide-react, @mlc-ai/web-llm 0.2.85 (WebGPU, Web Worker),
 Qwen2.5-3B-Instruct (q4f16_1, MLC build), Vitest 3, Playwright 1.55 with system Chrome, axe-core, Python 3 (knowledge
-base build), HL7 FHIR R4, RxNorm, SNOMED CT and LOINC codes. A GitHub Actions workflow for GitHub Pages is written
-but has not run yet.
+base build), HL7 FHIR R4, RxNorm, SNOMED CT and LOINC codes. GitHub Actions:
+[pages.yml](.github/workflows/pages.yml) tests, builds and publishes the live demo; [ci.yml](.github/workflows/ci.yml)
+runs the type check, the test suite and the knowledge-base check on pushes to `medwatch-v2` and `kinwise-final` and on
+pull requests.
 
 ## Tests and quality gates
 
-| Command | What it checks | Last result we recorded |
+| Command | What it checks | In CI |
 |---|---|---|
-| `npx vitest run` (or `npm test`) | Unit tests for engines, KB, AI guards and view logic, plus the NLP and medication evals | 1,246 tests in 43 files; on 2026-10-11, 1,245 passed and 1 opt-in test (the FHIR sample writer) was skipped by default |
-| `npm run eval:nlp` / `npm run eval:meds` | The two evaluations; update `eval/results/*.json` only when a result changes | see table above |
-| `npm run test:e2e` | 20 Playwright checks in system Chrome (logins, check-in, review, timeline, Ask, brief, FHIR, tour, 390 px layout, no foreign network requests, no console errors) | 20 of 20 passed (2026-10-11) |
-| `npm run test:a11y` | 46 axe-core scans (WCAG 2.2 A/AA rules), every route in light and dark plus open dialogs and drawers | 46 scans, 0 violations reported (the gate fails on serious or critical) (2026-10-11) |
-| `npm run typecheck` | TypeScript strict, no emit | |
-| `npm run build` | Type-check and production build | |
-| `python3 -I kb-src/build_kb.py --check` | KB integrity, rating cross-checks, banned wording | passes (KB 2026.10.2) |
+| `npm test` (or `npx vitest run`) | The full Vitest suite (more than 1,200 tests): engines, KB, AI guards and view logic, plus the NLP and medication evals | yes |
+| `npm run eval:nlp` / `npm run eval:meds` | The two evaluations; update `eval/results/*.json` only when a result changes | yes, as part of `npm test` |
+| `npm run typecheck` | TypeScript strict, no emit | yes |
+| `python3 -I kb-src/build_kb.py --check` | Builds the KB in memory and validates it: integrity, rating cross-checks, banned wording (exit 1 on any problem) | yes |
+| `npm run build` | Type-check and production build | pages.yml runs `npm run build:pages` |
+| `npm run test:e2e` | Playwright checks in system Chrome: logins, check-in, review, timeline, Ask, brief, FHIR, tour, 390 px layout, no foreign network requests, no console errors | no (needs system Chrome) |
+| `npm run test:a11y` | axe-core scans (WCAG 2.2 A/AA rules) of every route in light and dark, plus open dialogs and drawers; the gate fails on serious or critical violations | no (needs system Chrome) |
 
-E2E and accessibility reports are written to `test-results/` (git-ignored).
+E2E and accessibility results are written to `test-results/` (git-ignored); see that folder after a run.
 
 ## Repository layout
 
 ```
-src/            the app (model, kb, engine/{meds,timeline,nlp,brief}, ai, app, ui, views)
-kb-src/         knowledge-base build script, curated sources and research notes
-eval/           NLP corpora, medication case file, eval runners, results/
-docs/           SPEC, SPEC-UI, ARCHITECTURE, EVALUATION, REGULATORY, CLINICAL-SOURCES, samples/, screenshots/
-scripts/        e2e, accessibility, LLM smoke test, model download
-submission/     Devpost text, demo video + captions, one-pager, sample visit brief and code-tour PDFs
-public/         fonts and favicon (public/models/ is git-ignored)
-ai-harness.html developer page used by scripts/llm-smoke.mjs
-archive/        earlier team prototypes, not used by this build (see archive/README.md)
+src/                the app (model, kb, engine/{meds,timeline,nlp,brief}, ai, app, ui, views)
+kb-src/             knowledge-base build script, curated sources and research notes (kb-src/README.md explains the build)
+eval/               NLP corpora, medication case file, eval runners, results/
+docs/               SPEC, SPEC-UI, ARCHITECTURE, EVALUATION, REGULATORY, CLINICAL-SOURCES, DEMO-SCRIPT, samples/, screenshots/
+scripts/            e2e (browser-test.mjs), accessibility (a11y.mjs), LLM smoke test (llm-smoke.mjs), model download
+scripts/submission/ builds the submission files: make-pdfs.mjs (one-pager, sample brief, code tour), record-demo.mjs
+                    (demo video and captions), facts.mjs (every number the PDFs print, read from repo files),
+                    check-facts.mjs (checks the numbers in the submission text)
+submission/         Devpost text, demo video + captions, one-pager, sample visit brief and code-tour PDFs
+public/             fonts and favicon (public/models/ is git-ignored)
+ai-harness.html     developer-only page for the on-device LLM smoke test (driven by scripts/llm-smoke.mjs); not part of the app
+archive/            earlier team prototypes, not used by this build (see archive/README.md)
+.github/workflows/  pages.yml (live demo) and ci.yml (type check, tests, KB check)
 ```
+
+How the knowledge base is built: [kb-src/README.md](kb-src/README.md).
 
 ## Team and credits
 
-- Team: Albert Zorzolan and Neil Shah (Babson).
+- Team: Albert Zorzolan and Neil Shah, Babson College.
 - Earlier prototypes by team members are kept in [archive/](archive/README.md).
 - Clinical criteria: AGS Beers Criteria® 2023 (American Geriatrics Society; Kinwise is not affiliated with or
   endorsed by AGS), ACB scale (Aging Brain Care), CDC STEADI, STOPPFall, ThinkCascades. Full register:
@@ -264,8 +355,8 @@ archive/        earlier team prototypes, not used by this build (see archive/REA
 ## Disclaimer
 
 Kinwise is a hackathon prototype. It has not been reviewed or cleared by the FDA (we claim no exemption; see
-[docs/REGULATORY.md](docs/REGULATORY.md)), and it has not been clinically validated. The knowledge base was compiled from published criteria and checked by automated
-research, but it has not been reviewed by a licensed clinician or pharmacist. It does not check doses, allergies or
-every interaction, and a medicine without a flag has not thereby been shown to be free of risk. All people, records
-and dates in the demo are fictional. Nothing here is medical advice; talk to the prescriber before changing any
-medicine, and call 911 in an emergency.
+[docs/REGULATORY.md](docs/REGULATORY.md)), and it has not been clinically validated. The knowledge base was compiled
+from published criteria and checked by automated research, but it has not been reviewed by a licensed clinician or
+pharmacist. It does not check doses, allergies or every interaction, and a medicine without a flag has not thereby
+been shown to be free of risk. All people, records and dates in the demo are fictional. Nothing here is medical
+advice; talk to the prescriber before changing any medicine, and call 911 in an emergency.

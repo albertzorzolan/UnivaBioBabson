@@ -1,8 +1,14 @@
-import sys, json, re
+import sys, json, re, os
 sys.path.insert(0, '.')
 from casc_data import C, SOURCE_EXAMPLES
 from casc_rows import EV, R
-OUT = "/private/tmp/claude-501/-Users-mb-pro-Desktop-UnivaBio-Hackathon/c6caa03c-8210-4b85-9270-2eab2bd171d9/scratchpad/research/cascades.json"
+# Paths are relative to this script (originally an absolute path into a session scratch folder);
+# see kb-src/build/README.md. Helper modules and intermediate files are still read from the working
+# directory, so run this from kb-src/build.
+HERE = os.path.dirname(os.path.abspath(__file__))
+RES = os.path.join(HERE, "..", "research")  # kb-src/research (committed)
+# Writes the committed research file in place: review `git diff kb-src/research/cascades.json` after a rerun.
+OUT = os.path.join(RES, "cascades.json")
 pipc = json.load(open("pipc_rows.json"))
 t3 = json.load(open("bmj_t3.json")); t4 = json.load(open("bmj_t4.json"))
 used = set()

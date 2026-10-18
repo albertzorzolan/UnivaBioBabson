@@ -1,6 +1,15 @@
 // Persistence + commit rules for the local record (src/model/store.ts).
 import { beforeEach, describe, expect, it } from "vitest";
-import { commitStore, DEFAULT_SETTINGS, loadStore, saveStore, STORAGE_KEY, validateStore, type StorageLike } from "./store";
+import {
+  commitStore,
+  DEFAULT_SETTINGS,
+  loadStore,
+  saveStore,
+  STORAGE_KEY,
+  UNREADABLE_PREFIX,
+  validateStore,
+  type StorageLike,
+} from "./store";
 import { createSeed, demoDatasetId, demoFreshness, refreshDemo } from "./seed";
 import type { CheckIn, Medication, Note, StoreData } from "./types";
 
@@ -105,6 +114,17 @@ describe("validateStore", () => {
     expect(validateStore({ ...base, profile: { ...base.profile, age: "78" } })).toBe(false);
   });
 
+  it("rejects a profile without the patient's preferred name or the caregiver's name (both shells read them)", () => {
+    for (const key of ["preferredName", "caregiverName"] as const) {
+      const missing = clone(base);
+      delete (missing.profile as unknown as Record<string, unknown>)[key];
+      expect(validateStore(missing)).toBe(false);
+      expect(validateStore({ ...base, profile: { ...base.profile, [key]: null } })).toBe(false);
+    }
+    // An empty name is fine: the screens fall back to "the patient" / "the caregiver".
+    expect(validateStore({ ...base, profile: { ...base.profile, preferredName: "", caregiverName: "" } })).toBe(true);
+  });
+
   it.each(["medications", "medEvents", "checkIns", "checkInHistory", "notes", "reviewDecisions", "briefs", "savedQuestions"])(
     "rejects a record whose %s is missing or not an array",
     (key) => {
@@ -175,6 +195,57 @@ describe("validateStore", () => {
     const editedStory = clone(base);
     editedStory.checkIns[withSpan].story = editedStory.checkIns[withSpan].story.toUpperCase();
     expect(validateStore(editedStory)).toBe(false);
+  });
+
+  // Every list item is checked for the fields the screens read, so a malformed import or a hand-edited
+  // record is refused instead of crashing the app on the next load.
+  it("rejects arrays whose items are not records (code-audit probe)", () => {
+    expect(validateStore({ ...base, notes: [null], medEvents: [42], briefs: ["x"] })).toBe(false);
+    expect(validateStore({ ...base, notes: [null] })).toBe(false);
+    expect(validateStore({ ...base, medEvents: [42] })).toBe(false);
+    expect(validateStore({ ...base, briefs: ["x"] })).toBe(false);
+    expect(validateStore({ ...base, reviewDecisions: [[]] })).toBe(false);
+    expect(validateStore({ ...base, savedQuestions: [undefined] })).toBe(false);
+    expect(validateStore({ ...base, checkInHistory: [7] })).toBe(false);
+  });
+
+  it("rejects a note without an id, a known author or text", () => {
+    const n = note("caregiver");
+    expect(validateStore({ ...base, notes: [{ ...n, id: 1 }] })).toBe(false);
+    expect(validateStore({ ...base, notes: [{ ...n, author: "doctor" }] })).toBe(false);
+    expect(validateStore({ ...base, notes: [{ ...n, text: null }] })).toBe(false);
+  });
+
+  it("rejects a medication event without an id, a medication id or a valid date", () => {
+    const e = { id: "evt-1", medicationId: "med-1", date: TODAY, kind: "started", detail: "", createdAt: NOW };
+    expect(validateStore({ ...base, medEvents: [e] })).toBe(true);
+    expect(validateStore({ ...base, medEvents: [{ ...e, id: undefined }] })).toBe(false);
+    expect(validateStore({ ...base, medEvents: [{ ...e, medicationId: 3 }] })).toBe(false);
+    expect(validateStore({ ...base, medEvents: [{ ...e, date: "2026-02-30" }] })).toBe(false);
+  });
+
+  it("rejects briefs, review decisions and saved questions missing their key fields", () => {
+    expect(validateStore({ ...base, briefs: [{ content: {} }] })).toBe(false);
+    expect(validateStore({ ...base, briefs: [{ id: "b1", content: null }] })).toBe(false);
+    expect(validateStore({ ...base, reviewDecisions: [{ status: "open" }] })).toBe(false);
+    expect(validateStore({ ...base, reviewDecisions: [{ findingKey: "k", status: 2 }] })).toBe(false);
+    expect(validateStore({ ...base, savedQuestions: [{ id: "q1" }] })).toBe(false);
+    expect(validateStore({ ...base, savedQuestions: [{ text: "Ask about sleep" }] })).toBe(false);
+  });
+
+  it("rejects check-in history entries without an id, a valid date or a story", () => {
+    const old = clone(base.checkIns[0]);
+    expect(validateStore({ ...base, checkInHistory: [old] })).toBe(true);
+    expect(validateStore({ ...base, checkInHistory: [{ ...old, date: "soon" }] })).toBe(false);
+    expect(validateStore({ ...base, checkInHistory: [{ ...old, story: 4 }] })).toBe(false);
+  });
+
+  it("stays lenient about optional fields", () => {
+    const { pinned: _p, createdAt: _c, ...bareNote } = note("patient");
+    expect(validateStore({ ...base, notes: [bareNote] })).toBe(true);
+    expect(validateStore({ ...base, savedQuestions: [{ id: "q1", text: "Ask about sleep" }] })).toBe(true);
+    expect(validateStore({ ...base, reviewDecisions: [{ findingKey: "k", status: "to_discuss" }] })).toBe(true);
+    expect(validateStore({ ...base, briefs: [{ id: "b1", content: {} }] })).toBe(true);
   });
 });
 
@@ -262,6 +333,50 @@ describe("loadStore / saveStore", () => {
     expect(validateStore(JSON.parse(storage.getItem(STORAGE_KEY)!))).toBe(true);
   });
 
+  it("keeps a copy of unreadable data under a timestamped key before reseeding", () => {
+    const storage = new MemoryStorage();
+    storage.setItem(STORAGE_KEY, "{not json");
+    const r = loadStore(storage, TODAY, NOW);
+    expect(r.status).toBe("recovered");
+    expect(r.backupKey).toBe(`${UNREADABLE_PREFIX}${NOW}`);
+    expect(r.backupKey).toBe("kinwise.v1.store.unreadable-2026-10-10T16:00:00.000Z");
+    expect(storage.getItem(r.backupKey!)).toBe("{not json");
+    expect(validateStore(JSON.parse(storage.getItem(STORAGE_KEY)!))).toBe(true);
+  });
+
+  it("keeps a copy of data saved by a newer version too", () => {
+    const storage = new MemoryStorage();
+    const newer = JSON.stringify({ ...base, schemaVersion: 3 });
+    storage.setItem(STORAGE_KEY, newer);
+    const r = loadStore(storage, TODAY, NOW);
+    expect(r.status).toBe("recovered");
+    expect(storage.getItem(r.backupKey!)).toBe(newer);
+  });
+
+  it("still recovers when the copy cannot be written (storage full), and reports no copy", () => {
+    const storage = new MemoryStorage();
+    storage.setItem(STORAGE_KEY, "{not json");
+    const full: StorageLike = {
+      getItem: (k) => storage.getItem(k),
+      removeItem: (k) => storage.removeItem(k),
+      setItem: (k, v) => {
+        if (k.startsWith(UNREADABLE_PREFIX)) throw new Error("QuotaExceededError");
+        storage.setItem(k, v);
+      },
+    };
+    const r = loadStore(full, TODAY, NOW);
+    expect(r.status).toBe("recovered");
+    expect(r.backupKey).toBeNull();
+    expect(validateStore(JSON.parse(storage.getItem(STORAGE_KEY)!))).toBe(true);
+  });
+
+  it("makes no copy when there was nothing to recover", () => {
+    const storage = new MemoryStorage();
+    expect(loadStore(storage, TODAY, NOW).backupKey).toBeNull();
+    expect(loadStore(storage, TODAY, NOW).backupKey).toBeNull();
+    expect([...storage.map.keys()]).toEqual([STORAGE_KEY]);
+  });
+
   it("recovers from structurally broken data (duplicate check-in dates)", () => {
     const storage = new MemoryStorage();
     const bad = clone(base);
@@ -301,12 +416,23 @@ describe("commitStore — role permissions", () => {
 
   it("does not let the caregiver change check-ins or their history", () => {
     expect(() => commitStore(base, { ...base, checkIns: [...base.checkIns, todaysCheckIn()] }, "caregiver", NOW)).toThrow(
-      /Only Margaret/,
+      /Only Margaret Rivera can change/,
     );
     const edited = clone(base);
     edited.checkIns[3].answers.dizziness = !edited.checkIns[3].answers.dizziness;
-    expect(() => commitStore(base, edited, "caregiver", NOW)).toThrow(/Only Margaret/);
-    expect(() => commitStore(base, { ...base, checkInHistory: [] }, "caregiver", NOW)).toThrow(/Only Margaret/);
+    expect(() => commitStore(base, edited, "caregiver", NOW)).toThrow(/Only Margaret Rivera can change/);
+    expect(() => commitStore(base, { ...base, checkInHistory: [] }, "caregiver", NOW)).toThrow(/Only Margaret Rivera can change/);
+  });
+
+  it("names the patient from the profile when refusing a caregiver check-in change", () => {
+    const joe = { ...base, profile: { ...base.profile, displayName: "Joe Bloggs" } };
+    expect(() => commitStore(joe, { ...joe, checkIns: [...joe.checkIns, todaysCheckIn()] }, "caregiver", NOW)).toThrow(
+      "Only Joe Bloggs can change these daily check-ins.",
+    );
+    const unnamed = { ...base, profile: { ...base.profile, displayName: "  " } };
+    expect(() => commitStore(unnamed, { ...unnamed, checkInHistory: [] }, "caregiver", NOW)).toThrow(
+      "Only the patient can change these daily check-ins.",
+    );
   });
 
   it("does not let the patient change the medication list or its events", () => {

@@ -326,7 +326,7 @@ These rules are not problem flags: they list what is worth noticing and link it 
 |---|---|---|---|---|
 | Blood thinner: what to watch for | Anticoagulant | unusual bruising; bleeding gums or nosebleeds that are hard to stop; black or tarry stools; pink, red or brown urine; a fall or a bump to the head | bleeding_or_bruising, black_stools, fall | `budnitz2021` |
 | Anti-clotting medicine: what to watch for | Antiplatelet medicine | unusual bruising; bleeding that is hard to stop; black or tarry stools; vomit that looks like coffee grounds | bleeding_or_bruising, black_stools | `budnitz2011` |
-| Low blood sugar: what to watch for | Sulfonylurea, Insulin | shakiness or trembling; sweating; sudden confusion or unusual behavior; dizziness; a fast heartbeat | shakiness_or_sweating, confusion, dizziness | `budnitz2011` |
+| Low blood sugar: what to watch for | Sulfonylurea, Insulin | shakiness or trembling; sweating; sudden confusion or unusual behavior; dizziness; a fast heartbeat | shakiness_or_sweating, tremor, confusion, dizziness | `budnitz2011` |
 | Opioid pain medicine: what to watch for | Opioid pain medicine | unusual sleepiness or trouble staying awake; slow or shallow breathing; new confusion; constipation; unsteadiness | drowsiness, confusion, constipation, dizziness, fall | `budnitz2021` |
 | Digoxin: what to watch for | digoxin | nausea or loss of appetite; blurred or yellow-tinted vision; new confusion; a very slow or irregular pulse | nausea, appetiteWorse, blurred_vision, confusion | `fda_labels` |
 

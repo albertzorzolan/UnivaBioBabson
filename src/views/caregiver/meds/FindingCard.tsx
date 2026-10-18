@@ -1,13 +1,18 @@
 // One review finding: what it is, which medicines, what the diary shows, the question for the visit, the
 // published source, the caregiver's decision — and (when the on-device model is loaded) a simpler AI wording.
-import { useEffect, useState } from "react";
+// When every diary item this card cites is already shown in full on an earlier, visible card (`diaryRepeat`, see
+// diaryRepeats.ts), the block starts as a one-line "Diary entries already shown above" summary with a Show button
+// that expands the full block in place.
+import { useEffect, useId, useState } from "react";
 import { Activity, BookmarkCheck, BookmarkPlus, ChevronRight, MessageCircleQuestion, NotebookPen, Pill, RotateCcw, Sparkles } from "lucide-react";
 import type { Finding, Medication, MetricKey, ReviewDecision, ReviewStatus, Signal } from "../../../model/types";
 import { getDrug, getSource } from "../../../kb";
 import { aiExplainFinding, AIValidationError, useLLM } from "../../../ai";
 import { AIBadge, Badge, Button, Disclosure, Segmented, SourceCitation, Spinner, cx } from "../../../ui";
 import { getMetric } from "../../../engine/timeline/metrics";
+import { STRENGTH_SIZE_LABEL, strengthTone } from "../../shared/caregiver-insights";
 import { CATEGORY_CHIP, STATUS_LABEL } from "./reviewRecords";
+import { DIARY_SIGNALS_SHOWN } from "./diaryRepeats";
 
 export interface FindingCardProps {
   finding: Finding;
@@ -18,8 +23,16 @@ export interface FindingCardProps {
   decision: ReviewDecision | undefined;
   saved: boolean;
   person: string;
+  /** The person's names ("Margaret", "Mom") for the AI check's patient-scoped language rules. */
+  patientNames?: string[];
   highlight?: boolean;
   tourId?: string;
+  /**
+   * Set when every diary item this card cites is already shown in full on an earlier, visible card: the block
+   * starts collapsed to one line. `items` is the number of entries the block renders (symptom counts + the first
+   * DIARY_SIGNALS_SHOWN timeline patterns).
+   */
+  diaryRepeat?: { items: number };
   onDecision: (status: ReviewStatus, note: string) => void;
   onToggleQuestion: () => void;
   onShowRecords: (m: MetricKey) => void;
@@ -31,8 +44,6 @@ const STATUS_OPTIONS: { value: Exclude<ReviewStatus, "open">; label: string }[] 
   { value: "discussed", label: "Discussed" },
   { value: "dismissed", label: "Not relevant" },
 ];
-
-const STRENGTH_WORD: Record<Signal["strength"], string> = { strong: "Strong", moderate: "Moderate", weak: "Weak" };
 
 function metricLabel(m: MetricKey): string {
   try {
@@ -62,8 +73,10 @@ export function FindingCard({
   decision,
   saved,
   person,
+  patientNames,
   highlight,
   tourId,
+  diaryRepeat,
   onDecision,
   onToggleQuestion,
   onShowRecords,
@@ -73,6 +86,9 @@ export function FindingCard({
   const [note, setNote] = useState(decision?.note ?? "");
   const [ai, setAi] = useState<AiState>({ kind: "idle" });
   const [collapsedOpen, setCollapsedOpen] = useState(false);
+  const [diaryOpen, setDiaryOpen] = useState(false);
+  const diaryId = useId();
+  const diaryCollapsed = Boolean(diaryRepeat) && !diaryOpen;
   const llm = useLLM();
 
   useEffect(() => setNote(decision?.note ?? ""), [decision?.note]);
@@ -87,7 +103,7 @@ export function FindingCard({
     setAi({ kind: "loading" });
     try {
       const kbText = involved.flatMap((m) => m.ingredientIds.map((id) => getDrug(id)?.usedFor ?? "")).filter(Boolean);
-      const r = await aiExplainFinding(f, { kbText, medNames: involved.map((m) => m.name) });
+      const r = await aiExplainFinding(f, { kbText, medNames: involved.map((m) => m.name), patientNames });
       if (!r) setAi({ kind: "error", message: "The on-device model isn’t loaded any more. Load it again in Settings." });
       else setAi({ kind: "done", text: r.text, ms: r.ms, dropped: r.dropped });
     } catch (e) {
@@ -165,46 +181,73 @@ export function FindingCard({
             <p className="cg-finding__plain">{f.plain}</p>
 
             {linked && (
-              <section className="cg-finding__diary" aria-label={`Recorded in ${person}’s diary`}>
+              <section
+                className={cx("cg-finding__diary", diaryCollapsed && "cg-finding__diary--repeat")}
+                aria-label={`Recorded in ${person}’s diary`}
+              >
                 <p className="cg-finding__label">
-                  <NotebookPen size={15} aria-hidden="true" /> Recorded in {person}’s diary
+                  <NotebookPen size={15} aria-hidden="true" />
+                  <span>
+                    {diaryRepeat ? "Diary entries already shown above" : `Recorded in ${person}’s diary`}
+                    {diaryRepeat && (
+                      <span className="cg-finding__diary-count ui-num">
+                        {" "}
+                        · {diaryRepeat.items} {diaryRepeat.items === 1 ? "item" : "items"}
+                      </span>
+                    )}
+                  </span>
+                  {/* The toggle stays in place when it opens or closes, so keyboard focus is never lost. */}
+                  {diaryRepeat && (
+                    <button
+                      type="button"
+                      className="cg-finding__link cg-finding__diary-toggle"
+                      aria-expanded={diaryOpen}
+                      aria-controls={diaryId}
+                      onClick={() => setDiaryOpen(!diaryOpen)}
+                    >
+                      {diaryOpen ? "Hide" : "Show"}
+                      <span className="ui-visually-hidden"> the diary entries for this prompt</span>
+                    </button>
+                  )}
                 </p>
-                {findingSignals.slice(0, 2).map((s) => (
-                  <p key={s.id} className="cg-finding__signal">
-                    <span>{s.text}</span>
-                    <span className="cg-finding__signal-meta">
-                      <Badge size="sm" tone={s.strength === "strong" ? "attention" : s.strength === "moderate" ? "caution" : "neutral"}>
-                        Pattern: {STRENGTH_WORD[s.strength]}
-                      </Badge>
-                      <button type="button" className="cg-finding__link" onClick={() => onOpenTimeline(s.medicationId)}>
-                        See on timeline
-                      </button>
-                    </span>
-                  </p>
-                ))}
-                {findingSignals.length > 2 && (
-                  <p className="cg-finding__more">
-                    and {findingSignals.length - 2} more pattern{findingSignals.length - 2 === 1 ? "" : "s"} on the timeline
-                  </p>
-                )}
-                {f.relatedSymptoms.length > 0 && (
-                  <ul className="cg-finding__symptoms" role="list" aria-label="Recorded in the last 30 days">
-                    {f.relatedSymptoms.map((m) => {
-                      const c = counts(m);
-                      return (
-                        <li key={m}>
-                          <button type="button" className="cg-sym-chip" onClick={() => onShowRecords(m)}>
-                            <span className="cg-sym-chip__dot" data-metric={m} aria-hidden="true" />
-                            <span className="cg-sym-chip__label">{metricLabel(m)}</span>
-                            <span className="cg-sym-chip__count ui-num">{countText(m, c)}</span>
-                            <span className="ui-visually-hidden"> in the last 30 days — show the records</span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-                {f.relatedSymptoms.length > 0 && <p className="cg-finding__caveat">Last 30 days. Counts show what was recorded, not why it happened.</p>}
+                <div id={diaryId} className="cg-finding__diary-body" hidden={diaryCollapsed}>
+                  {findingSignals.slice(0, DIARY_SIGNALS_SHOWN).map((s) => (
+                    <p key={s.id} className="cg-finding__signal">
+                      <span>{s.text}</span>
+                      <span className="cg-finding__signal-meta">
+                        <Badge size="sm" tone={strengthTone(s.strength)}>
+                          {STRENGTH_SIZE_LABEL[s.strength]}
+                        </Badge>
+                        <button type="button" className="cg-finding__link" onClick={() => onOpenTimeline(s.medicationId)}>
+                          See on timeline
+                        </button>
+                      </span>
+                    </p>
+                  ))}
+                  {findingSignals.length > DIARY_SIGNALS_SHOWN && (
+                    <p className="cg-finding__more">
+                      and {findingSignals.length - DIARY_SIGNALS_SHOWN} more pattern{findingSignals.length - DIARY_SIGNALS_SHOWN === 1 ? "" : "s"} on the timeline
+                    </p>
+                  )}
+                  {f.relatedSymptoms.length > 0 && (
+                    <ul className="cg-finding__symptoms" role="list" aria-label="Recorded in the last 30 days">
+                      {f.relatedSymptoms.map((m) => {
+                        const c = counts(m);
+                        return (
+                          <li key={m}>
+                            <button type="button" className="cg-sym-chip" onClick={() => onShowRecords(m)}>
+                              <span className="cg-sym-chip__dot" data-metric={m} aria-hidden="true" />
+                              <span className="cg-sym-chip__label">{metricLabel(m)}</span>
+                              <span className="cg-sym-chip__count ui-num">{countText(m, c)}</span>
+                              <span className="ui-visually-hidden"> in the last 30 days — show the records</span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                  {f.relatedSymptoms.length > 0 && <p className="cg-finding__caveat">Last 30 days. Counts show what was recorded, not why it happened.</p>}
+                </div>
               </section>
             )}
 

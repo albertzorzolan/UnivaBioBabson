@@ -11,6 +11,14 @@ interface StoreApi {
   data: StoreData;
   today: ISODate;
   loadStatus: "loaded" | "seeded" | "recovered";
+  /**
+   * Set while the "saved data couldn't be read" notice should show (loadStatus "recovered", not dismissed yet).
+   * backupKey names the localStorage key holding the unreadable copy, or null if no copy could be written.
+   */
+  recovery: { backupKey: string | null } | null;
+  dismissRecovery: () => void;
+  /** Raw text stored under `key` (used to download the unreadable copy), or null. */
+  readStored: (key: string) => string | null;
   /** Apply a change as `actor`. The updater must return a new object (no mutation). */
   update: (actor: Actor, updater: (prev: StoreData) => StoreData) => UpdateResult;
   resetDemo: () => void;
@@ -42,12 +50,15 @@ export function StoreProvider({ children, today: todayOverride }: { children: Re
   const today = todayOverride ?? localDate();
   const storage = useMemo(() => safeStorage() ?? memoryStorage, []);
   const [state, setState] = useState(() => loadStore(storage, today));
+  const [recoveryOpen, setRecoveryOpen] = useState(() => state.status === "recovered");
 
   // Keep tabs in sync: another tab's commit replaces ours.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key !== STORAGE_KEY || !e.newValue) return;
-      setState(loadStore(storage, today));
+      const next = loadStore(storage, today);
+      setState(next);
+      if (next.status === "recovered") setRecoveryOpen(true);
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
@@ -58,7 +69,7 @@ export function StoreProvider({ children, today: todayOverride }: { children: Re
       try {
         const next = commitStore(state.data, updater(state.data), actor);
         saveStore(storage, next);
-        setState({ data: next, status: state.status });
+        setState({ ...state, data: next });
         return { ok: true };
       } catch (e) {
         return { ok: false, error: e instanceof Error ? e.message : "The change could not be saved." };
@@ -70,7 +81,8 @@ export function StoreProvider({ children, today: todayOverride }: { children: Re
   const resetDemo = useCallback(() => {
     const data = createSeed(today);
     saveStore(storage, data);
-    setState({ data, status: "seeded" });
+    setState({ data, status: "seeded", backupKey: null });
+    setRecoveryOpen(false);
   }, [storage, today]);
 
   const replaceAll = useCallback<StoreApi["replaceAll"]>(
@@ -78,7 +90,8 @@ export function StoreProvider({ children, today: todayOverride }: { children: Re
       try {
         const next = commitStore(state.data, data, "system");
         saveStore(storage, next);
-        setState({ data: next, status: "loaded" });
+        setState({ data: next, status: "loaded", backupKey: null });
+        setRecoveryOpen(false);
         return { ok: true };
       } catch (e) {
         return { ok: false, error: e instanceof Error ? e.message : "That file could not be imported." };
@@ -87,9 +100,35 @@ export function StoreProvider({ children, today: todayOverride }: { children: Re
     [state, storage],
   );
 
+  const dismissRecovery = useCallback(() => setRecoveryOpen(false), []);
+  const readStored = useCallback<StoreApi["readStored"]>(
+    (key) => {
+      try {
+        return storage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    [storage],
+  );
+  const recovery = useMemo(
+    () => (recoveryOpen && state.status === "recovered" ? { backupKey: state.backupKey } : null),
+    [recoveryOpen, state.status, state.backupKey],
+  );
+
   const api = useMemo<StoreApi>(
-    () => ({ data: state.data, today, loadStatus: state.status, update, resetDemo, replaceAll }),
-    [state, today, update, resetDemo, replaceAll],
+    () => ({
+      data: state.data,
+      today,
+      loadStatus: state.status,
+      recovery,
+      dismissRecovery,
+      readStored,
+      update,
+      resetDemo,
+      replaceAll,
+    }),
+    [state, today, recovery, dismissRecovery, readStored, update, resetDemo, replaceAll],
   );
   return <StoreContext.Provider value={api}>{children}</StoreContext.Provider>;
 }

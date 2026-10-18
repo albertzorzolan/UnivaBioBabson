@@ -1,3 +1,5 @@
+> Historical: audit of Prototype 1 (commit 30543d7 of 2026-09-25, audited 2026-10-10), the prototype Kinwise v2 replaced. It does not describe the current code; see docs/ARCHITECTURE.md and docs/EVALUATION.md.
+
 # MedWatch code audit (October 10, 2026)
 
 Scope: `/Users/mb_pro/Desktop/UnivaBio Hackathon/prototype` (branch `codex/prototype-1-albert`, commit 30543d7) and the teammate's earlier app on `origin/main` (repo root `src/`, commit fc2c5d5 "Prototype V1"). This audit modified nothing in the repository, and `git status` was clean when the audit finished at about 18:05. At 18:07 another process created new untracked files at the repo root (`package.json`, `src/{ai,app,engine,kb,model,ui,views}`, `public/`, `eval/`, `docs/`) and changed `.gitignore`. Those changes are not part of this audit and were not reviewed. All outputs are in `scratchpad/research/`:

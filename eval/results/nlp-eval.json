@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T08:17:29.333Z",
+  "generatedAt": "2026-10-17T23:18:30.951Z",
   "engine": "kinwise-nlp 2.0.0",
   "protocol": "Scoring per eval/ANNOTATION-GUIDE.md. Dev set used for development; held-out set written independently and never used for tuning (reported, not asserted).",
   "today": "2026-10-10",
@@ -391,9 +391,9 @@
     "exactRate": 0.9959,
     "conflictsSurfaced": 4,
     "latency": {
-      "meanMs": 0.451,
-      "p95Ms": 0.423,
-      "maxMs": 59.776
+      "meanMs": 0.482,
+      "p95Ms": 0.494,
+      "maxMs": 62.45
     },
     "errors": [
       {
@@ -406,7 +406,197 @@
           "colloquial"
         ]
       }
-    ]
+    ],
+    "baseline": {
+      "engine": "lexicon-only baseline (same lexicon and field resolution, ConText switched off)",
+      "micro": {
+        "tp": 260,
+        "fp": 96,
+        "fn": 65,
+        "precision": 0.7303,
+        "recall": 0.8,
+        "f1": 0.7636,
+        "support": 325
+      },
+      "macroF1": 0.7973,
+      "subsets": {
+        "explicit_rating": {
+          "cases": 17,
+          "errors": 9,
+          "fp": 9,
+          "fn": 8
+        },
+        "qualitative": {
+          "cases": 51,
+          "errors": 17,
+          "fp": 15,
+          "fn": 8
+        },
+        "negation": {
+          "cases": 55,
+          "errors": 68,
+          "fp": 66,
+          "fn": 63
+        },
+        "colloquial": {
+          "cases": 65,
+          "errors": 6,
+          "fp": 6,
+          "fn": 5
+        },
+        "multi_symptom": {
+          "cases": 38,
+          "errors": 14,
+          "fp": 14,
+          "fn": 14
+        },
+        "fall_vs_near_fall": {
+          "cases": 38,
+          "errors": 15,
+          "fp": 13,
+          "fn": 12
+        },
+        "pseudo_negation": {
+          "cases": 13,
+          "errors": 1,
+          "fp": 1,
+          "fn": 1
+        },
+        "double_negation": {
+          "cases": 6,
+          "errors": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        "med_mention": {
+          "cases": 22,
+          "errors": 7,
+          "fp": 7,
+          "fn": 3
+        },
+        "experiencer_other": {
+          "cases": 24,
+          "errors": 18,
+          "fp": 18,
+          "fn": 5
+        },
+        "no_symptoms": {
+          "cases": 24,
+          "errors": 13,
+          "fp": 13,
+          "fn": 0
+        },
+        "historical": {
+          "cases": 12,
+          "errors": 12,
+          "fp": 11,
+          "fn": 4
+        },
+        "hypothetical": {
+          "cases": 19,
+          "errors": 16,
+          "fp": 16,
+          "fn": 3
+        },
+        "long": {
+          "cases": 6,
+          "errors": 3,
+          "fp": 3,
+          "fn": 3
+        },
+        "typo": {
+          "cases": 7,
+          "errors": 1,
+          "fp": 1,
+          "fn": 1
+        },
+        "conflict": {
+          "cases": 7,
+          "errors": 4,
+          "fp": 3,
+          "fn": 2
+        },
+        "caregiver_voice": {
+          "cases": 18,
+          "errors": 10,
+          "fp": 10,
+          "fn": 9
+        }
+      },
+      "negation": {
+        "goldNegatives": 62,
+        "correct": 0,
+        "accuracy": 0,
+        "polarityFlips": 61
+      },
+      "exactCases": 161
+    },
+    "ci95": {
+      "f1": [
+        0.9952,
+        1
+      ],
+      "resamples": 2000,
+      "seed": 20261010,
+      "unit": "story"
+    },
+    "baselineCi95": {
+      "f1": [
+        0.7164,
+        0.8093
+      ],
+      "resamples": 2000,
+      "seed": 20261010,
+      "unit": "story"
+    },
+    "deltaCi95": {
+      "f1": [
+        0.1887,
+        0.2825
+      ],
+      "resamples": 2000,
+      "seed": 20261010,
+      "unit": "story",
+      "pointEstimate": 0.2349
+    },
+    "subsetDeltas": {
+      "negation": {
+        "cases": 55,
+        "engineErrors": 0,
+        "baselineErrors": 68,
+        "errorsAvoided": 68
+      },
+      "experiencer_other": {
+        "cases": 24,
+        "engineErrors": 0,
+        "baselineErrors": 18,
+        "errorsAvoided": 18
+      },
+      "hypothetical": {
+        "cases": 19,
+        "engineErrors": 0,
+        "baselineErrors": 16,
+        "errorsAvoided": 16
+      },
+      "historical": {
+        "cases": 12,
+        "engineErrors": 0,
+        "baselineErrors": 12,
+        "errorsAvoided": 12
+      },
+      "pseudo_negation": {
+        "cases": 13,
+        "engineErrors": 0,
+        "baselineErrors": 1,
+        "errorsAvoided": 1
+      },
+      "double_negation": {
+        "cases": 6,
+        "engineErrors": 0,
+        "baselineErrors": 0,
+        "errorsAvoided": 0
+      }
+    }
   },
   "heldout": {
     "corpus": "heldout",
@@ -796,9 +986,9 @@
     "exactRate": 0.8286,
     "conflictsSurfaced": 1,
     "latency": {
-      "meanMs": 0.287,
-      "p95Ms": 0.435,
-      "maxMs": 0.78
+      "meanMs": 0.307,
+      "p95Ms": 0.426,
+      "maxMs": 0.715
     },
     "errors": [
       {
@@ -1020,6 +1210,196 @@
           "negation"
         ]
       }
-    ]
+    ],
+    "baseline": {
+      "engine": "lexicon-only baseline (same lexicon and field resolution, ConText switched off)",
+      "micro": {
+        "tp": 85,
+        "fp": 41,
+        "fn": 31,
+        "precision": 0.6746,
+        "recall": 0.7328,
+        "f1": 0.7025,
+        "support": 116
+      },
+      "macroF1": 0.6702,
+      "subsets": {
+        "no_symptoms": {
+          "cases": 10,
+          "errors": 7,
+          "fp": 7,
+          "fn": 0
+        },
+        "negation": {
+          "cases": 23,
+          "errors": 30,
+          "fp": 27,
+          "fn": 25
+        },
+        "fall_vs_near_fall": {
+          "cases": 18,
+          "errors": 19,
+          "fp": 15,
+          "fn": 15
+        },
+        "qualitative": {
+          "cases": 33,
+          "errors": 22,
+          "fp": 16,
+          "fn": 14
+        },
+        "multi_symptom": {
+          "cases": 30,
+          "errors": 18,
+          "fp": 13,
+          "fn": 16
+        },
+        "colloquial": {
+          "cases": 17,
+          "errors": 10,
+          "fp": 7,
+          "fn": 7
+        },
+        "med_mention": {
+          "cases": 11,
+          "errors": 4,
+          "fp": 4,
+          "fn": 2
+        },
+        "explicit_rating": {
+          "cases": 10,
+          "errors": 4,
+          "fp": 3,
+          "fn": 3
+        },
+        "experiencer_other": {
+          "cases": 13,
+          "errors": 13,
+          "fp": 10,
+          "fn": 6
+        },
+        "historical": {
+          "cases": 9,
+          "errors": 6,
+          "fp": 6,
+          "fn": 2
+        },
+        "hypothetical": {
+          "cases": 7,
+          "errors": 9,
+          "fp": 8,
+          "fn": 3
+        },
+        "caregiver_voice": {
+          "cases": 10,
+          "errors": 11,
+          "fp": 10,
+          "fn": 6
+        },
+        "typo": {
+          "cases": 5,
+          "errors": 3,
+          "fp": 2,
+          "fn": 3
+        },
+        "pseudo_negation": {
+          "cases": 5,
+          "errors": 3,
+          "fp": 1,
+          "fn": 3
+        },
+        "double_negation": {
+          "cases": 1,
+          "errors": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        "long": {
+          "cases": 2,
+          "errors": 2,
+          "fp": 1,
+          "fn": 1
+        },
+        "conflict": {
+          "cases": 3,
+          "errors": 3,
+          "fp": 3,
+          "fn": 1
+        }
+      },
+      "negation": {
+        "goldNegatives": 23,
+        "correct": 0,
+        "accuracy": 0,
+        "polarityFlips": 22
+      },
+      "exactCases": 33
+    },
+    "ci95": {
+      "f1": [
+        0.9074,
+        0.9712
+      ],
+      "resamples": 2000,
+      "seed": 20261010,
+      "unit": "story"
+    },
+    "baselineCi95": {
+      "f1": [
+        0.6245,
+        0.7782
+      ],
+      "resamples": 2000,
+      "seed": 20261010,
+      "unit": "story"
+    },
+    "deltaCi95": {
+      "f1": [
+        0.1663,
+        0.3207
+      ],
+      "resamples": 2000,
+      "seed": 20261010,
+      "unit": "story",
+      "pointEstimate": 0.2397
+    },
+    "subsetDeltas": {
+      "negation": {
+        "cases": 23,
+        "engineErrors": 5,
+        "baselineErrors": 30,
+        "errorsAvoided": 25
+      },
+      "experiencer_other": {
+        "cases": 13,
+        "engineErrors": 3,
+        "baselineErrors": 13,
+        "errorsAvoided": 10
+      },
+      "hypothetical": {
+        "cases": 7,
+        "engineErrors": 0,
+        "baselineErrors": 9,
+        "errorsAvoided": 9
+      },
+      "historical": {
+        "cases": 9,
+        "engineErrors": 0,
+        "baselineErrors": 6,
+        "errorsAvoided": 6
+      },
+      "pseudo_negation": {
+        "cases": 5,
+        "engineErrors": 3,
+        "baselineErrors": 3,
+        "errorsAvoided": 0
+      },
+      "double_negation": {
+        "cases": 1,
+        "engineErrors": 0,
+        "baselineErrors": 0,
+        "errorsAvoided": 0
+      }
+    }
   }
 }

@@ -3,15 +3,20 @@
 `eval/med-cases.json` holds 57 synthetic cases with 295 expectations: 158 "must include", 59 "must not include"
 and 78 checks on totals, lists and states. Each expectation names the published criterion it comes from.
 `eval/meds.eval.test.ts` runs them against the real engine (`matchDrug` and `reviewMedications`, SPEC §10) and
-writes `eval/results/meds-eval.json`. This is the independent case file required by the SPEC §9 quality gate.
+writes `eval/results/meds-eval.json`. This is the separately written case file required by the SPEC §9 quality gate.
 
 > Synthetic, fictional cases for software testing. This is not patient data, not clinical validation and not
 > medical advice. Passing these cases does not mean the engine is complete. No flag does not mean a medicine is safe.
 
-## 1. Independence
+## 1. How the cases were kept apart from the engine
 
-- **Who wrote the cases.** An evaluation author separate from the engine author: Claude Code, acting as a
-  clinical-pharmacist test author. The work ran in parallel with the engine build.
+- **Who wrote the cases.** Separately written by an AI agent directed by the team (Claude Code, acting as a
+  clinical-pharmacist test author), not by the agent that wrote the engine, and not clinician-reviewed. The work ran
+  in parallel with the engine build. This is separation, not independence in the strict sense: the same team directed
+  both agents.
+- **What happened afterwards.** Once written, the case file was in the repository while the rest of the engine and
+  the knowledge base were developed, so it was available to engine development. A 57/57 run therefore shows that the
+  code meets this written specification. It is not a blind test (docs/EVALUATION.md §2).
 - **What was not read.** Neither `src/engine/meds/**` nor the compiled knowledge base (`src/kb/data/**`) was opened.
   Both directories were still empty while the cases were written (checked at the start and the end of the work).
   The only project files read were the API contracts (`src/model/types.ts`, `src/kb/types.ts`), `docs/SPEC.md`
@@ -202,3 +207,6 @@ These are also listed in `notCovered` in the case file:
   rules on the file.
 - **Testing the runner itself:** set `KINWISE_MED_EVAL_NORMALIZE`, `KINWISE_MED_EVAL_REVIEW` and
   `KINWISE_MED_EVAL_RESULTS` to point it at stub modules and a scratch results path.
+- **Ablations (can the suite fail?):** `npx vitest run eval/meds.ablation.test.ts` runs the same case runner
+  (`eval/medsRunner.ts`) against the stub engines in `eval/ablations/` (each removes one piece of knowledge from the
+  knowledge base) and writes `eval/results/meds-ablation.json`.

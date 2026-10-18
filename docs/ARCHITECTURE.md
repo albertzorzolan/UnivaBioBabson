@@ -311,8 +311,11 @@ devices: in the demo, the patient and caregiver views share one browser.
   `raw.githubusercontent.com` for the optional model files; `'wasm-unsafe-eval'` for the model runtime; no third-party
   scripts; `referrer` is `no-referrer`. Fonts are bundled.
 - `.github/workflows/pages.yml`: on push to `medwatch-v2` (or manual run), `npm ci`, `npm test`, `npm run build:pages`,
-  then deploy `dist/` to GitHub Pages. **The planned URL is https://albertzorzolan.github.io/UnivaBioBabson/; it had
-  not been deployed when this was written.**
+  then deploy `dist/` to GitHub Pages.
+- **Live demo: https://albertzorzolan.github.io/UnivaBioBabson/** (GitHub Pages, deployed 2026-10-11 by
+  `.github/workflows/pages.yml` on push to `medwatch-v2`). It serves whatever `medwatch-v2` last built; no AI model
+  is hosted there; on first use the optional on-device model downloads its weights from Hugging Face and its WebGPU
+  library from raw.githubusercontent.com.
 
 ## 9. Trade-offs and known limitations
 

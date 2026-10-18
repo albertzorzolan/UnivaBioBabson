@@ -40,6 +40,7 @@ export const STRIP_ROWS: StripRow[] = [
   { key: "swelling", label: "Ankle swelling", short: "Swelling", metrics: ["swelling"] },
 ];
 
+
 const SEVERITY: Record<1 | 2 | 3, string> = { 1: "mild", 2: "moderate", 3: "severe" };
 
 /** Short medicine name for markers: "Lorazepam (Ativan)" → "Lorazepam". */
@@ -441,7 +442,17 @@ export function TimelineChart({
             <div className="cg-tlc__grid">
               {/* ---- Labels column ---- */}
               <div className="cg-tlc__labels" aria-hidden="true" ref={labelsRef}>
-                <div className="cg-tlc__label-markers">{lanes > 0 ? "Medicines" : ""}</div>
+                {/* Names the marker lane, on the same line as the first marker (lane 0) so it doesn't read as a heading
+                    for the symptom rows below. The --lane modifier (caregiver-timeline-chart.css) switches the shared
+                    all-caps label to sentence case and centres the text on lane 0. */}
+                <div className="cg-tlc__label-markers cg-tlc__label-markers--lane">
+                  {lanes > 0 && (
+                    <span className="cg-tlc__label-lane-text">
+                      <span className="cg-tlc__label-full">Medicine changes</span>
+                      <span className="cg-tlc__label-short">Changes</span>
+                    </span>
+                  )}
+                </div>
                 {STRIP_ROWS.map((r) => (
                   <div key={r.key} className="cg-tlc__label-row">
                     {r.key === "falls" ? (

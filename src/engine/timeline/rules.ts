@@ -48,12 +48,17 @@ export const SIGNAL_CAVEAT =
 /**
  * Honest note about multiple comparisons, for the signal detail view and the How-it-works page.
  * The figures are measured, not assumed: signals.null.test.ts simulates diaries with no real change and fails if
- * the rates drift from what this sentence says.
+ * the rates drift from what this sentence says. The first figures assume independent days; the clustered-days
+ * figure comes from the same test with each answer repeating the previous day's with probability 0.8
+ * (eval/results/timeline-null.json), because real symptoms come in runs and the tests assume they do not.
  */
 export const MULTIPLE_COMPARISONS_NOTE =
   "Kinwise compares 9 diary items around each medicine change, so some differences will appear by chance. " +
   "In simulated diaries with no real change, about 1 in 10 medicine changes still showed a moderate signal and " +
   "about 1 in 100 a strong one (nearly 1 in 5 and 1 in 35 when symptoms were recorded often). " +
+  "Those simulations treat each day separately. When symptoms come in runs of days (a bad week, a cold), chance " +
+  "signals are much more common: in a clustered-days simulation about 9 in 10 medicine changes showed a moderate " +
+  "signal and about 6 in 10 a strong one. " +
   "A signal is a prompt for a conversation, not a conclusion.";
 
 /** Plain-language method summary for the How-it-works page. */

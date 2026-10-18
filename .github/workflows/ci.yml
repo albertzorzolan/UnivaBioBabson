@@ -1,0 +1,42 @@
+# Continuous integration for Kinwise: type check, the full Vitest suite (unit tests + the NLP and medication evals)
+# and the knowledge-base integrity check. Read-only: no secrets, no deploy (publishing the live demo is pages.yml).
+#
+# Badge: add it to README.md only after this workflow has run once on GitHub (before that it shows "no status"):
+#   [![CI](https://github.com/albertzorzolan/UnivaBioBabson/actions/workflows/ci.yml/badge.svg?branch=medwatch-v2)](https://github.com/albertzorzolan/UnivaBioBabson/actions/workflows/ci.yml)
+name: CI
+
+on:
+  push:
+    branches: [medwatch-v2, kinwise-final]
+  pull_request:
+
+permissions:
+  contents: read
+
+# A newer push to the same branch or pull request cancels the older run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22 # same as pages.yml
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12" # build_kb.py uses only the standard library
+      - run: npm ci
+      - name: Type check
+        run: npm run typecheck
+      - name: Tests (unit tests + NLP and medication evals)
+        run: npm test
+      # Builds the knowledge base in memory from kb-src/ and validates it (integrity, rating cross-checks, banned
+      # wording); exits 1 on any problem and writes nothing. Offline: it reads only repository files.
+      - name: Knowledge-base check
+        run: python3 -I kb-src/build_kb.py --check

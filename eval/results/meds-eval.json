@@ -1,10 +1,10 @@
 {
-  "suite": "Kinwise medication-review evaluation (independent cases, eval/med-cases.json)",
+  "suite": "Kinwise medication-review evaluation (separately written cases, eval/med-cases.json)",
   "status": "complete",
   "problems": [],
   "caseFileVersion": "1.0.0",
   "today": "2026-10-10",
-  "ranAt": "2026-10-11T07:20:42.644Z",
+  "ranAt": "2026-10-18T01:40:04.289Z",
   "kbVersion": "2026.10.2",
   "disclaimer": "Synthetic, fictional test cases for software testing. Not patient data, not clinical validation, and not medical advice. No flag does not mean a medicine is safe.",
   "summary": {

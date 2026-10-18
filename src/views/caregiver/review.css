@@ -383,12 +383,33 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  border-left: 3px solid var(--info);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border: 1px solid color-mix(in srgb, var(--info) 22%, transparent);
+  border-radius: var(--radius-md);
   background: var(--info-soft);
 }
 .cg-finding__diary .cg-finding__label {
   color: var(--info-ink);
+}
+.cg-finding__diary-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.cg-finding__diary-body[hidden] {
+  display: none;
+}
+/* A repeat of an earlier card's diary block: one quiet line with a Show toggle. */
+.cg-finding__diary--repeat {
+  padding-block: var(--space-1);
+}
+.cg-finding__diary-count {
+  font-weight: var(--fw-regular);
+}
+.cg-finding__diary-toggle {
+  margin-left: auto;
+  padding-inline: var(--space-2);
+  letter-spacing: 0;
+  text-transform: none;
 }
 .cg-finding__signal {
   display: flex;
@@ -470,9 +491,20 @@
 }
 .cg-sym-chip__label {
   font-weight: var(--fw-semibold);
+  white-space: nowrap;
 }
 .cg-sym-chip__count {
   color: var(--ink-muted);
+  white-space: nowrap;
+}
+/* On a phone a long chip wraps as two left-aligned lines (name, then count) instead of centring broken words. */
+@media (max-width: 30rem) {
+  .cg-sym-chip {
+    flex-wrap: wrap;
+    row-gap: 0;
+    text-align: left;
+    border-radius: var(--radius-md);
+  }
 }
 
 .cg-finding__question {
