@@ -6,11 +6,13 @@ import type { Finding } from "../../model/types";
 import { createSeed } from "../../model/seed";
 import { analyzeTimeline } from "../../engine/timeline/signals";
 import { activeMeds, reviewMedications } from "../../engine/meds/review";
-import { MULTIPLE_COMPARISONS_NOTE, SIGNAL_CAVEAT, TIMELINE_METHOD_SUMMARY } from "../../engine/timeline/rules";
+import { MULTIPLE_COMPARISONS_NOTE, RUNS_CHECK_NOTE, SIGNAL_CAVEAT, TIMELINE_METHOD_SUMMARY } from "../../engine/timeline/rules";
 import {
   CHANCE_NOTE,
   RELIABILITY_TITLE,
   SIGNAL_WORDS_KEY,
+  SIZE_ORDER_KEY,
+  SIZE_ORDER_WORDS,
   STRENGTH_SIZE_LABEL,
   STRENGTH_SIZE_WORD,
   TEST_NAME,
@@ -140,10 +142,24 @@ function textOf(html: string): string {
     .replace(/\s+/g, " ");
 }
 
+describe("SIZE_ORDER_KEY (the key under the Timeline's flagged count)", () => {
+  it("orders the size words from largest to smallest, in the badges' own words, with no numbers", () => {
+    expect(SIZE_ORDER_KEY).toBe("Size of the recorded difference: Large › Clear › Small (not flagged)");
+    expect(SIZE_ORDER_WORDS).toEqual(["Large", "Clear", "Small"]);
+    // Each word is the start of the badge it stands for, so the key cannot drift from the badges.
+    expect(STRENGTH_SIZE_WORD.strong.startsWith(SIZE_ORDER_WORDS[0])).toBe(true);
+    expect(STRENGTH_SIZE_WORD.moderate.startsWith(SIZE_ORDER_WORDS[1])).toBe(true);
+    expect(STRENGTH_SIZE_WORD.weak.startsWith(SIZE_ORDER_WORDS[2])).toBe(true);
+    expect(SIZE_ORDER_KEY).not.toMatch(/\d/);
+    // It names sizes only, never a direction, so it cannot read as "better" or "worse".
+    expect(SIZE_ORDER_KEY).not.toMatch(/\b(better|worse|good|bad|improv\w*)\b/i);
+  });
+});
+
 describe("'How reliable is this?' disclosure", () => {
   const html = renderToStaticMarkup(
     createElement(ReliabilityDisclosure, {
-      tests: [{ key: "dizziness", metric: "dizziness", label: "Dizziness", test: "fisher_exact", pValue: 0.0042 }],
+      tests: [{ key: "dizziness", metric: "dizziness", label: "Dizziness", test: "fisher_exact", pValue: 0.0042, runsP: 0.007 }],
     }),
   );
   const text = textOf(html);
@@ -163,6 +179,32 @@ describe("'How reliable is this?' disclosure", () => {
     expect(TEST_NAME.fisher_exact).toBe("Fisher's exact test");
     expect(TEST_NAME.mann_whitney).toBe("Mann–Whitney U test");
     expect(text).toMatch(/Dizziness: Fisher's exact test, p = 0\.004/);
+  });
+
+  it("shows the runs-check p beside the test's p, and says the runs check is reported, not used to flag", () => {
+    expect(text).toContain("Dizziness: Fisher's exact test, p = 0.0042 · runs check p = 0.007");
+    expect(text).toContain(RUNS_CHECK_NOTE);
+    // A row without a runs check (an older saved analysis) shows the test's p alone.
+    const older = textOf(
+      renderToStaticMarkup(
+        createElement(ReliabilityDisclosure, { tests: [{ key: "energy", metric: "energy", label: "Energy", test: "mann_whitney", pValue: 0.0035 }] }),
+      ),
+    );
+    expect(older).toContain("Energy: Mann–Whitney U test, p = 0.0035");
+    expect(older).not.toContain("runs check p");
+  });
+
+  it("shows RUNS_CHECK_NOTE only where a runs-check p is on screen", () => {
+    const render = (props: Parameters<typeof ReliabilityDisclosure>[0]) => textOf(renderToStaticMarkup(createElement(ReliabilityDisclosure, props)));
+    const noRuns = [{ key: "dizziness", metric: "dizziness", label: "Dizziness", test: "fisher_exact", pValue: 0.0023 }] as const;
+    // Rows without runsP (the Overview until it passes them): the note would describe a number the page does not show.
+    expect(render({ tests: [...noRuns] })).not.toContain(RUNS_CHECK_NOTE);
+    expect(render({})).not.toContain(RUNS_CHECK_NOTE);
+    // Rows with runsP: shown by default.
+    expect(render({ tests: [{ ...noRuns[0], runsP: 0.007 }] })).toContain(RUNS_CHECK_NOTE);
+    // The Timeline: no rows here (its runs-check p-values are in its own comparison rows), so it passes runsNote.
+    expect(render({ method: TIMELINE_METHOD_SUMMARY, runsNote: true })).toContain(RUNS_CHECK_NOTE);
+    expect(render({ method: TIMELINE_METHOD_SUMMARY, runsNote: false })).not.toContain(RUNS_CHECK_NOTE);
   });
 
   it("keys the engine's 'strong'/'moderate' words to this page's size words, before the measured rates", () => {

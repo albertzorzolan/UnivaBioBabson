@@ -170,3 +170,17 @@ test("claim checker anchors and caveats: BANNED_PATTERNS declaration, live-run g
   assert.match(html, /written by the team with AI assistance/);
   assert.doesNotMatch(html, /\{(?:TEST_FILES|KB_SOURCES|TSX_FILES|CSS_FILES|KB_BANNED|FHIR_RESULT|LIVE_SLIPPED)\}/);
 });
+
+test("claim table: the review-before-print gate points to the notice and to the code that clears the mark", () => {
+  const row = html.match(/<tr><td>The brief prints only after the caregiver marks it reviewed; any change clears the mark<\/td>.*?<\/tr>/)?.[0];
+  assert.ok(row, "review-gate claim row missing");
+  const notice = lineOf("src/views/caregiver/brief/BriefDocument.tsx", new RegExp(sym("NotReviewedNotice")));
+  const clears = lineOf("src/views/caregiver/brief/compose.ts", new RegExp(sym("withContent")));
+  assert.ok(row.includes(`<code>views/caregiver/brief/BriefDocument.tsx:${notice}</code>`), `row does not point to BriefDocument.tsx:${notice}`);
+  assert.ok(row.includes(`<code>views/caregiver/brief/compose.ts:${clears}</code>`), `row does not point to compose.ts:${clears}`);
+  // Both lines are printed in the tour (the row links inside this PDF), and the view's print gate is printed with them.
+  assert.ok(html.includes(`id="f-src-views-caregiver-brief-BriefDocument-tsx-L${notice}"`));
+  assert.ok(html.includes(`id="f-src-views-caregiver-brief-compose-ts-L${clears}"`));
+  const gate = lineOf("src/views/caregiver/VisitBrief.tsx", new RegExp(sym("reviewed")));
+  assert.ok(html.includes(`id="f-src-views-caregiver-VisitBrief-tsx-L${gate}"`), "VisitBrief.tsx print gate is not printed");
+});

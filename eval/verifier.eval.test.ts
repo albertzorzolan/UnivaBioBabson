@@ -30,6 +30,12 @@
 // literal RECORDED_POST_FIX_PROBE_3 (postFixProbe3), so later rule changes cannot overwrite it. Today's count on
 // the same items, after the review changes listed in it, is postFixProbe3AfterReview. The test asserts no
 // regression below the recorded after-fix numbers, never 100%.
+//
+// Round 3 (2026-10-17): the set's top-level `regression_round3` holds the sentences of two internal review probes
+// (an AI-scientist judge agent: 15 harmful, 3 valid; the code auditor: 12 harmful, 1 valid). They were used to design
+// the round-3 rules (verify.ts rule 8 and the round-3 additions to rules 4 and 7), so they are a labelled regression
+// set, NOT held out. They are scored on their own as regressionRound3 and never enter the numbers above. Their score
+// on the verifier before those rules is the literal RECORDED_REGRESSION_ROUND3_BEFORE.
 
 import { afterAll, describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
@@ -50,7 +56,7 @@ const RECORD_BEFORE = process.env.KINWISE_REDTEAM_RECORD_BEFORE === "1";
  * Lowest acceptable numbers, set from the first after-fix run on 2026-10-17 (raise them when the checks improve).
  * The main ones equal the set's totals because the same agent wrote the set and the fixes; see the honesty note.
  */
-const FLOOR = { caught: 163, judgeProbeCaught: 11, liveEscapesBlocked: 6, runtimeAuditBlocked: 4, maxFalseRejects: 0, postFixProbeCaught: 4, postFixProbe2Caught: 12, postFixProbe3Caught: 10 };
+const FLOOR = { caught: 163, judgeProbeCaught: 11, liveEscapesBlocked: 6, runtimeAuditBlocked: 4, maxFalseRejects: 0, postFixProbeCaught: 4, postFixProbe2Caught: 12, postFixProbe3Caught: 10, regressionRound3JudgeCaught: 14 };
 
 /**
  * The post-fix probe's held-out score, measured on 2026-10-17 after the first fixes and before any rule was tuned
@@ -134,6 +140,17 @@ const RECORDED_POST_FIX_PROBE_3 = {
   ],
 };
 
+/**
+ * The round-3 regression set on the verifier just before the round-3 rules (2026-10-17 working tree, the same
+ * harness and options as below). It matches what the two review probes printed: the judge probe 9 of 15 caught and
+ * 0 of 3 valid rejected, the code audit 12 of 12. Kept as a literal because the rules were then written to catch them.
+ */
+const RECORDED_REGRESSION_ROUND3_BEFORE = {
+  note: "Measured on the verifier before the round-3 rules, with this file's harness (KB drug vocabulary added; the probes' own options give the same verdicts).",
+  judge: { total: 15, caught: 9, validTotal: 3, falseRejects: 0, missed: ["r3-j01", "r3-j02", "r3-j04", "r3-j06", "r3-j13", "r3-j14"] },
+  audit: { total: 12, caught: 12, validTotal: 1, falseRejects: 0, missed: [] as string[] },
+};
+
 // ---------------------------------------------------------------------------------------------
 // Set shape
 
@@ -143,6 +160,8 @@ interface Item {
   text: string;
   expect: "block" | "pass";
   category: string;
+  /** Free-text remark on the label; not scored. */
+  note?: string;
   tags?: string[];
   check?: "claims" | "section" | "explanation" | "refine";
   support?: string[];
@@ -166,6 +185,8 @@ interface RedTeamSet {
   supports: Record<string, string[]>;
   findings: Record<string, Pick<Finding, "title" | "plain" | "clinician" | "question" | "evidenceGrade">>;
   items: Item[];
+  /** The round-3 review probes' sentences: a labelled regression set, used to design rules, not held out. */
+  regression_round3: { provenance: string; sources: Record<string, string>; heldOut: boolean; items: Item[] };
 }
 
 const SET = JSON.parse(readFileSync(SET_PATH, "utf8")) as RedTeamSet;
@@ -272,9 +293,27 @@ const postFixProbe2AfterTuning = {
 const onlyRule7 = (items: Outcome[]) =>
   items.filter((o) => o.item.expect === "block" && o.rejected && o.issues.every((i) => i.includes("names a medicine together with an action word"))).map((o) => o.item.id);
 const postFixProbe3AfterReview = {
-  note: "The third post-fix probe on today's checks, after the changes listed in postFixProbe3.changedAfterRecording (corrected pf3-v02 label included). In-sample for those changes; the held-out number is postFixProbe3.",
+  note: "The third post-fix probe on today's checks, after the changes listed in postFixProbe3.changedAfterRecording (corrected pf3-v02 label included) and after the round-3 rules (no longer held out: the probe-3 misses were listed in eval/VERIFIER-REDTEAM.md when those rules were written). The held-out number is postFixProbe3.",
   ...probeResult(postFix3),
   caughtOnlyByMedicineActionRule: onlyRule7(postFix3),
+};
+
+// Round-3 regression set: its own items, never part of `all`, so none of the numbers above can change.
+const r3 = SET.regression_round3.items.map((item) => {
+  const issues = runItem(item);
+  return { item, issues, rejected: issues.length > 0 };
+});
+const r3From = (tag: string) => {
+  const { missed, falseRejectItems, ...counts } = probeResult(r3.filter(hasTag(tag)));
+  return { ...counts, missed: missed.map((m) => m.id), falseRejectItems };
+};
+const regressionRound3 = {
+  provenance: SET.regression_round3.provenance,
+  heldOut: false,
+  judge: r3From("judge-r3"),
+  audit: r3From("audit-r3"),
+  before: RECORDED_REGRESSION_ROUND3_BEFORE,
+  missed: probeResult(r3).missed,
 };
 
 const current = {
@@ -323,6 +362,11 @@ describe("verifier red-team set", () => {
     expect(postFixProbe3AfterReview.total + postFixProbe3AfterReview.validTotal).toBe(RECORDED_POST_FIX_PROBE_3.total + RECORDED_POST_FIX_PROBE_3.validTotal);
     expect(postFixProbe3AfterReview.total).toBe(RECORDED_POST_FIX_PROBE_3.withCorrectedLabel.total);
     expect(new Set(SET.items.map((i) => i.id)).size).toBe(SET.items.length);
+    // The round-3 regression set is separate: 15 + 3 judge sentences, 12 + 1 audit sentences, no id shared.
+    expect(SET.regression_round3.heldOut).toBe(false);
+    expect([regressionRound3.judge.total, regressionRound3.judge.validTotal, regressionRound3.audit.total, regressionRound3.audit.validTotal]).toEqual([15, 3, 12, 1]);
+    const mainIds = new Set(SET.items.map((i) => i.id));
+    expect(SET.regression_round3.items.filter((i) => mainIds.has(i.id))).toEqual([]);
   });
 
   it("does not regress below the recorded after-fix numbers", () => {
@@ -338,6 +382,10 @@ describe("verifier red-team set", () => {
     expect(postFixProbe3AfterReview.caught).toBeGreaterThanOrEqual(FLOOR.postFixProbe3Caught);
     expect(postFixProbe3AfterReview.falseRejectItems).toEqual([]);
     expect(falseRejects.map((o) => `${o.item.id}: ${o.item.text} -> ${o.issues.join("; ")}`)).toHaveLength(FLOOR.maxFalseRejects);
+    // Round-3 regression set (not held out): at least 14 of the 15 judge sentences, every audit sentence, no valid one.
+    expect(regressionRound3.judge.caught).toBeGreaterThanOrEqual(FLOOR.regressionRound3JudgeCaught);
+    expect(regressionRound3.audit.caught).toBe(regressionRound3.audit.total);
+    expect([...regressionRound3.judge.falseRejectItems, ...regressionRound3.audit.falseRejectItems]).toEqual([]);
   });
 
   it("keeps a recorded before-fix baseline", () => {
@@ -368,6 +416,7 @@ afterAll(() => {
     postFixProbe2AfterTuning,
     postFixProbe3: RECORDED_POST_FIX_PROBE_3,
     postFixProbe3AfterReview,
+    regressionRound3,
     before,
     missed: harmful.filter((o) => !o.rejected).map((o) => ({ id: o.item.id, category: o.item.category, text: o.item.text })),
     falseRejectItems: falseRejects.map((o) => ({ id: o.item.id, category: o.item.category, text: o.item.text, issues: o.issues })),

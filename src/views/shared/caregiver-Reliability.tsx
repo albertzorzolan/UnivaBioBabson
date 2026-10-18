@@ -6,10 +6,14 @@
 // The visible card only says, without numbers, that a difference like this can appear by chance (CHANCE_NOTE).
 // Those rules.ts notes speak of "strong" and "moderate" signals while the badges say "Large/Clear difference", so
 // the panel opens with SIGNAL_WORDS_KEY, a number-free line mapping one vocabulary onto the other.
+// Each test row also shows the runs check's p (when the comparison has one) beside the test's p. RUNS_CHECK_NOTE
+// (rules.ts) then says the second p-value is a check that is reported, not a second verdict; it is shown only where a
+// runs-check p is on screen (runsNote), never as a description of a number the page does not show.
 import type { ReactNode } from "react";
 import type { MetricKey, Signal } from "../../model/types";
 import { formatPValue } from "../../engine/timeline/stats";
-import { MULTIPLE_COMPARISONS_NOTE, SIGNAL_CAVEAT } from "../../engine/timeline/rules";
+import { MULTIPLE_COMPARISONS_NOTE, RUNS_CHECK_NOTE, SIGNAL_CAVEAT } from "../../engine/timeline/rules";
+import { formatRunsCheckP } from "../../engine/timeline/signals";
 import { Disclosure, TimelineDot, cx } from "../../ui";
 import { RELIABILITY_TITLE, SIGNAL_WORDS_KEY, TEST_NAME, usesEngineStrengthWords } from "./caregiver-insights";
 import "./caregiver-reliability.css";
@@ -20,6 +24,8 @@ export interface ReliabilityTest {
   label: string;
   test: Signal["test"];
   pValue: number;
+  /** The runs check's p for the same comparison (signal.runsCheck.p); left out for older saved analyses. */
+  runsP?: number;
 }
 
 export function ReliabilityDisclosure({
@@ -28,6 +34,7 @@ export function ReliabilityDisclosure({
   summary = RELIABILITY_TITLE,
   className,
   bodyClassName,
+  runsNote = tests.some((t) => t.runsP !== undefined),
 }: {
   /** The test and p-value behind each row shown on the card (none on the Timeline, where each row shows its own). */
   tests?: ReliabilityTest[];
@@ -38,6 +45,11 @@ export function ReliabilityDisclosure({
   className?: string;
   /** The panel's layout class, so each view keeps its own spacing (cg-ov-method, cg-tl-method). */
   bodyClassName?: string;
+  /**
+   * Show RUNS_CHECK_NOTE. Defaults to "some row here has a runs-check p"; the Timeline passes it because its runs-check
+   * p-values sit in its own comparison rows, not in `tests`.
+   */
+  runsNote?: boolean;
 }) {
   // The key goes before the first text that uses the engine's words (the Timeline's method summary does too), and
   // is left out if rules.ts is ever reworded in the page's own vocabulary.
@@ -53,6 +65,12 @@ export function ReliabilityDisclosure({
                 <TimelineDot metric={t.metric} size={9} />
                 <span>
                   {t.label}: {TEST_NAME[t.test]}, <span className="ui-num">{formatPValue(t.pValue)}</span>
+                  {t.runsP !== undefined && (
+                    <>
+                      {" "}
+                      · <span className="cg-rel__runs-p">runs check <span className="ui-num">{formatRunsCheckP(t.runsP)}</span></span>
+                    </>
+                  )}
                 </span>
               </li>
             ))}
@@ -60,6 +78,7 @@ export function ReliabilityDisclosure({
         )}
         {needsKey && <p className="cg-rel__key">{SIGNAL_WORDS_KEY}</p>}
         {method && <p>{method}</p>}
+        {runsNote && <p>{RUNS_CHECK_NOTE}</p>}
         <p>{MULTIPLE_COMPARISONS_NOTE}</p>
         <p>{SIGNAL_CAVEAT}</p>
       </div>

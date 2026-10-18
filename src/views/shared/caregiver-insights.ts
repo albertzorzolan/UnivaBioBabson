@@ -9,6 +9,8 @@
 //   STRENGTH_SIZE_LABEL    — neutral, size-based badge wording for a signal ("Large difference in what was recorded").
 //   strengthTone           — badge colour by strength only (direction never turns a change "good" green).
 //   STRENGTH_SIZE_WORD     — the short form for one before/after row ("Large difference"), on Overview AND Timeline.
+//   SIZE_ORDER_KEY         — "Size of the recorded difference: Large › Clear › Small (not flagged)", the Timeline's
+//                            key to the order of those words (sizes only: no direction, no colour).
 //   CHANCE_NOTE            — the one plain, number-free line under a finding: differences can appear by chance.
 //   RELIABILITY_TITLE      — "How reliable is this?", the disclosure that holds the test, p-value and the measured
 //                            rates (rendered by caregiver-Reliability.tsx straight from engine/timeline/rules.ts).
@@ -142,6 +144,16 @@ export const STRENGTH_SIZE_WORD: Record<Signal["strength"], string> = {
   moderate: "Clear difference",
   weak: "Small difference",
 };
+
+/**
+ * The size words in order, largest first: the first word of each STRENGTH_SIZE_WORD, so the key under the Timeline's
+ * flagged count cannot drift from the badges. The key names sizes only. Direction is said in words on each row and
+ * never by colour (strengthTone), so the key cannot read as "good" or "bad".
+ */
+export const SIZE_ORDER_WORDS = (["strong", "moderate", "weak"] as const).map((s) => STRENGTH_SIZE_WORD[s].split(" ")[0]);
+
+/** "Size of the recorded difference: Large › Clear › Small (not flagged)". The view hides "›" from screen readers. */
+export const SIZE_ORDER_KEY = `Size of the recorded difference: ${SIZE_ORDER_WORDS.join(" › ")} (not flagged)`;
 
 /**
  * The one visible line under a before/after finding about chance. It deliberately carries no numbers: the measured

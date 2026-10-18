@@ -1,0 +1,62 @@
+/* The static Poison Control line (MedSafetyLine.tsx). Same rust "help" tone as the Need help button and the 911 row
+ * of the Help dialog, so it reads as "the help numbers", not as a warning about her. Large patient type (1rem = 20px). */
+.pt-medsafety {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-3) var(--space-4);
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--attention) 30%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--attention-soft);
+  color: var(--ink);
+}
+.pt-medsafety__icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--attention-ink);
+}
+.pt-medsafety__text {
+  max-width: 60ch;
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+}
+.pt-medsafety__num {
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pt-medsafety__calls {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+}
+@media (max-width: 30rem) {
+  .pt-medsafety {
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+  /* A smaller badge leaves the sentence a wider column on a narrow phone. */
+  .pt-medsafety__icon {
+    width: 2rem;
+    height: 2rem;
+  }
+  /* On a phone the buttons take the full width under the icon and text: big, easy targets. */
+  .pt-medsafety__calls {
+    grid-column: 1 / -1;
+    flex-direction: column;
+  }
+  .pt-medsafety__calls .ui-btn {
+    width: 100%;
+  }
+}
+/* Under the saved-day card the flow gap already spaces it. */
+.pt-medsafety--flow {
+  margin-top: 0;
+}

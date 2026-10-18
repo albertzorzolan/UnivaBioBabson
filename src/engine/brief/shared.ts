@@ -19,7 +19,7 @@ import type {
   ReviewDecision,
   ReviewStatus,
 } from "../../model/types";
-import { formatShort, parseDate } from "../../model/dates";
+import { formatShort } from "../../model/dates";
 import { medName } from "../timeline/text";
 
 export const PRODUCT_NAME = "Kinwise";
@@ -78,9 +78,6 @@ export const DEFAULT_KB: BriefKb = {
     return guessSource(id);
   },
 };
-
-/** Whether src/kb/index.ts was found at build time. Not read by the app at present. */
-export const KB_BOUND = Boolean(kbModule?.getDrug);
 
 /** Short citation names for a finding's sources, de-duplicated, in order ("AGS Beers Criteria 2023"). */
 export function sourceShorts(sourceIds: string[], kb: BriefKb): string[] {
@@ -159,11 +156,6 @@ export function dateListWords(dates: ISODate[], refDate: ISODate, max = 6): stri
   if (dates.length <= max) return dates.map((d) => dateWords(d, refDate)).join(", ");
   const shown = dates.slice(0, max - 1).map((d) => dateWords(d, refDate)).join(", ");
   return `${shown} and ${dates.length - (max - 1)} more days`;
-}
-
-/** Calendar month name for an ISO date ("September"). Not used by the current brief wording. */
-export function monthName(date: ISODate): string {
-  return parseDate(date).toLocaleDateString("en-US", { month: "long" });
 }
 
 // ---------------------------------------------------------------------------

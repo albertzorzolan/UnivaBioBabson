@@ -83,7 +83,7 @@ describe("respects context", () => {
   });
 });
 
-describe("more unsteadiness wordings (judge probes): a please-check guess, never an explicit answer", () => {
+describe("more unsteadiness wordings (internal review probes): a please-check guess, never an explicit answer", () => {
   it.each([
     "Felt a bit wobbly on the stairs this morning.",
     "Felt fine. Bit wobbly on my pins first thing though.",

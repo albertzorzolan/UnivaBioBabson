@@ -7,16 +7,20 @@
 //   kinwise-sample-visit-brief.pdf   the real app output: one-click caregiver sign-in → Visit brief → standard template
 //                                    (no LLM) → "I've reviewed this brief" → printed with the app's own print CSS
 //   kinwise-code-tour.pdf            curated, syntax-highlighted listings with contents, repo map and test counts
+//   docs/screenshots/*.png           ("screens") the README / Devpost gallery and the 3:2 Devpost thumbnail, from the
+//                                    current app (screenshots.mjs; checked before anything is overwritten)
 //
 // Usage (from the repo root):
-//   node scripts/submission/make-pdfs.mjs                      # all three
-//   node scripts/submission/make-pdfs.mjs --only=onepager,brief,code
+//   node scripts/submission/make-pdfs.mjs                      # all three PDFs and the gallery screenshots
+//   node scripts/submission/make-pdfs.mjs --only=onepager,brief,code,screens
+//   node scripts/submission/make-pdfs.mjs --only=screens       # only docs/screenshots/ (same as screenshots.mjs)
 //   node scripts/submission/make-pdfs.mjs --linked-branch-only   # only kinwise-one-pager-if-not-pushed.pdf
 //   BASE_URL=http://127.0.0.1:5174/ node scripts/submission/make-pdfs.mjs   # reuse a running dev server
 //   TEAM="Name (role), Name (role)" …     # team line; default DEFAULT_TEAM in lib.mjs (Albert Zorzolan and Neil Shah)
 //   VIDEO_URL="https://youtu.be/…" …      # public demo-video link; without it the one-pager points to the Devpost page
 //   SKIP_VITEST=1 …                       # reuse <BUILD_DIR>/vitest-report.json instead of running the suite
 //   PDF_OUT_DIR=tmp/pdf-trial BUILD_DIR=tmp/pdf-trial/build …   # trial build that leaves submission/ untouched
+//                                                              # (and writes the screenshots to <PDF_OUT_DIR>/screenshots)
 //
 // Release gate (warning only, read-only git): the PDFs link the code at REPO_BRANCH and the live demo deployed from it,
 // but their evidence is read from this working tree. If some of that evidence is not on REPO_BRANCH, a loud warning
@@ -33,6 +37,7 @@ import { existsSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { BUILD_DIR, DEFAULT_TEAM, OUT_DIR, REPO_BRANCH, ROOT, ensureDir, fileUrl, launchBrowser, pdfPageCount, startServer } from "./lib.mjs";
 import { captureScreens, sampleBrief } from "./capture.mjs";
+import { SHOTS_DIR, captureGallery } from "./screenshots.mjs";
 import { branchOnlyFacts, collectFacts, evidenceNotOnBranch, testRunProblems } from "./facts.mjs";
 import { onePagerHtml, overflowProbe } from "./onepager.mjs";
 import { codeTourHtml } from "./codetour.mjs";
@@ -40,11 +45,13 @@ import { codeTourHtml } from "./codetour.mjs";
 const onlyArg = process.argv.find((a) => a.startsWith("--only="));
 /** --linked-branch-only: build just the fallback one-pager (implies --only=onepager). */
 const LINKED_BRANCH_ONLY = process.argv.includes("--linked-branch-only");
-const ONLY = new Set((LINKED_BRANCH_ONLY ? "onepager" : onlyArg ? onlyArg.slice(7) : "onepager,brief,code").split(",").map((s) => s.trim()));
+const ONLY = new Set((LINKED_BRANCH_ONLY ? "onepager" : onlyArg ? onlyArg.slice(7) : "onepager,brief,code,screens").split(",").map((s) => s.trim()));
 const ONE_PAGER = "kinwise-one-pager.pdf";
 const FALLBACK_ONE_PAGER = "kinwise-one-pager-if-not-pushed.pdf";
 /** Team line on the one-pager. There is no placeholder any more: onePagerHtml throws on an empty team. */
 const TEAM = process.env.TEAM?.trim() || DEFAULT_TEAM;
+/** The gallery goes to docs/screenshots/ (or SHOTS_OUT_DIR); a trial build (PDF_OUT_DIR elsewhere) keeps it beside its PDFs. */
+const SCREENS_DIR = OUT_DIR === join(ROOT, "submission") ? SHOTS_DIR : join(OUT_DIR, "screenshots");
 
 async function htmlToPdf(browser, htmlPath, pdfPath, { waitFor = null, previewPages = [1], tagged = false } = {}) {
   const ctx = await browser.newContext({ viewport: { width: 816, height: 1056 }, deviceScaleFactor: 2 });
@@ -80,7 +87,7 @@ async function main() {
   ensureDir(OUT_DIR);
   ensureDir(BUILD_DIR);
   const needFacts = ONLY.has("onepager") || ONLY.has("code");
-  const needApp = ONLY.has("onepager") || ONLY.has("brief");
+  const needApp = ONLY.has("onepager") || ONLY.has("brief") || ONLY.has("screens");
   const facts = needFacts ? collectFacts() : null;
   if (facts) writeFileSync(join(BUILD_DIR, "facts.json"), JSON.stringify(facts, null, 2));
   // Which one-pagers to build: the normal one (unless --linked-branch-only) and, while this work is not on the linked
@@ -111,6 +118,17 @@ async function main() {
       const r = await sampleBrief(browser, server.base, out);
       report.push({ file: out, pages: r.pages, bytes: r.bytes, errors: r.errors });
       if (r.pages > 2) failed = true;
+    }
+    if (ONLY.has("screens")) {
+      // Checked before anything is overwritten (screenshots.mjs): on a failed check docs/screenshots/ stays as it was,
+      // the PDFs are still built, and the run exits non-zero.
+      try {
+        const r = await captureGallery(browser, server.base, SCREENS_DIR);
+        report.push({ screenshots: r.files, errors: r.errors });
+      } catch (e) {
+        console.error(String(e?.stack ?? e));
+        failed = true;
+      }
     }
     if (ONLY.has("onepager")) {
       const shots = await captureScreens(browser, server.base, BUILD_DIR);

@@ -1,0 +1,22 @@
+/* "What the check removed" on a review card (CheckRemoved variant "card", FindingCard.tsx). It sits inside the
+ * dashed AI note, so it drops its own box (no card inside a card): a hairline above, the summary flush with the
+ * note's text, and the same caution and item styles as the brief (check-removed.css). */
+.cg-vb-removed--card {
+  align-self: stretch;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.cg-vb-removed--card > .cg-vb-removed__summary {
+  padding: var(--space-2) 0;
+  border-radius: var(--radius-xs);
+  font-size: var(--fs-sm);
+}
+.cg-vb-removed--card > .cg-vb-removed__summary:hover {
+  background: transparent;
+  color: var(--primary-text);
+}
+.cg-vb-removed--card > .cg-vb-removed__body {
+  padding: 0 0 var(--space-1);
+}

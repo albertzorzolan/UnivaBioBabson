@@ -69,6 +69,14 @@
 .help-line:first-child .help-line__detail {
   color: var(--ink);
 }
+/* The static "can be an emergency" line in the 911 row: full ink, between the bold title and the detail under it. */
+.help-line__note {
+  margin-top: 0.25rem;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--ink);
+  line-height: var(--lh-snug);
+}
 .help-line__call {
   white-space: nowrap;
 }
@@ -192,9 +200,11 @@
   text-decoration: none;
   transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
-.cg-nav__link:hover {
-  background: var(--surface-sunken);
-  color: var(--ink);
+@media (hover: hover) {
+  .cg-nav__link:hover {
+    background: var(--surface-sunken);
+    color: var(--ink);
+  }
 }
 .cg-nav__link[aria-current="page"] {
   background: var(--primary-soft);
@@ -282,8 +292,10 @@
     font-weight: var(--fw-semibold);
     font-size: var(--fs-sm);
   }
-  .cg-topbar__help:hover {
-    background: var(--attention-soft);
+  @media (hover: hover) {
+    .cg-topbar__help:hover {
+      background: var(--attention-soft);
+    }
   }
   .cg-main {
     padding: var(--space-5) var(--space-4) var(--space-6);
@@ -441,15 +453,17 @@
   color: var(--attention-ink);
   border: 2px solid color-mix(in srgb, var(--attention) 45%, transparent);
 }
-.pt-help:hover {
-  border-color: var(--attention);
-}
 .pt-signout {
   color: var(--ink-muted);
 }
-.pt-signout:hover {
-  background: var(--surface-sunken);
-  color: var(--ink);
+@media (hover: hover) {
+  .pt-help:hover {
+    border-color: var(--attention);
+  }
+  .pt-signout:hover {
+    background: var(--surface-sunken);
+    color: var(--ink);
+  }
 }
 .pt-greeting {
   padding: var(--space-5) 0 var(--space-4);
@@ -505,9 +519,12 @@
   text-align: center;
   transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
-.pt-tab:hover {
-  background: var(--surface-sunken);
-  color: var(--ink);
+/* Hover fills only where a pointer can hover: on a touch screen :hover sticks after a tap and makes the wrong tab look selected. */
+@media (hover: hover) {
+  .pt-tab:hover {
+    background: var(--surface-sunken);
+    color: var(--ink);
+  }
 }
 .pt-tab[aria-current="page"] {
   background: var(--primary-soft);

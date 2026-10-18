@@ -9,6 +9,11 @@
 // Checked for stale wording only (numbers in code are not prose): the app's public pages (src/views/public/*.ts(x),
 //   tests excluded: they assert that the old wording is gone) and the guided tour (src/app/TourOverlay.tsx).
 // Advisory files (reported, never fail the run): the PDF generators that still carry their own copy.
+// Paste region (the DEVPOST files): the text under "## About the project" up to "## Built with" is what the team pastes
+//   into Devpost, so it must hold no HTML comment or TODO (team notes live in the comment block at the top), and its
+//   Status table must carry the canonical Partial wording (PARTIAL_KB). Its word count is reported, never failed.
+// Demo figures: the runs-check p in docs/EVALUATION.md must equal the one pinned in seed.timeline.test.ts.
+// Test record (reported, never fails the run): the dated counts in docs/EVALUATION.md §7 vs the last local reports.
 // Release gate (reported, never fails the run): evidence from this working tree that is absent at REPO_BRANCH.
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -59,6 +64,51 @@ export const STALE = [
   "19 of 51",
   "32 of 51",
 ];
+
+/**
+ * The canonical Partial-row wording for the knowledge base and the runs check. The same text is in README.md and the
+ * app's status list (src/views/public/howStatus.ts); here it is required in each DEVPOST file's Status table.
+ */
+export const PARTIAL_KB =
+  "Knowledge base: not clinician-reviewed, no dose or allergy checks; interactions limited to the AGS Beers 2023 combination table (not a full drug-interaction checker). Timeline runs check: computed for every comparison, not yet gating.";
+
+/**
+ * The part of a DEVPOST file that is pasted into Devpost's "About the project" field: from the line after the
+ * "## About the project" heading up to (not including) "## Built with". Returns { text, firstLine } (firstLine is the
+ * 1-based line number of the region's first line in the file), or null when either heading is missing.
+ */
+export function pasteRegion(md) {
+  const lines = String(md ?? "").split("\n");
+  const start = lines.findIndex((l) => /^## About the project\b/.test(l));
+  const end = lines.findIndex((l, i) => i > start && /^## Built with\b/.test(l));
+  if (start < 0 || end < 0) return null;
+  return { text: lines.slice(start + 1, end).join("\n"), firstLine: start + 2 };
+}
+
+/**
+ * Problems in a paste region, each { line, msg } with file line numbers: an HTML comment ("<!--") or a TODO would be
+ * pasted onto the public page, and the Status table must contain PARTIAL_KB verbatim.
+ */
+export function pasteRegionProblems(md) {
+  const region = pasteRegion(md);
+  if (!region) return [{ line: 1, msg: 'paste region not found (needs "## About the project" … "## Built with")' }];
+  const out = [];
+  region.text.split("\n").forEach((l, i) => {
+    if (l.includes("<!--")) out.push({ line: region.firstLine + i, msg: "HTML comment inside the paste region (move team notes to the top block)" });
+    if (/\bTODO\b/.test(l)) out.push({ line: region.firstLine + i, msg: "TODO inside the paste region (move it to the top block)" });
+  });
+  if (!region.text.includes(PARTIAL_KB)) out.push({ line: region.firstLine, msg: "the Status table lacks the canonical Partial wording (PARTIAL_KB)" });
+  return out;
+}
+
+/** Words a reader sees in a markdown region: link targets, table pipes and emphasis marks are not counted. */
+export function renderedWordCount(md) {
+  const plain = String(md ?? "")
+    .replace(/\]\([^)]*\)/g, "]")
+    .replace(/[|*#`[\]]/g, " ")
+    .replace(/(^|\s)(?:-{2,}|[-→›])(?=\s|$)/g, " ");
+  return plain.split(/\s+/).filter(Boolean).length;
+}
 
 /** A STALE phrase as a case-insensitive global regex; word boundaries at word-character ends, so "19 of 51" does not match "119 of 512". */
 export function staleRegex(phrase) {
@@ -143,7 +193,57 @@ export function numberChecks(f) {
     counted("KB prescribing cascades", /\b(\d+) (?:prescribing )?cascades\b/g, kb.cascades),
     counted("KB fall-risk classes", /\b(\d+) fall-risk(?: drug)? classes\b/g, kb.fridClasses),
     counted("KB ACB-scored medicines", /\b(\d+) (?:scored medicines|medicines scored)\b/g, kb.acbListed),
+    ...demoAndRateChecks(f),
   ];
+}
+
+/**
+ * Checks for the figures added to the submission text in round 3, each against facts.mjs (null facts expect nothing,
+ * so any match is then reported): the demo's Fisher and runs-check p and the brief's sleep averages (demoFacts), the
+ * timeline chance rates and power (timeline-null.json), the claim checker's in-sample and held-out counts
+ * (verifier-redteam.json) and the canonical flawed-AI phrase (liveEscapeCounts).
+ */
+function demoAndRateChecks(f) {
+  const d = f.demo ?? {};
+  const t = f.timelineNull ?? null;
+  const v = f.verifier ?? null;
+  const held = v?.heldOutProbe ? (v.heldOutProbe.corrected ?? v.heldOutProbe) : null;
+  const one = (label, re, expected, pick = (m) => m[1]) => ({
+    label,
+    run: (text) => matches(text, re).map(({ m, line }) => ({ line, found: m[0], ok: expected != null && pick(m) === expected, expected: String(expected) })),
+  });
+  return [
+    one("Demo Fisher p (dizziness)", /Fisher(?:['’]s exact)?(?: test)?,? (?:two-sided )?p = (0\.\d+)/gi, d.fisherP ?? null),
+    one("Demo runs-check p (dizziness)", /runs[- ]check p\s*=\s*(0\.\d+)/gi, d.runsCheckP ?? null),
+    one("Brief sleep averages (after vs before)", /\b(\d\.\d) vs (\d\.\d) of 5\b/g, d.sleep ? `${d.sleep.after} vs ${d.sleep.before}` : null, (m) => `${m[1]} vs ${m[2]}`),
+    one("Timeline chance rate, independent days", /(\d+\.\d)% of simulated medicine changes/gi, t?.independent?.moderate ?? null, (m) => `${m[1]}%`),
+    one("Timeline chance rate, runs of days", /(\d+\.\d)% if symptoms come in (?:long )?runs of days/gi, t?.clustered?.moderate ?? null, (m) => `${m[1]}%`),
+    one("Timeline power without a gate", /reproducible figure without\s+any gate is (\d+\.\d)%/gi, t?.power?.independent?.tests ?? null, (m) => `${m[1]}%`),
+    one("Claim checker, in-sample", /\ball (\d+) harmful sentences\b/gi, v && v.caught === v.harmfulTotal ? String(v.caught) : null),
+    one("Claim checker, held-out probe", /\bonly (\d+) of (\d+) on (?:a|the) later held-out probe\b/gi, held ? `${held.caught} of ${held.total}` : null, (m) => `${m[1]} of ${m[2]}`),
+    one("Flawed AI sentences (canonical phrase)", /\bat least \d+ flawed AI sentences? \(from \d+ outputs?\)/gi, f.ai?.liveSlippedPhrase ?? null, (m) => m[0].charAt(0).toLowerCase() + m[0].slice(1)),
+  ];
+}
+
+/**
+ * The dated test counts in docs/EVALUATION.md §7 against the last local reports (vitest JSON in BUILD_DIR, test-results/).
+ * Returns warning strings; empty when they agree or when there is nothing local to compare with.
+ */
+export function testRecordWarnings(t) {
+  const out = [];
+  const r = t?.recordedHere;
+  if (!r) return ["docs/EVALUATION.md §7 has no dated test counts (recordedTests found none)"];
+  const vt = t.vitest;
+  if (vt && r.unit && (vt.passed !== r.unit.passed || vt.skipped !== r.unit.skipped)) {
+    out.push(`unit tests: EVALUATION.md §7 records ${r.unit.passed} passed / ${r.unit.skipped} skipped (${r.unit.date}), the last vitest report has ${vt.passed} / ${vt.skipped}`);
+  }
+  if (t.e2ePassed != null && r.e2e && (t.e2ePassed !== r.e2e.passed || t.e2eChecks !== r.e2e.checks)) {
+    out.push(`end-to-end: EVALUATION.md §7 records ${r.e2e.passed} of ${r.e2e.checks} (${r.e2e.date}), the last run has ${t.e2ePassed} of ${t.e2eChecks}`);
+  }
+  if (t.a11yScans != null && r.a11y && (t.a11yScans !== r.a11y.scans || t.a11yViolations !== r.a11y.violations)) {
+    out.push(`accessibility: EVALUATION.md §7 records ${r.a11y.scans} scans / ${r.a11y.violations} violations (${r.a11y.date}), the last run has ${t.a11yScans} / ${t.a11yViolations}`);
+  }
+  return out;
 }
 
 async function main() {
@@ -153,6 +253,7 @@ async function main() {
   const checks = numberChecks(f);
   const failures = [];
   const seen = new Set();
+  const notes = [];
   const out = [];
   out.push("check-facts: canonical values (facts.mjs)");
   out.push(`  held-out micro-F1 ${f.nlp.heldoutF1} / ${f.nlp.heldoutF1Pct} · dev ${f.nlp.devF1} / ${f.nlp.devF1Pct}${f.nlp.baselineF1Pct ? ` · lexicon baseline ${f.nlp.baselineF1Pct}` : ""}`);
@@ -170,6 +271,7 @@ async function main() {
     );
   }
   out.push(`  live AI run: ${f.ai.liveSlippedPhrase} (eval/verifier-redteam.json live-escape items: ${f.ai.liveSlippedIds.join(", ")})`);
+  out.push(`  demo: Fisher p ${f.demo?.fisherP ?? "–"} · runs check p ${f.demo?.runsCheckP ?? "–"} (pinned ${f.demo?.runsCheckPinned ?? "–"}) · brief sleep ${f.demo?.sleep ? `${f.demo.sleep.after} vs ${f.demo.sleep.before} of 5` : "–"}`);
   out.push(`  optional results: verifier red team ${f.verifier ? "present" : "absent"} · timeline null ${f.timelineNull ? "present" : "absent"} · meds ablation ${f.meds.ablation ? "present" : "absent"}`);
 
   const scan = (rel, { advisory = false, wordingOnly = false } = {}) => {
@@ -183,6 +285,11 @@ async function main() {
     const lines = [];
     for (const s of STALE) {
       for (const { line } of matches(text, staleRegex(s))) lines.push({ ok: false, msg: `stale wording "${s}" (line ${line})` });
+    }
+    if (rel.startsWith("submission/DEVPOST")) {
+      for (const p of pasteRegionProblems(text)) lines.push({ ok: false, msg: `${p.msg} (line ${p.line})` });
+      const region = pasteRegion(text);
+      if (region) notes.push(`${rel}: paste region ${renderedWordCount(region.text).toLocaleString("en-US")} words as rendered`);
     }
     if (!advisory && !wordingOnly) {
       for (const c of checks) {
@@ -211,6 +318,17 @@ async function main() {
   ]) {
     if (!seen.has(key)) failures.push(`no checked file states the ${label}`);
   }
+
+  // The demo's runs-check p is stated in docs/EVALUATION.md and pinned by the engine test; the two must agree.
+  if (!f.demo?.runsCheckP || f.demo.runsCheckP !== f.demo.runsCheckPinned) {
+    failures.push(`runs-check p: docs/EVALUATION.md says ${f.demo?.runsCheckP ?? "nothing"}, src/engine/timeline/seed.timeline.test.ts pins ${f.demo?.runsCheckPinned ?? "nothing"}`);
+    out.push(`\nFAIL runs-check p: EVALUATION.md ${f.demo?.runsCheckP ?? "–"} vs seed.timeline.test.ts ${f.demo?.runsCheckPinned ?? "–"}`);
+  }
+  for (const n of notes) out.push(`\n${n}`);
+  // Test record (warning only): the dated §7 counts vs the last local runs.
+  const testWarn = testRecordWarnings(f.tests);
+  if (testWarn.length) for (const w of testWarn) out.push(`\nWARN test record: ${w}`);
+  else out.push(`\ntest record: docs/EVALUATION.md §7 matches the last local reports (${f.tests.recordedHere.unit?.passed ?? "?"} unit, ${f.tests.recordedHere.e2e?.passed ?? "?"} e2e, ${f.tests.recordedHere.a11y?.scans ?? "?"} a11y scans)`);
 
   // Release gate (warning only): evidence the PDFs print that is not on the branch they link.
   const { branch, gaps } = evidenceNotOnBranch(REPO_BRANCH);

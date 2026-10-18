@@ -6,10 +6,12 @@
 //   - "what's different": market-evidence.md §2 (vendor pages checked 2026-10-10; "not documented" ≠ absent);
 //   - where it is used and why it could help: kb-src/research/regulatory.md §5.2 (Annual Wellness Visit, 42 CFR
 //     410.15: cognitive-impairment detection gives "due consideration" to concerns raised by family), §5.1 (42 CFR
-//     423.153(d)(1)(vii)(B)(2), the CMR with a caregiver) and §5.5 (EMPOWER figures as recorded there; the 62% is of
+//     423.153(d)(1)(vii)(B)(2), the CMR with a caregiver when the patient is cognitively impaired) and §5.5 (EMPOWER figures as recorded there; the 62% is of
 //     the brochure arm and the conversation was with a physician or pharmacist); the taper-plan caveat is
 //     market-evidence.md §0 row 13 (as in submission/DEVPOST.md);
 //   - the screenshot: the live app (capture.mjs), fictional demo data; step 3's counts: src/views/public/journeyFigures.ts;
+//     step 3's runs-check p and sleep averages: facts.demo (demoFacts: docs/EVALUATION.md §3, seed.timeline.test.ts,
+//     template.test.ts), each printed only when found (the fallback build gets nulls at 375e1e0 and leaves them out);
 //   - everything else: facts.mjs (eval results, KB meta, FHIR validation, test runs). Optional facts render only when
 //     facts.mjs found their source; the fallback build (linkedBranchOnly) gets its facts from branchOnlyFacts(). The
 //     flawed-AI count is counted from eval/verifier-redteam.json, which the linked branch lacks, so the fallback prints
@@ -17,7 +19,7 @@
 import { CODE_URL, DEMO_URL, VIDEO_URL, TOKENS_CSS, escapeHtml as h, fileUrl, fontFaceCss, shortUrl } from "./lib.mjs";
 
 /** Minimum width of the caption column beside the screenshot; the image takes the rest of the 7.66in text width. */
-const SHOT_CAPTION_IN = 1.95;
+const SHOT_CAPTION_IN = 2.15;
 /**
  * Fixed height of the screenshot box. The crop comes from the live UI (capture.mjs), so its proportions change whenever
  * the Overview card does; a fixed height keeps the page layout independent of the card. A taller card is drawn a
@@ -26,6 +28,9 @@ const SHOT_CAPTION_IN = 1.95;
 export const SHOT_HEIGHT_IN = 1.95;
 
 const LOGO = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>`;
+
+/** The live demo's call to action, worded as the Welcome screen's button (src/views/public/Welcome.tsx) and DEVPOST.md. */
+export const DEMO_CTA = "Take the 2-minute guided tour";
 
 /** A clickable link whose text is the URL without "https://" (print readers type what they see). */
 const link = (url, text = shortUrl(url)) => `<a href="${h(url)}">${h(text)}</a>`;
@@ -86,9 +91,11 @@ export function testsItem(t) {
 }
 
 /**
- * Evidence & rigor: four one-line bullets, each with a comparison point when facts.mjs has one: held-out NLP vs a
- * lexicon-only baseline, the medication suite vs engines with one piece of knowledge removed, the on-device AI with
- * the canonical flaw count (facts.ai.liveSlippedPhrase), and the tests. A missing bullet frees its slot for FHIR.
+ * Evidence & rigor: one-line bullets, each with a comparison point when facts.mjs has one: held-out NLP vs a
+ * lexicon-only baseline, the medication suite vs engines with one piece of knowledge removed, the timeline's chance
+ * rate (falseAlarmText; the only bullet allowed to wrap, marked { wrap: true }), the on-device AI with the canonical
+ * flaw count (facts.ai.liveSlippedPhrase), and the tests. Without four one-line bullets, FHIR fills the gap.
+ * Returns strings, except the timeline bullet, which is { html, wrap: true }.
  */
 export function evidenceItems(f) {
   const items = [];
@@ -105,6 +112,9 @@ export function evidenceItems(f) {
         ? `; with one piece of knowledge removed, ${ab.minPassed === ab.maxPassed ? ab.minPassed : `${ab.minPassed}–${ab.maxPassed}`} of ${ab.total}.`
         : `, ${f.meds.expectations} expectations.`),
   );
+  // Why a flag is only ever a question: the measured chance rate (or the app's "about 1 in 10" in the fallback).
+  const chance = falseAlarmText(f);
+  if (chance) items.push({ html: `<b>Timeline:</b> ${h(chance.charAt(0).toLowerCase() + chance.slice(1).replace(/\.$/, ""))}, which is why a flag is only ever a question.`, wrap: true });
   // The flaw disclosure never disappears: the counted phrase when its source is available, else (fallback build) the
   // recorded run's own verdict without a number, else the plain default.
   const flawed = f.ai.liveSlippedPhrase;
@@ -118,10 +128,21 @@ export function evidenceItems(f) {
   );
   const tests = testsItem(f.tests);
   if (tests) items.push(tests);
-  if (items.length < 4) {
+  if (items.filter((i) => typeof i === "string").length < 4) {
     items.push(`<b>FHIR:</b> sample Bundle (${f.fhir.resources} resources): <span class="num">${f.fhir.errors} errors</span> on the public HAPI R4 validator (${f.fhir.warnings} warnings: unknown code systems).`);
   }
   return items;
+}
+
+/**
+ * Step 3 of "What it does": the demo's counts, then (when facts.demo has them) the runs check and the brief's sleep
+ * averages. Every figure after the counts comes from demoFacts(); a null fact drops its clause.
+ */
+export function changeStep(f) {
+  const d = f.demo ?? {};
+  const runs = d.runsCheckP ? `; holds when 4-day runs are shuffled, p = ${h(d.runsCheckP)}, seeded diary` : "";
+  const sleep = d.sleep ? ` Sleep ratings were higher too (after vs before): <b>${h(d.sleep.after)} vs ${h(d.sleep.before)}</b> of 5.` : "";
+  return `<b>See what changed.</b> Dizziness on <b>2 of 19</b> answered days before lorazepam, <b>9 of 14</b> after (Fisher’s exact test${runs}).${sleep}`;
 }
 
 /**
@@ -134,7 +155,6 @@ export function onePagerHtml({ facts: f, shots, team, videoUrl = VIDEO_URL, link
   if (!teamLine) throw new Error("onePagerHtml: team is empty (set TEAM or use DEFAULT_TEAM from lib.mjs)");
   if (linkedBranchOnly && !f.linkedBranch) throw new Error("onePagerHtml: linkedBranchOnly needs facts from branchOnlyFacts()");
   const evidence = evidenceItems(f);
-  const falseAlarms = falseAlarmText(f);
   const video = videoUrl ? link(videoUrl) : "on the Devpost page";
   const branchNote = linkedBranchOnly ? `Each figure below can be reproduced from the code at ${h(f.linkedBranch)}.` : "";
   // The screenshot is always captured from this tree. In the fallback the live demo still runs the linked branch, whose
@@ -142,6 +162,8 @@ export function onePagerHtml({ facts: f, shots, team, videoUrl = VIDEO_URL, link
   const shotWhere = linkedBranchOnly
     ? `The caregiver Overview in the latest build (fictional data; the live demo shows an earlier layout of this card)`
     : `The caregiver Overview in the live demo (fictional data)`;
+  // The visible caption under the callouts is short (the alt text carries the full wording above).
+  const shotNote = linkedBranchOnly ? "From the latest build; the live demo shows an earlier layout." : "From the live demo (fictional data).";
 
   return `<!doctype html>
 <html lang="en">
@@ -155,7 +177,7 @@ ${TOKENS_CSS}
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: #fff; }
 body { font-family: var(--font-sans); color: var(--ink); font-size: 8.9pt; line-height: 1.3; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.page { width: 8.5in; height: 11in; padding: 0.3in 0.42in 0.24in; overflow: hidden; position: relative; display: flex; flex-direction: column; gap: 0.065in; }
+.page { width: 8.5in; height: 11in; padding: 0.28in 0.42in 0.22in; overflow: hidden; position: relative; display: flex; flex-direction: column; gap: 0.055in; }
 .page > * { flex: none; }
 .page > .spacer { flex: 1; }
 p { margin: 0; }
@@ -203,8 +225,13 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
 .shot { margin: 0; display: grid; grid-template-columns: auto minmax(${SHOT_CAPTION_IN}in, 1fr); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: var(--surface); }
 .shot img { display: block; height: ${SHOT_HEIGHT_IN}in; width: auto; max-width: calc(7.66in - 2px - ${SHOT_CAPTION_IN}in); object-fit: contain; object-position: left top; border-right: 1px solid var(--line); }
 .shot figcaption { padding: 8px 10px; background: var(--primary-soft); display: flex; flex-direction: column; gap: 5px; }
-.shot figcaption b { font-family: var(--font-serif); font-size: 12pt; line-height: 1.15; font-weight: 650; color: var(--primary-soft-ink); }
-.shot figcaption span { font-size: 7.9pt; color: var(--ink-muted); line-height: 1.32; }
+.shot figcaption > b { font-family: var(--font-serif); font-size: 12pt; line-height: 1.15; font-weight: 650; color: var(--primary-soft-ink); }
+.shot figcaption .src { font-size: 7.2pt; color: var(--ink-muted); line-height: 1.25; }
+/* Three callouts: what the card shows, in the order a clinician reads it (counts, the caveat, the question). */
+.callouts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; counter-reset: c; }
+.callouts li { display: grid; grid-template-columns: 15px 1fr; gap: 6px; counter-increment: c; font-size: 8.2pt; line-height: 1.26; }
+.callouts li::before { content: counter(c); width: 15px; height: 15px; border-radius: 50%; background: var(--primary-soft-ink); color: #fff; font-weight: 700; font-size: 7.4pt; display: grid; place-items: center; margin-top: 1px; }
+.shot figcaption .tour { align-self: flex-start; margin-top: auto; background: var(--primary); color: #fff; border-radius: 999px; padding: 2px 10px 3px; font-size: 8pt; font-weight: 600; }
 
 /* Body */
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.22in; font-size: 8.6pt; }
@@ -227,10 +254,12 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
 /* Evidence: full width, one line per bullet (overflowProbe reports a bullet that runs past the margin). */
 .ev { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1px; font-size: 8.3pt; }
 .ev li { padding-left: 9px; position: relative; white-space: nowrap; }
+.ev li.wrap { white-space: normal; }
 .ev li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 4px; height: 4px; border-radius: 50%; background: var(--primary); }
 
 /* Status: working / partial / planned */
-.status { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.12in; }
+/* Partial is the longest list, so its column is a little wider and each item stays on one line. */
+.status { display: grid; grid-template-columns: 0.95fr 1.18fr 1.04fr; gap: 0.12in; }
 .status div { border-radius: 7px; padding: 5px 8px; }
 .status .now { background: var(--success-soft); }
 .status .part { background: var(--caution-soft); }
@@ -239,7 +268,7 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
 .status .now h3 { color: #33603f; }
 .status .part h3 { color: var(--caution-ink); }
 .status .plan h3 { color: var(--ink-muted); }
-.status ul { margin: 0; padding-left: 11px; font-size: 8.3pt; line-height: 1.28; }
+.status ul { margin: 0; padding-left: 11px; font-size: 7.9pt; line-height: 1.28; }
 
 /* Footer: the disclaimer, then the footnotes (and, in the fallback, which branch reproduces the figures), full width.
    The team line sits in the header with the other links. */
@@ -267,7 +296,7 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
     </div>
     <p class="pitch">Helps families caring for an older adult on many medicines notice what changes after a medicine change, and bring a clear question to the visit.</p>
     <div class="links">
-      <a class="go" href="${h(DEMO_URL)}"><b>Live demo:</b> ${h(shortUrl(DEMO_URL))} → Try as Alex</a>
+      <a class="go" href="${h(DEMO_URL)}"><b>Live demo:</b> ${h(shortUrl(DEMO_URL))}</a>
       <span><b>Code:</b> ${link(CODE_URL)}</span>
     </div>
   </header>
@@ -293,16 +322,25 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
 
   <figure class="shot">
     <img src="${fileUrl(shots.visitCard)}" alt="${h(`${shotWhere}: ${shots.visitCardText ?? ""}`)}">
-    <figcaption><b>What Alex brings to the visit</b><span>${shotWhere}: counts on answered days only, a reminder that a change is not a cause, and a question for Margaret’s clinician.</span></figcaption>
+    <figcaption>
+      <b>What Alex brings to the visit</b>
+      <ol class="callouts">
+        <li><span><b>9 of 14 vs 2 of 19</b> answered days with dizziness, after vs before</span></li>
+        <li><span><b>A change in what was recorded,</b> not what caused it</span></li>
+        <li><span><b>One question</b> for her clinician</span></li>
+      </ol>
+      <span class="src">${shotNote}</span>
+      <a class="tour" href="${h(DEMO_URL)}">${DEMO_CTA}</a>
+    </figcaption>
   </figure>
 
   <div class="cols">
     <div class="col">
       <section>
         <h2>Who it is for, and where</h2>
-        <p>The <b>family caregiver</b> (Alex) and the <b>older adult</b> (Margaret, 78, 8 medicines), who checks in on a large-text screen; the brief is for her <b>doctor or pharmacist</b>.</p>
+        <p>The <b>family caregiver</b> (Alex) and the <b>older adult</b> (Margaret, 78, 8 medicines); the brief is for her <b>doctor or pharmacist</b>.</p>
         <p>For the Medicare <b>Annual Wellness Visit</b> (whose cognitive check must consider concerns raised by family<sup>1</sup>) or a pharmacist’s <b>medication review</b>, which may be done with the caregiver<sup>2</sup>.</p>
-        <p class="why"><b>Why it could help:</b> in EMPOWER<sup>3</sup> (cluster RCT, 303 long-term benzodiazepine users aged 65–95), <b>62%</b> of those given a brochure raised stopping with their doctor or pharmacist, and <b>27% vs 5%</b> (brochure vs usual care) had discontinued at 6 months (the brochure included a taper plan; Kinwise leaves that to the clinician). A reason to test Kinwise, not proof it works.</p>
+        <p class="why"><b>Why it could help:</b> in EMPOWER<sup>3</sup> (cluster RCT, 303 long-term benzodiazepine users, 65–95), <b>62%</b> given a brochure raised stopping with their doctor or pharmacist, and <b>27% vs 5%</b> (usual care) had discontinued at 6 months (the brochure included a taper plan; Kinwise leaves that to the clinician). A reason to test Kinwise, not proof it works.</p>
       </section>
     </div>
 
@@ -312,7 +350,7 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
         <ol class="steps">
           <li><div><b>Check in, in her own words.</b> On-device NLP turns “felt woozy” into answers she confirms.</div></li>
           <li><div><b>Review her medicines</b> against AGS Beers 2023, anticholinergic burden, fall-risk drugs and cascades; each finding is cited and ends as a question.</div></li>
-          <li><div><b>See what changed.</b> Dizziness on <b>2 of 19</b> answered days before lorazepam, <b>9 of 14</b> after (Fisher’s exact test).${falseAlarms ? ` ${h(falseAlarms)}` : ""}</div></li>
+          <li><div>${changeStep(f)}</div></li>
           <li><div><b>Bring one reviewed page to the visit,</b> plus a FHIR R4 export.</div></li>
         </ol>
       </section>
@@ -334,7 +372,7 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
   <section>
     <h2>Evidence &amp; rigor${branchNote ? ` <span class="h2note">${branchNote}</span>` : ""}</h2>
     <ul class="ev">
-      ${evidence.map((s) => `<li>${s}</li>`).join("\n      ")}
+      ${evidence.map((s) => (typeof s === "string" ? `<li>${s}</li>` : `<li class="wrap">${s.html}</li>`)).join("\n      ")}
     </ul>
   </section>
 
@@ -347,16 +385,17 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
       <ul>
         <li>Public live demo, no install</li>
         <li>NLP check-in · medicine matching</li>
-        <li>Cited review · before/after · Ask Kinwise</li>
+        <li>Cited review · timeline · Ask Kinwise</li>
         <li>Reviewed brief · print · FHIR R4 export</li>
       </ul>
     </div>
     <div class="part">
       <h3>Partial</h3>
       <ul>
-        <li>On-device LLM: optional, WebGPU only</li>
-        <li>KB: ${f.kb.drugs} medicines, no clinician review</li>
-        <li>No dose or allergy checks · English only</li>
+        <li>LLM: WebGPU only; code check not airtight</li>
+        <li>No clinician KB review; no dose/allergy checks</li>
+        <li>Interactions: Beers 2023 combination table only</li>
+        <li>${/* The runs check is not in the linked branch's code, so the fallback page leaves it out. */ linkedBranchOnly ? "" : "Runs check not yet gating · "}English only</li>
         <li>One device, no sync · no FHIR receiver</li>
       </ul>
     </div>
@@ -365,14 +404,13 @@ h2 .h2note { font-family: var(--font-sans); font-size: 7.8pt; font-weight: 400; 
       <ul>
         <li>Pharmacist KB review · validation pilot</li>
         <li>Encrypted family sharing and storage</li>
-        <li>Pharmacy, portal import · voice · Spanish</li>
+        <li>Pharmacy/portal import · voice · Spanish</li>
       </ul>
     </div>
   </section>
 
   <footer class="foot">
-    <p class="fine">Hackathon prototype: not FDA reviewed or cleared, not clinically validated, no HIPAA claim. Designed never to say a medicine caused a symptom or to advise a change; the clinician decides. Emergency: call 911.</p>
-    <p class="fine notes"><sup>1</sup> 42 CFR 410.15 (detecting cognitive impairment). <sup>2</sup> Part D Comprehensive Medication Review, when the patient cannot take part because of cognitive impairment: 42 CFR 423.153(d)(1)(vii)(B)(2). <sup>3</sup> Tannenbaum et al., JAMA Intern Med 2014. <sup>4</sup> Vendor pages, Oct 2026; “not documented” is not proof of absence.</p>
+    <p class="fine">Hackathon prototype: not FDA reviewed or cleared, not clinically validated, no HIPAA claim. Designed never to say a medicine caused a symptom or to advise a change; the clinician decides. Emergency: call 911. <span class="fine notes"><sup>1</sup> 42 CFR 410.15. <sup>2</sup> Part D CMR with a caregiver if cognitive impairment prevents the patient taking part: 42 CFR 423.153(d)(1)(vii)(B)(2). <sup>3</sup> Tannenbaum et al., JAMA Intern Med 2014. <sup>4</sup> Vendor pages, Oct 2026; “not documented” is not proof of absence.</span></p>
   </footer>
 </div>
 </body>
@@ -395,7 +433,8 @@ export function overflowProbe() {
   const spacer = document.querySelector(".spacer");
   // Evidence bullets are nowrap: a too-long one keeps its box and spills text past it (scrollWidth > clientWidth), which
   // the box checks above cannot see. evWrapped also catches a wrapped bullet if nowrap is ever removed.
-  const items = [...document.querySelectorAll(".ev li")];
+  // The timeline bullet (li.wrap) may wrap by design; every other bullet must fit one line.
+  const items = [...document.querySelectorAll(".ev li:not(.wrap)")];
   const lineH = (el) => parseFloat(getComputedStyle(el).lineHeight) || 12;
   const evClipped = items.filter((li) => li.scrollWidth > li.clientWidth + 1).length;
   const evWrapped = items.filter((li) => li.getBoundingClientRect().height > lineH(li) * 1.5).length;

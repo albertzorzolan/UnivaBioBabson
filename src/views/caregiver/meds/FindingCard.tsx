@@ -1,5 +1,7 @@
 // One review finding: what it is, which medicines, what the diary shows, the question for the visit, the
 // published source, the caregiver's decision — and (when the on-device model is loaded) a simpler AI wording.
+// Whenever the code check removed AI sentences (some, or all of them), a closed "What the check removed" list
+// (brief/CheckRemoved.tsx) shows each one with its reason, so a blocked wording reads as the check doing its job.
 // When every diary item this card cites is already shown in full on an earlier, visible card (`diaryRepeat`, see
 // diaryRepeats.ts), the block starts as a one-line "Diary entries already shown above" summary with a Show button
 // that expands the full block in place.
@@ -7,12 +9,13 @@ import { useEffect, useId, useState } from "react";
 import { Activity, BookmarkCheck, BookmarkPlus, ChevronRight, MessageCircleQuestion, NotebookPen, Pill, RotateCcw, Sparkles } from "lucide-react";
 import type { Finding, Medication, MetricKey, ReviewDecision, ReviewStatus, Signal } from "../../../model/types";
 import { getDrug, getSource } from "../../../kb";
-import { aiExplainFinding, AIValidationError, useLLM } from "../../../ai";
+import { aiExplainFinding, AIValidationError, useLLM, type DroppedSentence } from "../../../ai";
 import { AIBadge, Badge, Button, Disclosure, Segmented, SourceCitation, Spinner, cx } from "../../../ui";
 import { getMetric } from "../../../engine/timeline/metrics";
 import { STRENGTH_SIZE_LABEL, strengthTone } from "../../shared/caregiver-insights";
 import { CATEGORY_CHIP, STATUS_LABEL } from "./reviewRecords";
 import { DIARY_SIGNALS_SHOWN } from "./diaryRepeats";
+import { CheckRemoved } from "../brief/CheckRemoved";
 
 export interface FindingCardProps {
   finding: Finding;
@@ -63,7 +66,24 @@ function shortModel(id: string | null): string | null {
   return id.replace(/-MLC$/i, "").replace(/-q\d+f\d+(_\d+)?/i, "");
 }
 
-type AiState = { kind: "idle" } | { kind: "loading" } | { kind: "done"; text: string; ms: number; dropped: number } | { kind: "error"; message: string };
+// `removed` / `dropped`: the AI sentences the code check took out, listed under "What the check removed".
+type AiState =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "done"; text: string; ms: number; removed: DroppedSentence[] }
+  | { kind: "error"; message: string; dropped: DroppedSentence[] };
+
+/** Shown when the check rejected the AI wording (fewer than 2 sentences passed); the card's own text stays. */
+export const BLOCKED_NOTE = "The code check rejected the AI wording, so only the records-based text is shown.";
+
+/**
+ * The card's note for a failed explanation, and the sentences the check removed (only an AIValidationError carries
+ * them; tasks.ts aiExplainFinding throws one when fewer than 2 sentences pass).
+ */
+export function explainFailure(e: unknown): { message: string; dropped: DroppedSentence[] } {
+  if (e instanceof AIValidationError) return { message: BLOCKED_NOTE, dropped: e.dropped };
+  return { message: "The on-device model couldn’t finish this time. The original text above stays.", dropped: [] };
+}
 
 export function FindingCard({
   finding: f,
@@ -104,16 +124,10 @@ export function FindingCard({
     try {
       const kbText = involved.flatMap((m) => m.ingredientIds.map((id) => getDrug(id)?.usedFor ?? "")).filter(Boolean);
       const r = await aiExplainFinding(f, { kbText, medNames: involved.map((m) => m.name), patientNames });
-      if (!r) setAi({ kind: "error", message: "The on-device model isn’t loaded any more. Load it again in Settings." });
-      else setAi({ kind: "done", text: r.text, ms: r.ms, dropped: r.dropped });
+      if (!r) setAi({ kind: "error", message: "The on-device model isn’t loaded any more. Load it again in Settings.", dropped: [] });
+      else setAi({ kind: "done", text: r.text, ms: r.ms, removed: r.report.dropped });
     } catch (e) {
-      setAi({
-        kind: "error",
-        message:
-          e instanceof AIValidationError
-            ? "The AI wording didn’t pass the source check, so it isn’t shown. The original text above stays."
-            : "The on-device model couldn’t finish this time. The original text above stays.",
-      });
+      setAi({ kind: "error", ...explainFailure(e) });
     }
   };
 
@@ -282,14 +296,19 @@ export function FindingCard({
                     <AIBadge model={shortModel(llm.model)} ms={ai.ms} />
                     <p className="cg-ai-note__text">{ai.text}</p>
                     <p className="cg-ai-note__meta">
-                      Checked by code against the finding and the reference text{ai.dropped > 0 ? ` · ${ai.dropped} sentence${ai.dropped === 1 ? "" : "s"} removed` : ""}. Review before sharing.
+                      Checked by code against the finding and the reference text
+                      {ai.removed.length > 0 ? ` · ${ai.removed.length} sentence${ai.removed.length === 1 ? "" : "s"} removed` : ""}. Review before sharing.
                     </p>
+                    {ai.removed.length > 0 && <CheckRemoved items={ai.removed} name="" variant="card" />}
                     <Button size="sm" variant="ghost" onClick={() => setAi({ kind: "idle" })}>
                       Hide AI wording
                     </Button>
                   </div>
                 ) : ai.kind === "error" ? (
-                  <p className="cg-ai-note cg-ai-note--error">{ai.message}</p>
+                  <div className="cg-ai-note cg-ai-note--error">
+                    <p>{ai.message}</p>
+                    {ai.dropped.length > 0 && <CheckRemoved items={ai.dropped} name="" variant="card" />}
+                  </div>
                 ) : ai.kind === "loading" ? (
                   <p className="cg-ai-note cg-ai-note--loading">
                     <Spinner size={16} /> Writing a simpler version on this device…

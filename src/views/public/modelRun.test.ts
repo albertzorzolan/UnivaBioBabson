@@ -2,7 +2,19 @@
 // quoted as recorded. Labels are ours; quotes, timings, the date, the model and the machine are the file's.
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
-import { RECORDED_RUN, RED_TEAM, readRedTeam, redTeamSentence } from "./modelRun";
+import {
+  BATCH_RUN,
+  BATCH_SENTENCE,
+  RECORDED_RUN,
+  RED_TEAM,
+  RED_TEAM_SENTENCE,
+  RUN_MORE_SUMMARY,
+  batchSentence,
+  readBatch,
+  readRedTeam,
+  redTeamSentence,
+  runMoreSummary,
+} from "./modelRun";
 
 const raw = readFileSync(new URL("../../../eval/results/ai-live.json", import.meta.url), "utf8");
 const file = JSON.parse(raw);
@@ -88,6 +100,89 @@ describe("recorded model run", () => {
     const replace = RECORDED_RUN.flawed.find((f) => /might be able to replace/.test(f.quote))!;
     expect(replace.output).toBe(cause.output);
     expect(replace.full).toEqual(cause.full);
+  });
+
+  it("says why the “replace” sentence is advice although the template may ask about replacing a medicine", () => {
+    const replace = RECORDED_RUN.flawed.find((f) => /might be able to replace/.test(f.quote))!;
+    expect(replace.where).toContain("treatment advice");
+    // The required note, starting its own sentence (hence the capital T).
+    expect(replace.where).toContain(
+      "The template may ask the clinician whether a medicine could be replaced; this AI sentence was a declarative suggestion to the family",
+    );
+    // Two sentences rather than one caption with two colons, so the label stays readable when it wraps at phone width.
+    expect(replace.where).toContain("(treatment advice). The template may ask");
+    expect(replace.where.match(/:/g)).toHaveLength(1);
+  });
+});
+
+describe("batch run summary (eval/results/llm-batch.json)", () => {
+  // A minimal file in the shape scripts/llm-batch.mjs writes.
+  const lat = (p50: number, p95: number) => ({ p50, p95, max: p95 });
+  const block = (prompts: number, generated: number, blocked: number, shown: number, l: ReturnType<typeof lat>) => ({
+    prompts,
+    modelRuns: prompts,
+    sentencesGenerated: generated,
+    blocked,
+    shown,
+    notShown: generated - blocked - shown,
+    blockedRate: blocked / generated,
+    shownRate: shown / generated,
+    latencyMs: l,
+  });
+  const sample = {
+    date: "2026-10-17",
+    model: "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+    machine: "Apple M1 Pro, headless Chrome WebGPU",
+    promptSet: { ask: 30, askChips: 5, brief: 5, explain: 5 },
+    externalRequestsBlocked: [],
+    summary: {
+      ...block(40, 200, 50, 120, lat(5200, 30000)),
+      byTask: { ask: block(30, 60, 10, 40, lat(5200, 9100)), brief: block(5, 120, 35, 70, lat(41000, 52000)), explain: block(5, 20, 5, 10, lat(4300, 6000)) },
+    },
+    audit: { labelledBy: "AI agent (Claude), not the team, not a clinician", shownTotal: 120, labelled: 120, complete: true, flawed: 3, escapeRate: 0.025, escapeWilson95: [0.0085, 0.071] },
+  };
+
+  it("reads the counts, latency and audit as plain numbers", () => {
+    const b = readBatch(sample)!;
+    expect(b).toMatchObject({ dateLabel: "Oct 17, 2026", model: "Qwen2.5-3B-Instruct-q4f16_1-MLC", prompts: 40, generated: 200, blocked: 50, shown: 120 });
+    expect(b.tasks.ask).toEqual({ prompts: 30, p50Ms: 5200, p95Ms: 9100 });
+    expect(b.audit).toEqual({ labelledBy: sample.audit.labelledBy, labelled: 120, flawed: 3, ci: [0.0085, 0.071] });
+  });
+
+  it("is null when the file is missing or a headline count is not a number", () => {
+    expect(readBatch(undefined)).toBeNull();
+    expect(readBatch({ ...sample, summary: { ...sample.summary, blocked: "50" } })).toBeNull();
+  });
+
+  it("leaves the audit out until every shown sentence is labelled", () => {
+    expect(readBatch({ ...sample, audit: null })!.audit).toBeNull();
+    expect(readBatch({ ...sample, audit: { ...sample.audit, complete: false, labelled: 100 } })!.audit).toBeNull();
+  });
+
+  it("writes one sentence with the counts, the AI-labelled audit and its 95% interval, and median and 95th-percentile times", () => {
+    const s = batchSentence(readBatch(sample))!;
+    expect(s).toBe(
+      "Batch run on Oct 17, 2026: 40 prompts (30 Ask questions, 5 brief drafts, 5 finding explanations) on " +
+        "Qwen2.5-3B-Instruct-q4f16_1-MLC, Apple M1 Pro, headless Chrome WebGPU. The model wrote 200 sentences; the code " +
+        "check blocked 50 (25.0%) and the app showed 120 (60.0%); the rest passed but were not shown. An AI agent " +
+        "(Claude, not the team and not a clinician) read every shown sentence against the records it cites and found 3 of " +
+        "120 flawed (2.5%, 95% interval 0.9–7.1%). Time per answer, median (95th percentile): Ask 5.2 s (9.1 s), brief " +
+        "41.0 s (52.0 s), explanation 4.3 s (6.0 s).",
+    );
+    expect(batchSentence(readBatch({ ...sample, audit: null }))).not.toMatch(/AI agent/);
+    expect(batchSentence(null)).toBeNull();
+  });
+
+  it("matches the committed file when it exists", () => {
+    const url = new URL("../../../eval/results/llm-batch.json", import.meta.url);
+    if (!existsSync(url)) {
+      expect(BATCH_RUN).toBeNull();
+      return;
+    }
+    const f = JSON.parse(readFileSync(url, "utf8"));
+    expect(BATCH_RUN).toEqual(readBatch(f));
+    expect(BATCH_RUN!.generated).toBe(f.results.reduce((n: number, r: { sentences: unknown[] }) => n + r.sentences.length, 0));
+    expect(BATCH_SENTENCE).toBe(batchSentence(BATCH_RUN));
   });
 });
 
@@ -210,5 +305,23 @@ describe("claim-checker red team line", () => {
     }
     expect(s).toContain(`${r.postFixProbe.total} paraphrases`);
     expect(s).toContain(`caught only ${r.postFixProbe.caught}`);
+  });
+});
+
+describe("the “The rest of the run” summary", () => {
+  it("lists only the parts the panel shows, as one plain list", () => {
+    expect(runMoreSummary({ redTeam: false, batch: false })).toBe(
+      "The rest of the run: out-of-scope questions, the brief, a blocked explanation and the verdict",
+    );
+    expect(runMoreSummary({ redTeam: true, batch: false })).toBe(
+      "The rest of the run: out-of-scope questions, the brief, a blocked explanation, the verdict and the red-team test",
+    );
+    expect(runMoreSummary({ redTeam: true, batch: true })).toBe(
+      "The rest of the run: out-of-scope questions, the brief, a blocked explanation, the verdict, the red-team test and a separate batch run",
+    );
+  });
+
+  it("follows the committed files", () => {
+    expect(RUN_MORE_SUMMARY).toBe(runMoreSummary({ redTeam: Boolean(RED_TEAM_SENTENCE), batch: Boolean(BATCH_SENTENCE) }));
   });
 });

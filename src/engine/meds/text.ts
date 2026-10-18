@@ -156,7 +156,8 @@ export const BANNED_REVIEW_WORDS: readonly { pattern: RegExp; label: string }[] 
   { pattern: /\bdangerous\b/i, label: "dangerous" },
   { pattern: /\bdiagnos(is|e|ed)\b/i, label: "diagnosis" },
   { pattern: /\brisk score\b/i, label: "risk score" },
-  { pattern: /\bside effect of (her|his|their|your|margaret)/i, label: "side effect of <patient's drug>" },
+  // A possessive pronoun or any name's possessive ("of her lorazepam", "of Dorothy's zolpidem"), not a fixed name.
+  { pattern: /\bside effect of (?:her|his|their|your|[a-z][a-z-]*['’]s)\b/i, label: "side effect of <patient's drug>" },
 ];
 
 export const REQUIRED_NOTICE =

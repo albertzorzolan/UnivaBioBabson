@@ -97,13 +97,20 @@ sees it. Without it, everything above works from deterministic templates.
   (the brochure included a taper plan, which Kinwise leaves to the clinician). In **D-PRESCRIBE** (Martin et al.,
   JAMA 2018; cluster RCT, n=489), a consumer-targeted, pharmacist-led educational intervention (education to patients plus a pharmaceutical opinion sent to their physicians) led to **43% vs 12%**
   no longer filling the inappropriate prescription at 6 months. Kinwise is inspired by these trials and has not been
-  shown to replicate them.
+  shown to replicate them. Kinwise never suggests stopping a medicine: every signed-in page says not to stop or
+  change any medicine without talking to the prescriber, and for benzodiazepines it says a change after regular use
+  is made gradually with the prescriber ([FDA 2020 boxed warning for benzodiazepines](https://www.fda.gov/drugs/drug-safety-and-availability/fda-requiring-boxed-warning-updated-improve-safe-use-benzodiazepine-drug-class)).
 - **A caution:** in the MedSafer cluster RCT (5,698 patients; McDonald et al., JAMA Intern Med 2022), rule-based
-  flags increased deprescribing without reducing 30-day adverse drug events, so we claim better-informed
-  conversations, not fewer adverse events. Kinwise has not been tested with real patients, caregivers or clinicians.
+  flags increased deprescribing without reducing 30-day adverse drug events, so we aim for better-informed
+  conversations (untested), not fewer adverse events. Kinwise has not been tested with real patients, caregivers or clinicians.
   The pilot we would run first is in [docs/REGULATORY.md §6](docs/REGULATORY.md) (planned, not started).
 - **How the clinician receives it:** the printed brief is what the clinician receives today; FHIR R4 is
   interoperability readiness (SMART on FHIR planned).
+
+**Path to users (hypothesis, not validated).** Part D MTM pharmacists already run Comprehensive Medication Reviews
+and could take the brief as input; caregiver organisations could distribute it, free for families. The cheapest test
+that could prove this wrong is one pharmacist reading the
+[sample brief](submission/kinwise-sample-visit-brief.pdf). We have not run it yet.
 
 ## How it differs
 
@@ -121,7 +128,7 @@ From our review of vendor pages on 2026-10-10 ([market-evidence.md §2](kb-src/r
 | | |
 |---|---|
 | **Working** | Public live demo; check-in with on-device language processing; medicine matching (brands, misspellings); cited review; before/after timeline; Ask Kinwise; visit brief with review gate; medication list; FHIR export; backup and delete-all |
-| **Partial** | On-device AI: desktop Chrome or Edge with WebGPU, tested on one Apple M1 Pro, checker not airtight; the default Qwen2.5-3B has a research-only (non-commercial) licence, and Apache-2.0 models are selectable in Settings. Patient-to-caregiver hand-off: one shared device today, or a backup file. FHIR: no receiving system yet. Knowledge base: not clinician-reviewed, no dose or allergy checks. English only |
+| **Partial** | On-device AI: desktop Chrome or Edge with WebGPU, tested on one Apple M1 Pro, checker not airtight; the default Qwen2.5-3B has a research-only (non-commercial) licence, and Apache-2.0 models are selectable in Settings. Patient-to-caregiver hand-off: one shared device today, or a backup file. FHIR: no receiving system yet. Knowledge base: not clinician-reviewed, no dose or allergy checks; interactions limited to the AGS Beers 2023 combination table (not a full drug-interaction checker). Timeline runs check: computed for every comparison, not yet gating. English only |
 | **Planned** | Encrypted family sharing; encryption of the local record; pharmacist review of the knowledge base; a validation pilot; pharmacy and portal import; voice and Spanish |
 
 What each item means in this repository:
@@ -134,8 +141,8 @@ What each item means in this repository:
   ([src/kb/data/meta.json](src/kb/data/meta.json)).
 - **Visit brief, medication list and FHIR:** the template brief is always available and prints only after the
   caregiver marks it as reviewed. The FHIR R4 export was validated against base R4 structure with the HAPI
-  validator: 0 errors; codes not terminology-checked (25 warnings); no US Core/IPS profile
-  ([docs/samples](docs/samples/kinwise-fhir-validation.json)).
+  validator: 0 errors; codes not terminology-checked (25 warnings); no US Core/IPS profile. The checked file is a
+  pre-review sample from the 2026-09-12 to 2026-10-11 demo window ([docs/samples](docs/samples/README.md)).
 - **Backup, delete-all and the patient-to-caregiver hand-off:** the patient and caregiver views share one browser.
   Caregiver Settings can export the whole record as one JSON file and import such a file; an imported file is
   validated and shown for confirmation, and then **replaces** the record on that device (no merge, no sync). The
@@ -148,8 +155,10 @@ What each item means in this repository:
   Qwen2.5-1.5B, Qwen3-4B, Qwen3.5-2B and Qwen3.5-4B, and the two we smoke-tested (Qwen2.5-1.5B, Qwen3.5-2B) were less
   reliable ([eval/results/llm-smoke.json](eval/results/llm-smoke.json)).
 - **Knowledge base:** dose-, formulation- and indication-dependent criteria are not encoded, and drug–drug
-  interactions are limited to Beers Table 5. A medicine without a flag has not been shown to be free of risk. Any
-  non-educational use would need a licence for the AGS Beers Criteria®.
+  interactions are limited to the AGS Beers 2023 combination table (Table 5, plus the related
+  NSAID-with-antithrombotic row of Table 2 and the TMP-SMX row of Table 4; see
+  [docs/CLINICAL-SOURCES.md](docs/CLINICAL-SOURCES.md)); Kinwise is not a full drug-interaction checker. A medicine without a flag has not been shown to be free of risk. Any non-educational use would need a
+  licence for the AGS Beers Criteria®.
 - **Timeline runs check (partial):** a second check that shuffles whole runs of days is computed for every
   comparison and measured, but does not yet change which differences are flagged
   (`TIMELINE_RULES.runsCheck.gate = false`; [EVALUATION.md §3](docs/EVALUATION.md)).
@@ -191,7 +200,8 @@ guided tour" walks through the main flow in 8 steps. Settings › Restore demo r
 
 Everything except the optional AI runs in the browser (tested in desktop Chrome). The optional AI needs a browser
 with WebGPU (recent desktop Chrome or Edge). Loading the recommended model downloads
-about 1.66 GB of model files from Hugging Face; no personal data is sent. We have measured it only on an Apple M1 Pro
+about 1.66 GB of model files once (the weights from Hugging Face, the compiled library from GitHub); no personal data
+is sent. We have measured it only on an Apple M1 Pro
 (16 GB).
 
 ## Walk through the code in 5 minutes
@@ -247,7 +257,7 @@ flowchart LR
     TPL --> UI
     UI --> OUT["Print / PML / FHIR R4 JSON<br/>(only on user action)"]
   end
-  HF["Hugging Face<br/>(model files only, opt-in)"] -.-> LLM
+  HF["Hugging Face + GitHub<br/>(model files only, opt-in)"] -.-> LLM
   SRC["kb-src/build_kb.py<br/>(build time)"] -.-> KB
 ```
 
@@ -337,20 +347,23 @@ React 19, TypeScript 5.9 (strict), Vite 7, Recharts 3, lucide-react, @mlc-ai/web
 Qwen2.5-3B-Instruct (q4f16_1, MLC build), Vitest 3, Playwright 1.55 with system Chrome, axe-core, Python 3 (knowledge
 base build), HL7 FHIR R4, RxNorm, SNOMED CT and LOINC codes. GitHub Actions:
 [pages.yml](.github/workflows/pages.yml) tests, builds and publishes the live demo; [ci.yml](.github/workflows/ci.yml)
-runs the type check, the test suite and the knowledge-base check on pushes to `medwatch-v2` and `kinwise-final` and on
-pull requests.
+runs the type check, the test suite, the knowledge-base check and the submission fact-check on pushes to `medwatch-v2`
+and `kinwise-final` and on pull requests.
 
 ## Tests and quality gates
 
 | Command | What it checks | In CI |
 |---|---|---|
-| `npm test` (or `npx vitest run`) | The full Vitest suite (more than 1,200 tests): engines, KB, AI guards and view logic, plus the NLP and medication evals | yes |
+| `npm test` (or `npx vitest run`) | The full Vitest suite (more than 1,900 tests): engines, KB, AI guards and view logic, plus the NLP and medication evals | yes |
 | `npm run eval:nlp` / `npm run eval:meds` | The two evaluations; update `eval/results/*.json` only when a result changes | yes, as part of `npm test` |
 | `npm run typecheck` | TypeScript strict, no emit | yes |
-| `python3 -I kb-src/build_kb.py --check` | Builds the KB in memory and validates it: integrity, rating cross-checks, banned wording (exit 1 on any problem) | yes |
+| `python3 -I kb-src/build_kb.py --check` | Builds the KB in memory and validates it: integrity, rating cross-checks, banned wording (exit 1 on any problem) | yes, as `npm run kb:verify`, which also fails if the committed `src/kb/data` differs from a fresh build |
+| `npm run test:submission` | Unit tests of the PDF and video generators, then `check-facts.mjs`: no stale wording, and every number in README.md, submission/DEVPOST.md, docs/EVALUATION.md, docs/DEMO-SCRIPT.md and the captions equals `facts.mjs` | yes |
 | `npm run build` | Type-check and production build | pages.yml runs `npm run build:pages` |
 | `npm run test:e2e` | Playwright checks in system Chrome: logins, check-in, review, timeline, Ask, brief, FHIR, tour, 390 px layout, no foreign network requests, no console errors | no (needs system Chrome) |
 | `npm run test:a11y` | axe-core scans (WCAG 2.2 A/AA rules) of every route in light and dark, plus open dialogs and drawers; the gate fails on serious or critical violations | no (needs system Chrome) |
+
+Static checks: strict TypeScript (noUnused*) and CI (typecheck, full suite, KB drift check, submission fact-check); no ESLint config.
 
 E2E and accessibility results are written to `test-results/` (git-ignored); see that folder after a run.
 
@@ -369,7 +382,7 @@ submission/         Devpost text, demo video + captions, one-pager, sample visit
 public/             fonts and favicon (public/models/ is git-ignored)
 ai-harness.html     developer-only page for the on-device LLM smoke test (driven by scripts/llm-smoke.mjs); not part of the app
 archive/            earlier team prototypes, not used by this build (see archive/README.md)
-.github/workflows/  pages.yml (live demo) and ci.yml (type check, tests, KB check)
+.github/workflows/  pages.yml (live demo) and ci.yml (type check, tests, KB check, submission fact-check)
 ```
 
 How the knowledge base is built: [kb-src/README.md](kb-src/README.md).

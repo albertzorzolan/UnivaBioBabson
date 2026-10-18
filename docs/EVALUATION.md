@@ -19,10 +19,11 @@ used anywhere.
 | 2 | Medication review | 57 separately written cases, 295 expectations | 57/57 cases, 295/295 expectations; removing one piece of knowledge drops it to 54, 49 or 33 of 57 | [meds-eval.json](../eval/results/meds-eval.json), [meds-ablation.json](../eval/results/meds-ablation.json) |
 | 3 | Timeline statistics | Reference values + simulated diaries (1,000 changes per row) | Matches R reference values; ≥1 moderate-or-strong false alarm on 11.2% of changes with independent days, 34.6% and 85.8% at assumed clustering levels (stay 0.3 and 0.8); the runs check gives 7.3% (independent days) and 57.2% (stay 0.8) but is measured, not yet gating | `src/engine/timeline/stats.test.ts`, [timeline-null.json](../eval/results/timeline-null.json) |
 | 4 | On-device LLM smoke test | 1 fixture, 12 task cases, 3 models | Qwen2.5-3B: one brief draft: 9 of 9 sentences kept, about 60 s (n = 1); record answers 4 of 4 | [eval/results/llm-smoke.json](../eval/results/llm-smoke.json) |
+| 4b | On-device LLM batch run (§4b) | 40 fixed prompts on the demo record (30 Ask questions, 5 brief drafts, 5 explanations), Qwen2.5-3B | 21 of 76 AI sentences (27.6%) blocked by the checker, 30 (39.5%) shown; 3 of the 30 shown sentences flawed (10.0%, 95% CI 3.5–25.6%; audit labelled by an AI agent, not a clinician); median 4.9 s per Ask answer, 45.9 s per brief draft | [eval/results/llm-batch.json](../eval/results/llm-batch.json) |
 | 5 | Live in-app AI run | The running app on real WebGPU | 0 external requests (model files served from a local copy; the live demo downloads them once, and no diary data is sent); at least 6 flawed AI sentences (from 5 outputs) got past the checker (live-01…06) | [eval/results/ai-live.json](../eval/results/ai-live.json), [eval/verifier-redteam.json](../eval/verifier-redteam.json) |
 | 5b | Claim-checker red team (§5) | 163 harmful + 87 valid sentences written by an AI agent; later probes of 18, 20 and 22 | 72 of 163 caught as submitted; 163 of 163 after fixes tuned on the set, 0 of 87 valid rejected; on probes written after the rules, when first run: 1 of 18 (first probe; later used for tuning), 12 of 20 (second; two items later used to design a rule, so no longer held out) and 10 of 22 (held-out third; 10 of 23 after a label correction), 0 valid rejected | [verifier-redteam.json](../eval/results/verifier-redteam.json) |
 | 6 | FHIR export | Seed record, 270 resources | Validated against base R4 structure with the HAPI validator: 0 errors; codes not terminology-checked (25 warnings); no US Core/IPS profile | [samples/kinwise-fhir-validation.json](samples/kinwise-fhir-validation.json) |
-| 7 | Engineering gates | Unit, E2E, accessibility, KB build | Run `npm test`, `npm run test:e2e`, `npm run test:a11y`; reports in `test-results/` | see §7 |
+| 7 | Engineering gates | Unit, E2E, accessibility, KB build | Last recorded 2026-10-18: 1,917 unit tests passed, 1 skipped (75 files); 21 of 21 end-to-end checks; 46 axe scans, 0 violations. Run the commands in §7 for current results | see §7 |
 
 ---
 
@@ -369,11 +370,16 @@ row applies to a real family is unknown. This is the strongest reason a signal i
 **Demo story.** For the seeded record, dizziness was recorded on 9 of 14 answered days after lorazepam started
 compared with 2 of 19 in the 21 days before (Fisher's exact p = 0.0023, "strong"); daytime drowsiness 8 of 14 vs
 2 of 20 (p = 0.0061); confusion 4 of 14 vs 0 of 20 (p = 0.0216, "moderate"). These come from the engine run on the
-seed; the dizziness sentence is asserted word for word in `seed.timeline.test.ts`. They are a property of the synthetic story, not evidence about
-lorazepam.
+seed; the dizziness sentence is asserted word for word in `seed.timeline.test.ts`. The runs check above gives
+dizziness p = 0.007 on the same diary (also pinned there): the demo difference still holds when whole 4-day runs of
+days are shuffled (within the limits of that check, below). The brief also states the one recorded change in the welcome direction, sleep quality ratings
+averaging 3.4 out of 5 on 14 answered days after vs 2.6 out of 5 on 20 answered days before ("Also recorded …",
+asserted word for word in `src/engine/brief/template.test.ts`), so the clinician sees a welcome change as well as
+the unwelcome ones. They are a property of the synthetic story, not evidence about lorazepam.
 
 **Limitations.** Windows of at most 21 days give low power; the diary is self-reported; overlapping medicine changes
-are listed but not adjusted for. The `stay` levels are assumed, not measured from real diaries, and a two-state
+are listed but not adjusted for; a medicine may be started during a bad spell (confounding), and doses taken are not
+logged. The `stay` levels are assumed, not measured from real diaries, and a two-state
 Markov chain is only one simple model of runs. Each rate comes from 1,000 simulated changes (about ±3 percentage
 points at 50%, 95% interval), and the null study uses 199 shuffles per check against the app's 999. The runs check
 itself only allows for runs up to about one block long, and with about 10 blocks per window it has little
@@ -413,6 +419,39 @@ compiled knowledge base, so the verifier used its built-in drug vocabulary inste
 file records `"kb": "built-in vocabulary (kb/index.ts not found)"`). This is a smoke test for choosing a model, not
 a benchmark.
 
+## 4b. On-device LLM batch run
+
+**What it measures.** How often the default model's sentences are blocked by the claim checker, how often they reach
+the family, how many shown sentences are still flawed, and the time per answer, over a fixed, committed set of 40
+prompts run through the app's own pipeline on the demo record. Full method, prompt set and results:
+[eval/LLM-BATCH.md](../eval/LLM-BATCH.md).
+
+**Setup** (`llm-batch.json`, 2026-10-18): Apple M1 Pro, headless Chrome WebGPU, `Qwen2.5-3B-Instruct-q4f16_1-MLC` from
+the local copy at the app's fixed settings (temperature 0); external requests blocked (none attempted). Prompts: the 5
+Ask suggestion chips + 25 more record questions, 5 brief drafts (14, 30 and 60 days; with and without the pinned
+concern), 5 finding explanations (one of each kind).
+
+| Task | Sentences written | Blocked | Shown | Median / 95th percentile time |
+|---|---|---|---|---|
+| Ask (30) | 38 | 3 | 15 | 4.9 s / 8.8 s |
+| Brief (5) | 24 | 10 | 12 | 45.9 s / 50.4 s |
+| Explain (5) | 14 | 8 | 3 | 7.0 s / 7.3 s |
+| All (40) | 76 | 21 (27.6%) | 30 (39.5%) | |
+
+The rest passed the check but were not shown (an Ask draft that only repeated the records answer, a section that fell
+back to the template). An AI agent (Claude, not the team and not a clinician) read every shown sentence against what
+it cites: 3 of 30 flawed, **10.0% (Wilson 95% CI 3.5–25.6%)**: one "can cause" explanation that names the medicine
+only as "It", one misleading answer to a sleep question, one repeated word. None was labelled advice, a prediction,
+a diagnosis or a wrong number.
+
+**Limitations.** One fictional record, one machine, one model; 30 shown sentences (24 distinct), so the interval is
+wide and, with repeated sentences, if anything too narrow; the audit is an AI agent's judgement. One run's file is committed; other GPUs or runtime versions may give
+different text.
+
+**Reproduce.** `node scripts/llm-batch.mjs` (needs the local model copy and WebGPU; `--plan` checks the prompt set
+without the model); `node --test scripts/submission/llm-batch.test.mjs` (part of `npm run test:submission`) checks the
+statistics and fails if the code the results depend on has changed since the run or the DEVPOST line no longer matches.
+
 ## 5. Live in-app AI run
 
 **What it measures.** The whole AI path inside the running app, as a user would use it: loading, brief drafting,
@@ -420,7 +459,9 @@ Ask, finding explanations, patient check-in suggestions, cancel and unload, with
 
 **Setup** (`ai-live.json`, 2026-10-11): an agent drove the Kinwise dev server in system Chrome (headless, WebGPU on
 Metal) on an Apple M1 Pro, 16 GB, with Qwen2.5-3B-Instruct loaded from local files and a fresh seeded record. This
-run was performed and recorded by hand-driven automation; there is no script that reproduces it exactly.
+run was performed and recorded by hand-driven automation; there is no script that reproduces it exactly. "0 external
+requests" holds for this setup (model files served from a local copy); the public live demo downloads the model files
+once, the weights from huggingface.co and the compiled library from GitHub, and sends no diary data.
 
 | Step | Result |
 |---|---|
@@ -482,12 +523,20 @@ held-out result stays recorded as 12 of 20 (`postFixProbe2`). That probe was use
 is in-sample. A new third probe was written by an AI agent after the rule was designed and before it was run, so
 it is not independent of the team. Its single recorded run scored **10 of 22 harmful caught and 0 of 12 valid
 rejected** (`postFixProbe3`, frozen in the test). Review later found one label error: pf3-v02, a claim about
-higher sleep ratings that cites only dizziness records, is harmful, not valid; with that label the same run is 10
-of 23 and 0 of 11, which is also today's count (`postFixProbe3AfterReview`). No rule was changed because of the
+higher sleep ratings that cites only dizziness records, is harmful, not valid; with that label the recorded run is
+10 of 23 and 0 of 11 (`postFixProbe3.withCorrectedLabel`). Today's count after the round-3 rules is 11 of 23 and 0
+of 11 (`postFixProbe3AfterReview`); it is in-sample, no longer held out. No rule was changed because of the
 probe-3 result; the changes made after it (including, in integration review, "decrease", "cut out" and a narrow
 extra-dose form such as "take two lorazepam tablets") are listed in `postFixProbe3.changedAfterRecording`. The engine
 differential check still loses 0 of 2149 code-written sentences. The same kind of agent wrote these sentences
 and the rules, so the numbers are optimistic. The misses are listed in the results file.
+
+**In one line (as submission/DEVPOST.md states it).** The checker catches all 163 harmful sentences it was tuned on
+but only 10 of 23 on the later held-out probe (`postFixProbe3.withCorrectedLabel`), so AI wording stays optional and
+the template is the default. The probe-by-probe history behind that line (72 of 163 as submitted; 1 of 18, 12 of 20
+and 10 of 22 when each probe was first run; 0 of 87, 0 of 10 and 0 of 12 valid sentences rejected) is the one
+in this section, row 5b of the summary and [eval/VERIFIER-REDTEAM.md](../eval/VERIFIER-REDTEAM.md); the submission
+text links here instead of repeating it.
 
 ## 6. FHIR export
 
@@ -504,14 +553,19 @@ that file. Limitation: base FHIR R4 validation only; no US Core or IPS profile c
 
 ## 7. Engineering quality gates
 
-| Gate | Command | What it covers |
-|---|---|---|
-| Unit and eval tests | `npm test` (`npx vitest run`) | Engines, KB integrity and a 150-row name-matching table, AI guards and verifier, router, view logic, the NLP, medication, ablation, verifier and timeline-null evaluations. One opt-in test (the FHIR sample writer) is skipped by default |
-| End-to-end | `npm run test:e2e` | Playwright checks in system Chrome: one-click and credential logins, wrong password, check-in from a story, adding "Ativan" / a misspelling / an unknown name, review citation and saved decision, timeline counts with denominators, Ask with redirect, brief print gate, FHIR download, How-it-works eval run, 8-step tour, restore demo, every route without console errors, SPEC §3 wording, no horizontal scroll at 390 px, no request to any other origin |
-| Accessibility | `npm run test:a11y` | axe-core scans with WCAG 2.0/2.1/2.2 A and AA rules: every route in light and dark theme plus open dialogs, drawers, the "Here's what I heard" panel, Ask answers, the tour and eval results (the gate fails on serious or critical violations) |
-| Types | `npm run typecheck` | TypeScript strict |
-| Build | `npm run build` | Type-check and production bundle |
-| Knowledge base | `python3 -I kb-src/build_kb.py --check` | Ids resolve, Beers ratings match the research file, banned wording |
+| Gate | Command | What it covers | Last recorded result |
+|---|---|---|---|
+| Unit and eval tests | `npm test` (`npx vitest run`) | Engines, KB integrity and a 150-row name-matching table, AI guards and verifier, router, view logic, the NLP, medication, ablation, verifier and timeline-null evaluations. One opt-in test (the FHIR sample writer) is skipped by default | 1,918 tests: 1,917 passed, 1 skipped (the opt-in FHIR sample writer; 75 files), 2026-10-18 |
+| End-to-end | `npm run test:e2e` | Playwright checks in system Chrome: one-click and credential logins, wrong password, check-in from a story, adding "Ativan" / a misspelling / an unknown name, review citation and saved decision, timeline counts with denominators, Ask with redirect, brief print gate, FHIR download, How-it-works eval run, 8-step tour, restore demo, every route without console errors, SPEC §3 wording, no horizontal scroll at 390 px, no request to any other origin | 21 of 21 passed, 2026-10-18 |
+| Accessibility | `npm run test:a11y` | axe-core scans with WCAG 2.0/2.1/2.2 A and AA rules: every route in light and dark theme plus open dialogs, drawers, the "Here's what I heard" panel, Ask answers, the tour and eval results (the gate fails on serious or critical violations) | 46 scans, 0 violations reported (the gate fails on serious or critical), 2026-10-18 |
+| Types | `npm run typecheck` | TypeScript strict | not recorded here (run the command) |
+| Build | `npm run build` | Type-check and production bundle | not recorded here (run the command) |
+| Knowledge base | `python3 -I kb-src/build_kb.py --check` | Ids resolve, Beers ratings match the research file, banned wording | not recorded here (run the command) |
 
-Counts and pass/fail change with every commit, so this page does not copy them. Run the commands for current
-results. E2E and accessibility runs write their reports and screenshots to `test-results/` (git-ignored). The GitHub Pages workflow runs `npm test` before every build.
+The last column is the dated run behind the submission PDFs, copied from the reports it wrote: the vitest JSON report
+of `node scripts/submission/make-pdfs.mjs` (tmp/submission-build/vitest-report.json, started 2026-10-18 02:23 EDT),
+test-results/e2e/results.json and test-results/a11y/report.json (all git-ignored). `recordedTests()` in
+scripts/submission/facts.mjs reads these three cells, so a printed test count can be traced to this committed file,
+and `node scripts/submission/check-facts.mjs` warns when the last local reports no longer match them. Counts change
+with every commit: run the commands for current results. E2E and accessibility runs write their reports and
+screenshots to `test-results/`. The GitHub Pages workflow runs `npm test` before every build.

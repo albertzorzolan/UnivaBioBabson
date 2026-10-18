@@ -31,6 +31,26 @@ describe("finished vs planned", () => {
     expect(items("partial")).toMatch(/427 medicines and 89 Beers rules/);
   });
 
+  it("states the knowledge-base limits: no clinician review, no dose or allergy checks, Beers-only interactions", () => {
+    const kb = groups.find((g) => g.status === "partial")!.items.find((i) => i.item === "Knowledge-base coverage")!;
+    expect(kb.detail).toBe(
+      "427 medicines and 89 Beers rules; not reviewed by a clinician; no dose or allergy checks; interactions limited to the AGS Beers 2023 combination table (not a full drug-interaction checker)",
+    );
+  });
+
+  it("marks the timeline runs check partial: computed for every comparison, not yet gating (README.md)", () => {
+    const runs = groups.find((g) => g.status === "partial")!.items.find((i) => i.item === "Timeline runs check");
+    expect(runs?.detail).toBe("computed for every comparison, not yet gating");
+    expect(items("working")).not.toMatch(/runs check/i);
+  });
+
+  it("keeps what the demo recorder reads off the Partial row (scripts/submission/record-demo.mjs CHOOSE.honesty)", () => {
+    // The recorder joins the Partial rows and picks the "model" narration variant only when both tests hold.
+    const partial = items("partial");
+    expect(/knowledge.base coverage/i.test(partial) && /no dose or allergy/i.test(partial)).toBe(true);
+    expect(/on-device (language )?model/i.test(partial) && /not airtight/i.test(partial)).toBe(true);
+  });
+
   it("keeps family sharing and validation planned", () => {
     const planned = items("planned");
     expect(planned).toMatch(/family sharing/i);

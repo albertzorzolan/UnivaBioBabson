@@ -164,8 +164,8 @@
 .cg-ov-stats .ui-evidence-link {
   white-space: nowrap;
 }
-/* The spec caveat that travels with every before/after comparison: plain ink, never small print. The chance line
-   under it is the same size in muted ink: one thought ("not a cause, could be chance"), not a footnote. */
+/* The spec caveat that travels with every before/after comparison: plain ink, never small print. It is the card's
+   one hedge; the chance line and the measured rates are in "How reliable is this?". */
 .cg-ov-insight__caveat {
   display: flex;
   align-items: flex-start;
@@ -180,11 +180,6 @@
 }
 .cg-ov-insight__caveat-main {
   font-weight: var(--fw-medium);
-}
-.cg-ov-insight__chance {
-  margin-top: 0.125rem;
-  max-width: 68ch;
-  color: var(--ink-muted);
 }
 .cg-ov-insight__meta {
   display: flex;
@@ -235,6 +230,16 @@
   font-size: var(--fs-sm);
   color: var(--ink-muted);
   max-width: 75ch;
+}
+/* The shared disclosure wraps the method in one <p>: each line is a block span with paragraph spacing. */
+.cg-ov-method__line {
+  display: block;
+}
+.cg-ov-method__line + .cg-ov-method__line {
+  margin-top: var(--space-2);
+}
+.cg-ov-method__line:first-child {
+  color: var(--ink);
 }
 
 /* Falls and finding lines */
@@ -293,17 +298,39 @@
   font-weight: var(--fw-semibold);
 }
 
-/* Question for the visit */
+/* Question for the doctor or pharmacist: the Review page's neutral sage treatment (.cg-finding__question), so it never
+   reads as a second alarm under the falls box. Rust (attention) stays reserved for falls. */
 .cg-ov-question {
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
-  background: var(--accent-soft);
+  border: 1px solid var(--line);
+  background: var(--surface-tint);
 }
 .cg-ov-question__label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
-  color: var(--accent-hover);
+  color: var(--primary-text);
+}
+.cg-ov-question__label svg {
+  flex: none;
+}
+.cg-ov-question__more {
+  margin-top: var(--space-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--primary-text);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.cg-ov-question__more:hover {
+  text-decoration-thickness: 2px;
 }
 .cg-ov-question__text {
   margin-top: 0.15rem;
@@ -527,17 +554,20 @@
   font-size: var(--fs-xs);
   color: var(--ink-muted);
 }
+/* Review summary: category name left, its count as words right-aligned ("3 prompts"); plain muted text, not a
+   circled number that would read as a step. */
+.cg-ov-list__row--count {
+  justify-content: space-between;
+  align-items: baseline;
+}
+.cg-ov-list__row--count .cg-ov-list__text {
+  padding-top: 0;
+}
 .cg-ov-count {
-  display: grid;
-  place-items: center;
-  min-width: 1.75rem;
-  height: 1.5rem;
-  padding: 0 0.4rem;
-  border-radius: var(--radius-pill);
-  background: var(--primary-soft);
-  color: var(--primary-soft-ink);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
+  flex: none;
+  color: var(--ink-muted);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
 }
 .cg-ov-review__foot {
   display: flex;

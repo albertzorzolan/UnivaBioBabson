@@ -432,7 +432,7 @@ describe("answer post-processing", () => {
     const r = (await aiAnswer(QA_CASES[3].question, items(QA_CASES[3].itemIds), MARGARET_PACKAGE, opts))!;
     expect(r).toMatchObject({ status: "not_in_records", sentences: [] });
   });
-  it("judges relevance by word stems and by diary symptom", () => {
+  it("rates relevance by word stems and by diary symptom", () => {
     const sig = { text: "Dizziness was recorded on 9 of 14 answered days.", evidenceIds: [SIG] };
     expect(isRelevant("Has Mom been dizzier lately?", sig, MARGARET_PACKAGE)).toBe(true);
     expect(isRelevant("Has she been woozy?", sig, MARGARET_PACKAGE)).toBe(true);
@@ -442,7 +442,7 @@ describe("answer post-processing", () => {
 
 // ---------------------------------------------------------------------------------------------
 // Regressions from the live WebGPU run (eval/results/ai-live.json) and the runtime audit of the AI brief
-// (tmp/judge-kit/runtime/local-ai-brief-text.txt). Each case below reached the screen before the fixes.
+// (internal review probe, 2026-10-17, not committed). Each case below reached the screen before the fixes.
 
 /** The real engine finding the live explanation was written for (text as the app renders it on the seed). */
 const ANTICHOLINERGIC_PAIR = {
@@ -545,7 +545,7 @@ describe("brief questions — evidence must match the question's topic", () => {
     expect(q("Could the Tylenol PM (OTC) be contributing to the daytime drowsiness recorded in the diary?", [TYLENOL]).kept).toHaveLength(1);
     expect(q("Could the Lorazepam (Ativan) started on Sep 25 be contributing to the daytime drowsiness recorded since then?", [DROWSY]).kept).toHaveLength(1);
   });
-  it("judges the topic by medicine first, then by diary symptom or shared word", () => {
+  it("decides the topic by medicine first, then by diary symptom or shared word", () => {
     const item = (id: string) => MARGARET_PACKAGE.items.find((i) => i.id === id)!;
     expect(sharesTopic("Could the oxybutynin be reviewed?", item(SIG))).toBe(false);
     expect(sharesTopic("Could Ativan be reviewed?", item(SIG))).toBe(true);
@@ -578,11 +578,11 @@ describe("checkRefinements — the quote must be about the proposed field (live 
 // ---------------------------------------------------------------------------------------------
 // Replay on the app's real demo data (not only MARGARET_PACKAGE)
 //
-// Runtime audit, 2026-10-17 (tmp/judge-kit/runtime/r2/logs/ai-repeat-local.txt): with Qwen2.5-3B loaded, "Draft
+// Runtime audit (internal review probe, 2026-10-17, not committed): with Qwen2.5-3B loaded, "Draft
 // with on-device AI" showed "Only 2 observation(s) and 1 question(s) passed the evidence check, so the template brief
 // is shown instead. (3 sentences removed by the check.)" in 4 of 4 runs, while the developer harness (fixture
 // package) passed. The in-app raw model output was not logged, so REPLAY_OUTPUT below is a representative output:
-// the questions copy the phrasing of the harness run (tmp/judge-kit/runtime/r2/harness-brief.json), adapted to the
+// the questions copy the phrasing of the harness run (internal review probe, 2026-10-17, not committed), adapted to the
 // evidence the app shows the model, and the reason copies the garbled "since urgent care the new sleeping pill"
 // wording the first runtime audit found. On the checks before this change it reproduces the exact in-app message.
 
@@ -737,6 +737,8 @@ describe("plainIssue — the check's reasons in plain words for the 'What the ch
     ["date_unsupported: date 10-01 does not appear in the cited evidence", "has a date that is not in the records it cites"],
     ["evidence_topic: sig:x is about something other than what the question asks", "cites a record about something other than what it asks"],
     ["duplicate: repeats an earlier sentence", "repeats an earlier sentence"],
+    // Rule 8's code (verify.ts) reads the same as the older condition code; the quoted label is kept.
+    ['unsupported_condition: names the condition "dehydration", which the cited text does not mention', 'names a condition the records it cites do not mention ("dehydration")'],
   ])("%s", (issue, plain) => {
     expect(plainIssue(issue)).toBe(plain);
   });

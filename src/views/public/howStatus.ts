@@ -45,8 +45,11 @@ export function statusGroups(coverage: { drugs?: number; beersRules?: number }):
         { item: "FHIR", detail: "no receiving system yet" },
         {
           item: "Knowledge-base coverage",
-          detail: `${coverage.drugs ?? 0} medicines and ${coverage.beersRules ?? 0} Beers rules; not reviewed by a clinician; no dose or allergy checks`,
+          // Keep "Knowledge-base coverage" and "no dose or allergy checks" verbatim: the demo recorder matches them.
+          detail: `${coverage.drugs ?? 0} medicines and ${coverage.beersRules ?? 0} Beers rules; not reviewed by a clinician; no dose or allergy checks; interactions limited to the AGS Beers 2023 combination table (not a full drug-interaction checker)`,
         },
+        // TIMELINE_RULES.runsCheck.gate = false (src/engine/timeline/rules.ts; docs/EVALUATION.md §3).
+        { item: "Timeline runs check", detail: "computed for every comparison, not yet gating" },
         { item: "English only" },
       ],
     },

@@ -8,7 +8,7 @@
 // reload mid-tour resumes) and lazily loads the overlay (TourOverlay.tsx), which needs the engines for
 // its code-rendered numbers. The overlay is only fetched once a tour starts.
 import { lazy, Suspense, useEffect, useRef, useSyncExternalStore } from "react";
-import { navigate, setParams, useRoute } from "./router";
+import { navigate, setParams, useRoute, type Route } from "./router";
 import { loginAs, useSession } from "./session";
 
 const STORAGE_KEY = "kinwise.v1.tour";
@@ -64,6 +64,22 @@ export function goToTourStep(step: number): void {
   if (state.active) setTour({ active: true, step: clampStep(step) });
 }
 
+/**
+ * The tour after a route change. Opening the Welcome page ("/") ends a running tour and clears its saved step:
+ * the visitor has left it (the logo, "Try as …" and sign-in all go through Welcome), and it must not come back
+ * at a stale step over whatever page they pick next. The tour's own steps never visit "/". The one exception is
+ * the "#/?tour=1" link ("Take the guided tour"), which starts the tour afresh. Pure, for tourSteps.test.ts.
+ */
+export function tourAfterRoute(current: TourState, path: Route, wantsTour: boolean): TourState {
+  return current.active && path === "/" && !wantsTour ? { active: false, step: 0 } : current;
+}
+
+/** Apply tourAfterRoute to the running tour (TourHost calls it on every route change). */
+export function syncTourWithRoute(path: Route, wantsTour: boolean): void {
+  const next = tourAfterRoute(state, path, wantsTour);
+  if (next !== state) setTour(next);
+}
+
 export function useTourState(): TourState {
   return useSyncExternalStore(
     (cb) => {
@@ -76,13 +92,19 @@ export function useTourState(): TourState {
 
 const TourOverlay = lazy(async () => ({ default: (await import("./TourOverlay")).TourOverlay }));
 
-/** Mounted once by App: reads ?tour=1, closes the tour on sign-out, and shows the overlay while active. */
+/**
+ * Mounted once by App: reads ?tour=1, closes the tour on sign-out or when the visitor goes back to Welcome, and
+ * shows the overlay while active.
+ */
 export function TourHost() {
   const tour = useTourState();
   const { path, params } = useRoute();
   const role = useSession();
   const previousRole = useRef(role);
   const wantsTour = params.get("tour") === "1";
+
+  // Leaving through Welcome ends the tour (Skip and Esc end it from the card itself).
+  useEffect(() => syncTourWithRoute(path, wantsTour), [path, wantsTour]);
 
   useEffect(() => {
     if (!wantsTour) return;

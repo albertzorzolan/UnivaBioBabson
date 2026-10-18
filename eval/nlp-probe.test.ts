@@ -1,7 +1,8 @@
-// Simulated judges' probe regression set: eval/nlp-probe-judges.json.
-// Probe sentences written by AI review agents the team ran as simulated judges during internal review (2026-10-17):
-// not written by the NLP author, but not independent of the team and not user or hackathon-judge testing. Relabelled
-// from eval/ANNOTATION-GUIDE.md.
+// Internal review probes regression set: eval/nlp-probe-judges.json.
+// This file holds probes written by simulated AI review agents, not hackathon judges. During internal review
+// (2026-10-17) the team ran AI agents that role-played reviewers and wrote probe sentences: not written by the NLP
+// author, but not independent of the team and not user testing. The file and its `judgeExpected` field keep their
+// original names because other docs link them. Relabelled from eval/ANNOTATION-GUIDE.md.
 // It is a regression file, not a third benchmark: the dev and held-out scores (eval/nlp.eval.test.ts) do not include it.
 // For every case the engine's firm answers must equal `expect`, its low-confidence "please check" guesses must equal
 // `expectGuess`, and every `expectOther` symptom must match. Cases marked `knownMiss` document an error the engine still
@@ -20,7 +21,7 @@ type Value = number | boolean | string;
 interface ProbeCase extends CorpusCase {
   source: string;
   expectGuess?: Partial<Record<DiaryField, boolean>>;
-  judgeExpected?: Partial<Record<DiaryField, Value>>;
+  judgeExpected?: Partial<Record<DiaryField, Value>>; // the review agent's own expected values (original field name)
   note?: string;
   knownMiss?: string;
 }
@@ -52,7 +53,7 @@ function matches(c: ProbeCase): boolean {
 }
 const sorted = (o: object) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
 
-describe("judges' probe regression set (eval/nlp-probe-judges.json)", () => {
+describe("internal review probes regression set (eval/nlp-probe-judges.json)", () => {
   it("is well formed", () => {
     expect(probe.cases.length).toBeGreaterThanOrEqual(34);
     expect(new Set(probe.cases.map((c) => c.id)).size).toBe(probe.cases.length);
@@ -78,8 +79,8 @@ describe("judges' probe regression set (eval/nlp-probe-judges.json)", () => {
     expect(r.guess.dizziness).not.toBe(true);
   });
 
-  it("reports both views: the judges' own script check and strict guide scoring", () => {
-    // 1. The simulated AI-scientist judge's script: each judgeExpected field counts as a hit when the proposed value matches
+  it("reports both views: the review agent's own script check and strict guide scoring", () => {
+    // 1. The simulated AI-scientist review agent's script: each judgeExpected field counts as a hit when the proposed value matches
     //    (any certainty), and a proposed yes for an unlisted symptom counts as a false positive. Before this work: 18/25, 0 FP.
     let hit = 0;
     let total = 0;
@@ -96,7 +97,7 @@ describe("judges' probe regression set (eval/nlp-probe-judges.json)", () => {
     // 2. Strict guide scoring of all cases (guesses count as proposals, so the unsteadiness guesses are false positives).
     const strict = evaluateCorpus("probe", probe, ctx);
     console.log(
-      `judges' probe: judge script ${hit}/${total} hits, ${fp} false positives · strict guide micro ` +
+      `internal review probes: review-agent script ${hit}/${total} hits, ${fp} false positives · strict guide micro ` +
         `P ${(strict.micro.precision * 100).toFixed(1)}% R ${(strict.micro.recall * 100).toFixed(1)}% F1 ${(strict.micro.f1 * 100).toFixed(1)}% ` +
         `(tp ${strict.micro.tp}, fp ${strict.micro.fp}, fn ${strict.micro.fn}) · known misses ${probe.cases.filter((c) => c.knownMiss).length}`,
     );

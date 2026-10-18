@@ -22,7 +22,12 @@
 //   7. Medicine actions (added after the third red-team round, see "Medicine-action rule" below): a statement
 //      in which a medicine is the thing acted on by a word from a fixed action lexicon ("pause the lorazepam",
 //      "the Tylenol PM can be left out") is dropped, whatever the phrasing around it. Unlike the advice
-//      patterns in rule 4 this needs no "should" or "you": the structure alone is enough.
+//      patterns in rule 4 this needs no "should" or "you": the structure alone is enough. Since round 3 the
+//      dose-action verbs (skip, hold, halve, cut back, take less, double up) also count when they act on a
+//      dose ("Consider skipping tonight's dose.").
+//   8. Unsupported condition terms (added after the round-3 internal review probe, see "Unsupported condition
+//      terms" below): a statement that names a condition from a short fixed list ("toxicity", "dehydration",
+//      "withdrawal", or an "-itis"/"-osis" noun) that the cited text does not name is dropped.
 //
 // Failing sentences are dropped by the caller (src/ai/tasks.ts) and counted in GenerationInfo.
 
@@ -101,6 +106,7 @@ export interface VerifyIssue {
     | "id_echo"
     | "form"
     | "condition_unsupported"
+    | "unsupported_condition"
     | "unresolved_reference"
     | "garbled";
   detail: string;
@@ -200,7 +206,11 @@ const STATIC_PATTERNS: BannedPattern[] = [
   {
     category: "causal",
     reason: "assigns blame or responsibility for a symptom",
-    pattern: /\b(?:responsible for|to blame|culprit|brought on by|triggered by|induced by|[a-z]+-induced|resulted in|resulting in|as a result of|the result of|the reason for|the reason (?:she|he) )/i,
+    // Second branch (round 3): "lorazepam is responsible" with no "for", as in "The timing suggests lorazepam is responsible."
+    // Not inside an open question ("cannot show whether the medicine was responsible", the timeline's own caveat):
+    // "whether" or "if" within the clause before it makes it the hedge, not the blame.
+    pattern:
+      /\b(?:responsible for|to blame|culprit|brought on by|triggered by|induced by|[a-z]+-induced|resulted in|resulting in|as a result of|the result of|the reason for|the reason (?:she|he) )|(?<!\b(?:whether|if)\b[^.?!;]{0,40})\b(?:is|are|was|were|be|been|being|seems?|appears?|probably|likely|possibly)\s+(?:\w+\s+)?responsible\b/i,
   },
   {
     category: "causal",
@@ -231,7 +241,7 @@ const STATIC_PATTERNS: BannedPattern[] = [
     pattern: /\b(?:explains?|explained|explaining|accounts? for)\s+(?:her|his|the|this|these|those|their)\s+(?:\w+\s+)?(?:dizz|fall|near|drows|confus|fog|swell|symptom|tired|sleep|energy|unsteady)/i,
     allowInQuestion: true,
   },
-  // Paraphrased causal claims found by the judge probes and the red-team set (eval/VERIFIER-REDTEAM.md).
+  // Paraphrased causal claims found by the internal review probes and the red-team set (eval/VERIFIER-REDTEAM.md).
   {
     category: "causal",
     reason: "says a medicine is behind a symptom",
@@ -508,6 +518,13 @@ function drugPatterns(d: string): { pattern: RegExp; detail: string }[] {
       ),
     },
     {
+      // The same link made with a pronoun once the sentence has named the medicine: "Since starting lorazepam,
+      // Margaret has become dizzy because of it." Only the unambiguous connectives: "from it" and "related to it"
+      // are left out, as they also appear in plain records ("two days apart from it").
+      detail: `causal: links a symptom to ${d} through "it" or "them"`,
+      pattern: /\b(?:because of|due to|attributable to|attributed to|owing to|on account of|down to|(?:a |the )?results? of|(?:a |the )?consequences? of)\s+(?:it|them)\b/i,
+    },
+    {
       detail: `causal: says ${d} leads to a symptom`,
       // "Starting lorazepam led to more dizziness", "Lorazepam can lead to falls".
       pattern: new RegExp(`${D}\\s+(?:(?:can|may|might|could|will|would|has|have|had|is|was|probably|likely|also|then|often|really)\\s+){0,2}(?:leads?|led|leading)\\s+to\\b`, "i"),
@@ -523,9 +540,34 @@ function drugPatterns(d: string): { pattern: RegExp; detail: string }[] {
     {
       detail: `causal: calls the recorded symptom a side effect of ${d}`,
       // "The dizziness is a (known) side effect of lorazepam": "the/this dizziness" is the one in the diary.
+      // Since round 3 "side" is optional: "These dizzy spells are a known effect of lorazepam."
       // The class-level "Dizziness is a known possible effect of lorazepam" (no determiner) stays allowed.
       pattern: new RegExp(
-        `\\b(?:the|this|that|these|those)\\s+(?:\\w+\\s+)?${SYMPTOM_STEMS}\\w*\\s+(?:is|are|was|were|seems?|looks?)\\s+(?:\\w+\\s+){0,2}?(?:a|an|the)?\\s*(?:\\w+\\s+)?side[- ]effects?\\s+of\\s+(?:the\\s+|her\\s+|his\\s+)?${name}`,
+        `\\b(?:the|this|that|these|those)\\s+(?:\\w+\\s+)?${SYMPTOM_STEMS}\\w*\\s+(?:is|are|was|were|seems?|looks?)\\s+(?:\\w+\\s+){0,2}?(?:a|an|the)?\\s*(?:\\w+\\s+)?(?:(?:side|adverse)[- ])?effects?\\s+of\\s+(?:the\\s+|her\\s+|his\\s+)?${name}`,
+        "i",
+      ),
+    },
+    {
+      detail: `causal: applies an effect of ${d} to this person`,
+      // A class-level effect turned into a claim about her (round 3): "Dizziness is a known effect of lorazepam in
+      // her case", "… an effect of lorazepam for her". "In older adults" stays the class-level wording.
+      pattern: new RegExp(
+        `\\beffects?\\s+of\\s+(?:the\\s+|her\\s+|his\\s+)?${D}\\s+(?:in\\s+(?:her|his|their|[a-z]+'s)\\s+case|for\\s+(?:her|him|them)|in\\s+(?:her|him|them))\\b`,
+        "i",
+      ),
+    },
+    {
+      detail: `causal: says the records point to ${d}`,
+      // "The timing strongly suggests lorazepam is responsible", "The diary suggests that the lorazepam may be
+      // involved", "… points to lorazepam playing a role": an inference about the medicine drawn from the records
+      // (round 3). After the copula or modal an attribution word must follow (responsible, involved, behind, to
+      // blame, a factor, the cause, a role), so a reworded med record ("The medication list indicates lorazepam is
+      // taken at bedtime") passes.
+      pattern: new RegExp(
+        `\\b(?:suggests?|suggested|suggesting|indicates?|indicated|implies|implied|points?\\s+to|hints?\\s+at)\\s+(?:that\\s+)?(?:the\\s+|her\\s+|his\\s+)?${D}` +
+          `(?:\\s+(?:is|are|was|were|may|might|could|must|would|seems?|appears?)\\s+(?:be\\s+|to\\s+be\\s+)?(?:\\w+\\s+)?` +
+          `(?:responsible|involved|behind|to\\s+blame|at\\s+fault|contributing|a\\s+factor|the\\s+(?:cause|reason|culprit|problem))\\b` +
+          `|\\s+(?:plays?|played|playing)\\s+(?:a\\s+)?(?:\\w+\\s+)?(?:role|part)\\b)`,
         "i",
       ),
     },
@@ -562,6 +604,13 @@ function drugPatterns(d: string): { pattern: RegExp; detail: string }[] {
 // statement preamble before a question ("It makes sense to pause X; could …?") is still checked, and so is the
 // whole of a "why" question ("Why not pause the lorazepam until the visit?"), which takes the action as given,
 // as the causal rules already treat it (SentenceShape.presupposing).
+//
+// Round 3 (the internal review probe's "Consider skipping tonight's lorazepam dose."): the dose-action verbs (skip,
+// hold, halve, cut back, take less, double up; `doseTarget` below) also count when what they act on is a dose
+// rather than a named medicine ("Consider skipping tonight's dose.", "Halving her dose is an option"; proposing
+// forms only, so "Margaret skipped a dose on Oct 5" stays a record), and the filler
+// takes time words ("tonight's", "tomorrow morning's"). A leading "consider" needs nothing extra: the rule never
+// looked at the words before the action.
 
 /**
  * The action lexicon. `label` is the word shown in the reason, `propose` the forms that propose an action (base,
@@ -578,12 +627,14 @@ const MED_ACTIONS: {
   restatable?: boolean;
   /** Only a named medicine counts, not a generic word or "it" ("taking two medicines that …" is a record). */
   namedOnly?: boolean;
+  /** A dose counts as the thing acted on too ("skip tonight's dose"), as well as a medicine (round 3). */
+  doseTarget?: boolean;
 }[] = [
   { label: "pause", propose: "paus(?:e|ing)", record: "paused|pauses", participle: "paused" },
-  { label: "hold", propose: "hold(?:ing)?(?:\\s+off(?:\\s+on)?)?", record: "held|holds", participle: "held(?:\\s+off)?" },
-  { label: "skip", propose: "skip(?:ping)?", record: "skipped|skips", participle: "skipped" },
+  { label: "hold", propose: "hold(?:ing)?(?:\\s+off(?:\\s+on)?)?", record: "held|holds", participle: "held(?:\\s+off)?", doseTarget: true },
+  { label: "skip", propose: "skip(?:ping)?", record: "skipped|skips", participle: "skipped", doseTarget: true },
   { label: "leave out", propose: "leav(?:e|ing)\\s+out", record: "left\\s+out|leaves\\s+out", participle: "left\\s+out", split: { propose: "leav(?:e|ing)", record: "left|leaves", particle: "out" } },
-  { label: "cut back", propose: "cut(?:s|ting)?\\s+(?:back|down)(?:\\s+on)?", record: "(?!)", participle: "cut\\s+(?:back|down)" },
+  { label: "cut back", propose: "cut(?:s|ting)?\\s+(?:back|down)(?:\\s+on)?", record: "(?!)", participle: "cut\\s+(?:back|down)", doseTarget: true },
   { label: "lower", propose: "lower(?:ing)?", record: "lowered|lowers", participle: "lowered" },
   { label: "reduce", propose: "reduc(?:e|ing)", record: "reduced|reduces", participle: "reduced" },
   { label: "decrease", propose: "decreas(?:e|ing)", record: "decreased|decreases", participle: "decreased" },
@@ -603,8 +654,11 @@ const MED_ACTIONS: {
   { label: "do without", propose: "(?:do|doing|go|going)\\s+without", record: "did\\s+without|went\\s+without|does\\s+without|goes\\s+without", participle: "(?!)" },
   { label: "give up", propose: "giv(?:e|ing)\\s+up", record: "gave\\s+up|gives\\s+up", participle: "given\\s+up", split: { propose: "giv(?:e|ing)", record: "gave|gives", particle: "up" } },
   { label: "take a break from", propose: "tak(?:e|ing)\\s+a\\s+break\\s+from", record: "took\\s+a\\s+break\\s+from", participle: "(?!)" },
-  { label: "halve", propose: "halv(?:e|ing)", record: "halved|halves", participle: "halved" },
-  { label: "double", propose: "doubl(?:e|ing)", record: "doubled|doubles", participle: "doubled" },
+  { label: "halve", propose: "halv(?:e|ing)", record: "halved|halves", participle: "halved", doseTarget: true },
+  { label: "double up", propose: "doubl(?:e|ing)\\s+up(?:\\s+on)?", record: "doubled\\s+up(?:\\s+on)?", participle: "(?!)", doseTarget: true },
+  { label: "double", propose: "doubl(?:e|ing)", record: "doubled|doubles", participle: "doubled", doseTarget: true },
+  // "She could take less lorazepam", "Taking fewer of the sleeping pills" (round 3). Proposal-only, like "extra dose".
+  { label: "take less", propose: "tak(?:e|ing)\\s+(?:[\\w'-]+\\s+)?(?:less|fewer)(?:\\s+of)?", record: "(?!)", participle: "(?!)", doseTarget: true },
   { label: "increase", propose: "increas(?:e|ing)", record: "increased|increases", participle: "increased" },
   { label: "up the dose", propose: "up(?:ping)?\\s+(?:the|her|his|their)\\s+dose(?:\\s+of)?", record: "upped", participle: "upped" },
   // Extra doses ("Mom could take two lorazepam tablets", "give Mom an extra lorazepam"): one optional word for the
@@ -622,7 +676,11 @@ const MED_ACTIONS: {
 
 /** Words allowed between the action and the medicine ("skip a night of the bedtime lorazepam"). */
 const ACTION_FILLER =
-  "(?:the|her|his|their|its|this|that|these|those|a|an|some|any|all|one|of|nightly|bedtime|evening|night-?time|daily|regular|usual|new|current|dose|doses|dosage|night|nights|tablet|tablets|pill|pills|caplet|caplets)";
+  "(?:the|her|his|their|its|this|that|these|those|a|an|some|any|all|one|of|nightly|bedtime|evening|night-?time|daily|regular|usual|new|current|dose|doses|dosage|night|nights|tablet|tablets|pill|pills|caplet|caplets" +
+  // Time words (round 3): "skipping tonight's lorazepam dose", "holding tomorrow morning's lorazepam".
+  "|tonight'?s?|today'?s|tomorrow'?s?|morning'?s?|evening's|night's|next)";
+/** What a dose-action verb may act on besides a medicine (`doseTarget`). */
+const DOSE_WORDS = "dos(?:e|es|age|ages)";
 /** Auxiliaries of the passive: "be/being/get" propose ("can be left out"), the rest report ("was stopped"). */
 const PASSIVE_PROPOSE = "be|get|getting";
 const PASSIVE_RECORD = "is|are|was|were|been|being|gets|got";
@@ -641,18 +699,23 @@ function medicineAction(sentence: string, refs: string[], support: string, state
   for (const a of MED_ACTIONS) {
     if (a.namedOnly && !named.length) continue;
     const REF = a.namedOnly ? refPattern(named) : ALL_REFS;
+    // A dose counts as the target only in the proposing forms: advice always proposes, while a past-tense record
+    // about a dose ("Margaret skipped a dose on Oct 5") is a record, as before round 3. The proposing form includes
+    // the gerund, so a record told with one ("Margaret reported skipping a dose") is rejected too: a stricter
+    // failure, accepted because the template never words a record that way.
+    const REF_PROPOSE = a.doseTarget ? refPattern([...refs, DOSE_WORDS]) : REF;
     const forms: { re: RegExp; record: boolean }[] = [
       // (?<![\\w-]): the last part of a compound adjective is not an action ("blood-pressure-lowering medicine").
-      { re: new RegExp(`(?<![\\w-])(?:${a.propose})\\s+${gap}${REF}`, "i"), record: false },
+      { re: new RegExp(`(?<![\\w-])(?:${a.propose})\\s+${gap}${REF_PROPOSE}`, "i"), record: false },
       { re: new RegExp(`(?<![\\w-])(?:${a.record})\\s+${gap}${REF}`, "i"), record: true },
-      { re: new RegExp(`\\b${REF}\\s+(?:[\\w'-]+\\s+){0,3}?(?:${PASSIVE_PROPOSE})\\s+(?:\\w+\\s+)?(?:${a.participle})\\b`, "i"), record: false },
+      { re: new RegExp(`\\b${REF_PROPOSE}\\s+(?:[\\w'-]+\\s+){0,3}?(?:${PASSIVE_PROPOSE})\\s+(?:\\w+\\s+)?(?:${a.participle})\\b`, "i"), record: false },
       { re: new RegExp(`\\b${REF}\\s+(?:[\\w'-]+\\s+){0,3}?(?:${PASSIVE_RECORD})\\s+(?:\\w+\\s+)?(?:${a.participle})\\b`, "i"), record: true },
     ];
     if (a.split) {
       // One extra word may follow the name ("leave the Tylenol PM out" when only "tylenol" is in the vocabulary).
       const { propose, record, particle } = a.split;
       forms.push(
-        { re: new RegExp(`\\b(?:${propose})\\s+${gap}${REF}(?:\\s+[\\w-]+)?\\s+${particle}\\b`, "i"), record: false },
+        { re: new RegExp(`\\b(?:${propose})\\s+${gap}${REF_PROPOSE}(?:\\s+[\\w-]+)?\\s+${particle}\\b`, "i"), record: false },
         { re: new RegExp(`\\b(?:${record})\\s+${gap}${REF}(?:\\s+[\\w-]+)?\\s+${particle}\\b`, "i"), record: true },
       );
     }
@@ -710,7 +773,16 @@ const CONDITIONS: { label: string; pattern: RegExp; organ?: boolean }[] = [
  */
 const DIAGNOSIS_LEAD =
   "(?:(?:could|may|might|must|would|can)\\s+be|is|are|was|were|looks?\\s+like|sounds?\\s+like|seems?\\s+(?:like|to be)|points?\\s+to(?:wards?)?|suggests?|signs?\\s+of|symptoms?\\s+of|probably|possibly|likely|early)";
-const DIAGNOSIS_FILL = "(?:(?:a|an|the|early|mild|possible|probable|beginning|developing|onset of|some|signs? of|the start of|a case of)\\s+){0,3}";
+// "from", "due to", "down to" (round 3 review): "her dizziness is probably from low blood pressure" offers the
+// condition as the explanation, the same as "is" does.
+const DIAGNOSIS_FILL =
+  "(?:(?:a|an|the|early|mild|possible|probable|beginning|developing|onset of|some|signs? of|the start of|a case of|from|due to|down to)\\s+){0,3}";
+/**
+ * The same lead for rule 8's terms applied to the person ("Margaret is dehydrated", "her agitation is withdrawal",
+ * "Margaret is in benzodiazepine withdrawal"): "in" and one drug-class word may come before the term.
+ */
+const TERM_FILL =
+  "(?:(?:a|an|the|early|mild|possible|probable|some|signs? of|a case of|from|due to|down to|in|benzodiazepine|drug|medicine|medication|opioid|alcohol)\\s+){0,3}";
 const POSSESSIVE_SYMPTOM = new RegExp(`\\b(?:her|his|their|[a-z]+'s)\\s+(?:\\w+\\s+)?${SYMPTOM_STEMS}`, "i");
 
 /** "since then", "after that": fine only when the same sentence says what "then" was. */
@@ -752,6 +824,49 @@ function droppedVerb(sentence: string, supportTexts: string[]): string | null {
 const NOT_A_REASON = new Set(
   "her his their the a an someone people older adults margaret mom mum dad more less longer now over at this that these those both each all any some years months weeks days a while".split(" "),
 );
+
+// ---------------------------------------------------------------------------
+// Unsupported condition terms (see header, rule 8)
+//
+// The round-3 internal review probe passed "Her dizziness is probably from dehydration." and "Margaret has
+// benzodiazepine toxicity.": each names a condition the records never mention, so the sentence offers a new
+// explanation or a diagnosis. In a statement, a term from the short list below, or a simple "-itis"/"-osis" noun
+// ("labyrinthitis", "thrombosis"), must appear in the cited text. Questions to the clinician are left to the
+// question rules, as in rule 7; a statement before a question is still checked. Delirium, dementia, infection, UTI
+// and stroke are on this rule's list too, but they live in CONDITIONS (rule 6), which already checks them in every
+// sentence, so they are not repeated here and are never reported twice.
+
+const CONDITION_TERMS: { label: string; pattern: RegExp }[] = [
+  { label: "toxicity", pattern: /\btoxicit(?:y|ies)\b/i },
+  { label: "overdose", pattern: /\boverdos(?:e|es|ed|ing)\b/i },
+  { label: "dehydration", pattern: /\bdehydrat(?:ion|ed)\b/i },
+  { label: "withdrawal", pattern: /\bwithdrawal\b/i },
+  { label: "poisoning", pattern: /\bpoison(?:ing|ed)\b/i },
+];
+/** "-itis" and "-osis" nouns, with at least four letters before the suffix ("arthritis", "psychosis"). */
+const ITIS_OSIS = /\b[a-z]{4,}(?:itis|osis)\b/gi;
+/** "-osis" words that are not conditions; "diagnosis" and "prognosis" are handled by the diagnosis ban. */
+const NOT_A_CONDITION = new Set(["diagnosis", "prognosis", "misdiagnosis", "hypnosis", "osmosis", "symbiosis", "metamorphosis"]);
+
+/** The condition terms in one statement that the cited text does not name, as { label, word } pairs. */
+function unsupportedConditionTerms(statement: string, support: string): { label: string; word: string }[] {
+  const out: { label: string; word: string }[] = [];
+  for (const c of CONDITION_TERMS) {
+    const m = c.pattern.exec(statement);
+    if (m && !c.pattern.test(support)) out.push({ label: c.label, word: m[0] });
+  }
+  for (const m of statement.matchAll(ITIS_OSIS)) {
+    const word = m[0].toLowerCase();
+    if (NOT_A_CONDITION.has(word)) continue;
+    // Already a rule-6 condition ("osteoporosis" is "bone loss" there): reported once, by that rule.
+    if (CONDITIONS.some((c) => c.pattern.test(word))) continue;
+    // Cited text naming a more specific form supports the general word: "osteoarthritis" in her conditions supports
+    // "arthritis". Not the reverse: cited "arthritis" never supports "osteoarthritis" (the support word must end
+    // with the whole term, so only extra letters in front are allowed).
+    if (!new RegExp(`\\b\\w*${word}\\b`, "i").test(support)) out.push({ label: word, word: m[0] });
+  }
+  return out;
+}
 
 /** Assistant-meta, prompt-injection and formatting debris that must never reach a brief. */
 const UNSAFE_CONTENT: { pattern: RegExp; reason: string }[] = [
@@ -1203,6 +1318,17 @@ export function verifyClaims(
         const m = new RegExp(`\\b${DIAGNOSIS_LEAD}\\s+${DIAGNOSIS_FILL}(?:${c.pattern.source})`, "i").exec(sentence);
         if (m) issues.push({ code: "banned", detail: `diagnosis: applies ${c.label} to this person ("${m[0].trim()}")` });
       }
+      // Rule 8's terms too: cited text that names dehydration or withdrawal for a medicine class (the diuretic
+      // falls-risk text, the cascade text) does not make "her dizziness is probably from dehydration" a record.
+      for (const c of CONDITION_TERMS) {
+        const m = new RegExp(`\\b${DIAGNOSIS_LEAD}\\s+${TERM_FILL}(?:${c.pattern.source})`, "i").exec(sentence);
+        if (m) issues.push({ code: "banned", detail: `diagnosis: applies ${c.label} to this person ("${m[0].trim()}")` });
+      }
+    }
+
+    // Rule 8: a condition term in a statement (or a question's preamble) must be named by the cited text.
+    for (const c of unsupportedConditionTerms(statementPart, supportJoined)) {
+      issues.push({ code: "unsupported_condition", detail: `names the condition "${c.label}", which the cited text does not mention` });
     }
 
     // "since then" must say what "then" was: a date or a medicine start in the same sentence.

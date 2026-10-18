@@ -12,7 +12,8 @@ import { acbThresholds, findingChip, fridClassesFor, metricCount } from "./revie
 function acbBands(): MeterBand[] {
   const t = acbThresholds();
   return [
-    // Labelled by range only: the ACB scale publishes one review threshold, not named severity bands.
+    // Labelled by range only: the ACB scale publishes one review threshold, not named severity bands. The top band
+    // (t.high+, red) is Kinwise's own display band (meta.json acbHighNote), so the card says so under the meter.
     { upTo: 0, label: "0", tone: "success" },
     { upTo: t.elevated - 1, label: t.elevated - 1 > 1 ? `1–${t.elevated - 1}` : "1", tone: "info" },
     { upTo: t.high - 1, label: t.high - 1 > t.elevated ? `${t.elevated}–${t.high - 1}` : `${t.elevated}`, tone: "caution" },
@@ -47,6 +48,9 @@ export function AcbCard({ review, meds, person }: { review: MedReview; meds: Map
         description="Each medicine on the ACB list scores 1 to 3; Kinwise adds them up."
       />
       <p className="cg-acb-threshold">Published review threshold: a total of {t.elevated} or more (ACB scale).</p>
+      <p className="cg-acb-band-note">
+        The {t.high}+ band is a Kinwise display band, not part of the ACB scale.
+      </p>
       {rows.length > 0 ? (
         <ul className="cg-acb-list" role="list" aria-label="Medicines that add to the score">
           {rows.map((c) => {

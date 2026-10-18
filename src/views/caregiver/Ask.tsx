@@ -16,6 +16,7 @@ import type { BriefSentence, EvidenceItem } from "../../model/types";
 import { newId } from "../../model/ids";
 import { buildEvidence, defaultPeriod, retrieveForQuestion, routeQuestion, SUGGESTED_QUESTIONS, NOT_FOUND_TEXT } from "../../engine/brief";
 import type { QaResult, QuestionRoute } from "../../engine/brief";
+import { pronounsFor } from "../../engine/brief/shared";
 import { AIValidationError, LLMError, aiAnswer, getModelOption, useLLM } from "../../ai";
 import { useStore } from "../../app/StoreProvider";
 import { useDerived } from "../../app/useDerived";
@@ -146,11 +147,13 @@ export function Ask() {
     if (!question) return;
     const id = nextId.current++;
     // The profile's names and the list's medicines join the scope rules, so "Should Robert stop zolpidem?" is
-    // redirected for any person and medicine, not only the demo's.
+    // redirected for any person and medicine, not only the demo's. The pronoun personalises the reason line
+    // ("…a judgment for his clinician").
     const route = routeQuestion(question, {
       patientName: p.preferredName,
       personNames: [p.displayName, p.preferredName],
       medNames: data.medications.map((m) => m.name),
+      possessive: pronounsFor(p).possessive,
     });
     let result: QaResult | null = null;
     if (route.inScope && pkg) {

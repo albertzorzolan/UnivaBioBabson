@@ -87,6 +87,10 @@ export interface Placement {
 /**
  * Place a floating (desktop) card next to the spotlight. `card` is the card's natural size at its normal
  * width; `compactHeight` (optional) is its measured height at the compact width from a previous pass.
+ *
+ * Order: below, above, left, then right of the spotlight — the first spot that stays inside the viewport and
+ * does not touch the spotlight. Then a narrower card in a side gutter; then a trimmed spotlight; and only if
+ * all of those fail, the card is docked in the bottom-right corner ("overlap").
  */
 export function placeFloating(spot: Box | null, card: Size, vp: Viewport, compactHeight?: number): Placement {
   const clampX = (x: number, w = card.width) => Math.min(Math.max(x, GAP), vp.width - w - GAP);
@@ -95,10 +99,17 @@ export function placeFloating(spot: Box | null, card: Size, vp: Viewport, compac
 
   const right = rightOf(spot);
   const bottom = bottomOf(spot);
-  if (right + GAP + card.width <= vp.width - GAP) return { card: { top: clampY(spot.top), left: right + GAP }, spot, mode: "right" };
-  if (spot.left - GAP - card.width >= GAP) return { card: { top: clampY(spot.top), left: spot.left - GAP - card.width }, spot, mode: "left" };
-  if (bottom + GAP + card.height <= vp.height - GAP) return { card: { top: bottom + GAP, left: clampX(spot.left) }, spot, mode: "below" };
-  if (spot.top - GAP - card.height >= GAP) return { card: { top: spot.top - GAP - card.height, left: clampX(spot.left) }, spot, mode: "above" };
+  const candidates: { mode: Placement["mode"]; top: number; left: number }[] = [
+    { mode: "below", top: bottom + GAP, left: clampX(spot.left) },
+    { mode: "above", top: spot.top - GAP - card.height, left: clampX(spot.left) },
+    { mode: "left", top: clampY(spot.top), left: spot.left - GAP - card.width },
+    { mode: "right", top: clampY(spot.top), left: right + GAP },
+  ];
+  for (const c of candidates) {
+    const box: Box = { top: c.top, left: c.left, width: card.width, height: card.height };
+    const inside = box.top >= GAP && box.left >= GAP && bottomOf(box) <= vp.height - GAP && rightOf(box) <= vp.width - GAP;
+    if (inside && !intersects(box, spot)) return { card: { top: c.top, left: c.left }, spot, mode: c.mode };
+  }
 
   // A narrower card in the wider side gutter (on desktop: over the dimmed sidebar).
   const leftGutter = spot.left - 2 * GAP;

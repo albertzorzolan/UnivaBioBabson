@@ -1,7 +1,7 @@
 // Drives the real app (system Chrome) for the submission PDFs:
 //   - captureScreens: the one-pager's screenshot, one wide crop of the caregiver Overview's first "What Kinwise
-//                     noticed" card (the counts, the before/after bars, the caveat, the falls and the "Question for
-//                     the visit" box);
+//                     noticed" card (the before/after bars with their counts, the caveat, the falls and the question
+//                     box), plus the same crop with the card title for the gallery thumbnail (screenshots.mjs);
 //   - sampleBrief:    signs in as Alex (one-click), builds the visit brief with the standard template (no LLM),
 //                     marks it reviewed and prints it with the app's own print CSS via page.pdf().
 // Every run uses a fresh browser context, so the app starts from its seeded demo record (fictional data).
@@ -77,17 +77,23 @@ export function unionBox(boxes, pad = 0) {
 
 /**
  * Viewport for the Overview crop. The app's content column stops growing at about 1,080 px, so at 1560 px the card
- * reaches its widest, flattest layout (the lead fits on 3 lines), which keeps the crop about 3 : 1 and its text legible
+ * reaches its widest, flattest layout (the bars and the question sit side by side), which keeps the crop wide and its text legible
  * at the one-pager's full width. Scale 3 keeps it sharp when the PDF is zoomed.
  */
 const CARD_VIEWPORT = { width: 1560, height: 1000, scale: 3 };
 
 /**
- * One wide crop of the first "What Kinwise noticed" card on the caregiver Overview: the lead sentence with its counts,
- * the "Before vs after" bars, the caveat ("Shows a change in what was recorded, not what caused it."), the falls box and
- * the "Question for the visit". The crop is the union of those elements' boxes: one contiguous piece of the real screen
- * with nothing hidden, so the card's two buttons, which sit beside the caveat, are in it too. The card title is above
- * the crop; the one-pager's caption names the card instead.
+ * One wide crop of the first "What Kinwise noticed" card on the caregiver Overview: the "Before vs after" bars with
+ * their counts, the caveat ("Shows a change in what was recorded, not what caused it."), the falls box and the
+ * "Question for the doctor or pharmacist" box. A signal card no longer shows the engine's long lead sentence (it
+ * moved into "How reliable is this?"), so the lead is included only when a card still shows one. The crop is the
+ * union of those elements'
+ * boxes: one contiguous piece of the real screen. The card's action buttons ("Add to visit questions", "See timeline")
+ * sit under the question box and are left out. The card title is above the crop; the one-pager's caption names the
+ * card instead.
+ *
+ * A second crop, visitCardTitled, adds the card title (the headline naming the medicine and its start date). The
+ * gallery thumbnail (screenshots.mjs) uses it, where no caption names the card.
  */
 export async function captureScreens(browser, base, outDir) {
   const { ctx, page, errors } = await newPage(browser, CARD_VIEWPORT);
@@ -105,23 +111,36 @@ export async function captureScreens(browser, base, outDir) {
       falls: card.locator(".cg-ov-falls"),
       question: card.locator(".cg-ov-question"),
     };
+    /** Parts a card may leave out (see above); every other part must be there exactly once. */
+    const optional = new Set(["lead"]);
     const boxes = {};
     for (const [name, loc] of Object.entries(parts)) {
-      if ((await loc.count()) !== 1) throw new Error(`capture: the Overview card has ${await loc.count()} "${name}" elements, expected 1`);
+      const n = await loc.count();
+      if (n === 0 && optional.has(name)) {
+        delete parts[name];
+        continue;
+      }
+      if (n !== 1) throw new Error(`capture: the Overview card has ${n} "${name}" elements, expected 1`);
       boxes[name] = await loc.boundingBox();
     }
     const barsText = await parts.bars.innerText();
     if (!/Dizziness[\s\S]*\d+ of \d+ days[\s\S]*\d+ of \d+ days/.test(barsText)) throw new Error(`capture: unexpected Before vs after bars: ${barsText}`);
     const questionText = (await parts.question.innerText()).trim();
-    if (!/^Question for the visit/i.test(questionText)) throw new Error(`capture: unexpected question box: ${questionText}`);
+    if (!/^Question for the (visit|doctor)/i.test(questionText)) throw new Error(`capture: unexpected question box: ${questionText}`);
     // The question must sit beside the bars (featured layout); stacked, the crop would be a tall strip.
     if (boxes.question.x < boxes.bars.x + boxes.bars.width) throw new Error("capture: the question is not beside the bars (viewport too narrow?)");
     const clip = unionBox(Object.values(boxes), 8);
     const visitCard = join(outDir, "screen-visit-card.png");
     await page.screenshot({ path: visitCard, clip });
+    const title = card.locator(".cg-ov-insight__title");
+    if ((await title.count()) !== 1) throw new Error(`capture: the Overview card has ${await title.count()} titles, expected 1`);
+    const visitCardTitled = join(outDir, "screen-visit-card-titled.png");
+    await page.screenshot({ path: visitCardTitled, clip: unionBox([...Object.values(boxes), await title.boundingBox()], 8) });
     const text = async (loc) => (await loc.innerText()).replace(/\s+/g, " ").trim();
-    const visitCardText = [await text(parts.lead), await text(parts.bars), await text(parts.caveat), await text(parts.falls), questionText.replace(/\s+/g, " ")].join(" ");
-    return { visitCard, visitCardText, width: clip.width, height: clip.height, errors };
+    const pieces = [];
+    for (const [name, loc] of Object.entries(parts)) pieces.push(name === "question" ? questionText.replace(/\s+/g, " ") : await text(loc));
+    const visitCardText = pieces.join(" ");
+    return { visitCard, visitCardTitled, visitCardText, title: await text(title), width: clip.width, height: clip.height, errors };
   } finally {
     await ctx.close();
   }

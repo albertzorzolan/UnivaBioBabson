@@ -42,9 +42,9 @@ import { startTour } from "../../app/Tour";
 import { useRoute } from "../../app/router";
 import { HowArchitecture } from "./HowArchitecture";
 import { floorPct, microRates, pct, runMedSuite, runNlpBenchmark, type CorpusRun, type MedRun, type NlpRun } from "./howEval";
-import { FLOW_STEPS, PROBLEM_STATS, REFS, WHO_FOR, type Ref } from "./howContent";
+import { AI_DRAFT_HINT, FLOW_STEPS, PROBLEM_STATS, REFS, WHO_FOR, type Ref } from "./howContent";
 import { LIMITATIONS, statusGroups, type Status } from "./howStatus";
-import { RECORDED_RUN, RED_TEAM, RED_TEAM_SENTENCE, type RecordedAsk } from "./modelRun";
+import { BATCH_SENTENCE, RECORDED_RUN, RED_TEAM, RED_TEAM_SENTENCE, RUN_MORE_SUMMARY, type RecordedAsk } from "./modelRun";
 import { HELDOUT_BASELINE_F1 } from "./proofPoints";
 import { CODE_TOUR_URL, SOURCE_CODE_URL } from "./links";
 import "./public-how.css";
@@ -751,6 +751,11 @@ function ModelRun() {
         </span>
       </p>
 
+      {/* The live path for visitors with WebGPU: the brief's AI draft is where the check's removals show. */}
+      <Callout tone="info" icon={<Sparkles size={20} />} className="pub-how-run__try">
+        {AI_DRAFT_HINT}
+      </Callout>
+
       <div className="pub-how-run__pair">
         <section aria-labelledby="run-ask-title" className="pub-how-run__block">
           <h3 id="run-ask-title" className="pub-how-run__title">
@@ -783,7 +788,7 @@ function ModelRun() {
         </section>
       </div>
 
-      <More id="how-model-run-more" summary={`The rest of the run: out-of-scope questions, the brief, a blocked explanation${RED_TEAM_SENTENCE ? ", the verdict and the red-team test" : " and the verdict"}`}>
+      <More id="how-model-run-more" summary={RUN_MORE_SUMMARY}>
         <div className="pub-how-run__grid">
           <section aria-labelledby="run-routed-title" className="pub-how-run__block">
             <h3 id="run-routed-title" className="pub-how-run__title">
@@ -844,6 +849,12 @@ function ModelRun() {
             </>
           )}
         </p>
+        {/* The same model over a fixed set of 40 prompts (modelRun.ts batchSentence); left out without the file. */}
+        {BATCH_SENTENCE && (
+          <p className="pub-how-fine">
+            {BATCH_SENTENCE} Source: <code>eval/results/llm-batch.json</code>; method in <code>eval/LLM-BATCH.md</code>.
+          </p>
+        )}
       </More>
 
     </div>

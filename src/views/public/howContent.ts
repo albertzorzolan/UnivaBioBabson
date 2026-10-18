@@ -36,7 +36,13 @@ export const PROBLEM_STATS: { value: string; text: string; source: Ref }[] = [
     text: "of medication side effects whose harm could have been reduced, in a primary-care study, were attributed to the patient not telling the doctor about the symptom.",
     source: REFS.gandhi,
   },
-  { value: "63%", text: "to medication-related symptoms not being acted on.", source: REFS.gandhi },
+  {
+    value: "63%",
+    // A full sentence of its own (phones show the cards one under the other): "the physician failing to respond to
+    // medication-related symptoms" in §1.9, worded in plain terms like the 37% card.
+    text: "of medication side effects whose harm could have been reduced, in the same study, were attributed to the doctor not responding to medication-related symptoms.",
+    source: REFS.gandhi,
+  },
   { value: "< 1 in 2", text: "older adults who fall tell their doctor, though more than 1 in 4 fall each year.", source: REFS.cdcFalls },
 ];
 
@@ -73,3 +79,11 @@ export const WHO_FOR: { label: string; text: string; source?: Ref }[] = [
     source: REFS.empower,
   },
 ];
+
+/**
+ * Where a visitor with WebGPU sees the code check at work (How it works › recorded run). Ask often has nothing
+ * plainer to add, so the brief's AI draft is the path that shows it: its "What the check removed" list
+ * (brief/CheckRemoved.tsx) appears whenever the check took a sentence out. The labels match the app's own.
+ */
+export const AI_DRAFT_HINT =
+  "To see the check at work, try as Alex: load the on-device model in Settings (desktop Chrome or Edge with WebGPU), then open Visit brief › Draft with on-device AI. The brief lists any AI sentence the check removed, with the reason.";

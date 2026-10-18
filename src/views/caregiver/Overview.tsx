@@ -2,15 +2,16 @@
 //
 //   1. "What Kinwise noticed" — up to 3 insights that join timeline signals (before/after a medicine change,
 //      with counts, denominators and the size of the difference), falls/near-falls listed by date, and the medication
-//      review findings for the same medicine. Each ends in a question for the visit. The first card is laid out so a
-//      caregiver sees, without scrolling at 1366×860: headline → before/after bars → "not what caused it" plus one
-//      plain line on chance → falls → the question. Test names, p-values, the measured chance rates and the Beers
-//      detail sit one click away ("How reliable is this?", "Why this medicine is on the list").
+//      review findings for the same medicine. Each ends in a question for the doctor or pharmacist. The first card is
+//      laid out so a caregiver sees, without scrolling at 1366×860: headline → before/after bars → ONE caveat ("not
+//      what caused it") → falls → the first sentence of the question. The engine's full sentence with dates, the plain
+//      line on chance, test names, p-values, the measured chance rates and the Beers detail sit one click away ("How
+//      reliable is this?", "Why this medicine is on the list"): moved there, never deleted.
 //   2. Stats row — check-ins, dizziness days, falls & near-falls, anticholinergic burden, medicines; every number
 //      opens "Show the records".
 //   3. Symptom timeline chart (shared module), Today, review summary, pinned concerns.
 // All numbers are computed from the record (useStore / useDerived); the period comes from ?days=14|30|60.
-import { useMemo, useState, type ReactNode } from "react";
+import { useId, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowRight,
   BookOpenCheck,
@@ -21,6 +22,7 @@ import {
   Footprints,
   Info,
   LineChart as LineChartIcon,
+  MessageCircleQuestion,
   MessageSquareQuote,
   Pill,
   Pin,
@@ -70,16 +72,35 @@ import {
   triggerFirstSymptoms,
 } from "../shared/caregiver-insights";
 import { ReliabilityDisclosure } from "../shared/caregiver-Reliability";
+import { personWords } from "../shared/personWords";
 import "./overview.css";
 
 const PERIODS = [14, 30, 60] as const;
 type Period = (typeof PERIODS)[number];
 
-/** Spec wording for the caveat that travels with every before/after comparison. */
-const COMPARISON_CAVEAT = "Shows a change in what was recorded, not what caused it.";
+/** Spec wording for the caveat that travels with every before/after comparison (the demo video points at it). */
+export const COMPARISON_CAVEAT = "Shows a change in what was recorded, not what caused it.";
 
-/** Caption under the ACB meter: the published threshold the bands are read against (ACB scale; Boustani 2008). */
-const ACB_THRESHOLD_NOTE = "Published review threshold: a total of 3 or more (ACB scale).";
+/** The question box's label: the same words as the Review page's label (FindingCard.tsx), which spells them out. */
+export const QUESTION_LABEL = "Question for the doctor or pharmacist";
+
+/**
+ * Caption under the ACB meter: the published threshold the bands are read against (ACB scale; Boustani 2008), and
+ * what the red "5+" band is. meta.json acbHighNote: Kinwise labels totals of 5 or more for display only; the scale
+ * itself publishes one review threshold (3).
+ */
+const ACB_THRESHOLD_NOTE = "Published review threshold: a total of 3 or more (ACB scale). The 5+ band is a Kinwise display band, not part of the scale.";
+
+/** Review-summary count as words ("1 prompt", "3 prompts"): a circled number would read as a step in a sequence. */
+export function promptCountText(n: number): string {
+  return `${n} ${n === 1 ? "prompt" : "prompts"}`;
+}
+
+/** The question's first sentence (up to the first "?"), shown on the card; the whole question is one click away. */
+function firstSentence(q: string): string {
+  const i = q.indexOf("?");
+  return i > 0 && i < q.length - 1 ? q.slice(0, i + 1) : q;
+}
 
 // ---------------------------------------------------------------------------
 // Insight model
@@ -159,7 +180,7 @@ function signalTitle(worse: Signal[], med: Medication | undefined, event: Signal
   return `${getMetric(worse[0].metric).label} rated lower ${when}`;
 }
 
-function buildInsights(input: {
+export function buildInsights(input: {
   signals: Signal[];
   sentinels: SentinelReport[];
   findings: Finding[];
@@ -167,8 +188,10 @@ function buildInsights(input: {
   checkIns: CheckIn[];
   from: ISODate;
   to: ISODate;
+  /** Possessive pronoun for the person (personWords().their): "her", "his" or "their". */
+  their?: string;
 }): Insight[] {
-  const { signals, sentinels, findings, meds, checkIns, from, to } = input;
+  const { signals, sentinels, findings, meds, checkIns, from, to, their = "their" } = input;
   const out: Insight[] = [];
   const coveredMeds = new Set<string>();
   const usedFindings = new Set<string>();
@@ -244,7 +267,7 @@ function buildInsights(input: {
       finding: null,
       moreFindings: findings.filter((f) => f.medIds.includes(s.medicationId)).length,
       symptomCounts: [],
-      question: `Falls and near-falls were recorded after ${medLabel(med)} was ${s.event}. Could any of her medicines be playing a part?`,
+      question: `Falls and near-falls were recorded after ${medLabel(med)} was ${s.event}. Could any of ${their} medicines be playing a part?`,
       questionSource: `sentinel:${s.id}`,
       timelineMed: s.medicationId,
     });
@@ -370,22 +393,61 @@ function FindingLine({ f, more }: { f: Finding; more: number }) {
 }
 
 /**
- * "How reliable is this?": the test and p-value behind each bar, the flagging rule (read from rules.ts so it always
- * matches the code; "moderate" is the lowest flagged strength), then the measured chance rates and the caveat,
- * rendered verbatim from rules.ts by the shared disclosure.
+ * "How reliable is this?": the test and p-value behind each bar; then the engine's full sentence with its dates and
+ * windows (the bars show the same counts), the plain line on chance, and the flagging rule (read from rules.ts so it
+ * always matches the code; "moderate" is the lowest flagged strength); then the measured chance rates and the
+ * caveat, rendered verbatim from rules.ts by the shared disclosure. The shared disclosure wraps `method` in one <p>,
+ * so the three lines are block spans inside it.
  */
-function MethodDisclosure({ bars }: { bars: BarRow[] }) {
+function MethodDisclosure({ bars, lead }: { bars: BarRow[]; lead: string }) {
   return (
     <ReliabilityDisclosure
       className="cg-ov-insight__disclosure"
       bodyClassName="cg-ov-method"
       tests={bars.map((b) => ({ key: b.metric, metric: b.metric, label: b.label, test: b.test, pValue: b.pValue }))}
-      method={`Only days with an answer are counted. A difference is shown when it is sizeable and its p-value is below ${TIMELINE_RULES.thresholds.boolean.moderate.p}.`}
+      method={
+        <>
+          <span className="cg-ov-method__line">{lead}</span>
+          <span className="cg-ov-method__line">{CHANCE_NOTE}</span>
+          <span className="cg-ov-method__line">
+            Only days with an answer are counted. A difference is shown when it is sizeable and its p-value is below{" "}
+            {TIMELINE_RULES.thresholds.boolean.moderate.p}.
+          </span>
+        </>
+      }
     />
   );
 }
 
-function InsightCard({
+/**
+ * The question box: neutral sage wash (the rust tone is kept for falls). The card shows the question's first sentence;
+ * the rest opens in place. "Add to visit questions" always saves the whole question.
+ */
+function QuestionBox({ question }: { question: string }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const teaser = firstSentence(question);
+  const rest = question.slice(teaser.length).trim();
+  return (
+    <div className="cg-ov-question">
+      <p className="cg-ov-question__label">
+        <MessageCircleQuestion size={15} aria-hidden="true" />
+        {QUESTION_LABEL}
+      </p>
+      <p className="cg-ov-question__text" id={id}>
+        {teaser}
+        {rest && <span hidden={!open}> {rest}</span>}
+      </p>
+      {rest && (
+        <button type="button" className="cg-ov-question__more" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
+          {open ? "Show less" : "Read the whole question"}
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function InsightCard({
   ins,
   featured,
   saved,
@@ -399,8 +461,9 @@ function InsightCard({
   today: ISODate;
 }) {
   // Reading order (and, on the featured card, the first screen): headline → before/after bars → caveat → falls →
-  // question. Supporting detail (Beers listing, test names, p-values) is collapsed below the bars. On the featured
-  // card the side column (falls, question) sits beside the bars; on narrow screens it follows them.
+  // question. Supporting detail (the engine's long sentence, chance, Beers listing, test names, p-values) is collapsed
+  // below the bars. On the featured card the side column (falls, question) sits beside the bars; on narrow screens it
+  // follows them. One hedge per card: a signal shows only the caveat; its other hedges live in "How reliable is this?".
   return (
     <article className={cx("cg-ov-insight", featured && "is-featured", `is-${ins.kind}`)} aria-labelledby={`ins-${ins.key}`}>
       <header className="cg-ov-insight__head">
@@ -415,7 +478,9 @@ function InsightCard({
       </header>
 
       <div className="cg-ov-insight__main">
-        <p className="cg-ov-insight__lead">{ins.lead}</p>
+        {/* A signal's lead repeats the bars' counts with dates; it opens in "How reliable is this?". Falls and finding
+            cards keep theirs: it is their evidence. */}
+        {ins.kind !== "signal" && <p className="cg-ov-insight__lead">{ins.lead}</p>}
         {ins.bars.length > 0 && (
           <div className="cg-ov-insight__aside" role="group" aria-label="Before and after, answered days only">
             <p className="cg-ov-insight__aside-title">
@@ -428,15 +493,12 @@ function InsightCard({
             </div>
           </div>
         )}
-        {/* The caveat, then one plain line on chance with no numbers; the measured rates are in "How reliable is
+        {/* The one caveat on the card. The plain line on chance and the measured rates are in "How reliable is
             this?" below the question, so the question and its button come first on a phone. */}
         {ins.kind === "signal" && (
           <div className="cg-ov-insight__caveat">
             <Info size={16} aria-hidden="true" />
-            <div>
-              <p className="cg-ov-insight__caveat-main">{COMPARISON_CAVEAT}</p>
-              <p className="cg-ov-insight__chance">{CHANCE_NOTE}</p>
-            </div>
+            <p className="cg-ov-insight__caveat-main">{COMPARISON_CAVEAT}</p>
           </div>
         )}
         {/* Without bars (a falls-only card) the falls line is the evidence itself, so it stays in the main column. */}
@@ -469,10 +531,7 @@ function InsightCard({
       <div className="cg-ov-insight__side">
         {/* Beside the bars: falls and near-falls by date, then the question they lead to. */}
         {ins.sentinel && ins.bars.length > 0 && <FallsLine s={ins.sentinel} today={today} />}
-        <div className="cg-ov-question">
-          <p className="cg-ov-question__label">Question for the visit</p>
-          <p className="cg-ov-question__text">{ins.question}</p>
-        </div>
+        <QuestionBox question={ins.question} />
         <div className="cg-ov-insight__actions">
           {saved ? (
             <Badge tone="success" icon className="cg-ov-saved">
@@ -509,7 +568,7 @@ function InsightCard({
               <FindingLine f={ins.finding} more={ins.moreFindings} />
             </Disclosure>
           )}
-          {ins.strength && ins.bars.length > 0 && <MethodDisclosure bars={ins.bars} />}
+          {ins.strength && ins.bars.length > 0 && <MethodDisclosure bars={ins.bars} lead={ins.lead} />}
         </div>
       )}
     </article>
@@ -543,8 +602,8 @@ export function Overview() {
   const period: Period = (PERIODS as readonly number[]).includes(requested) ? (requested as Period) : 30;
   const from = periodStart(today, period);
   const p = data.profile;
-  const name = p.preferredName?.trim() || p.displayName?.trim() || "Your family member";
-  const possessive = `${name}’s`;
+  // "Margaret" / "Margaret’s"; with an empty profile "your family member" / "their" (sentence start: "Your family member’s").
+  const who = personWords(p);
 
   const sentinels = useMemo(() => (timeline as Partial<TimelineReport>).sentinels ?? [], [timeline]);
   const insights = useMemo(
@@ -557,8 +616,9 @@ export function Overview() {
         checkIns: data.checkIns,
         from,
         to: today,
+        their: who.their,
       }),
-    [timeline.signals, sentinels, review.findings, data.medications, data.checkIns, from, today],
+    [timeline.signals, sentinels, review.findings, data.medications, data.checkIns, from, today, who.their],
   );
 
   // ---- Period numbers (answered days only) ----
@@ -633,18 +693,19 @@ export function Overview() {
   return (
     <div className="cg-ov">
       <PageHeader
-        eyebrow={`Caring for ${p.displayName || name} · ${rangeText(from, today)}`}
-        title={`${possessive} last ${period} days at a glance`}
-        subtitle={`What changed in ${possessive} diary and what is worth asking about.`}
+        eyebrow={who.hasName ? `Caring for ${p.displayName.trim() || who.name} · ${rangeText(from, today)}` : rangeText(from, today)}
+        title={`${who.Possessive} last ${period} days at a glance`}
         actions={
           <div className="cg-ov-header-actions">
+            {/* Filter-style chips (soft green when chosen), so the chosen period never looks like the filled
+                "Prepare visit brief" button beside it. */}
             <Segmented
               label="Period"
               hideLabel
               value={period}
               onChange={(v) => setParams({ days: String(v) })}
               options={PERIODS.map((d) => ({ value: d, label: `${d} days` }))}
-              className="cg-ov-period"
+              className="cg-ov-period ui-seg--filter"
             />
             <Button variant="primary" iconLeft={<FileText size={18} aria-hidden="true" />} onClick={() => navigate("/c/brief")}>
               Prepare visit brief
@@ -664,7 +725,7 @@ export function Overview() {
               What Kinwise noticed
             </h2>
             <p className="cg-ov-noticed__subtitle">
-              {`From ${possessive} own check-ins and published medicine criteria: questions for ${possessive} doctor or pharmacist, not conclusions.`}
+              {`From ${who.possessive} check-ins and published medicine criteria. Questions, not conclusions.`}
             </p>
           </div>
         </header>
@@ -759,7 +820,7 @@ export function Overview() {
         <div className="cg-ov-chart__body">
           {data.checkIns.length === 0 ? (
             <EmptyState level={3} icon={<CalendarDays size={22} />} title="No check-ins yet">
-              When {name} saves her first daily check-in, each day will appear here.
+              When {who.name} saves {who.their} first daily check-in, each day will appear here.
             </EmptyState>
           ) : (
             <TimelineChart
@@ -769,7 +830,7 @@ export function Overview() {
               from={from}
               to={today}
               focusMedId={focusMed}
-              label={`${possessive} diary, ${rangeText(from, today)}`}
+              label={`${who.Possessive} diary, ${rangeText(from, today)}`}
               onDayClick={(d) => navigate("/c/timeline", { day: d, ...(focusMed ? { med: focusMed } : {}) })}
             />
           )}
@@ -783,7 +844,7 @@ export function Overview() {
           <div className="cg-ov-today__body">
             {todayCheckIn ? (
               <Badge tone="success" icon>
-                {name} checked in today
+                {who.Name} checked in today
               </Badge>
             ) : (
               <Badge tone="neutral">Not checked in yet today</Badge>
@@ -792,11 +853,13 @@ export function Overview() {
               <figure className="cg-ov-today__quote">
                 <blockquote className="ui-quote">“{excerptText(latestStory.story, 180)}”</blockquote>
                 <figcaption>
-                  {name}, {latestStory.date === today ? "today" : formatShort(latestStory.date)}
+                  {who.Name}, {latestStory.date === today ? "today" : formatShort(latestStory.date)}
                 </figcaption>
               </figure>
             ) : (
-              <p className="cg-ov-muted">No stories written yet — she can describe her day in her own words on her Today screen.</p>
+              <p className="cg-ov-muted">
+                No stories written yet. {who.hasName ? who.name : "They"} can describe the day in {who.their} own words on the Today screen.
+              </p>
             )}
           </div>
         </Card>
@@ -813,9 +876,11 @@ export function Overview() {
           ) : (
             <ul className="cg-ov-list" role="list">
               {byCategory.slice(0, 5).map(([cat, n]) => (
-                <ListCardRow key={cat} icon={<span className="cg-ov-count ui-num">{n}</span>}>
-                  {CATEGORY_LABEL[cat] ?? cat}
-                </ListCardRow>
+                // Category name, then its count as words at the right edge ("3 prompts"): a count, not a step number.
+                <li key={cat} className="cg-ov-list__row cg-ov-list__row--count">
+                  <span className="cg-ov-list__text">{CATEGORY_LABEL[cat] ?? cat}</span>
+                  <span className="cg-ov-count ui-num">{promptCountText(n)}</span>
+                </li>
               ))}
               {byCategory.length > 5 && (
                 <li className="cg-ov-list__more">
@@ -845,7 +910,7 @@ export function Overview() {
                 <ListCardRow key={n.id} icon={<MessageSquareQuote size={16} />}>
                   <p className="cg-ov-pinned__text">{n.text}</p>
                   <p className="cg-ov-pinned__meta">
-                    {n.author === "caregiver" ? p.caregiverName || "Caregiver" : name} · {formatShort(n.date)}
+                    {n.author === "caregiver" ? p.caregiverName || "Caregiver" : who.Name} · {formatShort(n.date)}
                   </p>
                 </ListCardRow>
               ))}

@@ -777,6 +777,14 @@ describe("language rules", () => {
     expect(guardLanguage("This caused it and is causing more; safer options")).toBe("This been linked to it and may be contributing to more; lower-risk options");
   });
 
+  it("flags 'side effect of <the person's medicine>' for any name, not only the demo's", () => {
+    for (const t of ["Dizziness is a side effect of her lorazepam.", "A side effect of Dorothy's zolpidem.", "a side effect of Robert's pills", "side effect of their water pill"]) {
+      expect(bannedWordsIn(t), t).toContain("side effect of <patient's drug>");
+    }
+    // General drug information without a possessive stays allowed.
+    expect(bannedWordsIn("Drowsiness is a recognized side effect of lorazepam.")).toEqual([]);
+  });
+
   it("survives a class cycle in a malformed KB", () => {
     const r = review([med(TODAY, "Cyclo", ["cyclodrug"])]);
     expect(r.findings).toEqual([]);

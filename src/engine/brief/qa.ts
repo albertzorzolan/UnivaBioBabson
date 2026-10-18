@@ -64,6 +64,7 @@ import {
   oneLine,
   patientFirstName,
   plural,
+  pronounsFor,
   quotable,
   sourceShorts,
 } from "./shared";
@@ -145,7 +146,11 @@ const MED_WORD = /\b(?:pills?|tablets?|meds?|medicines?|medications?|drugs?|pres
  * brand, alias or combination matches (plus long fuzzy matches, as in findMeds), never common English words.
  */
 function namesAMedicine(t: string): boolean {
-  if (MED_WORD.test(t)) return true;
+  return MED_WORD.test(t) || namesADrug(t);
+}
+
+/** Does this text name a specific KB drug or brand ("lorazepam", "Ativan")? Generic words like "pills" don't count. */
+function namesADrug(t: string): boolean {
   for (const w of tokenize(t)) {
     if (w.length < 4 || COMMON_WORDS.has(w) || SCOPE_STOP_WORDS.has(w)) continue;
     const m = matchDrug(w);
@@ -177,6 +182,46 @@ interface ScopeRule {
   pattern: RegExp;
   /** Extra checks that need more than one regex (any match counts, like the pattern). */
   test?: (t: string) => boolean;
+}
+
+/**
+ * "Is lorazepam linked to her falls?", "Can lorazepam lead to falls?", "Could Tylenol PM contribute to her confusion?":
+ * a specific medicine (a KB name or brand, or a name on her list) tied to a symptom, like "is X causing". A generic
+ * subject stays a reference question about the lists ("Which medicines are linked to falls?" → fall-risk answer).
+ */
+function linksAMedicine(t: string, MED: string, PERSON: string): boolean {
+  const LINK =
+    "(?:(?:is|are|was|were|be|been|being) )?(?:linked|related|connected|tied|associated) (?:to|with)\\b" +
+    // "Has lorazepam had anything to do with it?"
+    "|(?:have|has|had|having) (?:any|some)thing to do with\\b" +
+    "|(?:(?:can|could|might|may|would|will|does|do|did) )?(?:lead|leads|led|leading|contribut\\w*|result|results|resulted) (?:to|in)\\b" +
+    // "Is lorazepam a factor in her falls?", "Did the Ativan play a part in it?"
+    "|(?:(?:is|was|be|been) )?(?:a |the |part of the )?(?:contributing )?(?:factor|contributor) (?:in|to)\\b" +
+    "|play(?:s|ed|ing)? (?:a |any )?(?:part|role) in\\b";
+  // A specific medicine: a KB name or brand, or a name on her list (not a generic word like "medicines").
+  const listed = new RegExp(`\\b${MED}\\b`);
+  const generic = new RegExp(`^(?:${MED_NOUNS})$`);
+  const specific = (s: string) => {
+    const name = listed.exec(s)?.[0];
+    return namesADrug(s) || Boolean(name && !generic.test(name));
+  };
+  // The medicine before the link ("Is lorazepam related to her falls?") or after it, with the symptom first ("Is the
+  // dizziness connected to the lorazepam?").
+  const before = new RegExp(`((?:[a-z'+-]+ )?[a-z'+-]+) (?:${LINK})`, "g");
+  if ([...t.matchAll(before)].some((m) => specific(m[1]))) return true;
+  // "Is lorazepam affecting her memory?", "Does Tylenol PM affect her balance?": only with a specific medicine before
+  // "affect" and the person after it, so "Does lorazepam affect sleep?" and "Which medicines affect balance?" stay
+  // reference questions.
+  const affects = new RegExp(`((?:[a-z'+-]+ )?[a-z'+-]+) affect(?:s|ed|ing)? (?:her|his|their|him|them|${PERSON})(?:'s)?\\b`, "g");
+  if ([...t.matchAll(affects)].some((m) => specific(m[1]))) return true;
+  if (wordsAfter(t, `(?:${LINK}) (?:the |her |his |their |that |this )?`).some(specific)) return true;
+  // "Does her confusion have anything to do with the oxybutynin?", "Is the confusion something to do with lorazepam?"
+  if (wordsAfter(t, "\\b(?:any|some)thing to do with (?:the |her |his |their |that |this )?").some(specific)) return true;
+  // Two things tied together, one of them a medicine: "Is there a link between lorazepam and her falls?",
+  // "Are lorazepam and her dizziness related?".
+  const pair =
+    /\b(?:link|connection|relationship|association) between (.+?) and (.+?)(?:\?|$)|\b(?:is|are|was|were|could|might) (.+?) and (.+?) (?:related|linked|connected|associated)\b/.exec(t);
+  return Boolean(pair && [pair[1], pair[2], pair[3], pair[4]].some((s) => s !== undefined && specific(s)));
 }
 
 /** "Is she dizzy because of zolpidem?": a medicine (any KB name or generic word, on her list or not) offered as the reason. */
@@ -230,9 +275,68 @@ function anotherDoseOf(t: string, MED: string): boolean {
   return wordsAfter(t, prefix).some((w) => namesAMedicine(w) || listed.test(w));
 }
 
+/**
+ * The words that make a question a what-if, read after removing an indirect frame: in "Can you check if she skipped
+ * any pills this week?" the "if" only introduces a records question, and "can you" / "could you" ask the app, not a
+ * hypothetical. "I wonder if she would sleep without her Ativan?" keeps its "would".
+ */
+const INDIRECT_FRAME =
+  /\b(?:tell me|let me know|know|check|see|find out|show me|wondering|wonder|ask(?:ed)?|remember|look up)(?: \w+)? (?:if|whether)\b|\b(?:can|could|would|will) you\b/g;
+function asksWhatIf(t: string): boolean {
+  return /\b(?:what if|if|would|could|might|what about|how about)\b/.test(t.replace(INDIRECT_FRAME, " "));
+}
+
+/**
+ * "Would less lorazepam help?", "Would she be better on less lorazepam?", "if she had half the Ativan": an amount
+ * word right before a medicine, in a what-if question (asksWhatIf; not "Did she sleep better on less melatonin?").
+ * The medicine must follow, so "would more naps help?" and "if she slept fewer hours" stay records questions.
+ */
+function lessOfAMedicine(t: string, MED: string): boolean {
+  if (!asksWhatIf(t)) return false;
+  const listed = new RegExp(`^${MED}\\b`);
+  const prefix = "\\b(?:less|more|lower|smaller|fewer|half)(?: (?:of|a dose of|the dose of))? (?:the |her |his |their )?";
+  return wordsAfter(t, prefix).some((w) => namesAMedicine(w) || listed.test(w));
+}
+
+/**
+ * "What if she skipped the lorazepam?", "Would she sleep without her Ativan?", "Would she be less dizzy off the
+ * lorazepam?", "What if she cut back on lorazepam?", "What if she tapered off lorazepam?", "What if she only took
+ * lorazepam on bad nights?": leaving out, cutting down or rationing a medicine, asked as a what-if (asksWhatIf). A
+ * named medicine must follow. Not "Did she skip any doses this week?" or "Can you check if she skipped any pills?"
+ * (no what-if), and not "Has she been off her feet more?" (no medicine).
+ */
+function withoutAMedicine(t: string, MED: string): boolean {
+  if (!asksWhatIf(t)) return false;
+  const listed = new RegExp(`^${MED}\\b`);
+  const THE = "(?:the |her |his |their )?";
+  const prefixes = [
+    `\\b(?:skip|skips|skipped|skipping|stopped|stops|stopping|quit|went off|goes off|came off|comes off|without) ${THE}`,
+    `\\boff (?:of )?${THE}`,
+    `\\bcut(?:s|ting)? (?:back|down)(?: on)? ${THE}`,
+    `\\b(?:taper|wean)\\w*(?: (?:her|him|them))?(?: off)?(?: of)? ${THE}`,
+    `\\bonly (?:took|take|takes|taking|gave|give|had|has|have) ${THE}`,
+  ];
+  return prefixes.some((prefix) => wordsAfter(t, prefix).some((w) => namesAMedicine(w) || listed.test(w)));
+}
+
+/**
+ * "Does lorazepam interact with oxycodone?", "Do lorazepam and zolpidem interact?": a combination question that names a
+ * medicine (a KB name or brand) that is not on her list. Kinwise only checks the medicines on the list, so a records
+ * answer would read as if the new medicine had been checked; the question goes to her pharmacist instead. The
+ * list's own names (and generic words) are removed first, so "Do lorazepam and amlodipine interact?" stays answered.
+ */
+function combinesAnUnlistedMedicine(t: string, MED: string): boolean {
+  if (!INTERACTION_RE.test(t) && !TOGETHER_RE.test(t)) return false;
+  return namesADrug(t.replace(new RegExp(`\\b${MED}\\b`, "g"), " "));
+}
+
+/** Words after a condition that make it a reference question ("Is the dementia warning on the Beers list?"). */
+const REFERENCE_WORDS = "(?:warnings?|rules?|criteri\\w*|lists?|entr(?:y|ies)|sections?|tables?|flags?|prompts?|medicines?|medications?|drugs?|pills?)";
 /** Conditions a diagnosis question names, and the verbs that tie them to a person ("does she have", "is he getting"). */
 const CONDITION = "(?:dementia|alzheimer\\w*|parkinson\\w*|stroke|mini[- ]stroke|tia|uti|infection|depression|delirium|vertigo|cancer|tumou?r|neuropathy|hypotension|low blood pressure|heart (?:problem|failure|disease|condition)|kidney (?:problem|failure|disease)|seizure disorder|condition|disease|illness)";
 const DIAGNOSIS_VERB = "(?:have|has|had|be|getting|developing|showing signs of|a sign of|signs of|symptoms? of)";
+/** CONDITION without the generic words ("Is her condition stable?" is not a symptom offered as a diagnosis). */
+const NAMED_CONDITION = CONDITION.replace("|condition|disease|illness)", ")");
 /** "for people with dementia", "patients who have Parkinson's": a reference (Beers) question about a group, not her. */
 const ABOUT_A_GROUP = /\b(?:people|patients|someone|anyone|adults|older adults|seniors|the elderly|those|residents)(?: who (?:have|has|had)| with| living with)\b/;
 const DIAGNOSIS_ANY_SUBJECT = new RegExp(`\\b(?:does|do|could|might|may|is|has|can) ([a-z'-]+)\\b[^?]*\\b${DIAGNOSIS_VERB}\\b[^?]*\\b${CONDITION}\\b`);
@@ -253,6 +357,11 @@ function asksForADiagnosis(t: string): boolean {
 
 /**
  * Ordered rules; the first match wins. Each is tested against lower-cased, punctuation-normalised text.
+ *
+ * Precedence (top to bottom): emergency → safety → dose → treatment → diagnosis → cause → urgency → prediction.
+ * The emergency line runs first and wins over everything; every redirect runs before any record intent
+ * (routeQuestion is called before retrieveForQuestion/detectIntent), so a diagnosis, dose or cause question is never
+ * answered with records framed as an answer. Each rule (and each added form) has a routing test in qa.test.ts.
  *
  * Built per profile (routeQuestion caches the last set): PERSON is the person slot (generic words such as "she",
  * "grandpa", "my mother" plus the profile's names) and MED the medicine slot (generic words such as "pills" plus the
@@ -313,17 +422,27 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         "\\bwhich (?:one|of (?:them|these|those|the two|her \\w+)|medicine|med|pill|drug|tablet)s?\\b[^?]*\\b(?:worse|worst|better|best|riskier|safer|more harmful|stronger|gentler)\\b",
         // Alcohol and food with a medicine: "Can she drink wine with lorazepam?"
         "\\b(?:drink|drinking|alcohol|wine|beer|liquor|spirits|whiske?y|grapefruit)\\b[^?]*\\bwith\\b|\\bwith (?:alcohol|wine|beer|a drink|grapefruit)\\b|\\bmix(?:ing|ed)? (?:\\w+ )?with\\b",
+        // "Are lorazepam and amlodipine okay together?": whether a combination is fine is the pharmacist's call.
+        "\\b(?:ok|okay|alright|all right|fine)\\b[^?]*\\b(?:together|with each other|at the same time)\\b|\\b(?:together|at the same time)\\b[^?]*\\b(?:ok|okay|alright|all right|fine)\\b",
       ].join("|"),
     ),
-    test: comparesMedicines,
+    // "Is X better than Y?" with a medicine on both sides, and a combination with a medicine not on her list.
+    test: (t) => comparesMedicines(t) || combinesAnUnlistedMedicine(t, MED),
   },
   {
     category: "dose",
     reason: "Questions about how much to take need her prescriber or pharmacist.",
+    // The last form is a dose change in everyday words: "Would it help if she took less lorazepam?", "would it help
+    // to give her less?", "what if we gave her half?" (not "if she took more naps", "took half an hour to fall asleep"
+    // or "did she have to take more trips to the bathroom?": "to" counts only after help / better / ok / try…).
+    // "Should she take less…" with a modal is the treatment rule's.
     pattern:
-      /\b(?:increase|decrease|lower|raise|reduce|adjust|change|cut|double|halve|split|crush)\w*\s+(?:the |her |his |a |that |this )?(?:\w+\s+)?(?:dose|dosage|pills?|tablets?|caplets?)\b|\b(?:too (?:high|much|strong|low|many)|right|correct|best|max(?:imum)?|extra|another|smaller|bigger|lower|higher) (?:dose|dosage|amount|pill|tablet)\b|\bhow (?:much|many)\b[^?]*\b(?:should|can|could|may|is it ok)\b|\bwhat (?:dose|dosage|amount|strength)\b[^?]*\b(?:should|can|could|may|is best)\b|\b(?:dose|dosage|amount|strength)\b[^?]*\b(?:right(?! now| away)|correct|appropriate|ok|okay|fine|too (?:high|low|much)|enough)\b|^is (?:her|his|the|this) (?:\w+ )?(?:dose|dosage)\b|\bcut (?:her |his |the )?(?:\w+ )?(?:pills?|tablets?) in half\b/,
+      /\b(?:increase|decrease|lower|raise|reduce|adjust|change|cut|double|halve|split|crush)\w*\s+(?:the |her |his |a |that |this )?(?:\w+\s+)?(?:dose|dosage|pills?|tablets?|caplets?)\b|\b(?:too (?:high|much|strong|low|many)|right|correct|best|max(?:imum)?|extra|another|smaller|bigger|lower|higher) (?:dose|dosage|amount|pill|tablet)\b|\bhow (?:much|many)\b[^?]*\b(?:should|can|could|may|is it ok)\b|\bwhat (?:dose|dosage|amount|strength)\b[^?]*\b(?:should|can|could|may|is best)\b|\b(?:dose|dosage|amount|strength)\b[^?]*\b(?:right(?! now| away)|correct|appropriate|ok|okay|fine|too (?:high|low|much)|enough)\b|^is (?:her|his|the|this) (?:\w+ )?(?:dose|dosage)\b|\bcut (?:her |his |the )?(?:\w+ )?(?:pills?|tablets?) in half\b|\b(?:if|what about|how about|(?:help|better|best|ok|okay|good idea|try|wise|safer) to) (?:[a-z'-]+ ){0,2}?(?:took|take|takes|taking|gave|give|giving)(?: (?:her|him|them|me))? (?:a )?(?:less|more|half|fewer|smaller|lower|bigger|higher)\b(?! (?:an? )?(?:naps?|time|hours?|minutes?|sleep|rest|walks?|steps|exercise|water|fluids?|food|meals?|care|interest|notice|part|than|trips?|breaks?|bathroom|toilet|stops?)\b)/,
     // "Is 0.5 mg of lorazepam too much for her age?" (any "too much/strong/high" about a medicine or an amount).
-    test: (t) => /\btoo (?:much|strong|high|many|low|often)\b/.test(t) && (namesAMedicine(t) || /\b\d+(?:\.\d+)? ?(?:mg|mcg|ml)\b|\b(?:mg|mcg|milligrams?|dose|dosage)\b/.test(t)),
+    // "Would less lorazepam help?" (an amount word before a named medicine; lessOfAMedicine).
+    test: (t) =>
+      (/\btoo (?:much|strong|high|many|low|often)\b/.test(t) && (namesAMedicine(t) || /\b\d+(?:\.\d+)? ?(?:mg|mcg|ml)\b|\b(?:mg|mcg|milligrams?|dose|dosage)\b/.test(t))) ||
+      lessOfAMedicine(t, MED),
   },
   {
     category: "treatment",
@@ -337,7 +456,9 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         `\\b(?:should|shall|can|could|may|might|must|ought to|need(?:s)? to|have to|has to|is it (?:ok|okay|alright|all right|fine) (?:for|to)|would it be (?:ok|okay|alright|fine) (?:for|to))\\s+(?:[a-z'.-]+\\s+){0,3}?(?:still |just |now |really |also |maybe |try to |not )*(?:stop|start|quit|cut|cut back on|lower|reduce|increase|double|halve|skip|pause|hold|come off|get off|switch|swap|discontinue|taper|wean)\\b(?! (?:dates?|times?|day)\\b)`,
         // "Should the zolpidem be stopped?", "Can her water pill be lowered?" with a longer subject.
         `\\b(?:should|can|could|must|ought to|needs? to)\\b[^?]{0,40}?\\bbe (?:stopped|started|changed|switched|reduced|lowered|increased|replaced|tapered|discontinued|cut|halved|doubled|paused|skipped)\\b`,
-        `\\b(?:does|do|did) (?:${PERSON}) (?:still |really )?need\\b`,
+        // "Does she still need furosemide?" (not "Did she need to take more breaks on her walk?": a need for rest or
+        // help is a diary question).
+        `\\b(?:does|do|did) (?:${PERSON}) (?:still |really )?need\\b(?! (?:to )?(?:take |have |get |go |use )?(?:more |a |an |any |extra |some )?(?:breaks?|rests?|naps?|help|trips?|walks?|sleep|time|water|fluids?|food|meals?|assistance|support)\\b)`,
         `\\bstill (?:need|needed|necessary)\\b`,
         `\\bwhat (?:should|can|could|do|shall|would) (?:${PERSON}) (?:do|give|try|use|take|change)\\b`,
         `\\bwhat (?:to do|can be done|should be done)\\b`,
@@ -361,8 +482,9 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         `\\b(?:should|shall|can|could|may|must|need(?:s)? to) (?:[a-z'.-]+\\s+){1,3}?(?:keep (?:taking|giving|using)|continue (?:taking|giving|using|with|on)|stay on)\\b`,
       ].join("|"),
     ),
-    // "Take John off zolpidem?" and "Can grandma have another lorazepam tonight?" (an extra dose of a named medicine).
-    test: (t) => takesOffAMedicine(t) || anotherDoseOf(t, MED),
+    // "Take John off zolpidem?", "Can grandma have another lorazepam tonight?" (an extra dose of a named medicine) and
+    // "What if she skipped the lorazepam?" (leaving a named medicine out, as a what-if).
+    test: (t) => takesOffAMedicine(t) || anotherDoseOf(t, MED) || withoutAMedicine(t, MED),
   },
   {
     category: "diagnosis",
@@ -373,6 +495,16 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         // (A possessive before a record is not the person: "Does her list have any medicines for low blood pressure?")
         `\\b(?:does|do|could|might|may|is|has|can) (?:${PERSON}|it|this|that)\\b(?! (?:list|notes?|records?|timeline|brief|medicines?|medications?|meds|pills?|chart|diary|check-ins?|doctor|pharmacist|file)\\b)[^?]*\\b${DIAGNOSIS_VERB}\\b[^?]*\\b${CONDITION}\\b`,
         `\\bis (?:this|it|that) (?:dementia|alzheimer\\w*|a stroke|parkinson\\w*|delirium|an infection|a uti)\\b`,
+        // A symptom offered as the condition: "Is her confusion dementia?", "Is the memory fog early Alzheimer's?",
+        // "Is Margaret's forgetfulness the start of dementia?", "Is her dizziness vertigo?", "Is her swelling a heart
+        // problem?" (any named CONDITION). A preposition in the gap or a reference word after the
+        // condition is a reference question ("Is the Beers list for dementia…", "Is the dementia warning on the list?").
+        `\\bis (?:her|his|the|this|that|[a-z'-]+'s) (?:(?!(?:for|about|with|on|in|of|to|from)\\b)[a-z'-]+ ){0,3}(?:(?:an? |the )?(?:early |first )?(?:signs?|symptoms?|start|beginning|onset) of |early )?(?:an? )?${NAMED_CONDITION}\\b(?!(?:'s)? ${REFERENCE_WORDS}\\b)`,
+        // The symptom tied to a condition by a verb: "Does her confusion mean dementia?", "Is her memory loss from
+        // Alzheimer's?", "Could the dizziness be a symptom of a stroke?". The subject is not a record or a list.
+        `\\b(?:is|does|do|could|might|may|can) (?:her|his|the|this|that|[a-z'-]+'s) (?!(?:beers|list|lists|notes?|records?|timeline|brief|chart|diary|warnings?|criteri\\w*|medicines?|medications?|meds|pills?|drugs?)\\b)(?:[a-z'-]+ ){1,3}?(?:be )?(?:mean|means|from|due to|caused by|because of|(?:an? |the )?(?:early |first )?(?:signs?|symptoms?|start|beginning|onset) of)\\b (?:that |she has |he has |it'?s |early )?(?:an? )?${CONDITION}\\b(?!(?:'s)? ${REFERENCE_WORDS}\\b)`,
+        // Ageing offered as the explanation: "Is her forgetfulness normal aging?", "Is it just old age?".
+        `\\b(?:is|could|might) (?:it|her|his|the|this|that|[a-z'-]+'s) (?:[a-z'-]+ ){0,3}?(?:just |only |simply )?(?:(?:a )?(?:normal )?part of )?(?:normal (?:aging|ageing)|(?:her |his )?old age|getting old(?:er)?|just (?:aging|ageing|age|her age|his age))\\b`,
       ].join("|"),
     ),
     test: asksForADiagnosis,
@@ -390,7 +522,7 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         `\\b(?:what'?s|what is|what was|what'?s been|is \\w+|is (?:the|her) \\w+|could (?:the|her) \\w+|could \\w+|might \\w+|are (?:the|her) \\w+) (?:\\w+ )?(?:causing|behind|responsible for|to blame for)\\b`,
         `\\bwhat (?:caused|causes|made|makes) (?:${PERSON}|her|him|the|this|that)\\b`,
         `\\b(?:caused|causing|triggered|brought on|induced) (?:by|her|his|the|this)\\b`,
-        `\\b(?:the|her|his|this|that|these|those|[a-z'-]+'s) (?:\\w+ )?(?:dizziness|dizzy spells|drowsiness|confusion|fog|falls?|near-falls?|swelling|tiredness|symptoms?|sleepiness)\\b[^?]*\\b(?:from|because of|due to|related to|linked to|caused by|a side effect|side effects|a reaction)\\b`,
+        `\\b(?:the|her|his|this|that|these|those|[a-z'-]+'s) (?:\\w+ )?(?:dizziness|dizzy spells|drowsiness|confusion|fog|falls?|near-falls?|swelling|tiredness|symptoms?|sleepiness)\\b[^?]*\\b(?:from|because of|due to|related to|linked to|associated with|connected (?:to|with)|tied to|caused by|a side effect|side effects|a reaction)\\b`,
         `\\b(?:is|are|was|were|could|might|may) (?:it|this|that|these|those|her \\w+|the \\w+|${PERSON})\\b[^?]*\\b(?:a side effect|side effects|a reaction|an adverse)\\b`,
         `\\b(?:because of|due to|from) (?:the |her |his )?(?:new )?${MED}\\b[^?]*\\?$`,
         // "Did lorazepam cause her dizziness?" (but not the general "Does lorazepam cause dizziness?", which is
@@ -415,7 +547,7 @@ const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
         `\\bthe reason (?:why )?(?:${PERSON})\\b(?! (?:takes?|taking|is on|is taking|was prescribed|was given|was put on|uses?|started)\\b)|\\bthe reason for (?:her|his|the|all|these|those|this) (?!(?:taking|prescription|medicine|medication|pills?|tablets?)\\b)`,
       ].join("|"),
     ),
-    test: (t) => blamesAMedicine(t) || becauseOfAMedicine(t),
+    test: (t) => blamesAMedicine(t) || becauseOfAMedicine(t) || linksAMedicine(t, MED, PERSON),
   },
   {
     category: "urgency",
@@ -461,17 +593,39 @@ export interface RouteOptions {
   personNames?: string[];
   /** The list's medicine names ("Lorazepam (Ativan)"): names and brands join the medicine slot. */
   medNames?: string[];
+  /** The person's possessive pronoun for the reason line ("her", "his", "their"; pronounsFor(profile).possessive). */
+  possessive?: string;
 }
 
 /** The last rule set built (Ask passes the same profile on every question, so this is built once per profile). */
-let rulesCache: { key: string; rules: ScopeRule[] } | null = null;
+let rulesCache: { key: string; rules: ScopeRule[]; med: RegExp; MED: string } | null = null;
 
-function rulesFor(opts: RouteOptions): ScopeRule[] {
+function rulesFor(opts: RouteOptions): { rules: ScopeRule[]; med: RegExp; MED: string } {
   const person = personPattern([opts.patientName ?? "", ...(opts.personNames ?? [])]);
   const med = medPattern(opts.medNames ?? []);
   const key = `${person}\n${med}`;
-  if (rulesCache?.key !== key) rulesCache = { key, rules: SCOPE_RULES(person, med) };
-  return rulesCache.rules;
+  if (rulesCache?.key !== key) rulesCache = { key, rules: SCOPE_RULES(person, med), med: new RegExp(`\\b${med}\\b`), MED: med };
+  return rulesCache;
+}
+
+/**
+ * The reason line for a safety question. With a medicine in the question (a KB name or brand, a name on the list,
+ * or a word like "pill"), the medicine wording; without one ("Is it okay for her to drive?"), a generic line, so the
+ * card never talks about a medicine nobody asked about. A combination with a medicine not on the list gets its own
+ * line (Kinwise did not check it). Code-written copy, held to the same wording rules as the UI (no "safe":
+ * SPEC §3), so it says "right for".
+ */
+function safetyReason(t: string, med: RegExp, MED: string, opts: RouteOptions): string {
+  const named = oneLine(opts.patientName ?? "");
+  // A placeholder kept from an older "Delete everything" ("Your relative") reads as words, not a name.
+  const who = !named ? "her" : /^(?:your|my|our) /i.test(named) ? named.toLowerCase() : named;
+  const poss = oneLine(opts.possessive ?? "").toLowerCase() || "her";
+  if (combinesAnUnlistedMedicine(t, MED)) {
+    const whose = named ? `${who}'s` : poss;
+    return `${PRODUCT_NAME} only checks combinations among the medicines on ${whose} list; ${poss} pharmacist can check a medicine that is not on it.`;
+  }
+  const what = namesAMedicine(t) || med.test(t) ? "a medicine" : "something";
+  return `Whether ${what} is right for ${who} is a judgment for ${poss} clinician; ${PRODUCT_NAME} only shows what was recorded and published criteria.`;
 }
 
 /**
@@ -482,12 +636,14 @@ function rulesFor(opts: RouteOptions): ScopeRule[] {
 export function routeQuestion(q: string, opts: RouteOptions = {}): QuestionRoute {
   const t = normalizeQuestion(q);
   if (!t) return { inScope: true };
-  for (const rule of rulesFor(opts)) {
+  const { rules, med, MED } = rulesFor(opts);
+  for (const rule of rules) {
     if (!rule.pattern.test(t) && !rule.test?.(t)) continue;
     if (rule.category === "emergency") {
       return { inScope: false, category: "emergency", reason: rule.reason, redirect: EMERGENCY_REDIRECT, offerVisitQuestion: false };
     }
-    return { inScope: false, category: rule.category, reason: rule.reason, redirect: redirectText(opts.patientName), offerVisitQuestion: true };
+    const reason = rule.category === "safety" ? safetyReason(t, med, MED, opts) : rule.reason;
+    return { inScope: false, category: rule.category, reason, redirect: redirectText(opts.patientName), offerVisitQuestion: true };
   }
   return { inScope: true };
 }
@@ -585,7 +741,7 @@ const NEW_MED_RE = /\bnew (?:pills?|tablets?|meds?|medicines?|medications?|presc
 
 /** English words that must never be read as a misspelt medicine name. */
 const COMMON_WORDS = new Set(
-  "about after again against almost answered before between bladder changed changes checkin confused dizziness dizzy doctor drowsy energy evening falling feeling foggy medicine medicines medication medications morning nearly pharmacist questions recently records sleeping started starting stopped swelling taking yesterday tuesday wednesday thursday saturday september october november december january february".split(
+  "about after again against almost answered before between bladder changed changes checkin confused dizziness dizzy doctor drowsy energy evening falling feeling foggy medicine medicines medication medications morning nearly pharmacist questions recently records related relation sleeping started starting stopped swelling taking yesterday tuesday wednesday thursday saturday september october november december january february".split(
     " ",
   ),
 );
@@ -617,6 +773,7 @@ export type QaIntent =
   | "metric"
   | "not_recorded"
   | "prescriber"
+  | "interactions"
   | "unknown";
 
 export interface ParsedQuestion {
@@ -845,6 +1002,17 @@ function findNotRecorded(t: string): NotRecordedTopic | null {
   return null;
 }
 
+/** "Do any of her medicines interact?", "drug-drug", "medicine combinations": a question about combinations. */
+const INTERACTION_RE =
+  /\binteract\w*|\bclash\w*|\bdrug[- ]drug\b|\b(?:medicine|medication|drug|pill) combinations?\b|\bcombinations? of (?:her |his |the |these |those |any |two |2 )?(?:medicines?|medications?|meds|pills|drugs)\b/;
+/**
+ * "…taken together", "mix", "with each other": a combination only when two medicines or a medicine word are named,
+ * and not a schedule question ("How many pills does she take together at bedtime?").
+ */
+const TOGETHER_RE = /\btogether\b|\bmix\w*|\bwith (?:each other|one another)\b/;
+const SCHEDULE_RE =
+  /\bhow many\b|\bat (?:bedtime|night|breakfast|lunch|dinner|supper)\b|\bin the (?:morning|evening)\b|\bwith (?:food|meals?|breakfast|lunch|dinner|supper)\b|\b(?:this|yesterday|last) (?:morning|evening|night)\b|\b(?:today|tonight)\b|\bdid (?:she|he|they|[a-z'-]+) (?:take|have)\b/;
+
 /** Words in a prescriber entry that never identify it on their own. */
 const PRESCRIBER_STOP = new Set("dr dr. doctor doc the of and care self otc md np pa clinic office her his mom".split(" "));
 
@@ -875,18 +1043,38 @@ function findClasses(t: string): string[] {
   return out;
 }
 
+/**
+ * The record intent of an in-scope question (routeQuestion has already sent safety, diagnosis, dose, cause,
+ * urgency and prediction questions to the redirect card, and emergencies to the 911 line, before this runs).
+ *
+ * Rules are checked top to bottom and the first match wins, so the narrower intents (Beers, interactions, ACB,
+ * visit questions, missed doses…) sit above the broad ones (a medicine named → med_detail, a symptom named →
+ * metric, "how is she doing" → summary). Each rule has a routing test in qa.test.ts; add one with any new rule.
+ */
 function detectIntent(t: string, p: Omit<ParsedQuestion, "intent" | "normalized">, data: StoreData): QaIntent {
   const caregiver = oneLine(data.profile.caregiverName).toLowerCase();
   const hasMetric = p.metrics.length > 0 || p.concepts.length > 0;
+  // The person the questions are about: generic words plus the profile's preferred name ("When did Dorothy last fall?").
+  const patient = escapeRe(oneLine(data.profile.preferredName).toLowerCase().replace(/[^a-z' -]/g, "").trim());
+  const who = `(?:she|he|mom|mum|mother|dad|father${patient ? `|${patient}` : ""})`;
+  // Above "beers": "Does the Beers list flag any interactions?" gets the combinations answer, with its caveat.
+  // Only with medicine context: "Has she been interacting with her friends?" and "Did she clash with her aide?" are
+  // diary questions, and "Which medicines did she start together?" / "mixed up" are not about combinations.
+  const medContext = p.meds.length > 0 || p.unlisted.length > 0 || LIST_WORDS.test(t) || /\bdrug[- ]drug\b|\bcombinations?\b|\bbeers\b/.test(t);
+  const startedTogether = /\bmixed up\b|\b(?:start|started|began|begun|stop|stopped)\b[^?]*\btogether\b/.test(t);
+  if (
+    (INTERACTION_RE.test(t) && medContext) ||
+    (TOGETHER_RE.test(t) && !SCHEDULE_RE.test(t) && !startedTogether && (p.meds.length >= 2 || LIST_WORDS.test(t)))
+  ) {
+    return "interactions";
+  }
   if (/\bbeers\b/.test(t)) return "beers";
   if (/\bacb\b|\banticholinergic\b/.test(t)) return "acb";
   if (/\b(?:what|which) (?:questions?|should (?:i|we) ask|to ask)\b|\bquestions? (?:for|to ask|should (?:i|we))\b|\bwhat (?:should|can|could) (?:i|we) ask\b|\bvisit questions?\b/.test(t)) return "visit_questions";
   if (/\b(?:miss(?:ed|ing)?|forg[eo]t\w*|skipp?(?:ed|ing)?)\b[^?]*\b(?:doses?|pills?|tablets?|meds?|medicines?|medications?|water pill)\b|\bdoses? (?:missed|skipped|forgotten)\b|\bdid (?:she|he) take (?:all )?(?:her|his) (?:pills|meds|medicines)\b/.test(t)) return "missed_doses";
-  if (/\bfall[- ]risk\b|\b(?:medicines?|medications?|meds|pills|drugs)\b[^?]*\b(?:linked to|associated with|raise|increase)\b[^?]*\bfalls?\b|\bfrids?\b/.test(t)) return "fall_risk";
+  if (/\bfall[- ]risk\b|\b(?:medicines?|medications?|meds|pills|drugs)\b[^?]*\b(?:linked to|related to|connected to|tied to|associated with|raise|increase)\b[^?]*\bfalls?\b|\bfrids?\b/.test(t)) return "fall_risk";
   if ((caregiver && new RegExp(`\\b${caregiver}\\b`).test(t)) || /\bnotes?\b|\bconcerns?\b|\bpinned\b/.test(t)) return "notes";
   if (/\bwhat (?:has |have )?(?:changed|is new|'s new|is different|'s different)\b|\b(?:any|recent|latest) changes?\b|\bwhat changes?\b|\banything (?:new|different)\b/.test(t)) return "changes";
-  const patient = oneLine(data.profile.preferredName).toLowerCase().replace(/[^a-z' -]/g, "");
-  const who = `(?:she|he|mom|mum|mother|dad|father${patient ? `|${patient}` : ""})`;
   const saidRe = new RegExp(
     `\\b(?:did|has|does|do|what|when|how)\\b[^?]*\\b${who}\\b[^?]*\\b(?:say|said|says|saying|tell|told|write|wrote|written|mention\\w*|describe\\w*|talk\\w*|complain\\w*)\\b|\\b${who} (?:said|wrote|mentioned|told|described|complained)\\b|\\b(?:her|his) (?:own )?words\\b`,
   );
@@ -900,10 +1088,12 @@ function detectIntent(t: string, p: Omit<ParsedQuestion, "intent" | "normalized"
   if (/\b(?:does|do|can|could) \w+(?: \w+)? cause\b|\bis \w+(?: \w+)? a (?:known |common |possible )?(?:side effect|effect)\b|\bside effects? of\b|\bknown (?:side )?effects?\b/.test(t) && p.meds.length && hasMetric) {
     return "known_effect";
   }
-  if (/\bwhen did\b[^?]*\b(?:start|begin|began|first)\b|\bwhen was the first\b|\bfirst (?:time|recorded|noticed|noted)\b|\bhow long has\b|\bsince when\b|\bwhen (?:did|has) (?:she|he|mom|margaret) (?:first|start)\b/.test(t) && hasMetric) {
+  const firstRe = new RegExp(`\\bwhen did\\b[^?]*\\b(?:start|begin|began|first)\\b|\\bwhen was the first\\b|\\bfirst (?:time|recorded|noticed|noted)\\b|\\bhow long has\\b|\\bsince when\\b|\\bwhen (?:did|has) ${who} (?:first|start)\\b`);
+  if (firstRe.test(t) && hasMetric) {
     return "first_onset";
   }
-  if (/\bwhen (?:was|did) (?:the |her |his )?(?:last|latest|most recent)\b|\b(?:last|latest|most recent) (?:time|one|day)\b|\bwhen did (?:she|he|mom|margaret) last\b/.test(t) && hasMetric) return "last_time";
+  const lastRe = new RegExp(`\\bwhen (?:was|did) (?:the |her |his )?(?:last|latest|most recent)\\b|\\b(?:last|latest|most recent) (?:time|one|day)\\b|\\bwhen did ${who} last\\b`);
+  if (lastRe.test(t) && hasMetric) return "last_time";
   if (/\bhow (?:many|often|much|frequently)\b|\bnumber of\b|\bhow many times\b|\bcount\b|\bany (?:falls?|near-falls?)\b|\bhas (?:she|he) (?:had|been|fallen|felt)\b|\bdid (?:she|he) (?:have|feel|fall|get|record|note)\b|\bwere there\b/.test(t)) {
     if (hasMetric) return "count";
     if (/\b(?:check[- ]?ins?|entries|diary|days)\b/.test(t)) return "coverage";
@@ -919,7 +1109,7 @@ function detectIntent(t: string, p: Omit<ParsedQuestion, "intent" | "normalized"
   if (hasMetric) return "metric";
   // A single day with no other topic: "What happened on Oct 5?", "How was she yesterday?"
   if (p.range && p.range.from === p.range.to) return "day";
-  if (/\bhow (?:is|has) (?:she|he|mom|margaret) (?:been|doing)\b|\bsummar\w*|\boverview\b|\bhow are things\b|\bhow'?s (?:she|he|mom|margaret)\b/.test(t)) return "summary";
+  if (new RegExp(`\\bhow (?:is|has) ${who} (?:been|doing)\\b|\\bsummar\\w*|\\boverview\\b|\\bhow are things\\b|\\bhow'?s ${who}\\b`).test(t)) return "summary";
   return "unknown";
 }
 
@@ -1476,6 +1666,23 @@ export function retrieveForQuestion(q: string, input: RetrieveInput): QaResult {
       break;
     }
     case "summary": {
+      // "Summarise this week", "How has she been this week?": the period asked about (the same 7-day window as
+      // "sleep this week"), not the package's 30 days: check-ins, falls, and the symptoms recorded on the most days.
+      if (parsed.range) {
+        const { from, to } = range;
+        const cov = coverageText(days, from, to);
+        a.fact(slug("fact:qa:coverage", from, to), cov.text, cov.data);
+        const falls = fallsText(days, from, to);
+        a.fact(slug("fact:qa:falls", from, to), falls.text, falls.data);
+        const top = (["dizziness", "drowsiness", "confusion", "swelling", "appetiteWorse"] as MetricKey[])
+          .map((m) => ({ m, n: windowStatFromDays(days, m, from, to).positive }))
+          .filter((x) => x.n > 0)
+          .sort((x, y) => y.n - x.n)
+          .slice(0, 2);
+        for (const { m } of top) countSentence(m, from, to);
+        break;
+      }
+      // No period named: the evidence package's period (the last 30 days in Ask), as its coverage sentence says.
       const cov = pkgIds.get(evidenceId.coverage);
       if (cov) {
         a.item(cov.id, "fact", cov.text);
@@ -1563,6 +1770,88 @@ export function retrieveForQuestion(q: string, input: RetrieveInput): QaResult {
           `No medicine on ${name}'s current list is recorded as prescribed by ${parsed.prescribers.unknownDoctor}${all.length ? `; the prescribers recorded are ${joinAnd(all)}` : ""}.`,
         );
       }
+      break;
+    }
+    case "interactions": {
+      // Only the combinations AGS Beers 2023 lists (its drug-drug pairs and the "3 or more brain-active medicines"
+      // count), as the medication review found them. Kinwise is not an interaction checker, and the answer always
+      // ends by saying so and pointing to the pharmacist. It never says a combination is fine.
+      const active = data.medications.filter((m) => isActiveOn(m, today));
+      const combos = visible.filter((f) => f.category === "beers_interaction" || f.category === "cns_active_combo");
+      const named = parsed.meds;
+      const involving = named.length ? combos.filter((f) => f.medIds.some((id) => named.some((m) => m.id === id))) : combos;
+      // A question about one combination ("Do lorazepam and Tylenol PM interact?", or a medicine not on her list):
+      // only a finding that includes every medicine named answers it. Others that involve them get their own lead-in,
+      // so nobody reads them as the pair asked about.
+      const pairQuestion = named.length >= 2 || parsed.unlisted.length > 0;
+      const target = !pairQuestion ? involving : parsed.unlisted.length ? [] : involving.filter((f) => named.every((m) => f.medIds.includes(m.id)));
+      // (Only with a listed medicine named: "Does oxycodone interact with anything?" names none of hers.)
+      const others = pairQuestion && named.length ? involving.filter((f) => !target.includes(f)) : [];
+      // A combination the family dismissed is still on her list and was still found: never answer "none was found"
+      // over it. The same filter as `target`, over the dismissed combination prompts only.
+      const dismissed = allFindingsOf(input).filter(
+        (f) => (f.category === "beers_interaction" || f.category === "cns_active_combo") && decisionFor(data.reviewDecisions, f.key) === "dismissed",
+      );
+      const dismissedHere = parsed.unlisted.length
+        ? []
+        : dismissed.filter((f) => (named.length >= 2 ? named.every((m) => f.medIds.includes(m.id)) : !named.length || f.medIds.some((id) => named.some((m) => m.id === id))));
+      const idsOf = (list: Finding[]) => list.map((f) => evidenceId.finding(f.key)).filter((id) => pkgIds.has(id));
+      idsOf([...target, ...others]).forEach((id) => a.context(id));
+      const describe = (list: Finding[]) =>
+        list.slice(0, 2).map((f) => `${joinAnd(f.medIds.map((id) => medName(data.medications.find((m) => m.id === id))))} — ${oneLine(f.title).replace(/[.:]+$/, "")}`);
+      if (!active.length) {
+        a.fact("fact:qa:combos-empty", `${name}'s medication list is empty, so no medicine combinations were checked.`);
+      } else {
+        // A medicine that is not on her list was never checked; say so rather than "none found".
+        for (const u of parsed.unlisted.slice(0, 2)) {
+          a.fact(slug("fact:qa:combos-unlisted", ...u.ingredientIds), `${capitalizeFirst(u.name)} is not on ${name}'s list, so ${PRODUCT_NAME} did not check it.`);
+        }
+        if (!target.length && dismissedHere.length) {
+          // "1 AGS Beers 2023 combination prompt on Margaret's list (Oxybutynin and Tylenol PM (OTC) — …) was marked
+          // dismissed in the medication review." A fact, never "none found".
+          const n = dismissedHere.length;
+          a.fact(
+            slug("fact:qa:combos-dismissed", ...dismissedHere.map((f) => f.key)),
+            `${n} AGS Beers 2023 combination ${plural(n, "prompt")} on ${name}'s list (${describe(dismissedHere).join("; ")}) ${n === 1 ? "was" : "were"} marked dismissed in the medication review.`,
+            { medIds: [...new Set(dismissedHere.flatMap((f) => f.medIds))] },
+          );
+        } else if (target.length) {
+          a.fact(
+            slug("fact:qa:combos", ...target.map((f) => f.key)),
+            `${target.length} medicine ${plural(target.length, "combination")} on ${name}'s current list ${target.length === 1 ? "is" : "are"} listed in AGS Beers 2023${target.length > 2 ? ", including" : ""}: ${describe(target).join("; ")}.`,
+            { medIds: [...new Set(target.flatMap((f) => f.medIds))] },
+            idsOf(target).slice(0, 3),
+          );
+        } else if (named.length >= 2 && !parsed.unlisted.length) {
+          a.fact(
+            slug("fact:qa:combos-pair-none", ...named.map((m) => m.id)),
+            `The combination of ${joinAnd(named.map((m) => medName(m)))} is not among the AGS Beers 2023 combinations found on ${name}'s list.`,
+            { medIds: named.map((m) => m.id) },
+          );
+        } else if (named.length === 1 && !parsed.unlisted.length) {
+          // Scoped to her list: Beers may well list combinations for this medicine with medicines she doesn't take.
+          a.fact(
+            slug("fact:qa:combos-none", named[0].id),
+            `None of the medicine combinations listed in AGS Beers 2023 was found on ${name}'s current list for ${medName(named[0])}.`,
+            { medIds: [named[0].id] },
+          );
+        } else if (!named.length && !parsed.unlisted.length) {
+          a.fact("fact:qa:combos-none", `No medicine combination listed in AGS Beers 2023 was found on ${name}'s current list.`);
+        }
+        if (others.length) {
+          const inv = named.filter((m) => others.some((f) => f.medIds.includes(m.id)));
+          a.fact(
+            slug("fact:qa:combos-also", ...others.map((f) => f.key)),
+            `Also on ${name}'s list, involving ${joinAnd(inv.map((m) => medName(m)))}: ${describe(others).join("; ")}.`,
+            { medIds: [...new Set(others.flatMap((f) => f.medIds))] },
+            idsOf(others).slice(0, 3),
+          );
+        }
+      }
+      a.fact(
+        "fact:qa:combos-scope",
+        `${PRODUCT_NAME} only checks the medicine combinations listed in AGS Beers 2023; it is not a full interaction checker. Ask ${pronounsFor(data.profile).possessive} pharmacist to check interactions.`,
+      );
       break;
     }
     case "unknown":
@@ -1669,10 +1958,14 @@ function capitalizeFirst(s: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
+/** Every finding of the review, dismissed ones included. */
+function allFindingsOf(input: RetrieveInput): Finding[] {
+  return input.review?.findings ?? findingsFromPackage(input.pkg);
+}
+
 /** The review's findings the family has not dismissed. */
 function findingsOf(input: RetrieveInput, data: StoreData): Finding[] {
-  const findings = input.review?.findings ?? findingsFromPackage(input.pkg);
-  return findings.filter((f) => decisionFor(data.reviewDecisions, f.key) !== "dismissed");
+  return allFindingsOf(input).filter((f) => decisionFor(data.reviewDecisions, f.key) !== "dismissed");
 }
 
 /**
