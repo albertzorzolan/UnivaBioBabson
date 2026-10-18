@@ -3,7 +3,7 @@
 // alarm, so the positives are broad and only plain negated or clearly past mentions stay quiet.
 import { describe, expect, it } from "vitest";
 import { EMERGENCY_LINE } from "../brief/safetyNet";
-import { EMERGENCY_SIGNS, EMERGENCY_SIGN_RULES, describesEmergencySign, findEmergencySigns } from "./emergencySigns";
+import { EMERGENCY_SIGNS, EMERGENCY_SIGN_RULES, describesEmergencySign, describesSelfHarm, findEmergencySigns } from "./emergencySigns";
 
 describe("EMERGENCY_SIGNS", () => {
   it("is the same static sentence the brief and the Help dialog print (one constant, not a new list)", () => {
@@ -317,5 +317,45 @@ describe("describesEmergencySign: stays quiet", () => {
   it("is false for an empty note", () => {
     expect(describesEmergencySign("")).toBe(false);
     expect(describesEmergencySign("   ")).toBe(false);
+  });
+});
+
+describe("describesEmergencySign: past-tense chest tightness and softened breathing (final review)", () => {
+  it.each([
+    "My chest felt tight",
+    "My chest was tight all morning",
+    "chest felt heavy after lunch",
+    "Chest felt tight and heavy this afternoon, went away after a rest",
+    "I can't really catch my breath",
+    "Couldn't really breathe last night",
+  ])("shows the line: %s", (note) => {
+    expect(describesEmergencySign(note)).toBe(true);
+  });
+
+  it.each(["No chest tightness today", "My chest was fine", "I can't really say I slept well"])("stays quiet: %s", (note) => {
+    expect(describesEmergencySign(note)).toBe(false);
+  });
+});
+
+describe("describesSelfHarm: the check-in's 988 line", () => {
+  it.each([
+    "I don't want to live anymore. Slept badly.",
+    "Some days I wish I were dead",
+    "I keep thinking everyone would be better off dead without me",
+    "I want to die",
+    "nothing left to live for",
+    "I'm tired of living like this",
+    "I've thought about ending my life",
+  ])("shows the 988 line: %s", (note) => {
+    expect(describesSelfHarm(note)).toBe(true);
+  });
+
+  it.each([
+    "I don't want to die, I want to feel better",
+    "I hurt myself when I fell in the kitchen",
+    "Felt woozy and nearly went over in the kitchen",
+    "My granddaughter is dying to see the new film",
+  ])("stays quiet: %s", (note) => {
+    expect(describesSelfHarm(note)).toBe(false);
   });
 });

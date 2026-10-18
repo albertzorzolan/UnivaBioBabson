@@ -14,7 +14,8 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEven
 import { ArrowUp, BookOpenCheck, Check, FileText, ListChecks, MessageCircleQuestion, PhoneCall, RotateCcw, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
 import type { BriefSentence, EvidenceItem } from "../../model/types";
 import { newId } from "../../model/ids";
-import { buildEvidence, defaultPeriod, retrieveForQuestion, routeQuestion, SUGGESTED_QUESTIONS, NOT_FOUND_TEXT } from "../../engine/brief";
+import { buildEvidence, CRISIS_RULE, defaultPeriod, retrieveForQuestion, routeQuestion, SUGGESTED_QUESTIONS, NOT_FOUND_TEXT } from "../../engine/brief";
+import { CRISIS_LINE } from "../../app/Help";
 import type { QaResult, QuestionRoute } from "../../engine/brief";
 import { pronounsFor } from "../../engine/brief/shared";
 import { AIValidationError, LLMError, aiAnswer, getModelOption, useLLM } from "../../ai";
@@ -391,8 +392,14 @@ function TurnAnswer({
             Emergency
           </p>
           <p className="cg-ask-a__lead">{route.redirect}</p>
-          {/* One tap to call, as in the Help dialog (src/app/Help.tsx). */}
+          {/* One tap to call, as in the Help dialog (src/app/Help.tsx); the crisis card leads with 988. */}
           <div className="cg-ask-a__actions">
+            {route.rule === CRISIS_RULE && (
+              <a className="ui-btn ui-btn--primary ui-btn--sm" href={`tel:${CRISIS_LINE.tel}`}>
+                <PhoneCall size={16} aria-hidden="true" />
+                {CRISIS_LINE.telLabel}
+              </a>
+            )}
             <a className="ui-btn ui-btn--primary ui-btn--sm" href="tel:911">
               <PhoneCall size={16} aria-hidden="true" />
               Call 911

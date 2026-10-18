@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { EvidencePackage, MetricKey, StoreData } from "../../model/types";
 import { addDays } from "../../model/dates";
 import { buildEvidence } from "./evidence";
-import { correctEmergencyTypos, correctMetricTypos, EMERGENCY_REDIRECT, NOT_FOUND_TEXT, parseQuestion, parseRange, redirectText, retrieveForQuestion, routeQuestion } from "./qa";
+import { correctEmergencyTypos, correctMetricTypos, CRISIS_REDIRECT, CRISIS_RULE, EMERGENCY_REDIRECT, NOT_FOUND_TEXT, parseQuestion, parseRange, redirectText, retrieveForQuestion, routeQuestion } from "./qa";
 import type { QaResult, RouteOptions } from "./qa";
 import { SUGGESTED_QUESTIONS } from "./index";
 import { verifySentence } from "./verify";
@@ -1739,4 +1739,45 @@ describe("correctMetricTypos", () => {
     "leaves '%s' unchanged",
     (q) => expect(correctMetricTypos(q)).toBe(q),
   );
+});
+
+describe("routeQuestion: thoughts of dying or self-harm get the 988 crisis card", () => {
+  it.each([
+    "My mom keeps saying she wants to die",
+    "She says she doesn't want to live anymore",
+    "Dad said he'd be better off dead",
+    "She wishes she were dead",
+    "she's been talking about ending it all",
+    "I'm worried she might harm herself",
+    "is she suicidal?",
+    "he said he wants to kill himself",
+    "she told me there's no reason to go on",
+  ])("%s", (q) => {
+    const r = routeQuestion(q);
+    expect(r.inScope).toBe(false);
+    if (r.inScope) return;
+    expect(r.category).toBe("emergency");
+    expect(r.rule).toBe(CRISIS_RULE);
+    expect(r.redirect).toBe(CRISIS_REDIRECT);
+    expect(r.redirect).toContain("988");
+    expect(r.offerVisitQuestion).toBe(false);
+  });
+
+  it.each([
+    "She doesn't want to die, she wants to feel better",
+    "she hurt herself when she fell, how many falls this month?",
+    "How often was she dizzy after lorazepam started?",
+  ])("not the crisis card: %s", (q) => {
+    const r = routeQuestion(q);
+    expect(r.inScope ? undefined : r.rule).not.toBe(CRISIS_RULE);
+  });
+
+  it("can't really catch her breath gets the 911 card", () => {
+    for (const q of ["she can't really catch her breath", "Mom couldn't really breathe last night"]) {
+      const r = routeQuestion(q);
+      expect(r.inScope).toBe(false);
+      if (r.inScope) return;
+      expect(r.redirect).toBe(EMERGENCY_REDIRECT);
+    }
+  });
 });

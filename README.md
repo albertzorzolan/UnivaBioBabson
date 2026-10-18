@@ -22,7 +22,7 @@ that holds. All test data is synthetic and not clinician-reviewed.
 | Claim checker | catches all 163 harmful sentences it was tuned on but only 10 of 23 on a later held-out probe; full history in [eval/VERIFIER-REDTEAM.md](eval/VERIFIER-REDTEAM.md) | [verifier-redteam.json](eval/results/verifier-redteam.json) |
 | Timeline chance rate | with no real change, 11.2% of simulated medicine changes showed a clear or large difference, and 85.8% if symptoms come in long runs of days (an assumed level), so a flag is only ever a question | [timeline-null.json](eval/results/timeline-null.json) |
 
-**On-device model, batch of 40 prompts** ([LLM-BATCH.md](https://github.com/albertzorzolan/UnivaBioBabson/blob/medwatch-v2/eval/LLM-BATCH.md)): the checker blocked 27.6% of 76 AI sentences; 3 of 30 shown sentences were flawed (95% CI 3.5–25.6%; audit by an AI agent, not a clinician); median 4.9 s per Ask answer, 45.4 s per brief draft.
+**On-device model, batch of 40 prompts** ([LLM-BATCH.md](https://github.com/albertzorzolan/UnivaBioBabson/blob/medwatch-v2/eval/LLM-BATCH.md)): the checker blocked 27.6% of 76 AI sentences; 3 of 30 shown sentences were flawed (95% CI 3.5–25.6%; audit by an AI agent, not a clinician); median 4.9 s per Ask answer, 45.9 s per brief draft.
 
 **The demo's headline difference** (dizziness on 9 of 14 answered days
 after lorazepam started vs 2 of 19 before): Fisher p = 0.0023, and runs check p = 0.007 when whole 4-day runs of days
