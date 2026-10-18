@@ -56,9 +56,11 @@ export function redteamItem(v) {
 }
 
 /**
- * How many flawed AI outputs got through in the recorded live run: the red-team file's list of live escapes when
+ * How many flawed AI sentences got through in the recorded live run: the red-team file's list of live escapes when
  * present (it itemises them, as submission/DEVPOST.md does), else the hand count from ai-live.json's verdict.
- * Always "at least": neither is an exhaustive audit.
+ * Always "at least": neither is an exhaustive audit. The unit is sentences, not outputs: the red-team list has 6
+ * strings from 5 AI outputs (live-03 and live-04 are two sentences of one explanation), so the one-pager says
+ * "flawed sentences". The app and README count outputs named in the verdict ("at least 3 flawed AI outputs").
  */
 export function liveEscapesText(f) {
   const n = f.verifier?.liveEscapes?.total;
@@ -324,7 +326,7 @@ h2 { font-size: 8pt; font-weight: 700; letter-spacing: 0.12em; text-transform: u
         <h2>Evidence &amp; rigor</h2>
         <ul class="ev">
           ${evidence.map((s) => `<li>${s}</li>`).join("\n          ")}
-          <li><b>On-device AI:</b> ${f.ai.externalRequests} external requests in a recorded run; ${h(liveEscapesText(f))} flawed outputs got through, so the template stays the default.</li>
+          <li><b>On-device AI:</b> ${f.ai.externalRequests} external requests in a recorded run; ${h(liveEscapesText(f))} flawed sentences got through; the template stays the default.</li>
           <li><b>Software:</b> ${software}.</li>
         </ul>
       </section>
