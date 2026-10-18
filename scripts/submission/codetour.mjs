@@ -260,6 +260,45 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "review",
+    title: "Review before print: a person signs off",
+    intro:
+      "The visit brief goes to a clinician only after a family member has read it. VisitBrief.tsx renders the print root from one value, reviewed: while it is false (never ticked, or the records changed since the brief was built) the printer gets NotReviewedNotice instead of the brief. compose.ts keeps the rule that any content change clears the mark: every edit to a brief goes through withContent, which sets reviewedAt and reviewedBy back to null, and a rebuilt brief starts unreviewed (toVisitBrief, engine/brief/template.ts), so the family reviews exactly what will print.",
+    files: [
+      {
+        path: "src/views/caregiver/VisitBrief.tsx",
+        purpose: "The Visit brief screen; excerpt of the review flag and the print root.",
+        excerpts: [
+          { at: sym("reviewed") },
+          { from: "^      \\{createPortal\\($", to: "^        document\\.body,$" },
+        ],
+        pointers: [
+          ["reviewed: ticked and built from the current records", sym("reviewed")],
+          ["print root: the brief only when reviewed, else the notice", "^          \\) : reviewed \\? \\($"],
+        ],
+      },
+      {
+        path: "src/views/caregiver/brief/BriefDocument.tsx",
+        purpose: "The one-page brief; excerpt of the notice printed while it is not reviewed.",
+        excerpts: [{ at: sym("NotReviewedNotice") }],
+        pointers: [["NotReviewedNotice: printed instead of an unreviewed brief", sym("NotReviewedNotice")]],
+      },
+      {
+        path: "src/views/caregiver/brief/compose.ts",
+        purpose: "Brief composition rules; excerpt of the rules and the review mark.",
+        excerpts: [
+          { from: "^// Visit brief composition for the caregiver builder", to: "Any change to the content clears the \"reviewed\" mark" },
+          { at: sym("withContent") },
+          { at: sym("withReview") },
+        ],
+        pointers: [
+          ["withContent: any content change clears the mark", sym("withContent")],
+          ["withReview: the checkbox sets or clears it", sym("withReview")],
+        ],
+      },
+    ],
+  },
+  {
     id: "ask",
     title: "Ask: answers from the records, redirects for the rest",
     intro:
@@ -379,7 +418,10 @@ export const WALK = [
   },
 ];
 
-/** Product claims a judge might want to check, mapped to the line that implements them (pattern or sym()). */
+/**
+ * Product claims a judge might want to check, mapped to the line that implements them (pattern or sym()). A row may
+ * add more [path, pattern] anchors after the first when the claim lives in two places.
+ */
 const CLAIMS = [
   ["“Dizziness on 2 of 19 days before vs 9 of 14 after” — answered days, Fisher’s exact test", "src/engine/timeline/signals.ts", sym("compareMetric")],
   ["A difference is shown only if p-value AND size thresholds are met", "src/engine/timeline/rules.ts", "thresholds: \\{"],
@@ -393,6 +435,7 @@ const CLAIMS = [
   ["Each AI sentence is checked on its own and dropped if it fails", "src/ai/tasks.ts", sym("verifySection")],
   ["Treatment, dose-change and diagnosis questions get a fixed redirect, not an answer", "src/engine/brief/qa.ts", sym("routeQuestion")],
   ["KB text is checked for the SPEC §3 banned words ({KB_BANNED}), the list the review engine uses, when the KB is compiled", "kb-src/build_kb.py", sym("check_text")],
+  ["The brief prints only after the caregiver marks it reviewed; any change clears the mark", "src/views/caregiver/brief/BriefDocument.tsx", sym("NotReviewedNotice"), ["src/views/caregiver/brief/compose.ts", sym("withContent")]],
   ["Family-written text is fenced as data, not instructions, before it reaches the model", "src/ai/guard.ts", sym("wrapData")],
   ["One generation at a time; cancel and timeout", "src/ai/llm.ts", sym("generateJSON")],
   ["FHIR Bundle references resolve inside the bundle", "src/engine/brief/fhir.ts", sym("validateBundle")],
@@ -976,8 +1019,8 @@ export function codeTourHtml({ facts }) {
     if (p && !p.shown.has(line)) throw new Error(`code tour: ${path}:${line} is referenced but not inside the printed excerpt`);
     return { path, line, target: p ? `${p.id}-L${line}` : null };
   };
-  const claims = CLAIMS.map(([claim, path, pat]) => ({ claim: fill(claim), ...anchor(path, pat) }));
-  for (const c of claims) if (!c.target) throw new Error(`code tour: claim "${c.claim}" points to ${c.path}, which the tour does not print`);
+  const claims = CLAIMS.map(([claim, path, pat, ...more]) => ({ claim: fill(claim), anchors: [[path, pat], ...more].map(([p, re]) => anchor(p, re)) }));
+  for (const c of claims) for (const a of c.anchors) if (!a.target) throw new Error(`code tour: claim "${c.claim}" points to ${a.path}, which the tour does not print`);
   const walk = WALK.map((w) => ({ ...w, text: fill(w.text), anchors: w.anchors.map(([path, name]) => ({ name, ...anchor(path, sym(name)) })) }));
   for (const w of walk) for (const a of w.anchors) if (!a.target) throw new Error(`code tour: walkthrough stop ${a.path} is not printed in the tour`);
 
@@ -989,7 +1032,7 @@ export function codeTourHtml({ facts }) {
 
   // Only lines something links to get an id (keeps the PDF's named destinations small).
   const linked = new Set([
-    ...claims.map((c) => c.target),
+    ...claims.flatMap((c) => c.anchors.map((a) => a.target)),
     ...walk.flatMap((w) => w.anchors.map((a) => a.target)),
     ...sections.flatMap((s) => s.files.flatMap((f) => f.pointers.map((p) => `${f.id}-L${p.line}`))),
   ]);
@@ -1008,7 +1051,10 @@ export function codeTourHtml({ facts }) {
 
   const claimRows = claims
     .map(
-      (c) => `<tr><td>${h(c.claim)}</td><td><a href="#${c.target}"><code>${h(c.path.replace(/^src\//, ""))}:${c.line}</code></a></td><td class="r"><span data-page-of="${c.target}"></span></td></tr>`,
+      (c) =>
+        `<tr><td>${h(c.claim)}</td><td>${c.anchors
+          .map((a) => `<a href="#${a.target}"><code>${h(a.path.replace(/^src\//, ""))}:${a.line}</code></a>`)
+          .join("<br>")}</td><td class="r">${c.anchors.map((a) => `<span data-page-of="${a.target}"></span>`).join("<br>")}</td></tr>`,
     )
     .join("");
 
@@ -1219,7 +1265,7 @@ td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
       <div class="fig"><div class="n">${stats.css.toLocaleString("en-US")}</div><div class="l">lines of CSS (+ ${stats.json.toLocaleString("en-US")} lines of compiled KB JSON)</div></div>
     </div>
   </div>
-  <p class="note">Why a tour: src/ holds ${stats.lines.toLocaleString("en-US")} lines, too many to read on paper. This PDF prints the parts that carry the product’s claims (the medication-review engine, timeline statistics, clinical NLP, the claim checker, FHIR export, the on-device AI layer, the knowledge base and the local store) in full, excerpts of the AI checks, the Ask scope gate, the KB compiler and the check-in screen, and ends with an index of every source file. All people and records in the code and tests are fictional.</p>
+  <p class="note">Why a tour: src/ holds ${stats.lines.toLocaleString("en-US")} lines, too many to read on paper. This PDF prints the parts that carry the product’s claims (the medication-review engine, timeline statistics, clinical NLP, the claim checker, FHIR export, the on-device AI layer, the knowledge base and the local store) in full, excerpts of the AI checks, the Ask scope gate, the review-before-print gate, the KB compiler and the check-in screen, and ends with an index of every source file. All people and records in the code and tests are fictional.</p>
 </div>
 
 <div class="page fm" id="fm-walk">

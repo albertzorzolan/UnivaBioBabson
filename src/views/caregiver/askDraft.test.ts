@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { ALREADY_PLAIN, DRAFT_FAILED_CHECK, NOTHING_PLAINER, emptyDraftNote, leadWith, modelRan, repeatsRecords } from "./askDraft";
 
-// The records answer the on-device model repeated word for word in the runtime audit
-// (tmp/judge-kit/runtime/local-ai-ask.txt, "How has her sleep been since the lorazepam started?").
+// The records answer the on-device model repeated word for word in an internal review probe, 2026-10-17 (not
+// committed): "How has her sleep been since the lorazepam started?".
 const sleep =
   "Sleep quality ratings averaged 3.4 out of 5 on 14 answered days from Oct 1, when Lorazepam (Ativan) was started, through Oct 17, compared with 2.6 out of 5 on 20 answered days in the 21 days before.";
 
@@ -40,13 +40,13 @@ describe("emptyDraftNote", () => {
   it("says the model checked the answer only when it actually ran", () => {
     expect(modelRan(ran)).toBe(true);
     expect(emptyDraftNote(ran)).toBe(NOTHING_PLAINER);
-    expect(NOTHING_PLAINER).toBe("The on-device AI checked this answer and had nothing plainer to add.");
+    expect(NOTHING_PLAINER).toBe("The on-device AI checked this answer against the records; the records answer above is already as plain as it can make it.");
   });
 
   it("says the draft failed the check when the model wrote sentences and the check removed all of them", () => {
     expect(emptyDraftNote(ran, 2, 0)).toBe(DRAFT_FAILED_CHECK);
     expect(DRAFT_FAILED_CHECK).toBe("The on-device AI's draft didn't pass the records check, so only the records answer is shown.");
-    // Some sentences passed but only repeated the records answer: nothing plainer to add.
+    // Some sentences passed but only repeated the records answer: the records answer is already as plain as it gets.
     expect(emptyDraftNote(ran, 1, 2)).toBe(NOTHING_PLAINER);
     expect(emptyDraftNote(ran, 0, 0)).toBe(NOTHING_PLAINER);
     expect(emptyDraftNote(skipped, 3, 0)).toBe(ALREADY_PLAIN);

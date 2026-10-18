@@ -3,7 +3,7 @@ import type { EvidencePackage, MetricKey, StoreData } from "../../model/types";
 import { addDays } from "../../model/dates";
 import { buildEvidence } from "./evidence";
 import { EMERGENCY_REDIRECT, NOT_FOUND_TEXT, parseQuestion, parseRange, redirectText, retrieveForQuestion, routeQuestion } from "./qa";
-import type { QaResult } from "./qa";
+import type { QaResult, RouteOptions } from "./qa";
 import { SUGGESTED_QUESTIONS } from "./index";
 import { verifySentence } from "./verify";
 import { BANNED_IN_TEMPLATE, FAKE_KB, FROM, TODAY, isKnownEffect, margaret } from "./test-fixtures";
@@ -445,8 +445,8 @@ describe("retrieveForQuestion — other intents", () => {
 });
 
 describe("routeQuestion — safety routing works for any name or medicine (code audit round 2)", () => {
-  // The audit's probe questions (tmp/judge-kit/code-audit/r2/probe-ask*.ts): each was answered before, because
-  // the scope rules only knew "Margaret", "mom", "dad" and the demo's medicine names.
+  // Internal review probe, 2026-10-17 (not committed): each of these questions was answered before, because the
+  // scope rules only knew "Margaret", "mom", "dad" and the demo's medicine names. The inputs are inlined below.
   it.each([
     ["Should John stop zolpidem?", "treatment"],
     ["Should grandma stop the lorazepam?", "treatment"],
@@ -726,7 +726,7 @@ describe("empty record", () => {
   });
 });
 
-describe("off-script questions (judge regressions)", () => {
+describe("off-script questions (internal review probes)", () => {
   it("says a measurement is not recorded instead of answering about bleeding ('what is her blood pressure')", () => {
     const r = ask("what is her blood pressure");
     expect(r.intent).toBe("not_recorded");
@@ -813,5 +813,289 @@ describe("off-script questions (judge regressions)", () => {
       const quote = /"(.*)"/.exec(s.text)?.[1] ?? "";
       expect(/\bsleep(?!y|iness)\w*|\bslept\b|\bnight\b|\bbed\b|\binsomnia\b|\bawake\b|\bwoke\b|\blike a log\b/i.test(quote), quote).toBe(true);
     }
+  });
+
+  // Internal review probe, 2026-10-17 (not committed): paraphrases of a diagnosis, a dose change and a cause that used
+  // to get a records answer. The first one got confusion counts framed around the lorazepam start, which reads as an
+  // implied answer; each now gets the redirect card.
+  const MARGARET_OPTS = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name) };
+  it.each([
+    ["Is her confusion dementia?", "diagnosis"],
+    ["Is the memory fog early Alzheimer's?", "diagnosis"],
+    ["Is Margaret's forgetfulness a sign of dementia?", "diagnosis"],
+    ["Is her confusion an early sign of dementia?", "diagnosis"],
+    ["Is her confusion the beginning of Alzheimer's?", "diagnosis"],
+    ["Does her confusion mean dementia?", "diagnosis"],
+    ["Is her memory loss from Alzheimer's?", "diagnosis"],
+    ["Is her forgetfulness normal aging?", "diagnosis"],
+    ["Would it help if she took less lorazepam?", "dose"],
+    ["What if we gave her a smaller amount of Ativan?", "dose"],
+    ["Would it help to give her less lorazepam?", "dose"],
+    ["Would less lorazepam help?", "dose"],
+    ["Would she be better on less lorazepam?", "dose"],
+    ["What if she skipped the lorazepam?", "treatment"],
+    ["Is lorazepam linked to her falls?", "cause"],
+    ["Is the Ativan tied to the dizziness?", "cause"],
+    ["Can lorazepam lead to falls?", "cause"],
+    ["Could Tylenol PM contribute to her confusion?", "cause"],
+    ["Is lorazepam related to her falls?", "cause"],
+    ["Is the dizziness associated with amlodipine?", "cause"],
+    ["Is the dizziness connected to the lorazepam?", "cause"],
+    ["Is her confusion associated with Tylenol PM?", "cause"],
+    ["Is there a link between lorazepam and her falls?", "cause"],
+    ["Are lorazepam and her dizziness related?", "cause"],
+    ["Is lorazepam a factor in her falls?", "cause"],
+    ["Does her confusion have anything to do with the oxybutynin?", "cause"],
+    // Integration review, round 3: what-ifs about changing a medicine, "affect" and "something to do with" causes,
+    // and any named condition offered as the diagnosis.
+    ["Would she be less dizzy off the lorazepam?", "treatment"],
+    ["What if she only took lorazepam on bad nights?", "treatment"],
+    ["Would cutting back on lorazepam help?", "treatment"],
+    ["Would cutting down on the lorazepam help?", "treatment"],
+    ["What if she cut back on lorazepam?", "treatment"],
+    ["What if she tapered off lorazepam?", "treatment"],
+    ["Is the confusion something to do with lorazepam?", "cause"],
+    ["Is lorazepam affecting her memory?", "cause"],
+    ["Could the oxybutynin be affecting her memory?", "cause"],
+    ["Does lorazepam affect her balance?", "cause"],
+    ["Does Tylenol PM affect her memory?", "cause"],
+    ["Has lorazepam had anything to do with it?", "cause"],
+    ["Is her dizziness vertigo?", "diagnosis"],
+    ["Is her tiredness depression?", "diagnosis"],
+    ["Is her dizziness low blood pressure?", "diagnosis"],
+    ["Is the swelling heart failure?", "diagnosis"],
+    ["Is her swelling a heart problem?", "diagnosis"],
+  ])("redirects the paraphrase '%s' (%s) to the redirect card", (q, category) => {
+    for (const opts of [{}, MARGARET_OPTS] as RouteOptions[]) {
+      const r = routeQuestion(q, opts);
+      expect(r.inScope ? "in" : r.category, `${q} ${JSON.stringify(opts)}`).toBe(category);
+      if (!r.inScope) {
+        expect(r.offerVisitQuestion).toBe(true);
+        expect(r.redirect).toBe(redirectText(opts.patientName));
+      }
+    }
+  });
+
+  it.each([
+    "Which medicines are linked to falls?",
+    "Which medicines can lead to falls?",
+    "Are any of her medicines linked to falls?",
+    "Has she been taking more naps?",
+    "She took half an hour to fall asleep",
+    "Is lorazepam on the Beers list for people who have dementia?",
+    "Has her confusion been worse this week?",
+    "Is the dementia warning on the Beers list?",
+    "Did she skip any doses this week?",
+    "Which of her medicines are associated with falls?",
+    "Is lorazepam on the Beers list?",
+    // Integration review, round 3.
+    "Can you check if she skipped any pills this week?",
+    "Do you know if she skipped her lorazepam yesterday?",
+    "Can you tell me if she stopped the lorazepam?",
+    "Did she have to take more trips to the bathroom at night?",
+    "Did she need to take more breaks on her walk?",
+    "Did she take her lorazepam last night?",
+    "When did she start lorazepam?",
+    "Has she been off her feet more?",
+    "Does lorazepam affect sleep?",
+    "Which medicines affect balance?",
+    "Is the Beers list for heart failure patients?",
+    "Is her blood pressure medicine on the Beers list?",
+    "Is the kidney disease warning on her list?",
+    "What is her blood pressure?",
+  ])("keeps the near miss '%s' in scope", (q) => {
+    expect(routeQuestion(q, MARGARET_OPTS)).toEqual({ inScope: true });
+  });
+
+  it("answers indirect records questions from the records ('Can you check if she skipped any pills this week?')", () => {
+    expect(ask("Can you check if she skipped any pills this week?").intent).toBe("missed_doses");
+    expect(ask("What is her blood pressure?").intent).toBe("not_recorded");
+  });
+
+  it("reads 'related to falls' as the fall-risk question, not a medicine name ('related' is not Relafen)", () => {
+    for (const q of ["Which medicines are related to falls?", "Which medicines are linked to falls?", "Which of her medicines are associated with falls?"]) {
+      expect(routeQuestion(q, MARGARET_OPTS), q).toEqual({ inScope: true });
+      const r = ask(q);
+      expect(r.intent, q).toBe("fall_risk");
+      expect(text(r), q).not.toMatch(/Nabumetone/);
+    }
+  });
+
+  it("gives a generic reason for a safety question that names no medicine ('Is it okay for her to drive?')", () => {
+    const r = routeQuestion("Is it okay for her to drive?", MARGARET_OPTS);
+    expect(r.inScope ? "in" : r.category).toBe("safety");
+    if (!r.inScope) {
+      expect(r.reason).toBe("Whether something is right for Margaret is a judgment for her clinician; Kinwise only shows what was recorded and published criteria.");
+      expect(r.reason).not.toMatch(/\bmedicine\b|\bsafe\b/i);
+    }
+    const robert = routeQuestion("Is it okay for him to drive?", { patientName: "Robert", possessive: "his" });
+    expect(robert.inScope).toBe(false);
+    if (!robert.inScope) expect(robert.reason).toBe("Whether something is right for Robert is a judgment for his clinician; Kinwise only shows what was recorded and published criteria.");
+    const anon = routeQuestion("Is it okay for her to drive?");
+    expect(anon.inScope).toBe(false);
+    if (!anon.inScope) expect(anon.reason).toBe("Whether something is right for her is a judgment for her clinician; Kinwise only shows what was recorded and published criteria.");
+    // A medicine in the question keeps the medicine wording.
+    const med = routeQuestion("Is it okay for her to take lorazepam at night?", MARGARET_OPTS);
+    expect(med.inScope ? "in" : med.category).toBe("safety");
+    if (!med.inScope) expect(med.reason).toMatch(/^Whether a medicine is right for Margaret is a judgment for her clinician;/);
+  });
+
+  const NOT_A_CHECKER = "Kinwise only checks the medicine combinations listed in AGS Beers 2023; it is not a full interaction checker. Ask her pharmacist to check interactions.";
+
+  it("answers interaction questions with the AGS Beers 2023 combinations only, and says it is not a full checker", () => {
+    for (const q of ["Which medicines interact with each other?", "Do any of her medicines interact?", "Which of her pills shouldn't be taken together?"]) {
+      expect(routeQuestion(q, MARGARET_OPTS), q).toEqual({ inScope: true });
+      const r = ask(q);
+      expect(r.intent, q).toBe("interactions");
+      expect(r.status, q).toBe("answered");
+      const t = text(r);
+      expect(t, q).toMatch(/^1 medicine combination on Margaret's current list is listed in AGS Beers 2023: /);
+      expect(t, q).toContain("Oxybutynin");
+      expect(t, q).toContain("Tylenol PM (OTC)");
+      expect(r.deterministicAnswer.at(-1)!.text, q).toBe(NOT_A_CHECKER);
+      expect(t, q).not.toMatch(/\bsafe\b/i);
+      expect(r.items.some((i) => i.id === "find:ddi-anticholinergic-2:med-oxybutynin+med-tylenolpm"), q).toBe(true);
+      expectGrounded(r);
+    }
+    // Without medicine context, "interacting" and "clash" are diary words, and medicines started or mixed up together
+    // are not a combination question.
+    for (const q of [
+      "Has she been interacting with her friends?",
+      "Is she interacting less with people?",
+      "Did she clash with her aide?",
+      "Which medicines did she start together?",
+      "What did the doctor say about her medicines being mixed up?",
+    ]) {
+      expect(ask(q).intent, q).not.toBe("interactions");
+    }
+    expect(ask("Does the Beers list flag any interactions?").intent).toBe("interactions");
+    // A schedule question or two symptoms "together" is not about combinations.
+    expect(ask("How many pills does she take together at bedtime?").intent).not.toBe("interactions");
+    expect(ask("Did she take her pills together this morning?").intent).not.toBe("interactions");
+    expect(ask("Were dizziness and drowsiness recorded together?").intent).not.toBe("interactions");
+  });
+
+  it("says when no listed combination includes the medicines asked about, or none was found at all", () => {
+    const pair = ask("Do lorazepam and amlodipine interact?");
+    expect(pair.intent).toBe("interactions");
+    // (The medicines are named in list order.) The sentence is about her list, not about the medicines in general.
+    expect(text(pair)).toMatch(
+      /^The combination of (?:Amlodipine and Lorazepam \(Ativan\)|Lorazepam \(Ativan\) and Amlodipine) is not among the AGS Beers 2023 combinations found on Margaret's list\./,
+    );
+    expect(pair.deterministicAnswer.at(-1)!.text).toBe(NOT_A_CHECKER);
+    expectGrounded(pair);
+    const one = ask("Does amlodipine interact with anything?");
+    expect(one.intent).toBe("interactions");
+    expect(text(one)).toMatch(/^None of the medicine combinations listed in AGS Beers 2023 was found on Margaret's current list for Amlodipine\./);
+    expect(one.deterministicAnswer.at(-1)!.text).toBe(NOT_A_CHECKER);
+    expectGrounded(one);
+    const data = {
+      ...W.data,
+      reviewDecisions: [{ findingKey: "ddi-anticholinergic-2:med-oxybutynin+med-tylenolpm", status: "dismissed" as const, note: "", updatedAt: "2026-10-09T10:00:00.000Z" }],
+    };
+    // A dismissed prompt is still on her list and was still found: the answer says it was dismissed, never "none".
+    const dismissed = ask("Which medicines interact with each other?", { data });
+    expect(text(dismissed)).toMatch(
+      /^1 AGS Beers 2023 combination prompt on Margaret's list \(Oxybutynin and Tylenol PM \(OTC\) — [^)]*\) was marked dismissed in the medication review\./,
+    );
+    expect(text(dismissed)).not.toMatch(/No medicine combination .* was found/);
+    expect(text(dismissed)).not.toMatch(/\bsafe\b/i);
+    expect(dismissed.deterministicAnswer.at(-1)!.text).toBe(NOT_A_CHECKER);
+    for (const q of ["Does oxybutynin interact with anything?", "Do oxybutynin and Tylenol PM interact?"]) {
+      const t = text(ask(q, { data }));
+      expect(t, q).toMatch(/was marked dismissed in the medication review\./);
+      expect(t, q).not.toMatch(/\bNone of\b|\bnot among\b/);
+    }
+    // With no combination in the review at all, "none was found" is true.
+    const review = { ...W.review, findings: W.review.findings.filter((f) => f.category !== "beers_interaction" && f.category !== "cns_active_combo") };
+    const pkgNo = buildEvidence({ data: W.data, from: FROM, to: TODAY, review, timeline: W.timeline, kb: FAKE_KB });
+    const none = retrieveForQuestion("Which medicines interact with each other?", { data: W.data, pkg: pkgNo, today: TODAY, review, kb: FAKE_KB, isKnownEffect: effect });
+    expect(text(none)).toMatch(/^No medicine combination listed in AGS Beers 2023 was found on Margaret's current list\./);
+    expect(none.deterministicAnswer.at(-1)!.text).toBe(NOT_A_CHECKER);
+  });
+
+  it("answers a pair question about that pair, and lists other combinations only under their own lead-in", () => {
+    // Lorazepam + Tylenol PM is not a listed pair here; Oxybutynin + Tylenol PM is. The answer must not read as if the
+    // pair asked about were flagged.
+    const r = ask("Do lorazepam and Tylenol PM interact?");
+    expect(r.intent).toBe("interactions");
+    const [first, second] = r.deterministicAnswer.map((s) => s.text);
+    expect(first).toMatch(
+      /^The combination of (?:Tylenol PM \(OTC\) and Lorazepam \(Ativan\)|Lorazepam \(Ativan\) and Tylenol PM \(OTC\)) is not among the AGS Beers 2023 combinations found on Margaret's list\.$/,
+    );
+    expect(second).toMatch(/^Also on Margaret's list, involving Tylenol PM \(OTC\): Oxybutynin and Tylenol PM \(OTC\) — /);
+    expect(r.deterministicAnswer.at(-1)!.text).toBe(NOT_A_CHECKER);
+    expectGrounded(r);
+    // The listed pair itself is named as listed.
+    const listed = ask("Do oxybutynin and Tylenol PM interact?");
+    expect(text(listed)).toMatch(/^1 medicine combination on Margaret's current list is listed in AGS Beers 2023: Oxybutynin and Tylenol PM \(OTC\) — /);
+    expectGrounded(listed);
+  });
+
+  it("never reads a medicine that is not on her list as checked ('Does lorazepam interact with oxycodone?')", () => {
+    // A hypothetical new combination is a question for the pharmacist: the scope gate sends it to the redirect card.
+    for (const q of ["Does lorazepam interact with oxycodone?", "Do lorazepam and zolpidem interact?"]) {
+      const route = routeQuestion(q, MARGARET_OPTS);
+      expect(route.inScope ? "in" : route.category, q).toBe("safety");
+      if (!route.inScope) {
+        expect(route.reason, q).toBe("Kinwise only checks combinations among the medicines on Margaret's list; her pharmacist can check a medicine that is not on it.");
+      }
+      // And if the records answer is asked for directly, it says the medicine was not checked.
+      const r = ask(q);
+      expect(r.intent, q).toBe("interactions");
+      const t = text(r);
+      expect(t, q).not.toMatch(/\bNo\b[^.]*\bwas found for Lorazepam/);
+      expect(t, q).not.toMatch(/\bwas found\b[^.]*\bLorazepam/);
+      expect(t, q).toMatch(/^(?:Oxycodone|Zolpidem) is not on Margaret's list, so Kinwise did not check it\./);
+      expect(r.deterministicAnswer.at(-1)!.text, q).toBe(NOT_A_CHECKER);
+      expectGrounded(r);
+    }
+    // Two listed medicines stay a records question.
+    expect(routeQuestion("Do lorazepam and amlodipine interact?", MARGARET_OPTS)).toEqual({ inScope: true });
+    // Whether a combination is fine is the pharmacist's call, never a records answer.
+    const ok = routeQuestion("Are lorazepam and amlodipine okay together?", MARGARET_OPTS);
+    expect(ok.inScope ? "in" : ok.category).toBe("safety");
+  });
+
+  it("uses the profile's pronoun in the not-a-full-checker sentence", () => {
+    const data: StoreData = { ...W.data, profile: { ...W.data.profile, sex: "male" } };
+    const r = ask("Which medicines interact with each other?", { data });
+    expect(r.deterministicAnswer.at(-1)!.text).toBe(NOT_A_CHECKER.replace("Ask her", "Ask his"));
+  });
+
+  it("summarises 'this week' over the last 7 days, not the 30-day package", () => {
+    for (const q of ["Summarise this week", "How has she been this week?"]) {
+      const r = ask(q);
+      expect(r.intent, q).toBe("summary");
+      expect(r.range, q).toEqual({ from: addDays(TODAY, -6), to: TODAY });
+      expect(r.deterministicAnswer[0].text, q).toMatch(/^Check-ins were recorded on \d+ of 7 days from /);
+      expect(text(r), q).not.toMatch(/of 30 days/);
+      expectGrounded(r);
+    }
+    // With no period named, the summary covers the evidence package's period (30 days in Ask; FROM–TODAY here).
+    const all = ask("How is she doing?");
+    expect(all.range).toEqual({ from: PKG.from, to: PKG.to });
+    expect(all.deterministicAnswer[0].evidenceIds).toEqual(["fact:coverage"]);
+  });
+});
+
+describe("retrieveForQuestion — any person's name, not only the demo's", () => {
+  // A profile that is not Margaret: the intents must read "Dorothy" the way they read "she" and "Margaret".
+  const data: StoreData = { ...W.data, profile: { ...W.data.profile, preferredName: "Dorothy", displayName: "Dorothy Hale" } };
+  const pkg = buildEvidence({ data, from: FROM, to: TODAY, review: W.review, timeline: W.timeline, kb: FAKE_KB });
+  const askD = (q: string) => ask(q, { data, pkg });
+
+  it.each([
+    ["When did Dorothy first get dizzy?", "first_onset", /^Dizziness was first recorded on /],
+    // Only the preferred-name alternative of firstRe matches this one ("when has <name> first …").
+    ["When has Dorothy first felt dizzy?", "first_onset", /^Dizziness was first recorded on /],
+    ["When did Dorothy last fall?", "last_time", /^A fall was most recently recorded on Oct 5\./],
+    ["How is Dorothy doing?", "summary", /^Check-ins were recorded on /],
+  ])("%s → %s", (q, intent, re) => {
+    const r = askD(q);
+    expect(r.intent).toBe(intent);
+    expect(r.status).toBe("answered");
+    expect(r.dropped).toBe(0);
+    expect(r.deterministicAnswer[0].text).toMatch(re);
   });
 });

@@ -1,7 +1,7 @@
 // How it works › the problem and "Who it's for": quoted research must match the cited sources' wording.
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { FLOW_STEPS, PROBLEM_STATS, WHO_FOR } from "./howContent";
+import { AI_DRAFT_HINT, FLOW_STEPS, PROBLEM_STATS, WHO_FOR } from "./howContent";
 
 const statText = (value: string) => {
   const s = PROBLEM_STATS.find((p) => p.value === value);
@@ -11,9 +11,17 @@ const statText = (value: string) => {
 describe("problem section", () => {
   it("quotes Gandhi 2003 as attributions, in percentages only (the counts were never checked against the abstract)", () => {
     expect(statText("37%")).toMatch(/^37% of medication side effects .*were attributed to the patient not telling the doctor about the symptom/);
-    expect(statText("63%")).toMatch(/^63% to medication-related symptoms not being acted on/);
+    expect(statText("63%")).toMatch(/^63% of medication side effects whose harm could have been reduced, in the same study, were attributed to the doctor not responding to medication-related symptoms\.$/);
     expect(PROBLEM_STATS.map((s) => s.text).join(" ")).not.toMatch(/of 51/);
     expect(PROBLEM_STATS.map((s) => s.text).join(" ")).not.toMatch(/persisted because/);
+  });
+
+  it("makes each Gandhi card a full sentence that stands alone, faithful to market-evidence.md §1.9", () => {
+    // Each card is read on its own (a phone shows them one under the other), so neither may lean on the other.
+    for (const v of ["37%", "63%"]) expect(statText(v)).toMatch(/^\d+% of medication side effects whose harm could have been reduced\b.*\.$/);
+    const research = readFileSync(new URL("../../../kb-src/research/market-evidence.md", import.meta.url), "utf8");
+    expect(research).toMatch(/\*\*63%\*\* came from the physician failing to respond to medication-related symptoms/);
+    expect(research).toMatch(/\*\*37%\*\* from the patient failing to tell the physician/);
   });
 
   it("keeps the canonical trio: polypharmacy (NCHS), Gandhi and CDC falls", () => {
@@ -63,5 +71,24 @@ describe("who it's for", () => {
     expect(line).toMatch(/replaces the record/);
     const settings = readFileSync(new URL("../caregiver/Settings.tsx", import.meta.url), "utf8");
     expect(settings).toMatch(/Import and replace/);
+  });
+});
+
+describe("AI draft hint", () => {
+  it("tells a visitor with WebGPU where the checker shows its work: the brief's AI draft", () => {
+    expect(AI_DRAFT_HINT).toMatch(/Alex/);
+    expect(AI_DRAFT_HINT).toMatch(/load the on-device model in Settings \(desktop Chrome or Edge with WebGPU\)/);
+    expect(AI_DRAFT_HINT).toMatch(/Visit brief › Draft with on-device AI/);
+    expect(AI_DRAFT_HINT).toMatch(/any AI sentence the check removed/);
+  });
+
+  it("names controls that exist with those exact labels", () => {
+    const builder = readFileSync(new URL("../caregiver/brief/Builder.tsx", import.meta.url), "utf8");
+    expect(builder).toContain("Draft with on-device AI");
+    const removed = readFileSync(new URL("../caregiver/brief/CheckRemoved.tsx", import.meta.url), "utf8");
+    expect(removed).toContain("What the check removed");
+    const nav = readFileSync(new URL("../../app/layouts/nav.ts", import.meta.url), "utf8");
+    expect(nav).toMatch(/label: "Visit brief"/);
+    expect(nav).toMatch(/label: "Settings"/);
   });
 });

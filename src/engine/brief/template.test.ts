@@ -16,10 +16,13 @@ import {
   toVisitBrief,
 } from "./template";
 import { verifyClaims, verifySentence } from "./verify";
-import { safetyNetLine } from "./safetyNet";
+import { EMERGENCY_LINE, safetyNetLine } from "./safetyNet";
+import { LOW_POWER_BRIEF_LINE } from "../timeline/rules";
 import { BANNED_IN_TEMPLATE, FAKE_KB, FROM, TODAY, margaret } from "./test-fixtures";
 
 const W = margaret();
+/** The brief's chance limitation: the chance line, then the figure-free low-power clause (template.ts). */
+const CHANCE_ITEM = `${LIMITATION_LINES.chance} ${LOW_POWER_BRIEF_LINE}`;
 function brief(data: StoreData = W.data, review = W.review, timeline = W.timeline) {
   const pkg = buildEvidence({ data, from: FROM, to: TODAY, review, timeline, kb: FAKE_KB });
   return { pkg, content: templateBrief(pkg, { data, review, timeline, kb: FAKE_KB }) };
@@ -174,7 +177,7 @@ describe("templateBrief", () => {
     const review = { ...W.review, notices: ["This review checks published criteria only (AGS Beers 2023, …). No flag does not mean a medicine is safe.", "Kidney function was not provided"] };
     const { content } = brief(W.data, review);
     expect(content.limitations[0]).toMatch(/^Check-ins were recorded on \d+ of 45 days from Aug 27 through Oct 10; days without a check-in are left out of every count\.$/);
-    expect(content.limitations).toContain(LIMITATION_LINES.chance);
+    expect(content.limitations).toContain(CHANCE_ITEM);
     expect(content.limitations).toContain(LIMITATION_LINES.scope);
     expect(content.limitations).toContain("Kidney function was not provided.");
     expect(content.limitations.filter((l) => /published criteria/.test(l))).toHaveLength(1);
@@ -182,11 +185,24 @@ describe("templateBrief", () => {
     expect(content.limitations.join(" ")).not.toMatch(/\bsafe\b/i);
   });
 
+  it("says that a real diary change can go unflagged, in the same item as the chance line", () => {
+    // LOW_POWER_BRIEF_LINE is code-written in timeline/rules.ts (the brief's figure-free form of the Timeline's
+    // LOW_POWER_NOTE). Sharing the chance item keeps the seed brief one printed page.
+    expect(CHANCE_ITEM).toBe(
+      "Recorded symptoms can change for many reasons, including chance and expectation; this record does not show cause. " +
+        "A real change can go unflagged.",
+    );
+    expect(B.content.limitations.filter((l) => l.includes(LOW_POWER_BRIEF_LINE))).toEqual([CHANCE_ITEM]);
+    // Also when nothing was flagged: that is when it matters most.
+    expect(brief(W.data, W.review, { ...W.timeline, signals: [], perMed: [] }).content.limitations).toContain(CHANCE_ITEM);
+    for (const re of BANNED_IN_TEMPLATE) expect(re.test(CHANCE_ITEM), `${re}`).toBe(false);
+  });
+
   it("says that as-needed doses are not recorded day by day, only when an as-needed medicine is on the list", () => {
     expect(LIMITATION_LINES.asNeeded).toBe("Doses taken are not logged, so as-needed medicines cannot be separated.");
     // The seed's Tylenol PM is taken "at bedtime as needed".
     expect(B.content.limitations).toContain(LIMITATION_LINES.asNeeded);
-    expect(B.content.limitations.indexOf(LIMITATION_LINES.asNeeded)).toBeLessThan(B.content.limitations.indexOf(LIMITATION_LINES.chance));
+    expect(B.content.limitations.indexOf(LIMITATION_LINES.asNeeded)).toBeLessThan(B.content.limitations.indexOf(CHANCE_ITEM));
     const scheduled: StoreData = { ...W.data, medications: W.data.medications.map((m) => ({ ...m, asNeeded: false })) };
     expect(brief(scheduled).content.limitations).not.toContain(LIMITATION_LINES.asNeeded);
   });
@@ -234,6 +250,8 @@ describe("templateBrief", () => {
   it("ends every brief with the safety line and the static safety-net line", () => {
     expect(briefSafetyLines(W.data.profile)).toEqual([SAFETY_LINE, safetyNetLine("Margaret")]);
     expect(briefSafetyLines({ ...W.data.profile, displayName: "", preferredName: "" })[1]).toContain("your relative's doctor or pharmacist");
+    // The static 911 sentence travels with the safety-net line on every brief, whatever was recorded.
+    expect(briefSafetyLines(W.data.profile)[1].endsWith(EMERGENCY_LINE)).toBe(true);
   });
 
   it("contains no banned language anywhere", () => {

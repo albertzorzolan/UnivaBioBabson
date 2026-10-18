@@ -103,6 +103,7 @@ export function plainIssue(issue: string): string {
     case "quote_unsupported":
       return "quotes words that are not in the records";
     case "condition_unsupported":
+    case "unsupported_condition": // rule 8 (verify.ts): a condition term the cited text does not name
       return `names a condition the records it cites do not mention${q}`;
     case "unresolved_reference":
       return `says "since then" without saying when`;

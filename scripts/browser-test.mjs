@@ -56,6 +56,30 @@ async function switchRole(page, base, role, route) {
   expect(hash.startsWith(`#${route}`), `switching to ${role} landed on ${hash}`);
 }
 
+/** The tour card, its spotlight and the step-8 scorecard (viewport boxes), plus the viewport size. */
+async function tourGeometry(page) {
+  return page.evaluate(() => {
+    const box = (el) => {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+    };
+    const card = document.querySelector(".tour-card");
+    return {
+      card: box(card),
+      spot: box(document.querySelector(".tour-spot")),
+      heldout: box(document.querySelector('[data-tour="how-eval-heldout"]')),
+      mode: card?.dataset.placement ?? null,
+      visibility: card ? getComputedStyle(card).visibility : null,
+      vp: { width: document.documentElement.clientWidth, height: window.innerHeight },
+    };
+  });
+}
+
+const inViewport = (b, vp) => !!b && b.left >= 0 && b.top >= 0 && b.right <= vp.width + 0.5 && b.bottom <= vp.height + 0.5;
+const overlaps = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+const fmtBox = (b) => (b ? `[${[b.left, b.top, b.right, b.bottom].map(Math.round).join(",")}]` : "null");
+
 async function shot(page, name) {
   const file = join(SHOTS, `${name}.png`);
   await page.screenshot({ path: file, fullPage: false }).catch(() => {});
@@ -497,36 +521,97 @@ const CHECKS = [
   },
   {
     id: "guided-tour",
-    title: "Guided tour runs all 8 steps without errors",
+    title: "Guided tour runs all 8 steps at 1366×860 with motion: card on screen 300 ms after each Next, keeps focus (→ works), clear of the step-8 target",
     async run({ open, base, sink }) {
-      const { page } = await open();
+      // The size and motion setting most judges have: smooth scrolling is where half-scrolled frames used to show.
+      const { page } = await open(null, { viewport: { width: 1366, height: 860 }, reducedMotion: "no-preference" });
       const errBefore = sink.consoleErrors.length;
       await go(page, base, "/");
       await page.getByRole("button", { name: /guided tour/i }).click();
+      let clickedAt = Date.now();
       const seen = [];
       for (let i = 1; i <= 8; i++) {
         const card = page.locator(".tour-card");
         await card.getByText(`Step ${i} of 8`).waitFor({ timeout: 10000 });
+        // 300 ms after Next: the card may still be hidden while the page settles, but its box is never off screen.
+        await page.waitForTimeout(Math.max(0, 300 - (Date.now() - clickedAt)));
+        const early = await tourGeometry(page);
+        expect(inViewport(early.card, early.vp), `step ${i}, 300 ms after Next: card ${fmtBox(early.card)} outside ${early.vp.width}×${early.vp.height} (${early.mode}, ${early.visibility})`);
         await settle(page);
         await page.waitForTimeout(400);
-        const title = (await card.locator(".tour-card__title").innerText()).trim();
-        const hash = new URL(page.url()).hash.split("?")[0];
-        const spot = await page.locator(".tour-spot").count();
-        seen.push(`${i}:${hash}${spot ? "*" : ""}`);
-        await page.screenshot({ path: join(SHOTS, `tour-step-${i}.png`) });
         if (i === 2) {
           // The patient check-in step auto-reads an example story.
           await page.locator('[data-tour="checkin-heard"]').waitFor({ timeout: 8000 }).catch(() => {
             throw new Error("tour step 2 did not show the extraction ('checkin-heard')");
           });
         }
+        if (i === 8) {
+          // The benchmark runs by itself, then the spotlight moves to the held-out scorecard.
+          await page.locator('[data-tour="how-eval-heldout"]').waitFor({ timeout: 10000 });
+        }
+        await page.waitForFunction(() => getComputedStyle(document.querySelector(".tour-card")).visibility === "visible", null, { timeout: 5000 });
+        await page.waitForTimeout(500);
+        const g = await tourGeometry(page);
+        expect(inViewport(g.card, g.vp), `step ${i}: card ${fmtBox(g.card)} outside the viewport (${g.mode})`);
+        if (i === 8) {
+          expect(g.spot && g.heldout, "step 8: no spotlight on the held-out scorecard");
+          expect(!overlaps(g.card, g.spot), `step 8: card ${fmtBox(g.card)} covers the spotlight ${fmtBox(g.spot)} (${g.mode})`);
+          expect(!overlaps(g.card, g.heldout), `step 8: card ${fmtBox(g.card)} covers the held-out scorecard ${fmtBox(g.heldout)} (${g.mode})`);
+        }
+        if (i === 2 || i === 8) {
+          // At these steps the spotlight moves to a new target mid-step (the extraction, the held-out scorecard), so
+          // the card hides and reappears; the browser drops focus from a hidden card, and the card must take it back.
+          const focused = await page
+            .waitForFunction(() => !!document.querySelector(".tour-card")?.contains(document.activeElement), null, { timeout: 2000 })
+            .then(() => true)
+            .catch(() => false);
+          const where = await page.evaluate(() => {
+            const a = document.activeElement;
+            return a ? `${a.tagName}${a.className ? "." + String(a.className).split(" ")[0] : ""}` : "null";
+          });
+          expect(focused, `step ${i}: keyboard focus is on ${where}, not in the tour card`);
+        }
+        const title = (await card.locator(".tour-card__title").innerText()).trim();
+        const hash = new URL(page.url()).hash.split("?")[0];
+        seen.push(`${i}:${hash}${g.spot ? "*" : ""}`);
+        await page.screenshot({ path: join(SHOTS, `tour-step-${i}.png`) });
         expect(title.length > 0, `step ${i} has no title`);
-        await card.getByRole("button", { name: i === 8 ? /Finish tour/ : /^Next/ }).click();
+        // Step 2 moves on with the keyboard (→ is handled by the focused card), the others with the Next button.
+        if (i === 2) await page.keyboard.press("ArrowRight");
+        else await card.getByRole("button", { name: i === 8 ? /Finish tour/ : /^Next/ }).click();
+        clickedAt = Date.now();
       }
       await page.locator(".tour-card").waitFor({ state: "detached", timeout: 5000 });
       const errs = sink.consoleErrors.slice(errBefore);
       expect(errs.length === 0, `console errors during tour: ${errs.map((e) => e.text).join(" | ").slice(0, 300)}`);
       return seen.join(" ");
+    },
+  },
+  {
+    id: "guided-tour-leave",
+    title: "A tour left via Welcome does not come back after Try as Alex; Take the tour starts again at Step 1 of 8",
+    async run({ open, base }) {
+      const { page } = await open();
+      await go(page, base, "/");
+      await page.getByRole("button", { name: /guided tour/i }).click();
+      const card = page.locator(".tour-card");
+      await card.getByText("Step 1 of 8").waitFor({ timeout: 10000 });
+      await card.getByRole("button", { name: /^Next/ }).click();
+      await card.getByText("Step 2 of 8").waitFor({ timeout: 10000 });
+      // Leave mid-tour the way a visitor would: back to the Welcome page, then pick a view.
+      await page.evaluate(() => (window.location.hash = "#/"));
+      await page.getByRole("button", { name: /Try as Alex/ }).click();
+      await settle(page);
+      await page.waitForTimeout(1200);
+      const steps = await card.locator(".tour-card__count").allInnerTexts();
+      expect(steps.length === 0, `the tour came back (${steps.join("")}) after leaving via Welcome and Try as Alex`);
+      const hash = new URL(page.url()).hash;
+      expect(hash.startsWith("#/c/overview"), `Try as Alex landed on ${hash}`);
+      const saved = await page.evaluate(() => sessionStorage.getItem("kinwise.v1.tour"));
+      expect(saved === null, `the tour step is still saved: ${saved}`);
+      await page.getByRole("button", { name: /Take the 2-minute tour/ }).first().click();
+      await card.getByText("Step 1 of 8").waitFor({ timeout: 10000 });
+      return "left at step 2 · nothing after Try as Alex · restarted at Step 1 of 8";
     },
   },
   {

@@ -55,4 +55,10 @@ describe("How it works benchmark provenance", () => {
     expect(src).not.toMatch(/never\s+leave/);
     expect(src).not.toMatch(/eslint-disable/);
   });
+
+  it("renders the AI draft hint (howContent.ts) in the recorded-run section", () => {
+    expect(src).toMatch(/import \{[^}]*\bAI_DRAFT_HINT\b[^}]*\} from "\.\/howContent"/);
+    const run = src.slice(src.indexOf("function ModelRun()"), src.indexOf("function ModelRun()") + 4000);
+    expect(run).toContain("{AI_DRAFT_HINT}");
+  });
 });

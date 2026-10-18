@@ -902,8 +902,23 @@
     font-size: var(--fs-lg);
   }
 }
+/* Phones under 416 px: the top bar shows the logo mark without the "Kinwise." wordmark, so the mark, "How it works"
+   and "Try the demo" fit on one row with the page's 16 px gutter on both sides (with the wordmark the row was about
+   370 px wide and pushed the button to 3 px from the edge at 390 px). The link keeps its name from aria-label, and
+   the hero's lead names Kinwise right below. */
+@media (max-width: 26rem) {
+  .pub-top__brand .ui-logo__text {
+    display: none;
+  }
+  /* The mark alone is 36 px; keep a 44 px target like its neighbours, with the mark still on the 16 px gutter. */
+  .pub-top__brand {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+  }
+}
 /* Very narrow phones (320 px): the top bar keeps the logo and "Try the demo"; "How it works" stays in the footer. */
-@media (max-width: 23rem) {
+@media (max-width: 21rem) {
   .pub-top__link {
     display: none;
   }

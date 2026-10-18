@@ -1,9 +1,12 @@
 // Every number the submission PDFs print, read from files in the repo at build time (there are no hand counts):
 //   eval/results/nlp-eval.json, meds-eval.json, ai-live.json, llm-smoke.json   (evaluation results)
 //   eval/results/meds-ablation.json, verifier-redteam.json, timeline-null.json (optional; each fact is null if absent)
+//   eval/results/llm-batch.json                                                (optional: the on-device model's batch run)
 //   eval/verifier-redteam.json                                                 (items tagged "live-escape": the flawed
 //                                                                               AI sentences of the recorded live run)
 //   src/engine/timeline/rules.ts                                               (the app's "about 1 in 10" false alarms)
+//   docs/EVALUATION.md §3 + src/engine/timeline/seed.timeline.test.ts          (the demo's Fisher and runs-check p)
+//   src/engine/brief/template.test.ts                                          (the brief's sleep line, engine output)
 //   src/kb/data/meta.json                                                      (knowledge-base coverage)
 //   docs/samples/kinwise-fhir-bundle.json + kinwise-fhir-validation.json      (HAPI FHIR R4 $validate)
 //   vitest JSON report (run by make-pdfs.mjs) or SKIP_VITEST=1 → counts from the last run, if any
@@ -13,7 +16,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { BUILD_DIR, ROOT, ensureDir, readJson, readJsonIfExists } from "./lib.mjs";
+import { BUILD_DIR, REPO_BRANCH, ROOT, ensureDir, readJson, readJsonIfExists } from "./lib.mjs";
 
 // Same formatting as the app's How it works page (src/views/public/HowItWorks.tsx `pct`): percent, one decimal, so a
 // score printed in a PDF reads exactly as the live page shows it (held-out micro-F1 0.9422 → "94.2%").
@@ -21,9 +24,9 @@ const pct = (x, d = 1) => `${(x * 100).toFixed(d)}%`;
 const dec = (x, d = 3) => x.toFixed(d);
 // Rounds down, so a headline score is never shown higher than measured (dev F1 0.9985 → "0.998", as in README/EVALUATION).
 const floorDec = (x, d = 3) => (Math.floor(x * 10 ** d + 1e-9) / 10 ** d).toFixed(d);
-// The same rule as a percent (dev F1 0.9985 → "99.8%", matching README's 0.998). Used for the dev score only: the How it
-// works page rounds it to "99.9%", but the PDFs and check-facts follow the never-higher-than-measured rule. The held-out
-// score keeps `pct`, so the one-pager matches the live page exactly (0.9422 → "94.2%" either way).
+// The same rule as a percent (dev F1 0.9985 → "99.8%", matching README's 0.998). Used for the dev score only; the How it
+// works page prints its development card with the same floorPct (src/views/public/howEval.ts), so it also reads
+// "99.8%". The held-out score keeps `pct`, so the one-pager matches the live page exactly (0.9422 → "94.2%" either way).
 const floorPct = (x, d = 1) => `${floorDec(x * 100, d)}%`;
 
 // The full suite includes eval/nlp.eval.test.ts and eval/meds.eval.test.ts, which rewrite these result files
@@ -87,10 +90,13 @@ function readOptional(rel) {
  *   redteam      eval/results/verifier-redteam.json { harmfulTotal, caught, validTotal, falseRejects, liveEscapes,
  *                before: { harmfulTotal, caught }, postFixProbe: { total, caught, heldOut },
  *                postFixProbe2 / postFixProbe3: { total, caught, validTotal, falseRejects, heldOut } }
+ *                postFixProbe3.withCorrectedLabel { total, caught } (the same recorded run after one label correction)
  *   timelineNull eval/results/timeline-null.json { independent, clustered } × { moderateRate, strongRate, n, stay },
  *                optional per scenario: gated { moderateRate, strongRate, n } (the same simulation with the runs-aware
  *                check applied), and runsCheck { gate } at the top level. `runsGate` is true only when runsCheck.gate is
  *                exactly true, i.e. the file says the app applies that check; the one-pager prints a gated rate only then.
+ *                power[] { stay, metric, detectionRate, gatedDetectionRate }: a real rise in dizziness (15% → 45% of
+ *                days); `power.independent` is the stay-0 row, `power.clustered` the row at the clustered scenario's stay.
  */
 export function optionalEvidence({ nlp = null, ablation = null, redteam = null, timelineNull = null } = {}) {
   const ho = nlp?.heldout ?? null;
@@ -132,7 +138,9 @@ export function optionalEvidence({ nlp = null, ablation = null, redteam = null, 
     const postFixProbe2 = pf2 ? withValid(pf2raw, pf2) : null;
     const pf3raw = redteam.postFixProbe3;
     const pf3 = probe(pf3raw);
-    const postFixProbe3 = pf3 ? withValid(pf3raw, pf3) : null;
+    // withCorrectedLabel: the same recorded run re-scored after review relabelled one valid item as harmful
+    // (10 of 22 → 10 of 23). It is the held-out figure the submission text prints; null when absent or malformed.
+    const postFixProbe3 = pf3 ? { ...withValid(pf3raw, pf3), corrected: probe(pf3raw.withCorrectedLabel) } : null;
     rt = {
       before,
       postFixProbe,
@@ -163,6 +171,15 @@ export function optionalEvidence({ nlp = null, ablation = null, redteam = null, 
     return { moderate, strong, n: isCount(o?.n) && o.n > 0 ? o.n : null, stay: isNum(o?.stay) && o.stay >= 0 && o.stay <= 1 ? o.stay : null, gated };
   };
   const independent = nullRates(timelineNull?.independent);
+  const clustered = nullRates(timelineNull?.clustered);
+  // Power rows: the share of simulated real rises in dizziness that are flagged, by the tests alone and with the runs
+  // check. Matched on `stay` (0 = independent days) so a reordered array cannot swap the two.
+  const powerRows = Array.isArray(timelineNull?.power) ? timelineNull.power : [];
+  const powerAt = (stay) => {
+    const r = powerRows.find((x) => x && x.metric === "dizziness" && x.stay === stay);
+    const tests = ratePct(r?.detectionRate);
+    return tests ? { tests, gated: ratePct(r?.gatedDetectionRate), n: isCount(r?.n) && r.n > 0 ? r.n : null } : null;
+  };
 
   return {
     nlpBaselineF1Pct: isNum(baseF1) ? pct(baseF1) : null,
@@ -179,7 +196,14 @@ export function optionalEvidence({ nlp = null, ablation = null, redteam = null, 
       : null,
     redteam: rt,
     // Clustered days are only reported next to the independent-days result.
-    timelineNull: independent ? { independent, clustered: nullRates(timelineNull?.clustered), runsGate: timelineNull?.runsCheck?.gate === true } : null,
+    timelineNull: independent
+      ? {
+          independent,
+          clustered,
+          runsGate: timelineNull?.runsCheck?.gate === true,
+          power: { independent: powerAt(0), clustered: clustered?.stay != null ? powerAt(clustered.stay) : null },
+        }
+      : null,
   };
 }
 
@@ -235,6 +259,32 @@ export function falseAlarmAbout(rulesSrc) {
   return m ? `about ${m[1]}` : null;
 }
 
+/**
+ * The demo story's headline figures, read from committed files (pure: texts in, strings out; null when not found):
+ *   runsCheckP       docs/EVALUATION.md §3 "Runs-check p: dizziness 0.007" (the runs check on the seeded diary)
+ *   runsCheckPinned  the same p as pinned in src/engine/timeline/seed.timeline.test.ts (`runs.dizziness).toEqual({ p: … `);
+ *                    check-facts fails when the two differ, so the docs cannot drift from the engine
+ *   fisherP          seed.timeline.test.ts `d.statistics` ("Fisher's exact test, two-sided p = 0.0023 …")
+ *   sleep            src/engine/brief/template.test.ts, the brief's "Also recorded" line asserted word for word on the
+ *                    seed (engine output): { after: "3.4", before: "2.6", afterDays: 14, beforeDays: 20 }
+ */
+export function demoFacts({ evaluationMd = "", seedTimelineTest = "", templateTest = "" } = {}) {
+  const runs = /Runs-check p: dizziness (0\.\d+)/.exec(String(evaluationMd));
+  const pinned = /runs\.dizziness\)\.toEqual\(\{ p: (0\.\d+)/.exec(String(seedTimelineTest));
+  const fisher = /d\.statistics\)\.toBe\("Fisher's exact test, two-sided p = (0\.\d+)/.exec(String(seedTimelineTest));
+  // The test splits the sentence over two string literals ("… on 14 answered " + "days after, …"), so the literal
+  // boundary is matched as optional quote-plus-whitespace.
+  const sleep = new RegExp(
+    String.raw`sleep quality ratings averaged (\d\.\d) out of 5 on (\d+) answered (?:"\s*\+\s*")?days after, compared with (\d\.\d) out of 5 on (\d+) answered days before`,
+  ).exec(String(templateTest));
+  return {
+    runsCheckP: runs ? runs[1] : null,
+    runsCheckPinned: pinned ? pinned[1] : null,
+    fisherP: fisher ? fisher[1] : null,
+    sleep: sleep ? { after: sleep[1], afterDays: Number(sleep[2]), before: sleep[3], beforeDays: Number(sleep[4]) } : null,
+  };
+}
+
 /** Read-only git: the text of `rel` at `ref`, or null if it does not exist there (or git is unavailable). */
 function gitShow(ref, rel) {
   try {
@@ -251,7 +301,7 @@ function gitShow(ref, rel) {
  * into REPO_BRANCH (and redeploys). Read-only: `git show <branch>:<path>`; nothing is fetched, written or pushed.
  * Returns { branch, gaps: string[], keys: string[] } (both null when git could not be asked at all). `keys` names the
  * facts each gap feeds, for branchOnlyFacts(): "ablation", "redteam", "timelineNull", "nlpBaseline", "nlpCi95",
- * "verifier", "liveEscapes".
+ * "verifier", "liveEscapes", "llmBatch".
  */
 export function evidenceNotOnBranch(branch) {
   try {
@@ -269,6 +319,7 @@ export function evidenceNotOnBranch(branch) {
     ["ablation", "eval/results/meds-ablation.json"],
     ["redteam", "eval/results/verifier-redteam.json"],
     ["timelineNull", "eval/results/timeline-null.json"],
+    ["llmBatch", "eval/results/llm-batch.json"],
   ]) {
     if (existsSync(join(ROOT, rel)) && gitShow(branch, rel) == null) gap(key, `${rel} (absent at ${branch})`);
   }
@@ -339,6 +390,7 @@ export function recordedTests(evaluationMd) {
  * its bullet or clause is dropped, and the rest falls back to what the branch itself holds:
  *   - timeline false alarms → the branch's rules.ts wording ("about 1 in 10") instead of timeline-null.json;
  *   - tests → the counts recorded in the branch's docs/EVALUATION.md §7 (with their date), or none;
+ *   - the demo's runs-check p and the brief's sleep averages → demoFacts() on the branch's own files (null at 375e1e0);
  *   - the flawed-AI count → kept only if the branch has the live-escape items it is counted from (no "liveEscapes"
  *     gap) and every one of those sentences is in the branch's ai-live.json verbatim. Otherwise the count is null and
  *     `ai.liveFlawedOnBranch` says whether the branch's own ai-live.json verdict records flawed output that got through
@@ -373,7 +425,15 @@ export function branchOnlyFacts(facts, { branch, gapKeys = [], show = (rel) => g
   // The "after fixes" red-team score describes this tree's claim checker, so either gap drops it.
   if (gaps.has("redteam") || gaps.has("verifier")) f.verifier = null;
   if (gaps.has("timelineNull")) f.timelineNull = null;
+  if (gaps.has("llmBatch")) f.llmBatch = null;
   f.timelineAbout = falseAlarmAbout(show("src/engine/timeline/rules.ts"));
+  // The demo's runs-check p and the brief's sleep line exist only where the branch's own files state them (neither
+  // does at 375e1e0), so the fallback prints them only then.
+  f.demo = demoFacts({
+    evaluationMd: show("docs/EVALUATION.md") ?? "",
+    seedTimelineTest: show("src/engine/timeline/seed.timeline.test.ts") ?? "",
+    templateTest: show("src/engine/brief/template.test.ts") ?? "",
+  });
   // Tests: this tree's suite is not the branch's, so the branch's own record is used (or nothing).
   const rec = recordedTests(show("docs/EVALUATION.md"));
   f.tests = rec ? { recorded: rec, vitest: null, e2eChecks: null, e2ePassed: null, e2eRun: null, e2eFailed: null, a11yScans: null, a11yViolations: null, a11ySerious: null } : null;
@@ -454,6 +514,59 @@ export function liveRunFacts(live) {
   };
 }
 
+/**
+ * The on-device model's batch run (eval/results/llm-batch.json, written by scripts/llm-batch.mjs; method in
+ * eval/LLM-BATCH.md). Pure. Null when the file is absent, a count is malformed, or the audit of the shown sentences is
+ * not complete: the submission then states nothing about the batch rather than a partial figure. The escape interval is
+ * the Wilson 95% interval the script computed and stored (escapeWilson95); `line` is the exact DEVPOST line.
+ */
+export function batchFacts(b) {
+  const s = b?.summary;
+  const t = s?.byTask;
+  const a = b?.audit;
+  const counts = [s?.prompts, s?.sentencesGenerated, s?.blocked, s?.shown];
+  if (!s || !t || !counts.every(isCount) || s.sentencesGenerated === 0 || s.blocked + s.shown > s.sentencesGenerated) return null;
+  const lat = (task) => {
+    const l = t[task]?.latencyMs;
+    return isNum(l?.p50) && isNum(l?.p95) ? { p50S: (l.p50 / 1000).toFixed(1), p95S: (l.p95 / 1000).toFixed(1) } : null;
+  };
+  const ask = lat("ask");
+  const brief = lat("brief");
+  const explain = lat("explain");
+  const ci = ciPct(a?.escapeWilson95);
+  if (!ask || !brief || !explain || a?.complete !== true || !isCount(a.labelled) || !isCount(a.flawed) || a.labelled !== s.shown || !ci) return null;
+  const blockedPct = pct(s.blocked / s.sentencesGenerated);
+  const shownPct = pct(s.shown / s.sentencesGenerated);
+  const set = b.promptSet ?? {};
+  const facts = {
+    date: typeof b.date === "string" ? b.date : null,
+    prompts: s.prompts,
+    askPrompts: set.ask ?? null,
+    briefPrompts: set.brief ?? null,
+    explainPrompts: set.explain ?? null,
+    generated: s.sentencesGenerated,
+    blocked: s.blocked,
+    blockedPct,
+    shown: s.shown,
+    shownPct,
+    flawed: a.flawed,
+    labelled: a.labelled,
+    escapePct: pct(a.flawed / a.labelled),
+    escapeCi95: ci,
+    labelledBy: a.labelledBy ?? null,
+    externalRequests: Array.isArray(b.externalRequestsBlocked) ? b.externalRequestsBlocked.length : null,
+    ask,
+    brief,
+    explain,
+  };
+  // One plain line under DEVPOST's "AI and rigor at a glance" table (the table keeps its 4 rows).
+  facts.line =
+    `**On-device model, batch of ${facts.prompts} prompts** ([LLM-BATCH.md](https://github.com/albertzorzolan/UnivaBioBabson/blob/${REPO_BRANCH}/eval/LLM-BATCH.md)): ` +
+    `the checker blocked ${blockedPct} of ${facts.generated} AI sentences; ${facts.flawed} of ${facts.shown} shown sentences were flawed ` +
+    `(95% CI ${ci}; audit by an AI agent, not a clinician); median ${ask.p50S} s per Ask answer, ${brief.p50S} s per brief draft.`;
+  return facts;
+}
+
 export function collectFacts() {
   const nlp = readJson("eval/results/nlp-eval.json");
   const meds = readJson("eval/results/meds-eval.json");
@@ -484,12 +597,19 @@ export function collectFacts() {
   const a11yLast = readJsonIfExists("test-results/a11y/report.json");
 
   const vitest = runVitest();
+  const text = (rel) => (existsSync(join(ROOT, rel)) ? readFileSync(join(ROOT, rel), "utf8") : "");
 
   return {
     nlp: nlpFacts(nlp),
     meds: { ...medsFacts(meds), ablation: extra.ablation },
     verifier: extra.redteam,
     timelineNull: extra.timelineNull,
+    llmBatch: batchFacts(readOptional("eval/results/llm-batch.json")),
+    demo: demoFacts({
+      evaluationMd: text("docs/EVALUATION.md"),
+      seedTimelineTest: text("src/engine/timeline/seed.timeline.test.ts"),
+      templateTest: text("src/engine/brief/template.test.ts"),
+    }),
     // The app's own wording, printed when timeline-null.json is absent (as on the linked branch).
     timelineAbout: falseAlarmAbout(readFileSync(join(ROOT, "src/engine/timeline/rules.ts"), "utf8")),
     kb: kbFacts(meta),
@@ -527,6 +647,9 @@ export function collectFacts() {
       // The a11y gate (scripts/a11y.mjs) fails only on serious or critical violations.
       a11ySerious: a11yLast ? a11yLast.report.reduce((n, r) => n + r.violations.filter((v) => v.impact === "serious" || v.impact === "critical").length, 0) : null,
       a11yRanAt: a11yLast?.ranAt ?? null,
+      // The dated counts committed in docs/EVALUATION.md §7, which the printed counts must trace to (check-facts
+      // compares them with the last vitest report and the browser-test results).
+      recordedHere: recordedTests(text("docs/EVALUATION.md")),
     },
   };
 }

@@ -14,7 +14,8 @@
 //                 A finding question longer than one 280-character sentence is split into its question sentences
 //                 (the follow-up is kept while there is room); each part cites what its numbers need and must pass
 //                 verifySentence with the same options as the AI draft, or it is left out.
-//   limitations   fixed, honest lines (coverage, as-needed doses, chance/expectation, what the review does not
+//   limitations   fixed, honest lines (coverage, as-needed doses, chance/expectation + "a real change can go
+//                 unflagged" (LOW_POWER_BRIEF_LINE; the Timeline shows the measured figure), what the review does not
 //                 check, provenance)
 //   footer        briefSafetyLines: SAFETY_LINE + the static safety-net line (safetyNet.ts), rendered by the view
 //                 for every brief (not stored in BriefContent, so older briefs show it too)
@@ -57,6 +58,7 @@ import {
 import type { BriefKb } from "./shared";
 import { verifySentence } from "./verify";
 import { safetyNetLine } from "./safetyNet";
+import { LOW_POWER_BRIEF_LINE } from "../timeline/rules";
 
 export interface TemplateInput {
   data: StoreData;
@@ -345,7 +347,11 @@ export function templateBrief(pkg: EvidencePackage, input: TemplateInput): Brief
   if (data.medications.some((m) => m.asNeeded && m.startDate <= pkg.to && (!m.endDate || m.endDate >= pkg.from))) {
     limitations.push(LIMITATION_LINES.asNeeded);
   }
-  limitations.push(LIMITATION_LINES.chance, LIMITATION_LINES.scope);
+  // "No flag is not an all-clear" in LIMITATION_LINES.scope covers the medication review only; a real change in the
+  // diary can be missed too (LOW_POWER_BRIEF_LINE, the brief's form of the Timeline's LOW_POWER_NOTE). It shares the
+  // chance item (false flags and missed changes together) and fits that item's second printed line, so the seed brief
+  // stays one page.
+  limitations.push(`${LIMITATION_LINES.chance} ${LOW_POWER_BRIEF_LINE}`, LIMITATION_LINES.scope);
   const unmatched = (review.unmatchedMedIds ?? [])
     .map((id) => data.medications.find((m) => m.id === id))
     .filter((m): m is NonNullable<typeof m> => Boolean(m))

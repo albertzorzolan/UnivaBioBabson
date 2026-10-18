@@ -183,9 +183,10 @@ the medicine caused it." Also `weeklySummary(checkIns, today)` for patient view 
 5. Medication mentions: match active med names/brands in text; detect "missed/forgot/skipped" dose phrases → `medNotes`.
 6. Output proposals ≤ one per field; conflicts (both affirmed and negated in different clauses) → `conflict` certainty, user decides.
 Every proposal has ≥1 span; tests assert `story.slice(start,end)===quote`.
-Benchmark: `eval/nlp-corpus.dev.json` (~120 cases) and `eval/nlp-corpus.heldout.json` (~60 cases written independently,
-never used for tuning). Metrics: per-field precision/recall/F1, negation accuracy, experiencer/temporal false-positive rate.
-Runnable via `npm run eval:nlp` and in-app on How-it-works ("Run evaluation now").
+Benchmark: `eval/nlp-corpus.dev.json` (263 stories, used for tuning) and `eval/nlp-corpus.heldout.json` (70 stories written
+independently, never used for tuning); the original design target was ~120 and ~60. Metrics: per-field precision/recall/F1,
+negation accuracy, experiencer/temporal false-positive rate. Runnable via `npm run eval:nlp` and in-app on How-it-works
+("Run the extraction benchmark now").
 
 ### 6.5 Evidence package, template brief, verification, FHIR (`engine/brief`)
 - `buildEvidence(store, range, review, signals) → EvidencePackage` with stable IDs: `fact:*` (coverage, counts),

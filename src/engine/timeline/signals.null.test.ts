@@ -25,12 +25,12 @@
 // test. Power: the same simulation with a real change (dizziness on 15% of days before the start, 45% from the start
 // day on), counting how often dizziness is flagged. Results: eval/results/timeline-null.json.
 import { describe, expect, it } from "vitest";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { CheckIn, DiaryAnswers } from "../../model/types";
 import { addDays } from "../../model/dates";
 import { getMetric, latestCheckInPerDate } from "./metrics";
-import { MULTIPLE_COMPARISONS_NOTE, TIMELINE_METHOD_SUMMARY, TIMELINE_RULES } from "./rules";
+import { LOW_POWER_BRIEF_LINE, LOW_POWER_NOTE, MULTIPLE_COMPARISONS_NOTE, TIMELINE_METHOD_SUMMARY, TIMELINE_RULES } from "./rules";
 import type { MetricComparison } from "./signals";
 import { analyzeEvent, classifyStrength, gatedStrength, isSignalStrength } from "./signals";
 import { makeMed } from "./test-fixtures";
@@ -364,6 +364,41 @@ describe("the user-facing text quotes the measured rates (never rounded up)", ()
     expect(TIMELINE_METHOD_SUMMARY).toContain(`runs of ${TIMELINE_RULES.runsCheck.blockDays} days`);
     expect(TIMELINE_METHOD_SUMMARY).toContain(`${TIMELINE_RULES.runsCheck.permutations} times`);
     expect(TIMELINE_METHOD_SUMMARY.includes("does not yet change which differences are flagged")).toBe(!TIMELINE_RULES.runsCheck.gate);
+  });
+});
+
+describe("LOW_POWER_NOTE quotes the measured power (never rounded up); LOW_POWER_BRIEF_LINE states it without a figure", () => {
+  // "No flagged difference is not an all-clear": the power scenario is a real tripling of dizziness days
+  // (15% → 45%), and the note says it was flagged fewer than 4 times in 10. That wording holds while the measured
+  // rate stays in [0.3, 0.4): at 0.4 or more "fewer than 4" is false; below 0.3 it would understate the gap.
+  it("describes the simulated scenario: a tripling, with 2–3 weeks of entries on each side", () => {
+    expect(POWER_AFTER_RATE / TYPICAL.dizziness).toBeCloseTo(3, 9);
+    expect(LOW_POWER_NOTE).toContain("even a tripling of dizziness days");
+    // Before window: 21 days; after window: start day to today = 17 days (≈ 2.4 weeks).
+    expect(TIMELINE_RULES.windowDays).toBe(21);
+    expect(-START_OFFSET + 1).toBeGreaterThanOrEqual(14);
+    // The weeks are the windows on each side of the change, not the diary's length (a longer diary is not compared).
+    expect(LOW_POWER_NOTE).toContain("with 2–3 weeks of entries before and after a new medicine");
+  });
+
+  it("says 'fewer than 4 times in 10', as the simulation measures, with independent and with clustered days", () => {
+    expect(LOW_POWER_NOTE).toContain("was flagged fewer than 4 times in 10");
+    // The brief's clause carries no figure, so it cannot drift; "can go unflagged" holds while power is this low.
+    expect(LOW_POWER_BRIEF_LINE).toBe("A real change can go unflagged.");
+    expect(LOW_POWER_BRIEF_LINE).not.toMatch(/\d/);
+    for (const r of [power, powerClustered]) {
+      expect(r.dizzinessFlagged).toBeGreaterThanOrEqual(0.3);
+      expect(r.dizzinessFlagged).toBeLessThan(0.4);
+    }
+  });
+
+  it("matches the committed eval/results/timeline-null.json (power[0].detectionRate)", () => {
+    const committed = JSON.parse(readFileSync(RESULTS_PATH, "utf8")) as { power: { detectionRate: number; afterRate: number; beforeRate: number }[] };
+    const [p0] = committed.power;
+    expect(p0.beforeRate).toBe(TYPICAL.dizziness);
+    expect(p0.afterRate).toBe(POWER_AFTER_RATE);
+    expect(p0.detectionRate).toBeGreaterThanOrEqual(0.3);
+    expect(p0.detectionRate).toBeLessThan(0.4);
   });
 });
 

@@ -5,8 +5,13 @@
 // are lazy-loaded and render their data a moment later). If nothing appears, the card is centred instead
 // — the tour never depends on another screen's markup to work.
 //
+// While the page scrolls to a new target (or the step's view is still loading), the card and the ring wait out
+// of sight, keeping their size, and appear once the target has stopped moving — so no frame shows a card
+// sliding across a half-scrolled page.
+//
 // The overlay is non-modal (pointer-events pass through the dimmed page, so the highlighted element can be
-// used), but keyboard focus moves to the card on every step; Esc closes, ←/→ move between steps.
+// used), but keyboard focus moves to the card on every step, and back to it each time it reappears after a
+// settle (tourFocus.ts) unless the user has moved into the page; Esc closes, ←/→ move between steps.
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, Stethoscope, UserRound, UsersRound, X } from "lucide-react";
 import type { Role } from "../model/types";
@@ -18,6 +23,7 @@ import { goToTourStep, stopTour, TOUR_STEP_COUNT } from "./Tour";
 import { cx, useMediaQuery } from "../ui";
 import { countPrescribers } from "../views/caregiver/meds/medRecords";
 import { clampSpot, placeDocked, placeFloating, scrollGoal, type Box, type Placement, type Viewport } from "./tourPlacement";
+import { focusWhere, shouldReclaimFocus } from "./tourFocus";
 import "./tour.css";
 
 interface TourContext {
@@ -103,6 +109,7 @@ export const TOUR_STEPS: TourStep[] = [
       <>
         {c.topSignal ? <blockquote className="tour-quote">{c.topSignal}</blockquote> : null}
         <p>Signals from her diary and review findings, side by side — always with numerators and denominators, and a link to the records behind every number.</p>
+        <p>Today both views share one device (or a backup file); family sharing is planned.</p>
       </>
     ),
   },
@@ -179,6 +186,13 @@ export const TOUR_STEPS: TourStep[] = [
 ];
 
 const SEARCH_MS = 10_000;
+/** Longest the card stays hidden while the page scrolls to a target (then it is shown wherever things are). */
+const SETTLE_MS = 600;
+/** Longest the card stays hidden while the step's view loads; then it is shown centred until a target appears. */
+const FIRST_TARGET_MS = 900;
+/** When to check, after a step's first focus, that a view has not taken focus to its own <h1>. */
+const LATE_FOCUS_MS = 700;
+
 function findTarget(ids: string[]): { el: HTMLElement; rank: number } | null {
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
@@ -257,6 +271,44 @@ function rectOf(el: HTMLElement): Box {
   return { top: r.top, left: r.left, width: r.width, height: r.height };
 }
 
+/**
+ * Call `done` once `el` has stopped moving: its box is unchanged for 2 animation frames and, if a scroll was
+ * started, the page has reached `scrollTop` (or the browser reported `scrollend`, e.g. when the page could not
+ * scroll that far) — or SETTLE_MS has passed. Returns a cancel function.
+ */
+function whenStill(el: HTMLElement, scrollTop: number | null, done: () => void): () => void {
+  let frame = 0;
+  let stable = 0;
+  let last: Box | null = null;
+  let ended = false;
+  const onScrollEnd = () => {
+    ended = true;
+  };
+  const cancel = () => {
+    cancelAnimationFrame(frame);
+    window.clearTimeout(timer);
+    window.removeEventListener("scrollend", onScrollEnd);
+  };
+  const finish = () => {
+    cancel();
+    done();
+  };
+  const tick = () => {
+    const now = rectOf(el);
+    stable = sameBox(last, now) ? stable + 1 : 0;
+    last = now;
+    // A smooth scroll can take a frame to start, so a still box only counts once the page is where it was sent.
+    // Two still frames also let the spotlight state catch up, so the ring appears in place rather than easing in.
+    const arrived = scrollTop === null || ended || Math.abs(window.scrollY - scrollTop) < 1;
+    if (stable >= 2 && arrived) finish();
+    else frame = requestAnimationFrame(tick);
+  };
+  const timer = window.setTimeout(finish, SETTLE_MS);
+  window.addEventListener("scrollend", onScrollEnd);
+  frame = requestAnimationFrame(tick);
+  return cancel;
+}
+
 function samePlacement(a: Placement | null, b: Placement): boolean {
   return (
     !!a &&
@@ -287,6 +339,25 @@ export function TourOverlay({ step: index }: { step: number }) {
   const [placement, setPlacement] = useState<Placement | null>(null);
   /** Bumped when the card's own size changes (text size, step content). */
   const [cardSizeTick, setCardSizeTick] = useState(0);
+  /**
+   * The card and ring are shown only once this matches `settleKey` (this step and its current target, or "-"
+   * while there is none): a new step or a new target hides them until the page has stopped moving.
+   */
+  const settleKey = `${index}:${target ? target.rank : "-"}`;
+  const [shownKey, setShownKey] = useState<string | null>(null);
+  const settling = shownKey !== settleKey;
+  /** Set when a step opens another page: its first scroll jumps instead of gliding (nobody saw the old spot). */
+  const jumpScroll = useRef(true);
+  /** Docked (phone) card: part of the step's text is below the bottom of the scrolling sheet. */
+  const [moreBelow, setMoreBelow] = useState(false);
+  /** The last step whose title received focus (focus waits until the card is visible). */
+  const focusedStep = useRef(-1);
+  /** The card should hold keyboard focus: it had it, and the user has not since clicked or tabbed into the page. */
+  const ownsFocus = useRef(false);
+  /** `settling` as of the last commit, for the late focus check (a hidden card cannot take focus). */
+  const settlingNow = useRef(settling);
+  /** The late focus check of the current step; it survives settles within the step, not a change of step. */
+  const lateFocus = useRef(0);
 
   const ctx = useMemo<TourContext>(() => {
     // Count clinicians only (same rule as the Medications page): "self (OTC)" entries are not prescribers.
@@ -317,6 +388,7 @@ export function TourOverlay({ step: index }: { step: number }) {
 
   // Enter the step: switch role and route if this step needs another view.
   useEffect(() => {
+    jumpScroll.current = path !== step.route;
     if (role !== step.role) loginAs(step.role);
     navigate(step.route);
     // Keyed on the step index alone: this runs once as a step begins. Listing `role` or `step` would pull the user
@@ -358,6 +430,9 @@ export function TourOverlay({ step: index }: { step: number }) {
 
   // Bring the target into view once per target: tall or wide targets go to the top (the card then fits
   // beside or below them); narrow ones are centred. On phones the target goes to the top, above the sheet.
+  // The first scroll on a newly opened page jumps, as does a long one (gliding past several screens only blurs)
+  // and every scroll with reduced motion; a short one within the same page glides. Either way the card and ring
+  // are shown once the target has stopped moving.
   useEffect(() => {
     const el = target?.el;
     const card = cardRef.current;
@@ -365,9 +440,31 @@ export function TourOverlay({ step: index }: { step: number }) {
     findBars();
     const r = rectOf(el);
     const goal = scrollGoal(r, { width: card.offsetWidth, height: card.offsetHeight }, viewport(true), phone);
-    const behavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
-    if (Math.abs(r.top - goal) > 24) window.scrollTo({ top: Math.max(0, window.scrollY + r.top - goal), behavior });
+    const firstOnPage = jumpScroll.current;
+    jumpScroll.current = false;
+    let scrollTop: number | null = null;
+    if (Math.abs(r.top - goal) > 24) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      scrollTop = Math.round(Math.min(Math.max(0, window.scrollY + r.top - goal), Math.max(0, max)));
+      const glide = !reduceMotion && !firstOnPage && Math.abs(scrollTop - window.scrollY) <= window.innerHeight;
+      window.scrollTo({ top: scrollTop, behavior: glide ? "smooth" : "instant" });
+    }
+    const key = `${index}:${target.rank}`;
+    return whenStill(el, scrollTop, () => setShownKey(key));
   }, [target, phone, reduceMotion]);
+
+  // No target (yet): a step without one shows its centred card at once; otherwise wait a moment for the view
+  // to load, then show the card centred (it moves to the target if one turns up later).
+  useLayoutEffect(() => {
+    if (target) return;
+    const key = `${index}:-`;
+    if (step.targets.length === 0) {
+      setShownKey(key);
+      return;
+    }
+    const timer = window.setTimeout(() => setShownKey(key), FIRST_TARGET_MS);
+    return () => window.clearTimeout(timer);
+  }, [index, target, step]);
 
   // Track the target's position (scrolling, layout shifts, lazy content) every frame while visible.
   useEffect(() => {
@@ -424,18 +521,84 @@ export function TourOverlay({ step: index }: { step: number }) {
     setPlacement((prev) => (samePlacement(prev, next) ? prev : next));
   }, [spot, phone, index, cardSizeTick]);
 
-  // Focus the card's title on every step so keyboard and screen-reader users follow along.
+  useLayoutEffect(() => {
+    settlingNow.current = settling;
+  }, [settling]);
+
+  /** Focus the title again if the browser or a view moved focus out of the card (see tourFocus.ts). */
+  const reclaimFocus = useCallback(() => {
+    const card = cardRef.current;
+    if (!card || settlingNow.current) return;
+    if (shouldReclaimFocus(focusWhere(card, document.activeElement, document.body), ownsFocus.current)) {
+      titleRef.current?.focus({ preventScroll: true });
+    }
+  }, []);
+
+  // Keep track of whether the card owns focus: focus inside it claims it; a click outside it, or Tab (which may
+  // leave it), gives it up until focus comes back into the card. While it owns focus, focus moved into the page
+  // by code — a view focusing its <h1> after navigation, however late its lazy chunk loads — is taken back.
   useEffect(() => {
-    const id = requestAnimationFrame(() => titleRef.current?.focus({ preventScroll: true }));
-    const late = window.setTimeout(() => {
-      // Views focus their own <h1> after navigation; take focus back once they have.
-      if (!cardRef.current?.contains(document.activeElement)) titleRef.current?.focus({ preventScroll: true });
-    }, 700);
-    return () => {
-      cancelAnimationFrame(id);
-      window.clearTimeout(late);
+    const inCard = (node: EventTarget | null) => node instanceof Node && !!cardRef.current?.contains(node);
+    let frame = 0;
+    const onFocusIn = (e: FocusEvent) => {
+      if (inCard(e.target)) ownsFocus.current = true;
+      else if (ownsFocus.current) {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => reclaimFocus());
+      }
     };
+    const onPointerDown = (e: PointerEvent) => {
+      if (!inCard(e.target)) ownsFocus.current = false;
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") ownsFocus.current = false;
+    };
+    document.addEventListener("focusin", onFocusIn);
+    document.addEventListener("pointerdown", onPointerDown, true);
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.removeEventListener("focusin", onFocusIn);
+      document.removeEventListener("pointerdown", onPointerDown, true);
+      document.removeEventListener("keydown", onKeyDown, true);
+    };
+  }, [reclaimFocus]);
+
+  // Each time the card becomes visible: on a step's first showing, focus its title so keyboard and screen-reader
+  // users follow along, and check again a moment later (views focus their own <h1> after navigation). When it
+  // reappears later in the same step (the spotlight moved to a new target), take back the focus that hiding it
+  // dropped.
+  useEffect(() => {
+    if (settling) return;
+    if (focusedStep.current !== index) {
+      focusedStep.current = index;
+      titleRef.current?.focus({ preventScroll: true });
+      ownsFocus.current = true;
+      window.clearTimeout(lateFocus.current);
+      lateFocus.current = window.setTimeout(reclaimFocus, LATE_FOCUS_MS);
+    } else {
+      reclaimFocus();
+    }
+  }, [settling, index, reclaimFocus]);
+  // The late check belongs to its step: cancelled when the step changes or the tour closes, not when it re-settles.
+  useEffect(() => () => window.clearTimeout(lateFocus.current), [index]);
+
+  // Phones: each step's text starts at the top of the sheet, and a fade over the controls shows when more of
+  // it is below (the sheet is capped at 40% of the screen and scrolls).
+  useLayoutEffect(() => {
+    if (cardRef.current) cardRef.current.scrollTop = 0;
   }, [index]);
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card || !phone) {
+      setMoreBelow(false);
+      return;
+    }
+    const check = () => setMoreBelow(card.scrollHeight - card.clientHeight - card.scrollTop > 4);
+    check();
+    card.addEventListener("scroll", check, { passive: true });
+    return () => card.removeEventListener("scroll", check);
+  }, [phone, index, cardSizeTick, settling]);
 
   // Esc closes the tour from anywhere (unless a dialog is open — it gets Esc first).
   useEffect(() => {
@@ -449,27 +612,30 @@ export function TourOverlay({ step: index }: { step: number }) {
   }, [finish]);
 
   // The spotlight actually drawn: the placement's (possibly trimmed) box once placed; phones wait for it so
-  // the spotlight never runs under the docked sheet.
-  const drawnSpot = spot && placement ? placement.spot : phone ? null : spot;
+  // the spotlight never runs under the docked sheet. While settling, the page is simply dimmed.
+  const drawnSpot = settling ? null : spot && placement ? placement.spot : phone ? null : spot;
 
   const RoleIcon = step.role === "patient" ? UserRound : UsersRound;
   const roleLabel = step.role === "patient" ? `Viewing as ${ctx.name} (patient)` : `Viewing as ${data.profile.caregiverName || "the caregiver"} (caregiver)`;
 
   return (
-    <div className={cx("tour", reduceMotion && "tour--still")}>
+    <div className={cx("tour", reduceMotion && "tour--still", settling && "tour--settling")}>
+      {/* Keyed apart: reusing one element would animate the ring in from the scrim's corner (inset: 0). */}
       {drawnSpot ? (
         <div
+          key="spot"
           className="tour-spot"
           aria-hidden="true"
           style={{ top: drawnSpot.top, left: drawnSpot.left, width: drawnSpot.width, height: drawnSpot.height }}
         />
       ) : (
-        <div className="tour-scrim" aria-hidden="true" />
+        <div key="scrim" className="tour-scrim" aria-hidden="true" />
       )}
       <div
         ref={cardRef}
         className={cx("tour-card", phone && "tour-card--docked", !spot && !phone && "tour-card--centered")}
         data-placement={placement?.mode}
+        data-more={moreBelow || undefined}
         role="dialog"
         aria-modal="false"
         aria-labelledby={titleId}

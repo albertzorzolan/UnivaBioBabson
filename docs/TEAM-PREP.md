@@ -1,12 +1,12 @@
-# Team prep: likely judge questions
+# Reviewer FAQ: likely questions, with the code to open
 
-For Albert and Neil, not for judges. Each question has a short, honest answer and the exact place to open in the
-code. Line numbers are from the `kinwise-final` tree on 2026-10-18 (found with `grep -n`); if they drift, search for
-the function name. Every number here is copied from a results file named next to it. If you are not sure of an
-answer, say so and open the file; do not guess.
+The questions a reviewer is most likely to ask about Kinwise, each with a short, honest answer and the place to open
+in the code. Each pointer names a file and a symbol in it, such as `src/engine/brief/verify.ts › verifyClaims`, so
+it stays correct when lines move: open the file and search for the symbol name. Every number here is copied from
+the results file named next to it. Where an answer is uncertain, it says so.
 
-Judging context: most judges are software engineers, AI scientists, PMs and founders, so expect questions about
-how the code works and how we know it works, more than about clinical detail.
+Most UnivaBio judges are software engineers, AI scientists, PMs and founders, so the questions lean towards how the
+code works and how we know it works, more than clinical detail.
 
 ---
 
@@ -15,12 +15,11 @@ how the code works and how we know it works, more than about clinical detail.
 For one diary item it counts **answered** days in the 21 days before a medicine change and up to 21 days after,
 needs at least 5 answered days on each side, then runs a two-sided Fisher's exact test (yes/no items) or a
 Mann–Whitney U test (1–5 ratings). A difference is flagged only when the p-value **and** the size of the difference
-both pass (moderate: p < 0.05 and at least 20 percentage points for yes/no items, or 0.6 points on 1-5 ratings;
-`rules.ts` TIMELINE_RULES).
+both pass (moderate: p < 0.05 and at least 20 percentage points for yes/no items, or 0.6 points on 1-5 ratings).
 
-- Open: `src/engine/timeline/signals.ts:191` → `compareMetric`
-- Then: `src/engine/timeline/stats.ts:42` → `fisherExact` (Mann–Whitney at `stats.ts:212` → `mannWhitneyU`)
-- Thresholds: `src/engine/timeline/rules.ts` → `TIMELINE_RULES`
+- Open: `src/engine/timeline/signals.ts › compareMetric`
+- Then: `src/engine/timeline/stats.ts › fisherExact` (Mann–Whitney: `src/engine/timeline/stats.ts › mannWhitneyU`)
+- Thresholds: `src/engine/timeline/rules.ts › TIMELINE_RULES` (`windowDays`, `minAnsweredDays`, `thresholds`)
 - Proof it is right: `src/engine/timeline/stats.test.ts` checks against R's documented examples and exact fractions.
 
 ### 2. "You compare 9 items per change. Isn't that a multiple-comparisons problem?"
@@ -33,7 +32,7 @@ screen says it shows a change in what was recorded, not why.
 
 - Open: `src/engine/timeline/signals.null.test.ts` (the simulation; it fails if the app's wording drifts from the
   rates) and `eval/results/timeline-null.json` (the numbers).
-- The sentence the app shows: `src/engine/timeline/rules.ts:77` → `MULTIPLE_COMPARISONS_NOTE`.
+- The sentence the app shows: `src/engine/timeline/rules.ts › MULTIPLE_COMPARISONS_NOTE`
 
 ### 3. "What is the runs check, and why isn't it on?"
 
@@ -44,9 +43,10 @@ yet change which differences are flagged (`gate: false`). Measured: at stay 0.8 
 on would also change the demo's strengths, which several tests pin. So it is Partial: it reduces the problem, it
 does not remove it.
 
-- Open: `src/engine/timeline/blockPermutation.ts:117` → `blockPermutationTest`
-- Where it would gate: `src/engine/timeline/signals.ts:155` → `gatedStrength`
-- The switch: `src/engine/timeline/rules.ts:59` → `runsCheck: { blockDays: 4, permutations: 999, gate: false }`
+- Open: `src/engine/timeline/blockPermutation.ts › blockPermutationTest`
+- Where it would gate: `src/engine/timeline/signals.ts › gatedStrength`
+- The switch: `src/engine/timeline/rules.ts › runsCheck` (inside `TIMELINE_RULES`:
+  `{ blockDays: 4, permutations: 999, gate: false }`)
 - Numbers: `eval/results/timeline-null.json` (`gated` fields, `power`); write-up in `docs/EVALUATION.md` §3.
 
 ### 4. "How does the medication review decide what to flag?"
@@ -54,13 +54,14 @@ does not remove it.
 Deterministic rules over a compiled knowledge base: 427 medicines, 89 Beers rules, 26 prescribing cascades, the ACB
 scale and fall-risk classes (`src/kb/data/meta.json`). Same input, same output. Every finding has sources and ends
 in a question for the clinician. Pipeline: Beers, cascades, duplicates, watch-for rules, ACB, fall risk → dedupe →
-language guard → stable sort.
+language guard → stable sort. Drug–drug interactions are limited to the AGS Beers 2023 combination table; it is not
+a full interaction checker, and it does not check doses or allergies.
 
-- Open: `src/engine/meds/engine.ts:36` → `reviewWithKb`
-- A cascade, e.g. amlodipine → ankle swelling → furosemide: `src/engine/meds/rules/cascades.ts:31` →
-  `cascadeFindings` (a "marker" medicine started after an "index" medicine whose known effect it may be treating)
-- The lying-and-standing blood-pressure question: `src/engine/meds/rules/falls.ts:24` → `fallRisk`
-- The knowledge base is built from `kb-src/build_kb.py`; check it with `python3 -I kb-src/build_kb.py --check`.
+- Open: `src/engine/meds/engine.ts › reviewWithKb`
+- A cascade, e.g. amlodipine → ankle swelling → furosemide: `src/engine/meds/rules/cascades.ts › cascadeFindings`
+  (a "marker" medicine started after an "index" medicine whose known effect it may be treating)
+- The lying-and-standing blood-pressure question: `src/engine/meds/rules/falls.ts › fallRisk`
+- The knowledge base is built by `kb-src/build_kb.py`; check it with `python3 -I kb-src/build_kb.py --check`.
 
 ### 5. "57 of 57: isn't that just testing against your own answers?"
 
@@ -79,10 +80,11 @@ inside the sentence, and a mention inside that scope is not taken as the patient
 stories, micro-F1 is 0.942 (95% CI 0.907–0.971); with ConText switched off, the same word list scores 0.703
 (0.625–0.778). The held-out set is small, so read the interval.
 
-- Open: `src/engine/nlp/context.ts:867` → `analyzeInSentence`
-- Caregiver vs patient voice: `context.ts:481` → `detectVoice`
-- Entry point: `src/engine/nlp/extract.ts:409` → `extractCheckIn` (the baseline is the `noContext` option)
-- Scoring and the bootstrap CI: `src/engine/nlp/evaluate.ts:93` → `evaluateCorpus`, `:341` → `compareWithBaseline`
+- Open: `src/engine/nlp/context.ts › analyzeInSentence`
+- Caregiver vs patient voice: `src/engine/nlp/context.ts › detectVoice`
+- Entry point: `src/engine/nlp/extract.ts › extractCheckIn` (the baseline is the `noContext` option)
+- Scoring and the bootstrap CI: `src/engine/nlp/evaluate.ts › evaluateCorpus` and
+  `src/engine/nlp/evaluate.ts › compareWithBaseline`
 
 ### 7. "How do you stop the language model from making things up?"
 
@@ -91,9 +93,10 @@ is split, matched to the evidence ids it cites, and dropped if a number, date, "
 that evidence, or if it matches banned causal, advice, urgency or reassurance patterns. If too little survives, the
 template brief is used.
 
-- Open: `src/ai/tasks.ts:284` → `verifySection` → `src/engine/brief/verify.ts:1103` → `verifyClaims`
-- Banned wording: `verify.ts:488` → `BANNED_PATTERNS`; the medicine-action rule is at `verify.ts:544`.
-- The brief task that uses it: `src/ai/tasks.ts:443` → `aiDraftBrief`
+- Open: `src/ai/tasks.ts › verifySection`, which calls `src/engine/brief/verify.ts › verifyClaims`
+- Banned wording: `src/engine/brief/verify.ts › BANNED_PATTERNS`; a medicine as the object of an action word
+  ("pause the lorazepam") is caught structurally by `src/engine/brief/verify.ts › medicineAction`.
+- The brief task that uses it: `src/ai/tasks.ts › aiDraftBrief`
 
 ### 8. "Does the checker actually work?"
 
@@ -101,10 +104,11 @@ Not perfectly, and we say so. In one recorded live run, at least 6 flawed AI sen
 the checker (`eval/results/ai-live.json`; listed as `live-01`…`live-06` in `eval/verifier-redteam.json`). In an
 offline red team written by an AI agent, the submitted checker caught 72 of 163 harmful sentences; after fixes tuned
 on that set it catches 163 of 163 and rejects 0 of 87 valid ones. On probes written after the rules, when first run:
-1 of 18 (first probe, written after the first fixes; later used for tuning), 12 of 20 (second probe; two of its items were later used to design one rule, so it is no longer held out) and 10 of
-22 (held-out third probe, written after the rules and run once; 10 of 23 after one label correction), 0 valid ones
-rejected. Tuned scores are in-sample; the first-run probe scores are the honest ones. That is why AI text is optional, labelled, and reviewed by the
-caregiver before anything prints.
+1 of 18 (first probe, written after the first fixes; later used for tuning), 12 of 20 (second probe; two of its
+items were later used to design one rule, so it is no longer held out) and 10 of 22 (held-out third probe, written
+after the rules and run once; 10 of 23 after one label correction), 0 valid ones rejected. Tuned scores are
+in-sample; the first-run probe scores are the honest ones. That is why AI text is optional, labelled, and reviewed
+by the caregiver before anything prints.
 
 - Open: `eval/results/verifier-redteam.json` (`before`, `caught`, `postFixProbe`, `postFixProbe2`, `postFixProbe3`),
   `eval/VERIFIER-REDTEAM.md`, `eval/verifier.eval.test.ts`
@@ -117,16 +121,20 @@ produced the flawed sentences above. (3) Regulation: Kinwise records, displays a
 recommend starting, stopping or changing a medicine, and code can enforce that while a model cannot promise it.
 Without the model, everything works from templates.
 
-- Open: `src/engine/brief/template.ts` (the deterministic brief) and `docs/REGULATORY.md` §2.
+- Open: `src/engine/brief/template.ts › templateBrief` (the deterministic brief) and `docs/REGULATORY.md` §2.
 
 ### 10. "What happens if someone asks 'Should Mom stop her lorazepam?'"
 
 Before any model call, ordered keyword and pattern rules route questions about treatment, doses, diagnosis, cause or
 prediction to a fixed redirect to the clinician, with an "add to visit questions" button; emergency words get the
-911 line instead (no button). Looking up the recorded dose is still answered from the list. The rules take the profile's
-names and medicines, and are tested with several fictional patient names and medicines.
+911 line instead (no button). Looking up the recorded dose is still answered from the list. The rules take the
+profile's names and medicines, and are tested with several fictional patient names and medicines. Kinwise never
+suggests stopping a medicine: every signed-in page says not to stop or change any medicine without talking to the
+prescriber (`src/app/layouts/ShellParts.tsx › SafetyFooter`), and the benzodiazepine review finding says a change
+after regular use is made gradually with the prescriber (FDA 2020 boxed warning for benzodiazepines; source in
+`kb-src/research/beers-2023-notes.md`).
 
-- Open: `src/engine/brief/qa.ts:427` → `routeQuestion`; the rules themselves at `qa.ts:220` → `SCOPE_RULES`
+- Open: `src/engine/brief/qa.ts › routeQuestion`; the rules themselves: `src/engine/brief/qa.ts › SCOPE_RULES`
 - Tests: `src/engine/brief/qa.test.ts` (the table with Margaret, Robert and "grandpa")
 
 ### 11. "Is any of this real patient data? How do you know it works on real people?"
@@ -142,11 +150,11 @@ medicine.
 
 ### 12. "Why is the whole v2 build one commit?"
 
-Honest answer: the v2 rebuild was developed with AI coding assistants and committed in one commit (`375e1e0`,
-2026-10-11) from Albert's `Mendrapp` git identity, so the git history does not show the step-by-step work. Two
-later commits on `kinwise-final` hold the round-1 fixes. Our earlier separate prototypes are kept unchanged in
-`archive/` (`prototype-v1-neil`, `prototype-1-albert`). Do not rewrite history to make it look otherwise; offer to
-walk through any module instead.
+The v2 rebuild was developed with AI coding assistants and committed in one commit (`375e1e0`, 2026-10-11) from
+Albert's `Mendrapp` git identity, so the git history does not show the step-by-step work. Later commits on
+`kinwise-final` hold the fixes made after submission, round by round. Our earlier separate prototypes are kept
+unchanged in `archive/` (`prototype-v1-neil`, `prototype-1-albert`). History is not rewritten to look otherwise;
+instead, ask us to walk through any module.
 
 - Open: `git log --oneline`, `archive/README.md`
 
@@ -154,10 +162,10 @@ walk through any module instead.
 
 No clearance or exemption is claimed. It is designed toward FDA's published examples of record-keeping and
 communication tools: it records, displays and prompts questions, never diagnoses, never asserts causation and
-never recommends a medicine change. The safety-net line is static (the same wording for every record; only the name changes), so the app does
-not triage.
+never recommends a medicine change. The safety-net line is static (the same wording for every record; only the name
+changes), so the app does not triage.
 
-- Open: `docs/REGULATORY.md` §2, `src/engine/brief/safetyNet.ts:21` → `safetyNetLine`
+- Open: `docs/REGULATORY.md` §2, `src/engine/brief/safetyNet.ts › safetyNetLine`
 
 ### 14. "How private is it?"
 
@@ -167,16 +175,13 @@ files. The recorded live AI run made 0 external requests (model files from a loc
 model files once (weights from huggingface.co, the compiled library from GitHub), and no diary data is sent.
 Sharing happens only when the user prints or exports.
 
-- Open: `index.html` (CSP), `src/model/store.ts`, `eval/results/ai-live.json` (`externalRequests`)
+- Open: `index.html` (CSP), `src/model/store.ts › STORAGE_KEY`, `eval/results/ai-live.json` (`externalRequests`)
 
 ### 15. "Is the FHIR export real?"
 
 A sample Bundle (270 resources) was validated against base R4 structure with the HAPI validator: 0 errors; codes
-not terminology-checked (25 warnings); no US Core/IPS profile. No system receives it yet; today the clinician gets
-the printed brief.
+not terminology-checked (25 warnings); no US Core/IPS profile. The sample is a pre-review export from the demo window
+of 2026-09-12 to 2026-10-11 ([docs/samples/README.md](samples/README.md)). No system receives it yet; today the
+clinician gets the printed brief.
 
-- Open: `src/engine/brief/fhir.ts` → `toFhirBundle`, `docs/samples/kinwise-fhir-validation.json`
-
----
-
-<!-- TODO(team): add one line each with the modules you will walk judges through, in your own words. -->
+- Open: `src/engine/brief/fhir.ts › toFhirBundle`, `docs/samples/kinwise-fhir-validation.json`

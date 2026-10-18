@@ -69,6 +69,7 @@ import {
   type EditableSection,
   type PeriodDays,
 } from "./brief/compose";
+import { personWords } from "../shared/personWords";
 import "./brief.css";
 import "./brief-print.css";
 
@@ -102,7 +103,8 @@ export function VisitBrief() {
   const llm = useLLM();
   const toast = useToast();
   const p = data.profile;
-  const name = p.preferredName || "they";
+  // "Margaret’s" / "Your family member’s" (see personWords.ts); the eyebrow drops its name prefix without a name.
+  const who = personWords(p);
   const editorName = p.caregiverName || "the caregiver";
 
   const inputs: BriefInputs = useMemo(() => ({ data, review, timeline, today }), [data, review, timeline, today]);
@@ -368,9 +370,9 @@ export function VisitBrief() {
   // ---- Render ----------------------------------------------------------------------------------------------
   const header = (
     <PageHeader
-      eyebrow={`${p.preferredName || p.displayName} · next appointment`}
+      eyebrow={who.hasName ? `${who.name} · next appointment` : "Next appointment"}
       title="Visit brief"
-      subtitle={`One page for ${name === "they" ? "the" : `${name}’s`} doctor or pharmacist, built from the records. Click any sentence to edit it; every sentence links to the entries behind it.`}
+      subtitle={`One page for ${who.possessive} doctor or pharmacist, built from the records. Click any sentence to edit it; every sentence links to the entries behind it.`}
       actions={
         brief && (
           <div className="cg-vb-header-actions">
@@ -474,7 +476,7 @@ export function VisitBrief() {
           {recordsChanged && (
             <Callout
               tone="info"
-              title={brief.to < today ? `This brief ends on ${formatShort(brief.to)}` : `${p.preferredName || "The"}’s records changed since this brief was built`}
+              title={brief.to < today ? `This brief ends on ${formatShort(brief.to)}` : `${who.Possessive} records changed since this brief was built`}
               className="cg-vb-callout"
               action={
                 <Button size="sm" variant="secondary" iconLeft={<RefreshCw size={16} aria-hidden="true" />} onClick={() => request("template")}>
@@ -610,7 +612,8 @@ export function VisitBrief() {
           ) : reviewed ? (
             <BriefDocument brief={brief} inputs={inputs} pkg={pkg} lookup={lookup} mode="print" idPrefix="cg-vb-print" />
           ) : (
-            <NotReviewedNotice name={p.displayName} caregiver={editorName} />
+            // It prints "Visit brief · <name>": never an orphan "·" when the profile has no name.
+            <NotReviewedNotice name={p.displayName.trim() || who.Name} caregiver={editorName} />
           )}
         </div>,
         document.body,

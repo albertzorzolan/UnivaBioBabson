@@ -86,6 +86,41 @@ export const MULTIPLE_COMPARISONS_NOTE =
   "more than 5 in 10 changes with a moderate signal and more than 1 in 10 with a strong one. " +
   "A signal is a prompt for a conversation, not a conclusion.";
 
+/**
+ * The other half of the honesty about chance: a real change can be missed. Shown next to "Nothing flagged" on the
+ * Timeline, so an empty result is never read as reassurance (the visit brief prints the shorter LOW_POWER_BRIEF_LINE).
+ * It opens with the Timeline's own label ("Nothing flagged") and the review's "all-clear" wording
+ * (LIMITATION_LINES.scope). The "2–3 weeks" are the compared windows on each side of the change, not the diary's
+ * length: the engine never looks further than 21 days before or after, so a longer diary does not catch more.
+ * Measured, not assumed: the power scenario in signals.null.test.ts (dizziness on 15% of days before a start and 45%
+ * from the start day on, i.e. a tripling; 21 days before and 17 after, 15% of days unanswered) flags dizziness as
+ * worse in 39.2% of 1,000 simulated changes with independent days and 37.6% with clustered days
+ * (eval/results/timeline-null.json, power[].detectionRate). Never rounded up, so "fewer than 4 times in 10";
+ * signals.null.test.ts fails if either rate leaves [0.3, 0.4), the band this wording is true for.
+ */
+export const LOW_POWER_NOTE =
+  "Nothing flagged is not an all-clear: in simulated diaries with 2–3 weeks of entries before and after a new " +
+  "medicine, even a tripling of dizziness days was flagged fewer than 4 times in 10.";
+
+/**
+ * LOW_POWER_NOTE for the visit brief: the same limit as one figure-free clause, which the brief appends to its chance
+ * limitation (template.ts), so false flags and missed changes are said together. It has no figure because the seed
+ * brief has less than one printed line to spare: even a 76-character line with the figure moved the footer onto a
+ * second page. The measured figure stays on the Timeline (LOW_POWER_NOTE, tied to timeline-null.json).
+ */
+export const LOW_POWER_BRIEF_LINE = "A real change can go unflagged.";
+
+/**
+ * One plain line beside the runs-check p-values (the "How reliable is this?" rows and the Timeline rows), so a
+ * second p-value is not read as a second, independent verdict. Follows TIMELINE_RULES.runsCheck: it names the
+ * block size and says the check only reports while the gate is off. "Days in a bad stretch move together" stays true
+ * for any block size (a 7-day week spans two or three 4-day runs, so "a bad week" would not be).
+ */
+export const RUNS_CHECK_NOTE =
+  `The runs check shuffles the diary in runs of ${TIMELINE_RULES.runsCheck.blockDays} days, so days in a bad ` +
+  "stretch move together instead of counting as many separate days; " +
+  (TIMELINE_RULES.runsCheck.gate ? "a flag must also pass it." : "it is reported, not used to decide flags.");
+
 /** Plain-language method summary for the How-it-works page. */
 export const TIMELINE_METHOD_SUMMARY =
   "For each medicine started or stopped in the last 180 days, Kinwise compares the 21 days before the change with " +

@@ -34,6 +34,7 @@ import {
   type CheckInForm,
 } from "./checkin";
 import { HeardPanel, conceptLabel, type AiState } from "./HeardPanel";
+import { MedSafetyLine, needsPoisonLine } from "./MedSafetyLine";
 import { QuickForm } from "./QuickForm";
 import { DaySummary, NoteComposer, pickWeeklySentence } from "./SavedDay";
 import { clearStoryDraft, readStoryDraft, writeStoryDraft } from "./storyDraft";
@@ -392,6 +393,8 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
             <strong>About your medicines:</strong> {keptMedNotes.map((n) => `“${n.text}”`).join(", ")}
           </p>
         )}
+        {/* The same static Poison Control line as in "Here's what I heard" (all notes read, kept or taken off). */}
+        {needsPoisonLine(medNotes) && <MedSafetyLine />}
         {story.trim() && (
           <figure className="pt-confirm__story">
             <figcaption>Your words, kept as you wrote them</figcaption>
@@ -425,6 +428,8 @@ function Day({ date, example }: { date: ISODate; example: number | null }) {
             scrollToId("main-content");
           }}
         />
+        {/* The saved day keeps only the notes she kept; the static Poison Control line stays next to them. */}
+        {needsPoisonLine(saved.medNotes) && <MedSafetyLine className="pt-medsafety--flow" />}
         <NoteComposer date={date} />
       </div>
     );

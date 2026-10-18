@@ -2,7 +2,8 @@
 //   1. her story with the words that were used highlighted (colour + underline + a small label — never colour alone)
 //   2. one card per proposed answer with how sure the reading is and Accept / Change
 //   3. what was deliberately NOT added and why ("that's about someone else")
-//   4. other symptoms and medicine remarks she can keep or remove
+//   4. other symptoms and medicine remarks she can keep or remove (with the static Poison Control line when a remark
+//      says too much of a medicine, or the wrong one, was taken: MedSafetyLine.tsx)
 //   5. optionally, a second look by the on-device language model (only when it is already loaded)
 // When the story gives no answer to fill in, it says so and offers a jump to the questions (the quick form below).
 import { useMemo, useState } from "react";
@@ -21,6 +22,7 @@ import type { CheckIn, DiaryAnswers, DiaryField, Extraction, Medication, OtherSy
 import { CONCEPTS, isConceptId } from "../../engine/nlp/lexicon";
 import { AIBadge, Badge, Button, Callout, cx, type Tone } from "../../ui";
 import { layoutStory, type MarkKind, type StoryMark } from "./highlight";
+import { MedSafetyLine, needsPoisonLine } from "./MedSafetyLine";
 import { FIELD_LABEL, FIELD_TAG, MAIN_FIELDS, answerWords, dedupeSkipped, isAccepted, type CheckInForm } from "./checkin";
 
 const NO_TAG: Partial<Record<DiaryField, string>> = {
@@ -376,6 +378,9 @@ export function HeardPanel(props: HeardPanelProps) {
                   );
                 })}
               </ul>
+              {/* Shown for every note read from the story, kept or taken off: taking a note off hides it from Alex,
+                  it does not change what happened. */}
+              {needsPoisonLine(medNotes) && <MedSafetyLine />}
             </div>
           )}
         </div>

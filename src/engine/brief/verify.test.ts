@@ -320,12 +320,12 @@ describe("helpers", () => {
 // Regressions from the 2026-10 judge probes, the code audit and the live WebGPU run
 // (eval/VERIFIER-REDTEAM.md). Each sentence below passed the verifier before the paraphrase fixes.
 
-/** Support and options exactly as the judge probe (tmp/judge-kit/judge-ai-scientist/probe-verify.mts) used them. */
+/** Support and options exactly as the judge probe (internal review probe, 2026-10-17 (not committed)) used them. */
 const PROBE_SUPPORT = [
   "Dizziness was recorded on 9 of 14 answered days from Sep 25, when Lorazepam (Ativan) was started, through Oct 11, compared with 2 of 19 answered days in the 21 days before.",
   "Margaret takes Lorazepam (Ativan) 0.5 mg at bedtime.",
 ];
-/** Support exactly as the code audit (tmp/judge-kit/code-audit/probe2.ts) used it. */
+/** Support exactly as the code audit (internal review probe, 2026-10-17 (not committed)) used it. */
 const AUDIT_SUPPORT = ["Dizziness was recorded on 9 of 14 answered days after lorazepam was started, compared with 2 of 19 days before."];
 
 describe("verifyClaims — judge and audit probe sentences are blocked", () => {
@@ -624,5 +624,145 @@ describe("verifyClaims — medicine-action rule keeps compound adjectives (engin
     const support = [s, "Amlodipine 10 mg once daily, started May 30, for blood pressure."];
     expect(verifyClaims(s, support, BRIEF_OPTS).filter((i) => i.detail.includes("action word"))).toEqual([]);
     expect(verifyClaims("Lowering the medicine at night is an option.", support, BRIEF_OPTS).some((i) => i.detail.includes("action word"))).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// Round 3 (2026-10-17): the internal review probe's six escapes. The full labelled set, with the code auditor's 12
+// paraphrases, is `regression_round3` in eval/verifier-redteam.json (used to design the rules; not held out).
+
+/** Support and options exactly as the round-3 internal review probe (2026-10-17, not committed) used them. */
+const R3_SUPPORT = [
+  "Dizziness was recorded on 9 of 14 answered days from Oct 2, when Lorazepam (Ativan) was started, through Oct 18, compared with 2 of 19 answered days in the 21 days before.",
+  "Margaret takes Lorazepam (Ativan) 0.5 mg at bedtime.",
+];
+const R3_OPTS = { patientNames: ["Margaret"] };
+const codes = (text: string, support: string[] = R3_SUPPORT, opts: Parameters<typeof verifyClaims>[2] = R3_OPTS) => verifyClaims(text, support, opts);
+
+describe("verifyClaims — unsupported condition terms (rule 8)", () => {
+  const unsupported = (text: string, support: string[] = R3_SUPPORT, opts: Parameters<typeof verifyClaims>[2] = R3_OPTS) =>
+    codes(text, support, opts).filter((i) => i.code === "unsupported_condition");
+  it("rejects a statement that names a condition the cited text does not (the two probe escapes)", () => {
+    expect(unsupported("Her dizziness is probably from dehydration.").map((i) => i.detail)).toEqual([
+      'names the condition "dehydration", which the cited text does not mention',
+    ]);
+    expect(unsupported("Margaret has benzodiazepine toxicity.").length).toBe(1);
+  });
+  it("covers each listed term and simple -itis / -osis nouns", () => {
+    for (const s of [
+      "The dizzy spells look like an overdose.",
+      "This pattern fits benzodiazepine withdrawal.",
+      "Margaret's foggy mornings could be a sign of poisoning.",
+      "Her unsteadiness may come from labyrinthitis.",
+      "The swelling points to thrombosis.",
+    ]) {
+      expect(unsupported(s).length, s).toBe(1);
+    }
+  });
+  it("accepts the term when the cited text names it", () => {
+    const kb = ["Diuretics (water pills): low blood pressure on standing, dehydration and night-time trips to the bathroom."];
+    expect(codes("Water pills are listed with dehydration and night-time trips to the bathroom.", kb, {})).toEqual([]);
+  });
+  it("lets cited 'osteoarthritis' support 'arthritis', never the reverse (the seeded conditions fact)", () => {
+    const conditions = ["Conditions recorded by the family: high blood pressure, type 2 diabetes, overactive bladder, insomnia, osteoarthritis."];
+    const opts = { patientNames: ["Margaret"] };
+    expect(unsupported("Margaret's conditions include arthritis and insomnia.", conditions, opts)).toEqual([]);
+    expect(unsupported("The family records high blood pressure, type 2 diabetes, overactive bladder, insomnia and arthritis.", conditions, opts)).toEqual([]);
+    expect(unsupported("Her unsteadiness may come from labyrinthitis.", conditions, opts).length).toBe(1);
+    expect(unsupported("The family records osteoarthritis.", ["Conditions recorded by the family: arthritis."], opts).length).toBe(1);
+  });
+  it("blocks a rule-8 term applied to the person even when the cited text names it (a diagnosis)", () => {
+    const diuretic = ["Diuretics (water pills): low blood pressure on standing, dehydration and night-time trips to the bathroom."];
+    const cascade = ["A benzodiazepine taken every night can cause withdrawal agitation between doses."];
+    const diagnosis = (text: string, support: string[]) =>
+      codes(text, support).filter((i) => i.code === "banned" && i.detail.startsWith("diagnosis: applies"));
+    for (const [text, support] of [
+      ["Her dizziness is probably from dehydration.", diuretic],
+      ["Margaret is dehydrated.", diuretic],
+      ["Her dizziness is probably from low blood pressure.", diuretic],
+      ["Margaret is in benzodiazepine withdrawal.", cascade],
+      ["Her agitation is withdrawal.", cascade],
+      ["Her dizziness is probably from withdrawal.", cascade],
+    ] as const) {
+      expect(diagnosis(text, [...support]).length, text).toBeGreaterThan(0);
+    }
+    // Class-level statements that name no person still pass.
+    expect(codes("Diuretics can cause dehydration.", diuretic, {}).filter((i) => i.detail.startsWith("diagnosis"))).toEqual([]);
+    expect(
+      codes("The Beers Criteria say stopping a benzodiazepine suddenly can lead to withdrawal.", ["The Beers Criteria say stopping a benzodiazepine suddenly can lead to withdrawal."], R3_OPTS),
+    ).toEqual([]);
+  });
+  it("does not read 'diagnosis' or 'prognosis' as a condition (the diagnosis ban covers them)", () => {
+    expect(unsupported("The brief is not a diagnosis.")).toEqual([]);
+    expect(unsupported("The records say nothing about prognosis.")).toEqual([]);
+  });
+  it("leaves questions to the clinician alone (the question rules apply there)", () => {
+    expect(unsupported("Could dehydration be worth checking, given the dizziness recorded on 9 of 14 answered days?", R3_SUPPORT, { ...R3_OPTS, expect: "question" })).toEqual([]);
+    // A statement before a question is still a statement.
+    expect(unsupported("Margaret has benzodiazepine toxicity, so could that be checked?", R3_SUPPORT, { ...R3_OPTS, expect: "question" }).length).toBe(1);
+  });
+});
+
+describe("verifyClaims — dose-action verbs aimed at a medicine or a dose (rule 7, round 3)", () => {
+  const action = (text: string, support: string[] = R3_SUPPORT) =>
+    codes(text, support).filter((i) => i.code === "banned" && i.detail.startsWith("advice: names a medicine together with an action word"));
+  for (const [s, label] of [
+    ["Consider skipping tonight's lorazepam dose.", "skip"],
+    ["Consider skipping tonight's dose.", "skip"],
+    ["Consider holding tomorrow morning's lorazepam.", "hold"],
+    ["Halving her dose for a week is an option.", "halve"],
+    ["Consider cutting back on the evening doses.", "cut back"],
+    ["She could take less lorazepam at night.", "take less"],
+    ["Taking fewer of the sleeping pills might help.", "take less"],
+    ["Consider doubling up on the lorazepam on bad nights.", "double up"],
+    ["She could take more of her lorazepam when she cannot sleep.", "extra dose"],
+  ] as const) {
+    it(`blocks: ${s}`, () => {
+      expect(action(s).map((i) => i.detail), JSON.stringify(codes(s))).toContain(`advice: names a medicine together with an action word ("${label}")`);
+    });
+  }
+  it("keeps the dose restated from the med record and questions for the clinician", () => {
+    expect(codes("Margaret takes Lorazepam (Ativan) 0.5 mg at bedtime.")).toEqual([]);
+    expect(codes("Could the doctor look at whether Lorazepam (Ativan) is still the best option for Margaret?")).toEqual([]);
+    expect(codes("Could the evening dose be reviewed at the visit?", R3_SUPPORT, { ...R3_OPTS, expect: "question" }).filter((i) => i.detail.includes("action word"))).toEqual([]);
+  });
+  it("keeps a recorded skipped dose when the cited text says the same", () => {
+    const note = ["Oct 13 note from Alex: Mom skipped her evening dose and slept badly."];
+    expect(action("Alex wrote that Mom skipped her evening dose on Oct 13.", note)).toEqual([]);
+  });
+  it("reads a dose as the target only in proposing forms, so a past-tense record about a dose is not advice", () => {
+    // The cited text uses another verb ("Missed"), so before the dose target the record form never matched.
+    expect(action("Margaret skipped a dose on Oct 5.", ["Missed dose recorded on Oct 5."])).toEqual([]);
+    expect(action("Consider skipping tonight's dose.", ["Missed dose recorded on Oct 5."]).length).toBe(1);
+    expect(action("Halving her dose for a week is an option.", ["Missed dose recorded on Oct 5."]).length).toBe(1);
+  });
+});
+
+describe("verifyClaims — causal attribution by pronoun, 'is responsible', 'suggests … is' and 'in her case' (round 3)", () => {
+  it("keeps the timeline's own caveat, an open question ('cannot show whether the medicine was responsible')", () => {
+    const caveat = "This describes a change in what was recorded. On its own it cannot show whether the medicine was responsible.";
+    expect(codes(caveat, [caveat]).filter((i) => i.detail.includes("blame or responsibility"))).toEqual([]);
+  });
+  const causal = (text: string) => codes(text).filter((i) => i.code === "banned" && i.detail.startsWith("causal"));
+  for (const s of [
+    "Since starting lorazepam, Margaret has become dizzy because of it.",
+    "The dizziness is due to it, since lorazepam started on Oct 2.",
+    "The timing strongly suggests lorazepam is responsible.",
+    "Lorazepam is probably responsible.",
+    "The diary suggests that the lorazepam may be involved.",
+    "These dizzy spells are a known effect of lorazepam in her case.",
+    "Dizziness is a known effect of lorazepam in her case.",
+    "Dizziness is an effect of lorazepam for her.",
+  ]) {
+    it(`blocks: ${s}`, () => {
+      expect(causal(s).length, JSON.stringify(codes(s))).toBeGreaterThan(0);
+    });
+  }
+  it("keeps the class-level wording and the probe's valid sentences", () => {
+    expect(codes("Dizziness is a known possible effect of lorazepam.")).toEqual([]);
+    // "suggests/indicates … is" needs an attribution word after it, so a reworded med record passes.
+    expect(codes("The medication list indicates lorazepam is taken at bedtime.")).toEqual([]);
+    expect(codes("The records suggest lorazepam is taken at bedtime.")).toEqual([]);
+    expect(codes("Dizziness was recorded on 9 of 14 answered days after Lorazepam (Ativan) was started, compared with 2 of 19 answered days before.")).toEqual([]);
   });
 });

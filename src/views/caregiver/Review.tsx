@@ -29,6 +29,7 @@ import {
   setDecision,
 } from "./meds/reviewRecords";
 import { getMetric } from "../../engine/timeline/metrics";
+import { personWords } from "../shared/personWords";
 import "./meds.css";
 import "./review.css";
 
@@ -47,9 +48,10 @@ export function Review() {
   const { review, timeline, active } = useDerived();
   const { params } = useRoute();
   const toast = useToast();
-  const person = data.profile.preferredName || "they";
-  const Person = data.profile.preferredName || "They";
-  const whose = data.profile.preferredName ? `${data.profile.preferredName}’s` : "their";
+  // "Margaret" / "Margaret’s" / "her"; without a name "your family member" / "their" (see personWords.ts).
+  const who = personWords(data.profile);
+  const person = who.name;
+  const eyebrow = who.hasName ? `${who.name} · medication review` : undefined;
   // Same names the visit brief and Ask Kinwise pass to the AI check (patient-scoped language rules).
   const patientNames = [data.profile.preferredName, data.profile.displayName, "Mom"].filter((n): n is string => Boolean(n));
 
@@ -159,7 +161,7 @@ export function Review() {
   if (active.length === 0) {
     return (
       <div className="cg-review">
-        <PageHeader eyebrow={`${data.profile.preferredName || "Patient"} · medication review`} title="Medication review" />
+        <PageHeader eyebrow={eyebrow} title="Medication review" />
         <Card padding="lg">
           <EmptyState
             icon={<Pill size={28} />}
@@ -171,7 +173,7 @@ export function Review() {
             }
           >
             <p>
-              Once {whose} medicines are on the list, Kinwise checks them against published criteria geriatric clinicians use and turns
+              Once {who.possessive} medicines are on the list, Kinwise checks them against published criteria geriatric clinicians use and turns
               anything worth asking about into a question for the visit.
             </p>
           </EmptyState>
@@ -183,9 +185,9 @@ export function Review() {
   return (
     <div className="cg-review">
       <PageHeader
-        eyebrow={`${data.profile.preferredName || "Patient"} · medication review`}
+        eyebrow={eyebrow}
         title="Medication review"
-        subtitle={`Kinwise checked ${whose} ${active.length} ${active.length === 1 ? "medicine" : "medicines"} against published criteria geriatric clinicians use. These are questions to bring to ${data.profile.sex === "male" ? "his" : data.profile.sex === "female" ? "her" : "their"} doctor or pharmacist — not instructions.`}
+        subtitle={`Kinwise checked ${who.possessive} ${active.length} ${active.length === 1 ? "medicine" : "medicines"} against published criteria geriatric clinicians use. Each prompt is a question for ${who.their} doctor or pharmacist, not an instruction.`}
         actions={
           <ButtonLink href={href("/c/brief")} variant="secondary" iconLeft={<FileText size={18} aria-hidden="true" />}>
             Prepare visit brief
@@ -372,7 +374,8 @@ export function Review() {
               <p className="cg-about__text">No health conditions are recorded. Add them in Settings so condition-specific criteria can apply.</p>
             )}
             <p className="cg-about__text">
-              {Person}, age {data.profile.age} · kidney function{" "}
+              {who.Name}
+              {data.profile.age > 0 ? `, age ${data.profile.age}` : ""} · kidney function{" "}
               {data.profile.crclMlMin != null ? `CrCl ${data.profile.crclMlMin} mL/min` : "not recorded"} · {active.length} current{" "}
               {active.length === 1 ? "medicine" : "medicines"}
             </p>

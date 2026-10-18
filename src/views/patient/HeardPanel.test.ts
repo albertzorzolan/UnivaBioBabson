@@ -62,3 +62,40 @@ describe("HeardPanel: nothing to fill in", () => {
     expect(t).toContain("I found 1 answer.");
   });
 });
+
+describe("HeardPanel: Poison Control line next to 'too much / wrong medicine' notes", () => {
+  it("shows the static Poison Control line with a phone link for 'took two … by mistake'", () => {
+    const html = render("I took two of my sleeping pills last night by mistake and I feel very confused and wobbly this morning");
+    expect(text(html)).toContain("About your medicines");
+    expect(text(html)).toContain("call Poison Control at 1‑800‑222‑1222");
+    expect(html).toContain('href="tel:18002221222"');
+  });
+
+  it("shows it for 'took … twice, by mistake', which the reading files as a 'taken' note", () => {
+    const html = render("I took my sleeping pill twice last night, by mistake");
+    expect(text(html)).toContain("About your medicines");
+    expect(html).toContain('href="tel:18002221222"');
+  });
+
+  it("does not show it next to confusion told as a symptom", () => {
+    const html = render("Feeling confused since starting the new sleeping pill");
+    expect(text(html)).toContain("About your medicines");
+    expect(html).not.toContain("Poison Control");
+  });
+
+  it("does not show it next to 'mixed up' or 'muddled' told as a symptom", () => {
+    for (const story of ["Feeling mixed up and foggy since the new sleeping pill", "My head feels muddled after the sleeping pill"]) {
+      expect(render(story), story).not.toContain("Poison Control");
+    }
+  });
+
+  it("does not show it for a missed dose told with 'by mistake'", () => {
+    expect(render("I missed my water pill by mistake.")).not.toContain("Poison Control");
+  });
+
+  it("does not show it for a missed dose", () => {
+    const html = render("Forgot my water pill.");
+    expect(text(html)).toContain("About your medicines");
+    expect(html).not.toContain("Poison Control");
+  });
+});

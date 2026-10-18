@@ -34,6 +34,7 @@ import {
   splitMeds,
   stopMedication,
 } from "./meds/medRecords";
+import { personWords } from "../shared/personWords";
 import "./meds.css";
 
 const HISTORY_PREVIEW = 6;
@@ -88,7 +89,8 @@ export function Medications() {
   const { review } = useDerived();
   const { params } = useRoute();
   const toast = useToast();
-  const person = data.profile.preferredName || "They";
+  // "Margaret takes" / "they take" (never "They takes"); the name prefix of the eyebrow is left out without a name.
+  const who = personWords(data.profile);
   const caregiver = data.profile.caregiverName || "the caregiver";
 
   // Toast actions run later; they must commit through the latest store binding, not the one captured at render.
@@ -211,9 +213,9 @@ export function Medications() {
   return (
     <div className="cg-meds">
       <PageHeader
-        eyebrow={`${data.profile.preferredName || "Patient"} · medicines`}
+        eyebrow={who.hasName ? `${who.name} · medicines` : undefined}
         title="Medications"
-        subtitle={`Everything ${person} takes, including over-the-counter products. Kinwise checks this list against published criteria for older adults.`}
+        subtitle={`Everything ${who.takes}, including over-the-counter products. Kinwise checks this list against published criteria for older adults.`}
         actions={
           <Button variant="primary" iconLeft={<Plus size={18} aria-hidden="true" />} onClick={openAdd} data-tour="meds-add">
             Add medication
@@ -233,7 +235,7 @@ export function Medications() {
             }
           >
             <p>
-              Add everything {person} takes — prescriptions, over-the-counter products and supplements. Kinwise then checks the list against
+              Add everything {who.takes} — prescriptions, over-the-counter products and supplements. Kinwise then checks the list against
               published criteria geriatric clinicians use.
             </p>
           </EmptyState>
@@ -352,7 +354,7 @@ export function Medications() {
                     { value: "changes", label: "Medicine changes" },
                     { value: "all", label: "All entries" },
                   ]}
-                  className="cg-history__mode"
+                  className="cg-history__mode ui-seg--filter"
                 />
               }
             />
@@ -399,7 +401,7 @@ export function Medications() {
       )}
 
       <MedEditor open={editorOpen} editing={editing} onClose={() => setEditorOpen(false)} onSaved={onSaved} />
-      <StopDialog med={stopping} today={today} person={person} onClose={() => setStopping(null)} onConfirm={confirmStop} />
+      <StopDialog med={stopping} today={today} person={who.name} onClose={() => setStopping(null)} onConfirm={confirmStop} />
       <RemoveDialog
         med={removing}
         onClose={() => setRemoving(null)}

@@ -18,3 +18,8 @@
 .cg-rel__key {
   color: var(--ink);
 }
+/* "runs check p = 0.007" stays on one line beside the test's p (here and in the Timeline rows, which load this file
+   through ReliabilityDisclosure), so a narrow row breaks at the "·" rather than inside the second p-value. */
+.cg-rel__runs-p {
+  white-space: nowrap;
+}

@@ -16,8 +16,11 @@ export function repeatsRecords(draft: { text: string }[], records: { text: strin
   return all(draft) === all(records) || draft.every((s) => said.has(normalize(s.text)));
 }
 
-/** Shown when the on-device model read the answer but its draft was empty or only repeated the records answer. */
-export const NOTHING_PLAINER = "The on-device AI checked this answer and had nothing plainer to add.";
+/**
+ * Shown when the on-device model read the answer but its draft was empty or only repeated the records answer: the
+ * model did its job, and the records answer was already the plainest wording it found.
+ */
+export const NOTHING_PLAINER = "The on-device AI checked this answer against the records; the records answer above is already as plain as it can make it.";
 /** Shown when the model was never asked (aiAnswer had no evidence to send it), so nothing can be said about it. */
 export const ALREADY_PLAIN = "The records answer is already plain.";
 

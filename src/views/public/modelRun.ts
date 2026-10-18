@@ -117,7 +117,10 @@ export const RECORDED_RUN: RecordedRun = {
       full: causeExplain,
     },
     {
-      where: "Same explanation: says some medicines “might be” replaced (treatment advice)",
+      // Kept consistent with the app's own wording: template questions may ask the clinician about a replacement.
+      where:
+        "Same explanation: says some medicines “might be” replaced (treatment advice). The template may ask the " +
+        "clinician whether a medicine could be replaced; this AI sentence was a declarative suggestion to the family",
       quote: sentenceWith(causeExplain.text, /might be able to replace/),
       output: "explain-anticholinergic",
       full: causeExplain,
@@ -270,3 +273,124 @@ export function redTeamSentence(r: RedTeamSummary | null): string | null {
 
 export const RED_TEAM = readRedTeam(Object.values(redTeamFiles)[0]);
 export const RED_TEAM_SENTENCE = redTeamSentence(RED_TEAM);
+
+// ---------------------------------------------------------------------------------------------
+// Optional: the batch run of the on-device model (node scripts/llm-batch.mjs writes eval/results/llm-batch.json; method
+// in eval/LLM-BATCH.md). One recorded session shows what the AI looks like; the batch shows how often its sentences are
+// blocked, shown and flawed over a fixed set of 40 prompts. Read through import.meta.glob, like the red team, so the page
+// builds without the file; only the summary fields are bundled, not the raw outputs.
+
+export interface BatchTask {
+  prompts: number;
+  p50Ms: number;
+  p95Ms: number;
+}
+
+export interface BatchSummary {
+  dateLabel: string;
+  model: string;
+  machine: string;
+  prompts: number;
+  askPrompts: number;
+  briefPrompts: number;
+  explainPrompts: number;
+  /** Sentences the model wrote, and what the app did with them. */
+  generated: number;
+  blocked: number;
+  shown: number;
+  tasks: { ask: BatchTask; brief: BatchTask; explain: BatchTask };
+  /** The audit of the shown sentences, or null until every shown sentence is labelled. */
+  audit: { labelledBy: string; labelled: number; flawed: number; ci: [number, number] } | null;
+}
+
+// One glob per top-level field (import.meta.glob needs literal options): named JSON imports let the build leave out the
+// file's raw outputs (about 95 KB), so the page bundles only these few fields.
+const batchField = (files: Record<string, unknown>) => Object.values(files)[0];
+const batchDate = import.meta.glob("../../../eval/results/llm-batch.json", { eager: true, import: "date" });
+const batchFile: Record<string, unknown> | undefined = Object.keys(batchDate).length
+  ? {
+      date: batchField(batchDate),
+      model: batchField(import.meta.glob("../../../eval/results/llm-batch.json", { eager: true, import: "model" })),
+      machine: batchField(import.meta.glob("../../../eval/results/llm-batch.json", { eager: true, import: "machine" })),
+      promptSet: batchField(import.meta.glob("../../../eval/results/llm-batch.json", { eager: true, import: "promptSet" })),
+      summary: batchField(import.meta.glob("../../../eval/results/llm-batch.json", { eager: true, import: "summary" })),
+      audit: batchField(import.meta.glob("../../../eval/results/llm-batch.json", { eager: true, import: "audit" })),
+    }
+  : undefined;
+
+const isNum = (x: unknown): x is number => typeof x === "number" && Number.isFinite(x);
+
+function readTask(x: unknown): BatchTask | null {
+  const t = numbers(x, ["prompts"] as const);
+  const l = numbers((x as { latencyMs?: unknown } | null)?.latencyMs, ["p50", "p95"] as const);
+  return t && l ? { prompts: t.prompts, p50Ms: l.p50, p95Ms: l.p95 } : null;
+}
+
+/** Null when the file is missing or a headline field is not a number: the page then leaves the batch line out. */
+export function readBatch(x: Record<string, unknown> | undefined): BatchSummary | null {
+  if (!x) return null;
+  const sum = x.summary as { byTask?: Record<string, unknown> } | undefined;
+  const head = numbers(sum, ["prompts", "sentencesGenerated", "blocked", "shown"] as const);
+  const set = numbers(x.promptSet, ["ask", "brief", "explain"] as const);
+  const ask = readTask(sum?.byTask?.ask);
+  const brief = readTask(sum?.byTask?.brief);
+  const explain = readTask(sum?.byTask?.explain);
+  if (!head || !set || !ask || !brief || !explain || typeof x.date !== "string" || typeof x.model !== "string") return null;
+  const a = x.audit as { labelledBy?: unknown; labelled?: unknown; flawed?: unknown; complete?: unknown; escapeWilson95?: unknown } | null;
+  const ci = a?.escapeWilson95;
+  const auditOk = a && a.complete === true && isNum(a.labelled) && isNum(a.flawed) && typeof a.labelledBy === "string" && Array.isArray(ci) && isNum(ci[0]) && isNum(ci[1]);
+  return {
+    dateLabel: dayLabel(x.date),
+    model: x.model,
+    machine: typeof x.machine === "string" ? x.machine : "",
+    prompts: head.prompts,
+    askPrompts: set.ask,
+    briefPrompts: set.brief,
+    explainPrompts: set.explain,
+    generated: head.sentencesGenerated,
+    blocked: head.blocked,
+    shown: head.shown,
+    tasks: { ask, brief, explain },
+    audit: auditOk ? { labelledBy: a.labelledBy as string, labelled: a.labelled as number, flawed: a.flawed as number, ci: [ci[0], ci[1]] } : null,
+  };
+}
+
+const pct1 = (k: number, n: number) => `${((k / n) * 100).toFixed(1)}%`;
+const secs = (ms: number) => `${(ms / 1000).toFixed(1)} s`;
+
+/**
+ * The page's one-paragraph summary of the batch run, or null (line left out) without the file. Plain numbers only;
+ * the audit is named as an AI agent's and is left out until every shown sentence has a label.
+ */
+export function batchSentence(b: BatchSummary | null): string | null {
+  if (!b || !b.generated) return null;
+  const t = b.tasks;
+  const audit = b.audit
+    ? ` An AI agent (Claude, not the team and not a clinician) read every shown sentence against the records it cites and found ${b.audit.flawed} of ` +
+      `${b.audit.labelled} flawed (${pct1(b.audit.flawed, b.audit.labelled)}, 95% interval ${(b.audit.ci[0] * 100).toFixed(1)}–${(b.audit.ci[1] * 100).toFixed(1)}%).`
+    : "";
+  return (
+    `Batch run on ${b.dateLabel}: ${b.prompts} prompts (${b.askPrompts} Ask questions, ${b.briefPrompts} brief drafts, ${b.explainPrompts} finding ` +
+    `explanations) on ${b.model}, ${b.machine}. The model wrote ${b.generated} sentences; the code check blocked ${b.blocked} ` +
+    `(${pct1(b.blocked, b.generated)}) and the app showed ${b.shown} (${pct1(b.shown, b.generated)}); the rest passed but were not shown.` +
+    `${audit} Time per answer, median (95th percentile): Ask ${secs(t.ask.p50Ms)} (${secs(t.ask.p95Ms)}), brief ${secs(t.brief.p50Ms)} ` +
+    `(${secs(t.brief.p95Ms)}), explanation ${secs(t.explain.p50Ms)} (${secs(t.explain.p95Ms)}).`
+  );
+}
+
+export const BATCH_RUN = readBatch(batchFile);
+export const BATCH_SENTENCE = batchSentence(BATCH_RUN);
+
+/**
+ * The label of the panel's "More" block: what it holds, as one plain list (the red-team line and the batch run appear
+ * only with their result files, so the label names them only then).
+ */
+export function runMoreSummary({ redTeam, batch }: { redTeam: boolean; batch: boolean }): string {
+  const parts = ["out-of-scope questions", "the brief", "a blocked explanation", "the verdict"];
+  if (redTeam) parts.push("the red-team test");
+  // The batch run is a later, separate run (eval/results/llm-batch.json), not part of the recorded session.
+  if (batch) parts.push("a separate batch run");
+  return `The rest of the run: ${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+}
+
+export const RUN_MORE_SUMMARY = runMoreSummary({ redTeam: Boolean(RED_TEAM_SENTENCE), batch: Boolean(BATCH_SENTENCE) });

@@ -113,6 +113,12 @@
   font-weight: var(--fw-semibold);
   color: var(--ink);
 }
+/* Says what the red top band is (meta.json acbHighNote): Kinwise's display band, not a published ACB cut-off. */
+.cg-acb-band-note {
+  margin: calc(-1 * var(--space-2)) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
 
 .cg-acb-list {
   display: flex;

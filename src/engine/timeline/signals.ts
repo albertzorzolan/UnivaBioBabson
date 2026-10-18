@@ -53,7 +53,10 @@ import type { ChangeKind, EventWindows, MedChange } from "./windows";
 
 // Re-exported so existing imports from "./signals" keep working (rules and windows moved to their own files).
 export {
+  LOW_POWER_BRIEF_LINE,
+  LOW_POWER_NOTE,
   MULTIPLE_COMPARISONS_NOTE,
+  RUNS_CHECK_NOTE,
   SENTINEL_NOTE,
   SIGNAL_CAVEAT,
   STRENGTH_LABEL,
@@ -550,7 +553,10 @@ export interface SignalDescription {
   /** The code-rendered count sentence (signal.text). */
   sentence: string;
   strengthLabel: string;
-  /** e.g. "Fisher's exact test, two-sided p = 0.016." */
+  /**
+   * The test's p and, when the signal has one, the runs check beside it, e.g. "Fisher's exact test, two-sided
+   * p = 0.0023 · runs check (4-day runs shuffled 999 times): p = 0.007."
+   */
   statistics: string;
   /** Overlapping medicine changes, or null when there were none. */
   overlap: string | null;
@@ -567,6 +573,22 @@ function describeChange(other: Medication, center: ISODate, today: ISODate, medE
     .map((e) => `${e.kind} ${formatShort(e.date)}`);
   for (const d of nearbyDoseChanges(other.id, center, today, medEvents)) parts.push(`dose changed ${formatShort(d)}`);
   return `${medName(other)} (${parts.length > 0 ? parts.join(", ") : "dose changed"})`;
+}
+
+/**
+ * A runs-check p in words. formatPValue, without its trailing zeros: a shuffle p is a whole number of
+ * (shuffles + 1)ths (999 shuffles → thousandths), so "p = 0.0070" would claim a digit the test does not have.
+ * A p of exactly 1 (every shuffle at least as extreme) is a whole number too, so it reads "p = 1".
+ */
+export function formatRunsCheckP(p: number): string {
+  return formatPValue(p)
+    .replace(/(\.\d*?[1-9])0+$/, "$1")
+    .replace(/\.0+$/, "");
+}
+
+/** "runs check (4-day runs shuffled 999 times): p = 0.007", from the signal's own settings. */
+function runsCheckText(r: RunsCheck): string {
+  return `runs check (${r.blockDays}-day runs shuffled ${r.permutations} times): ${formatRunsCheckP(r.p)}`;
 }
 
 /**
@@ -589,7 +611,8 @@ export function describeSignal(signal: Signal, meds: Medication[], today: ISODat
     headline: `${def.label} ${change} after ${name} was ${signal.event}`,
     sentence: signal.text,
     strengthLabel: STRENGTH_LABEL[signal.strength],
-    statistics: `${testName}, two-sided ${formatPValue(signal.pValue)}.`,
+    // The runs check is reported beside the test's p wherever the flag is read (report-only while the gate is off).
+    statistics: `${testName}, two-sided ${formatPValue(signal.pValue)}${signal.runsCheck ? ` · ${runsCheckText(signal.runsCheck)}` : ""}.`,
     overlap:
       others.length > 0
         ? `Other medicine changes within ${TIMELINE_RULES.overlapDays} days of ${formatShort(signal.eventDate)}: ` +

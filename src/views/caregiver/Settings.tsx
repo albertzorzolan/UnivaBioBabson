@@ -14,6 +14,7 @@ import {
   PlayCircle,
   Power,
   RotateCcw,
+  Sparkles,
   Trash2,
   Upload,
   UserRound,
@@ -27,6 +28,8 @@ import { useDerived } from "../../app/useDerived";
 import { startTour } from "../../app/Tour";
 import { MODEL_OPTIONS, DEFAULT_MODEL_ID, LLMError, isModelCached, loadModel, probeWebGPU, removeModelCache, unloadModel, useLLM } from "../../ai";
 import { loadPhaseLabel } from "../../ai/llm";
+import { friendlyLoadError } from "../../ai/progress";
+import { href } from "../../app/router";
 import {
   Badge,
   Button,
@@ -46,6 +49,7 @@ import {
   useToast,
 } from "../../ui";
 import "./settings.css";
+import "./settings-ai.css";
 
 // ---------------------------------------------------------------------------------------------
 // Profile
@@ -345,7 +349,9 @@ function AiCard() {
     } catch (e) {
       // Cancelled with the button below, which says so itself.
       if (e instanceof LLMError && e.code === "cancelled") return;
-      toast.show({ title: "The model did not load", description: e instanceof Error ? e.message : String(e), tone: "caution" });
+      // The card's status line already says what happened (friendlyLoadError, raw text under "Technical details"),
+      // so the toast neither repeats the raw error nor the whole explanation.
+      toast.show({ title: "The model did not load", description: "Everything else keeps working. The On-device AI section says what happened.", tone: "caution" });
     }
   };
   const cancelLoad = async () => {
@@ -464,10 +470,28 @@ function AiCard() {
                       : "You can keep using Kinwise while this loads."
                   }
                 />
+              ) : llm.status === "error" ? (
+                // Plain words first (a blocked download is the common case); the raw error stays one click away.
+                <>
+                  <p className="cg-set-ai-message is-error">{friendlyLoadError(llm.message)}</p>
+                  <Disclosure summary="Technical details" className="cg-set-ai-tech">
+                    <p className="cg-set-ai-tech__raw">{llm.message}</p>
+                  </Disclosure>
+                </>
               ) : (
-                <p className={cx("cg-set-ai-message", llm.status === "error" && "is-error")}>{llm.message}</p>
+                <p className="cg-set-ai-message">{llm.message}</p>
               )}
               {loaded && llm.lastMs != null && <p className="cg-set-help">Last answer took {(llm.lastMs / 1000).toFixed(1)} s.</p>}
+              {/* The load time is approximate: about 8 s for Qwen2.5 3B from the cache on one M1 Pro laptop. */}
+              {cached[selected] && !busy && !(loaded && llm.model === selected) && (
+                <p className="cg-set-help">Already downloaded on this device; loads in about 10 seconds on a recent laptop.</p>
+              )}
+              {loaded && (
+                <p className="cg-set-ai-try">
+                  <Sparkles size={16} aria-hidden="true" />
+                  <a href={href("/c/brief")}>Try it: draft the visit brief with on-device AI</a>
+                </p>
+              )}
             </div>
 
             <div className="cg-set-actions cg-set-actions--start">

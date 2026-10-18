@@ -48,3 +48,26 @@ export function trackLoad(prev: LoadTracker, report: { progress: number; text: s
   const overall = phase === "download" ? DOWNLOAD_SHARE * phaseProgress : downloaded ? DOWNLOAD_SHARE + (1 - DOWNLOAD_SHARE) * phaseProgress : phaseProgress;
   return { phase, phaseProgress, overall: Math.max(prev.overall, overall), downloaded };
 }
+
+// ---------------------------------------------------------------------------
+// Load errors in plain words
+
+/** A download that never arrived: blocked by the network, offline, or the host was unreachable. */
+export const LOAD_FAILED_NETWORK =
+  "Couldn’t download the model; your network may block huggingface.co or GitHub. Everything else in Kinwise works without it. Try again on another network.";
+/** Any other load failure (out of graphics memory, a lost GPU device, an engine bug). */
+export const LOAD_FAILED = "The on-device model didn’t load this time. Everything else in Kinwise works without it. Try again, or choose a smaller model.";
+
+// How browsers and WebLLM word a failed download: Chrome "Failed to fetch", Firefox "NetworkError when attempting to
+// fetch resource.", Safari "Load failed", WebLLM's cache layer "Failed to store <url> …" (seen in the runtime audit
+// when huggingface.co was blocked). Matched anywhere in the text, so llm.ts's "could not load: …" prefix is fine.
+const NETWORK_ERROR = /failed to fetch|failed to store|networkerror|network error|load failed|err_internet_disconnected|err_name_not_resolved/i;
+
+/**
+ * The plain message Settings shows for a failed model load. Pure: takes the thrown error or the status message and
+ * never returns the raw text (Settings keeps that under "Technical details").
+ */
+export function friendlyLoadError(err: unknown): string {
+  const text = err instanceof Error ? `${err.name}: ${err.message}` : typeof err === "string" ? err : "";
+  return NETWORK_ERROR.test(text) ? LOAD_FAILED_NETWORK : LOAD_FAILED;
+}

@@ -869,6 +869,14 @@ a.ui-cite--chip:hover {
   border-color: var(--primary);
   color: var(--primary-ink);
 }
+/* Filter chips (caregiver period and history filters): the chosen option is a soft green chip with its check, so it
+   never looks like the page's filled primary button. Answer pills (check-in, review status) keep the filled style.
+   Same specificity as the hover rule above and later in the file, so a hovered chosen chip stays soft green. */
+.ui-seg--filter .ui-seg__option.is-checked {
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+  border-color: var(--primary);
+}
 .ui-seg__option:disabled {
   opacity: 0.5;
 }

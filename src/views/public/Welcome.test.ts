@@ -43,6 +43,11 @@ describe("Welcome access card", () => {
     expect(html).not.toMatch(/or sign in with a demo account/i);
   });
 
+  it("promises no sign-up, not 'no accounts' (the page itself offers demo accounts)", () => {
+    expect(html).toContain("No Kinwise server, no sign-up, no tracking.");
+    expect(html).not.toMatch(/no accounts/i);
+  });
+
   it("does not show the not-found hint on the home page", () => {
     expect(html).not.toContain(NOT_FOUND_HINT);
   });

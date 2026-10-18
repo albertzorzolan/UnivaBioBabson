@@ -50,8 +50,20 @@
   pointer-events: auto;
   transition:
     top var(--dur-slow) var(--ease-out),
-    left var(--dur-slow) var(--ease-out);
+    left var(--dur-slow) var(--ease-out),
+    opacity var(--dur-med) var(--ease-out);
   animation: tour-rise var(--dur-slow) var(--ease-out);
+}
+/* Settling (TourOverlay.tsx): while the page scrolls to the next target or its view loads, the card keeps its
+   size but is out of sight, and it jumps rather than slides to its new place; once the target is still it
+   fades in where it belongs. The page stays dimmed meanwhile (the scrim replaces the ring, without a fade). */
+.tour--settling .tour-card {
+  visibility: hidden;
+  opacity: 0;
+  transition: none;
+}
+.tour--settling .tour-scrim {
+  animation: none;
 }
 .tour-card--centered {
   top: 50%;
@@ -92,6 +104,26 @@
   margin-top: var(--space-3);
   padding: var(--space-2) 0 var(--space-3);
   background: var(--surface-raised);
+}
+/* More of the step's text is below the controls (data-more, set while the sheet can scroll further): the text
+   fades out above them and the bar lifts slightly, so it reads as "scroll for more" rather than cut off. */
+.tour-card--docked .tour-card__actions::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: var(--space-6);
+  background: linear-gradient(to bottom, transparent, var(--surface-raised));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease-out);
+}
+.tour-card--docked[data-more] .tour-card__actions {
+  box-shadow: 0 -6px 10px -8px rgb(20 28 25 / 0.28);
+}
+.tour-card--docked[data-more] .tour-card__actions::before {
+  opacity: 1;
 }
 
 .tour-card__top {
@@ -273,6 +305,12 @@
   .tour-dot {
     transition: none;
     animation: none;
+  }
+  /* base.css shortens every transition to 0.01ms here, and with the default `transition-property: all` that makes
+     the card's contents transition their inherited `visibility`: for a frame after a settle the title is still
+     hidden and cannot take focus back (TourOverlay.tsx). Nothing inside the card transitions with reduced motion. */
+  .tour-card * {
+    transition-property: none;
   }
 }
 @media print {

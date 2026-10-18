@@ -6,7 +6,10 @@ import type { CheckIn, DiaryAnswers, ISODate, MedEvent, Medication, MetricKey, S
 import { addDays } from "../../model/dates";
 import { METRICS } from "./metrics";
 import {
+  LOW_POWER_BRIEF_LINE,
+  LOW_POWER_NOTE,
   MULTIPLE_COMPARISONS_NOTE,
+  RUNS_CHECK_NOTE,
   SENTINEL_NOTE,
   SIGNAL_CAVEAT,
   STRENGTH_LABEL,
@@ -21,6 +24,7 @@ import {
   eventWindows,
   gatedStrength,
   eventsForMed,
+  formatRunsCheckP,
   isAdverseConsistent,
   isSignalStrength,
   nearbyDoseChanges,
@@ -748,6 +752,9 @@ describe("analyzeTimeline — general behaviour", () => {
       MULTIPLE_COMPARISONS_NOTE,
       TIMELINE_METHOD_SUMMARY,
       SENTINEL_NOTE,
+      LOW_POWER_NOTE,
+      LOW_POWER_BRIEF_LINE,
+      RUNS_CHECK_NOTE,
       ...Object.values(STRENGTH_LABEL),
     ];
     expect(texts.length).toBeGreaterThan(10);
@@ -812,7 +819,7 @@ describe("describeSignal", () => {
       headline: "Dizziness recorded more often after Lorazepam (Ativan) was started",
       sentence: s.text,
       strengthLabel: "Moderate signal",
-      statistics: "Fisher's exact test, two-sided p = 0.016.",
+      statistics: `Fisher's exact test, two-sided p = 0.016 · runs check (4-day runs shuffled 999 times): ${formatRunsCheckP(s.runsCheck!.p)}.`,
       overlap: null,
       knownEffect: "Kinwise's reference set lists dizziness as a recognized possible effect of Lorazepam (Ativan).",
       caveat: SIGNAL_CAVEAT,
@@ -823,9 +830,29 @@ describe("describeSignal", () => {
     const s = signals.find((x) => x.metric === "energy")!;
     const d = describeSignal(s, [], TODAY);
     expect(d.headline).toBe("Energy rated lower after this medicine was started");
-    expect(d.statistics).toBe("Mann–Whitney U test, two-sided p < 0.001.");
+    expect(d.statistics).toMatch(/^Mann–Whitney U test, two-sided p < 0\.001 · runs check \(4-day runs shuffled 999 times\): p [=<] [\d.]+\.$/);
     expect(d.strengthLabel).toBe("Strong signal");
     expect(d.knownEffect).toBeNull();
+  });
+
+  it("puts the runs check beside the test's p, with the signal's own block size and shuffles", () => {
+    const s = signals.find((x) => x.metric === "dizziness")!;
+    const custom = { ...s, runsCheck: { p: 0.042, blockDays: 3, permutations: 199, passed: true } };
+    expect(describeSignal(custom, [LORAZEPAM], TODAY).statistics).toBe(
+      "Fisher's exact test, two-sided p = 0.016 · runs check (3-day runs shuffled 199 times): p = 0.042.",
+    );
+    // Older saved analyses and fixtures have no runs check: the test's p alone, as before.
+    const { runsCheck: _omit, ...older } = s;
+    expect(describeSignal(older, [LORAZEPAM], TODAY).statistics).toBe("Fisher's exact test, two-sided p = 0.016.");
+  });
+
+  it("formats a runs-check p without trailing zeros (a shuffle p is a whole number of thousandths; 1 reads 'p = 1')", () => {
+    expect(formatRunsCheckP(0.007)).toBe("p = 0.007");
+    expect(formatRunsCheckP(0.011)).toBe("p = 0.011");
+    expect(formatRunsCheckP(0.05)).toBe("p = 0.05");
+    expect(formatRunsCheckP(0.001)).toBe("p = 0.001");
+    expect(formatRunsCheckP(0.0005)).toBe("p < 0.001");
+    expect(formatRunsCheckP(1)).toBe("p = 1");
   });
 
   it("uses 'less often' / 'rated higher' for decreases and increases", () => {
@@ -1112,5 +1139,15 @@ describe("runs check (circular block permutation, blockPermutation.ts)", () => {
         expect(s.runsCheck).toEqual(ev.comparisons.find((c) => c.metric === s.metric)!.runsCheck);
       }
     }
+  });
+});
+
+describe("RUNS_CHECK_NOTE (the plain line beside the runs-check p-values)", () => {
+  it("names the block size and says whether the check decides flags, as TIMELINE_RULES.runsCheck.gate does", () => {
+    expect(RUNS_CHECK_NOTE).toContain(`runs of ${TIMELINE_RULES.runsCheck.blockDays} days`);
+    expect(RUNS_CHECK_NOTE.includes("it is reported, not used to decide flags")).toBe(!TIMELINE_RULES.runsCheck.gate);
+    // True for any block size: only the runs move together, so it never claims "a bad week" is shuffled as one.
+    expect(RUNS_CHECK_NOTE).toContain("so days in a bad stretch move together");
+    expect(RUNS_CHECK_NOTE).not.toMatch(/\bweek\b/i);
   });
 });

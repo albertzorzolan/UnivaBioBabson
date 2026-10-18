@@ -117,7 +117,7 @@ Voice: warm, plain, specific, never alarming. Never say "caused", "safe", "urgen
   mini before/after chart, medication table with flag column, questions, footer provenance. Print CSS: only the brief prints;
   unreviewed brief prints a "not reviewed yet" notice instead.
 - Actions: Print / Save as PDF; **Export for clinician (FHIR R4 JSON)** download with a short explainer and a validity indicator
-  (validateBundle → "Valid FHIR R4 Bundle · 34 resources"); Copy as text (for patient-portal message).
+  (validateBundle → "Valid FHIR R4 Bundle · N resources"; the demo record's sample bundle has 270, see docs/samples/README.md); Copy as text (for patient-portal message).
 
 ### Settings (`/c/settings`)
 - Margaret's profile: age, conditions (checkbox list with plain labels), kidney function (CrCl optional with explainer), names.

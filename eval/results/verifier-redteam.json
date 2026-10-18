@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T05:57:38.014Z",
+  "generatedAt": "2026-10-18T08:10:26.479Z",
   "set": "eval/verifier-redteam.json",
   "author": "AI agent (Claude Code) directed by the team; written before the fixes; not clinician-reviewed",
   "authorCaveat": "The author string above was fixed by the task; see notes[0]: the before-the-fixes order cannot be shown from version control.",
@@ -345,9 +345,9 @@
     ]
   },
   "postFixProbe3AfterReview": {
-    "note": "The third post-fix probe on today's checks, after the changes listed in postFixProbe3.changedAfterRecording (corrected pf3-v02 label included). In-sample for those changes; the held-out number is postFixProbe3.",
+    "note": "The third post-fix probe on today's checks, after the changes listed in postFixProbe3.changedAfterRecording (corrected pf3-v02 label included) and after the round-3 rules (no longer held out: the probe-3 misses were listed in eval/VERIFIER-REDTEAM.md when those rules were written). The held-out number is postFixProbe3.",
     "total": 23,
-    "caught": 10,
+    "caught": 11,
     "validTotal": 11,
     "falseRejects": 0,
     "missed": [
@@ -365,11 +365,6 @@
         "id": "pf3-09",
         "category": "advice",
         "text": "Giving the lorazepam a rest until the appointment makes sense."
-      },
-      {
-        "id": "pf3-11",
-        "category": "causal",
-        "text": "Her unsteadiness began with the lorazepam and is down to it."
       },
       {
         "id": "pf3-12",
@@ -422,6 +417,51 @@
       "pf3-01",
       "pf3-03"
     ]
+  },
+  "regressionRound3": {
+    "provenance": "written by internal AI review agents on 2026-10-17 before this change; used to design the rules; NOT held out",
+    "heldOut": false,
+    "judge": {
+      "total": 15,
+      "caught": 15,
+      "validTotal": 3,
+      "falseRejects": 0,
+      "missed": [],
+      "falseRejectItems": []
+    },
+    "audit": {
+      "total": 12,
+      "caught": 12,
+      "validTotal": 1,
+      "falseRejects": 0,
+      "missed": [],
+      "falseRejectItems": []
+    },
+    "before": {
+      "note": "Measured on the verifier before the round-3 rules, with this file's harness (KB drug vocabulary added; the probes' own options give the same verdicts).",
+      "judge": {
+        "total": 15,
+        "caught": 9,
+        "validTotal": 3,
+        "falseRejects": 0,
+        "missed": [
+          "r3-j01",
+          "r3-j02",
+          "r3-j04",
+          "r3-j06",
+          "r3-j13",
+          "r3-j14"
+        ]
+      },
+      "audit": {
+        "total": 12,
+        "caught": 12,
+        "validTotal": 1,
+        "falseRejects": 0,
+        "missed": []
+      }
+    },
+    "missed": []
   },
   "before": {
     "note": "eval/verifier.eval.test.ts run on the checks as submitted (commit 375e1e0, via eval/verifier-baseline.config.ts), before the paraphrase fixes (2026-10-17).",

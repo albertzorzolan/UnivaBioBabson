@@ -11,6 +11,7 @@ import * as lib from "./lib.mjs";
 import {
   branchOnlyFacts,
   collectFacts,
+  demoFacts,
   evidenceNotOnBranch,
   falseAlarmAbout,
   liveEscapeCounts,
@@ -19,9 +20,9 @@ import {
   recordedTests,
   testRunProblems,
 } from "./facts.mjs";
-import { SHOT_HEIGHT_IN, e2eText, evidenceItems, falseAlarmText, onePagerHtml, overflowProbe, testsItem } from "./onepager.mjs";
+import { DEMO_CTA, SHOT_HEIGHT_IN, changeStep, e2eText, evidenceItems, falseAlarmText, onePagerHtml, overflowProbe, testsItem } from "./onepager.mjs";
 import { fixedCaptureTime, unionBox } from "./capture.mjs";
-import { STALE, numberChecks, staleRegex } from "./check-facts.mjs";
+import { PARTIAL_KB, STALE, numberChecks, pasteRegion, pasteRegionProblems, renderedWordCount, staleRegex, testRecordWarnings } from "./check-facts.mjs";
 
 const PHRASE = "at least 6 flawed AI sentences (from 5 outputs)";
 
@@ -133,7 +134,30 @@ test("optionalEvidence: formats like the app (percent, one decimal) and recomput
     independent: { moderate: "11.2%", strong: "0.3%", n: 1000, stay: null, gated: null },
     clustered: { moderate: "85.8%", strong: "61.0%", n: 1000, stay: 0.8, gated: null },
     runsGate: false,
+    power: { independent: null, clustered: null },
   });
+});
+
+test("optionalEvidence: power rows are matched on stay, and the corrected third-probe count is read", () => {
+  const t = optionalEvidence({
+    timelineNull: {
+      independent: { moderateRate: 0.112 },
+      clustered: { moderateRate: 0.858, stay: 0.8 },
+      // Reordered on purpose: the clustered row first.
+      power: [
+        { stay: 0.8, metric: "dizziness", detectionRate: 0.376, gatedDetectionRate: 0.233, n: 1000 },
+        { stay: 0, metric: "dizziness", detectionRate: 0.392, gatedDetectionRate: 0.325, n: 1000 },
+      ],
+    },
+  }).timelineNull;
+  assert.deepEqual(t.power, { independent: { tests: "39.2%", gated: "32.5%", n: 1000 }, clustered: { tests: "37.6%", gated: "23.3%", n: 1000 } });
+  // The committed file gives the figure EVALUATION.md quotes.
+  const real = optionalEvidence({ timelineNull: readJson("eval/results/timeline-null.json") }).timelineNull;
+  assert.equal(real.power.independent.tests, "39.2%");
+  const rt = optionalEvidence({
+    redteam: { harmfulTotal: 163, caught: 163, postFixProbe3: { total: 22, caught: 10, withCorrectedLabel: { total: 23, caught: 10 } } },
+  }).redteam;
+  assert.deepEqual(rt.heldOutProbe.corrected, { total: 23, caught: 10 });
 });
 
 test("optionalEvidence: gated timeline rates are optional and read only from valid fractions", () => {
@@ -198,7 +222,7 @@ test("optionalEvidence: reads the as-submitted count and both probes, defensivel
     redteam: { ...REDTEAM_CURRENT, postFixProbe2: { ...REDTEAM_CURRENT.postFixProbe2, heldOut: false }, postFixProbe3: { total: 22, caught: 10, validTotal: 12, falseRejects: 0, heldOut: true } },
   }).redteam;
   assert.equal(tuned.postFixProbe2.heldOut, false);
-  assert.deepEqual(tuned.heldOutProbe, { total: 22, caught: 10, validTotal: 12, falseRejects: 0, heldOut: true });
+  assert.deepEqual(tuned.heldOutProbe, { total: 22, caught: 10, validTotal: 12, falseRejects: 0, heldOut: true, corrected: null });
   assert.equal(optionalEvidence({ redteam: { ...REDTEAM_CURRENT, postFixProbe2: { ...REDTEAM_CURRENT.postFixProbe2, heldOut: false } } }).redteam.heldOutProbe, null);
   assert.equal(rt.postFixUnreadable, false);
   assert.equal(optionalEvidence({ redteam: { ...REDTEAM_CURRENT, postFixProbe2: undefined } }).redteam.heldOutProbe, null);
@@ -210,13 +234,20 @@ test("optionalEvidence: reads the as-submitted count and both probes, defensivel
 
 // --- One-pager text ------------------------------------------------------------------------------------------
 
-test("evidenceItems: four one-line bullets (NLP, medication review, on-device AI, tests); FHIR only fills a gap", () => {
+test("evidenceItems: one-line bullets (NLP, medication review, on-device AI, tests) plus the wrapping timeline bullet; FHIR only fills a gap", () => {
   const plain = evidenceItems(baseFacts());
-  assert.equal(plain.length, 4);
+  assert.equal(plain.length, 5);
   assert.match(plain[0], /^<b>Clinical NLP:<\/b> .*94\.2%.*dev set \(245 stories\) 99\.8%\.$/);
   assert.match(plain[1], /57 of 57<\/span> synthetic cases pass \(a written spec, not clinical validity\), 295 of 295 expectations\.$/);
-  assert.equal(plain[2], `<b>On-device AI:</b> 0 external requests in a recorded run; ${PHRASE} got through, so AI stays optional.`);
-  assert.match(plain[3], /^<b>Tests:<\/b> 1,245 unit tests pass · 20 of 20 end-to-end checks pass · 46 axe scans, 0 violations\.$/);
+  // The chance rate moved here from "What it does", framed as the reason a flag is only a question; it may wrap.
+  assert.deepEqual(plain[2], {
+    html: "<b>Timeline:</b> with no real change, about 1 in 10 simulated medicine changes still showed a large or clear difference, which is why a flag is only ever a question.",
+    wrap: true,
+  });
+  assert.equal(plain[3], `<b>On-device AI:</b> 0 external requests in a recorded run; ${PHRASE} got through, so AI stays optional.`);
+  assert.match(plain[4], /^<b>Tests:<\/b> 1,245 unit tests pass · 20 of 20 end-to-end checks pass · 46 axe scans, 0 violations\.$/);
+  // No chance-rate source at all: no timeline bullet.
+  assert.equal(evidenceItems(baseFacts({ timelineAbout: null })).length, 4);
   const full = optionalEvidence({
     nlp: { heldout: { baseline: { micro: { f1: 0.7034 } }, ci95: { f1: [0.907, 0.971] } } },
     ablation: { runs: [{ name: "a", passed: 33, total: 57 }, { name: "b", passed: 54, total: 57 }] },
@@ -227,17 +258,17 @@ test("evidenceItems: four one-line bullets (NLP, medication review, on-device AI
   const items = evidenceItems(f);
   assert.match(items[0], /94\.2%<\/span> \(95% CI 90\.7–97\.1%\) on 70 held-out stories never used for tuning; lexicon-only baseline 70\.3%\./);
   assert.match(items[1], /; with one piece of knowledge removed, 33–54 of 57\.$/);
-  // No tests to print: FHIR takes the slot.
+  // No tests to print: FHIR takes the slot (after the timeline bullet, which does not count as a one-line bullet).
   const noTests = evidenceItems(baseFacts({ tests: null }));
-  assert.equal(noTests.length, 4);
-  assert.match(noTests[3], /^<b>FHIR:/);
+  assert.equal(noTests.length, 5);
+  assert.match(noTests[4], /^<b>FHIR:/);
   // Without a flaw count the AI bullet makes no count claim at all.
   const noCount = evidenceItems(baseFacts({ ai: { externalRequests: 0, liveSlippedPhrase: null } }));
-  assert.doesNotMatch(noCount[2], /flawed|at least/);
+  assert.doesNotMatch(noCount[3], /flawed|at least/);
   // Fallback: no count, but the recorded run's own verdict still discloses flawed output, without a number.
   const verdictOnly = evidenceItems(baseFacts({ ai: { externalRequests: 0, liveSlippedPhrase: null, liveFlawedOnBranch: true } }));
-  assert.match(verdictOnly[2], /its review found flawed outputs that got through \(ai-live\.json\), so AI stays optional\.$/);
-  assert.doesNotMatch(verdictOnly[2], /\d+ flawed|at least|sentences/);
+  assert.match(verdictOnly[3], /its review found flawed outputs that got through \(ai-live\.json\), so AI stays optional\.$/);
+  assert.doesNotMatch(verdictOnly[3], /\d+ flawed|at least|sentences/);
 });
 
 test("testsItem: this tree's runs, or the branch's recorded counts with their date", () => {
@@ -264,8 +295,12 @@ test("falseAlarmText: caregiver size words; clustered rate with its assumption; 
 test("onePagerHtml: one set of links, one screenshot, team line, footnoted citations, taper caveat", () => {
   const html = onePagerHtml({ facts: baseFacts(), shots, team: DEFAULT_TEAM, videoUrl: null });
   const count = (s) => html.split(s).length - 1;
-  // Live demo and code are linked once each (header), the video is named once.
-  assert.equal(count(`href="${DEMO_URL}"`), 1);
+  // The live demo is linked twice (header and the guided-tour button in the visit panel), the code once, the video
+  // is named once, and the call to action is the Welcome screen's ("Try as Alex" is no longer used).
+  assert.equal(count(`href="${DEMO_URL}"`), 2);
+  assert.equal(DEMO_CTA, "Take the 2-minute guided tour");
+  assert.ok(html.includes(`>${DEMO_CTA}</a>`));
+  assert.ok(!html.includes("Try as Alex"));
   assert.equal(count(`href="${CODE_URL}"`), 1);
   assert.equal(count("<b>Video:</b>"), 1);
   assert.ok(html.includes("<b>Video:</b> on the Devpost page"));
@@ -274,6 +309,12 @@ test("onePagerHtml: one set of links, one screenshot, team line, footnoted citat
   // One screenshot: the Overview crop, captioned.
   assert.equal(count("<img "), 1);
   assert.ok(html.includes("What Alex brings to the visit"));
+  // The visit panel carries three numbered callouts: the counts, the not-a-cause reminder and the visit question.
+  const callouts = html.slice(html.indexOf('<ol class="callouts">'), html.indexOf("</ol>", html.indexOf('<ol class="callouts">')));
+  assert.equal(callouts.split("<li>").length - 1, 3);
+  assert.match(callouts, /9 of 14 vs 2 of 19<\/b> answered days/);
+  assert.match(callouts, /A change in what was recorded,<\/b> not what caused it/);
+  assert.match(callouts, /One question<\/b> for her clinician/);
   assert.ok(html.includes(`alt="The caregiver Overview in the live demo (fictional data): ${shots.visitCardText}"`));
   // Where the brief is used, with the CFR citations only in the footnotes.
   assert.ok(html.includes("For the Medicare <b>Annual Wellness Visit</b> (whose cognitive check must consider concerns raised by family<sup>1</sup>) or a pharmacist’s <b>medication review</b>"));
@@ -292,9 +333,44 @@ test("onePagerHtml: one set of links, one screenshot, team line, footnoted citat
   const working = html.slice(html.indexOf("<h3>Working</h3>"), html.indexOf("<h3>Partial</h3>"));
   const partial = html.slice(html.indexOf("<h3>Partial</h3>"), html.indexOf("<h3>Planned"));
   assert.match(working, /Public live demo/);
-  assert.match(partial, /On-device LLM/);
-  assert.match(partial, /427 medicines/);
-  assert.match(partial, /No dose or allergy checks/);
+  assert.match(partial, /LLM: WebGPU only; code check not airtight/);
+  assert.match(partial, /no dose\/allergy checks/);
+  assert.match(partial, /Interactions: Beers 2023 combination table only/);
+  assert.match(partial, /Runs check not yet gating/);
+  // The chance rate is in Evidence & rigor, not in "What it does".
+  const steps = html.slice(html.indexOf('<ol class="steps">'), html.indexOf("</ol>", html.indexOf('<ol class="steps">')));
+  assert.doesNotMatch(steps, /simulated|large or clear/);
+  const evidence = html.slice(html.indexOf('<ul class="ev">'));
+  assert.match(evidence, /<li class="wrap"><b>Timeline:<\/b> .*which is why a flag is only ever a question\./);
+});
+
+test("changeStep: the runs check and the sleep averages only when facts.demo has them", () => {
+  assert.equal(
+    changeStep(baseFacts()),
+    "<b>See what changed.</b> Dizziness on <b>2 of 19</b> answered days before lorazepam, <b>9 of 14</b> after (Fisher’s exact test).",
+  );
+  const full = changeStep(baseFacts({ demo: { runsCheckP: "0.007", sleep: { after: "3.4", before: "2.6", afterDays: 14, beforeDays: 20 } } }));
+  assert.equal(
+    full,
+    "<b>See what changed.</b> Dizziness on <b>2 of 19</b> answered days before lorazepam, <b>9 of 14</b> after (Fisher’s exact test; holds when 4-day runs are shuffled, p = 0.007, seeded diary). Sleep ratings were higher too (after vs before): <b>3.4 vs 2.6</b> of 5.",
+  );
+});
+
+test("demoFacts: reads the runs-check p, the Fisher p and the brief's sleep line from the committed files", () => {
+  const f = demoFacts({
+    evaluationMd: readFileSync(join(ROOT, "docs/EVALUATION.md"), "utf8"),
+    seedTimelineTest: readFileSync(join(ROOT, "src/engine/timeline/seed.timeline.test.ts"), "utf8"),
+    templateTest: readFileSync(join(ROOT, "src/engine/brief/template.test.ts"), "utf8"),
+  });
+  assert.equal(f.runsCheckP, "0.007");
+  assert.equal(f.runsCheckPinned, f.runsCheckP);
+  assert.equal(f.fisherP, "0.0023");
+  assert.deepEqual(f.sleep, { after: "3.4", afterDays: 14, before: "2.6", beforeDays: 20 });
+  // Nothing found: every field null (as at 375e1e0 for the runs check and the sleep line).
+  assert.deepEqual(demoFacts({}), { runsCheckP: null, runsCheckPinned: null, fisherP: null, sleep: null });
+  // The fallback keeps the branch's own record: the submitted commit has neither the runs check nor the sleep line.
+  const b = branchOnlyFacts(baseFacts({ demo: f }), { branch: "medwatch-v2", gapKeys: [], show: branchFiles() });
+  assert.deepEqual(b.demo, { runsCheckP: null, runsCheckPinned: null, fisherP: null, sleep: null });
 });
 
 test("onePagerHtml: a video link replaces the Devpost pointer", () => {
@@ -349,6 +425,13 @@ test("recordedTests: reads the §7 rows; partial or missing rows give null parts
     a11y: { scans: 46, violations: 0, date: "2026-10-11" },
   });
   assert.equal(recordedTests("no table here"), null);
+  // This tree's §7 records the run behind the submission PDFs, so the one-pager's test counts trace to a committed file.
+  const here = recordedTests(readFileSync(join(ROOT, "docs/EVALUATION.md"), "utf8"));
+  assert.deepEqual(here, {
+    unit: { total: 1918, passed: 1917, skipped: 1, date: "2026-10-18" },
+    e2e: { passed: 21, checks: 21, date: "2026-10-18" },
+    a11y: { scans: 46, violations: 0, date: "2026-10-18" },
+  });
   assert.equal(recordedTests(EVAL_MD_AT_BRANCH.split("\n")[1]).unit, null);
 });
 
@@ -414,7 +497,7 @@ test("fallback one-pager: no baseline, CI, ablation, red-team or gated figures; 
   Object.assign(f.ai, { liveSlippedIds: ["a"], liveSlippedTexts: ["sentence one."] });
   const b = branchOnlyFacts(f, { branch: "medwatch-v2", gapKeys: ["ablation", "redteam", "timelineNull", "nlpBaseline", "nlpCi95", "verifier", "liveEscapes"], show: branchFiles() });
   const html = onePagerHtml({ facts: b, shots, team: DEFAULT_TEAM, videoUrl: null, linkedBranchOnly: true });
-  for (const absent of ["lexicon-only baseline", "95% CI", "knowledge removed", "11.2%", "85.8%", "harmful drafts", "flawed AI sentences", "6 flawed", "5 outputs"]) {
+  for (const absent of ["lexicon-only baseline", "95% CI", "knowledge removed", "11.2%", "85.8%", "harmful drafts", "flawed AI sentences", "6 flawed", "5 outputs", "Runs check", "runs are shuffled", "Sleep ratings"]) {
     assert.ok(!html.includes(absent), absent);
   }
   // The flaw disclosure stays, without a number, sourced from the branch's ai-live.json verdict.
@@ -526,6 +609,89 @@ test("check-facts: stale wording rules (old flaw count, hand-labelled, unverifie
   assert.deepEqual(hits("the planned live demo is not yet deployed"), ["not yet deployed", "Planned live demo"]);
   // Whole words only, and the canonical phrase is not stale.
   assert.deepEqual(hits(`119 of 512 · at least 30 flawed · ${PHRASE} · labelled by handwriting`), []);
+});
+
+test("check-facts: round-3 figures (demo p-values, sleep, chance rates, power, claim checker, flaw phrase) are checked", () => {
+  const f = {
+    nlp: { heldoutF1: "0.942", heldoutF1Pct: "94.2%", devF1: "0.998", devF1Pct: "99.8%", baselineF1Pct: "70.3%" },
+    meds: { casesPassed: 57, casesTotal: 57, expectations: "295 of 295", ablation: null },
+    fhir: { resources: 270 },
+    kb: { drugs: 427, brands: 766, combos: 124, beers: 89, cascades: 26, fridClasses: 15, acbListed: 100 },
+    demo: { fisherP: "0.0023", runsCheckP: "0.007", sleep: { after: "3.4", before: "2.6" } },
+    timelineNull: { independent: { moderate: "11.2%" }, clustered: { moderate: "85.8%" }, power: { independent: { tests: "39.2%" } } },
+    verifier: { caught: 163, harmfulTotal: 163, heldOutProbe: { total: 22, caught: 10, corrected: { total: 23, caught: 10 } } },
+    ai: { liveSlippedPhrase: PHRASE },
+  };
+  const run = (text) => numberChecks(f).flatMap((c) => c.run(text).map((r) => ({ label: c.label, ...r })));
+  const good = run(
+    "Fisher p = 0.0023; runs check p = 0.007; sleep ratings were higher (3.4 vs 2.6 of 5); 11.2% of simulated medicine changes; " +
+      "85.8% if symptoms come in long runs of days; The reproducible figure without\nany gate is 39.2%; catches all 163 harmful sentences " +
+      `it was tuned on but only 10 of 23 on a later held-out probe; At least 6 flawed AI sentences (from 5 outputs)`,
+  );
+  assert.equal(good.length, 9);
+  assert.deepEqual(good.filter((r) => !r.ok), []);
+  const bad = run(
+    "Fisher's exact test, p = 0.0024; runs check p = 0.010; (3.5 vs 2.6 of 5); 12.0% of simulated medicine changes; 80.0% if symptoms come in runs of days; " +
+      "only 10 of 22 on a later held-out probe; all 162 harmful sentences; at least 3 flawed AI sentences (from 3 outputs)",
+  );
+  assert.equal(bad.filter((r) => !r.ok).length, 8);
+  // A fact that is missing (e.g. no timeline-null.json) makes any printed figure for it an error.
+  const missing = numberChecks({ ...f, timelineNull: null }).flatMap((c) => c.run("11.2% of simulated medicine changes"));
+  assert.equal(missing.filter((r) => !r.ok).length, 1);
+});
+
+test("check-facts: paste region (no comment, no TODO, canonical Partial wording) and the rendered word count", () => {
+  const doc = (body) => `<!--\nteam notes, TODO(team) allowed here\n-->\n# Kinwise\n\n## About the project (paste)\n\n${body}\n\n## Built with\n\nReact\n<!-- gallery -->\n`;
+  assert.deepEqual(pasteRegionProblems(doc(`Text. | **Partial** | ${PARTIAL_KB} English only |`)), []);
+  const bad = pasteRegionProblems(doc("Text <!-- TODO(team): fill --> more."));
+  assert.deepEqual(bad.map((p) => p.msg.split(" ")[0]), ["HTML", "TODO", "the"]);
+  assert.equal(bad[0].line, 8);
+  assert.match(pasteRegionProblems("# no headings")[0].msg, /paste region not found/);
+  assert.equal(pasteRegion(doc("x")).firstLine, 7);
+  // Link targets, pipes and emphasis are not words a reader sees.
+  assert.equal(renderedWordCount("**Live demo:** [the site](https://example.com/a b) | --- | → go"), 5);
+});
+
+test("DEVPOST files: paste region clean, 1,100–1,450 words (about 1,400 plus room for the teammate lines), 4 rigor rows, canonical Partial row, team notes in the top block", () => {
+  for (const rel of ["submission/DEVPOST.md", "submission/DEVPOST-if-not-pushed.md"]) {
+    const md = readFileSync(join(ROOT, rel), "utf8");
+    assert.deepEqual(pasteRegionProblems(md), [], rel);
+    const region = pasteRegion(md).text;
+    const words = renderedWordCount(region);
+    // The text is written to about 1,100–1,400 words; the upper bound adds about 50 for the one-line-per-teammate
+    // notes the team writes under "Team" (TODO(team) in the file's top block says so).
+    assert.ok(words >= 1100 && words <= 1450, `${rel}: ${words} words in the paste region`);
+    // Problem first: the region opens with the gap line, then "Try it in 30 seconds".
+    assert.match(region.trimStart(), /^\*\*The doctor sees the medicine list, the family sees the symptoms, and nobody lines them up\.\*\*/);
+    assert.ok(region.indexOf("## Try it in 30 seconds") > 0);
+    // "AI and rigor at a glance": exactly 4 data rows.
+    const rigor = region.slice(region.indexOf("## AI and rigor at a glance"), region.indexOf("\n## ", region.indexOf("## AI and rigor at a glance") + 5));
+    const rows = rigor.split("\n").filter((l) => l.startsWith("|") && !/^\|\s*Measured\b/.test(l) && !/^\|[-| ]+\|$/.test(l));
+    assert.equal(rows.length, 4, `${rel}: rigor rows ${rows.length}`);
+    // Every TODO(team) sits in the leading comment block, before "# Kinwise".
+    const head = md.slice(0, md.indexOf("\n# Kinwise"));
+    assert.equal(md.split("TODO(team)").length, head.split("TODO(team)").length, `${rel}: TODO(team) outside the top block`);
+    assert.match(region, /## Path to users \(hypothesis, not validated\)/);
+    assert.match(region, /## Team\n\nAlbert Zorzolan and Neil Shah, Babson College\.\n/);
+  }
+  const main = readFileSync(join(ROOT, "submission/DEVPOST.md"), "utf8");
+  // The live-escape caveat is stated once; the fallback has no count (its source is not at 375e1e0).
+  assert.equal(pasteRegion(main).text.split(PHRASE).length - 1, 1);
+  assert.ok(!readFileSync(join(ROOT, "submission/DEVPOST-if-not-pushed.md"), "utf8").includes("flawed AI sentences ("));
+  // DEVPOST.md links repo files on the medwatch-v2 branch instead of printing bare backtick paths.
+  assert.doesNotMatch(pasteRegion(main).text, /`[\w./-]+\.(?:json|md|ts|pdf)`/);
+  const fallback = readFileSync(join(ROOT, "submission/DEVPOST-if-not-pushed.md"), "utf8");
+  assert.ok(fallback.includes("The live demo is the build submitted on Oct 16; its status table still lists the on-device model as working; we now rate it Partial."));
+  assert.ok(fallback.includes("the code tour PDF uploaded with this submission"));
+  assert.ok(!pasteRegion(fallback).text.includes("blob/medwatch-v2/submission/kinwise-code-tour.pdf"));
+});
+
+test("testRecordWarnings: the dated §7 counts against the last local reports", () => {
+  const recordedHere = { unit: { passed: 1917, skipped: 1, date: "2026-10-18" }, e2e: { passed: 21, checks: 21, date: "2026-10-18" }, a11y: { scans: 46, violations: 0, date: "2026-10-18" } };
+  const same = { recordedHere, vitest: { passed: 1917, skipped: 1 }, e2ePassed: 21, e2eChecks: 21, a11yScans: 46, a11yViolations: 0 };
+  assert.deepEqual(testRecordWarnings(same), []);
+  assert.equal(testRecordWarnings({ ...same, vitest: { passed: 1920, skipped: 1 }, e2ePassed: 20 }).length, 2);
+  assert.match(testRecordWarnings({})[0], /no dated test counts/);
 });
 
 // --- Layout: the real results files must fit one Letter page in every state, normal and fallback ------------------

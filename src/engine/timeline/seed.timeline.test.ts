@@ -85,7 +85,8 @@ describe("timeline on the demo seed (createSeed)", () => {
     );
     const d = describeSignal(dizzy, seed.medications, TODAY, seed.medEvents);
     expect(d.headline).toBe("Dizziness recorded more often after Lorazepam (Ativan) was started");
-    expect(d.statistics).toBe("Fisher's exact test, two-sided p = 0.0023.");
+    // The runs check sits beside the Fisher p, where the flag is read (report-only: it does not change the strength).
+    expect(d.statistics).toBe("Fisher's exact test, two-sided p = 0.0023 · runs check (4-day runs shuffled 999 times): p = 0.007.");
     expect(d.knownEffect).toBe("Kinwise's reference set lists dizziness as a recognized possible effect of Lorazepam (Ativan).");
     expect(d.overlap).toBeNull();
   });

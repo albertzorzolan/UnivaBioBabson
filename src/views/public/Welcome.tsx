@@ -179,7 +179,7 @@ export function Welcome() {
           <div className="pub-hero-proof">
             <p className="pub-privacy">
               <Lock size={16} aria-hidden="true" />
-              <span>Runs in your browser. No Kinwise server, no accounts, no tracking.</span>
+              <span>Runs in your browser. No Kinwise server, no sign-up, no tracking.</span>
             </p>
             <ul role="list" className="pub-proof" aria-label="Checked results">
               {PROOF_POINTS.map((pt) => (
