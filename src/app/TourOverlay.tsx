@@ -2,7 +2,7 @@
 //
 // Each step names the role and route it needs and the [data-tour] targets to highlight, in priority order.
 // On entering a step we switch role/route if needed, then look for the best target for up to 10 s (views
-// are lazy-loaded and render their data a moment later). If nothing appears, the card is centred instead
+// are lazy-loaded and render their data a moment later; the benchmark step waits up to 60 s for its scores). If nothing appears, the card is centred instead
 // — the tour never depends on another screen's markup to work.
 //
 // While the page scrolls to a new target (or the step's view is still loading), the card and the ring wait out
@@ -175,17 +175,35 @@ export const TOUR_STEPS: TourStep[] = [
     runBenchmark: true,
     eyebrow: "How it works",
     title: "Check our work",
+    // Rule "benchmark copy true in every state": while this card is up the benchmark may be idle, scoring ("Scoring
+    // every story on this device…"), failed ("The benchmark could not run"), finished, or re-running after "Run
+    // again", and the spotlit target does not say which (after "Run again" the spotlight can stay on the benchmark
+    // card with the scores back on screen). So the copy is the same for every target and says what the benchmark
+    // does, never that it "just ran" or "is running".
     body: () => (
       <p>
-        The language benchmark just ran live in this browser, over hundreds of fictional, AI-written stories with gold
-        labels; the held-out set was never used for tuning. Below it: the medication-review test cases, the
-        architecture, every source, and an honest list of what is finished and planned.
+        The language benchmark runs live in this browser, over hundreds of fictional, AI-written stories with gold
+        labels. When a run finishes, its scores appear on the benchmark card; the held-out set was never used for
+        tuning. Below it: the medication-review test cases, the architecture, every source, and an honest list of what
+        is finished and planned.
       </p>
     ),
   },
 ];
 
 const SEARCH_MS = 10_000;
+/**
+ * Rule "wait for the benchmark": step 8's best target (the held-out scorecard) appears only when the benchmark
+ * finishes, which can take longer than SEARCH_MS on a slow device. If the search stopped first, the spotlight would
+ * stay on the benchmark card after the scores were on screen, so that step keeps looking for a minute. (The step's
+ * copy does not depend on the target, so it stays true either way.)
+ */
+const BENCHMARK_SEARCH_MS = 60_000;
+
+/** How long a step polls for its best target. Exported for tourBenchmark.test.ts. */
+export function searchWindowMs(step: Pick<TourStep, "runBenchmark">): number {
+  return step.runBenchmark ? BENCHMARK_SEARCH_MS : SEARCH_MS;
+}
 /** Longest the card stays hidden while the page scrolls to a target (then it is shown wherever things are). */
 const SETTLE_MS = 600;
 /** Longest the card stays hidden while the step's view loads; then it is shown centred until a target appears. */
@@ -401,8 +419,10 @@ export function TourOverlay({ step: index }: { step: number }) {
     if (step.targets.length === 0) return;
     let cancelled = false;
     let timer = 0;
+    let clickTimer = 0;
     let filled = false;
     const started = performance.now();
+    const searchFor = searchWindowMs(step);
     const tick = () => {
       if (cancelled) return;
       const found = findTarget(step.targets);
@@ -413,18 +433,28 @@ export function TourOverlay({ step: index }: { step: number }) {
           fillCheckIn(found.el);
         }
         if (step.runBenchmark && !filled) {
-          filled = true;
-          const run = [...found.el.querySelectorAll<HTMLButtonElement>("button")].find((b) => /run the extraction benchmark/i.test(b.textContent ?? ""));
-          window.setTimeout(() => run?.click(), 600);
+          // Rule "press Run once, and only on this step": look for the button in the benchmark card (the spotlit
+          // fallback may be another section), count the action as done only once the button exists, and cancel
+          // the delayed press if the visitor finishes, skips or leaves the step first (cleanup below).
+          const run = [...document.querySelectorAll<HTMLButtonElement>('[data-tour="how-eval"] button')].find((b) =>
+            /run the extraction benchmark/i.test(b.textContent ?? ""),
+          );
+          if (run) {
+            filled = true;
+            clickTimer = window.setTimeout(() => {
+              if (!cancelled && run.isConnected && !run.disabled) run.click();
+            }, 600);
+          }
         }
         if (found.rank === 0) return; // best target present: stop searching
       }
-      if (performance.now() - started < SEARCH_MS) timer = window.setTimeout(tick, 120);
+      if (performance.now() - started < searchFor) timer = window.setTimeout(tick, 120);
     };
     tick();
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
+      window.clearTimeout(clickTimer);
     };
   }, [index, step, path]);
 

@@ -429,7 +429,7 @@ test("recordedTests: reads the §7 rows; partial or missing rows give null parts
   // This tree's §7 records the run behind the submission PDFs, so the one-pager's test counts trace to a committed file.
   const here = recordedTests(readFileSync(join(ROOT, "docs/EVALUATION.md"), "utf8"));
   assert.deepEqual(here, {
-    unit: { total: 2121, passed: 2120, skipped: 1, date: "2026-10-18" },
+    unit: { total: 2783, passed: 2782, skipped: 1, date: "2026-10-18" },
     e2e: { passed: 22, checks: 22, date: "2026-10-18" },
     a11y: { scans: 46, violations: 0, date: "2026-10-18" },
   });

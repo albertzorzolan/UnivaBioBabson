@@ -35,6 +35,7 @@ import {
 } from "./checkin";
 import { HeardPanel, conceptLabel, type AiState } from "./HeardPanel";
 import { MedSafetyLine, needsPoisonLine } from "./MedSafetyLine";
+import { EmergencyLine, describesEmergencySign } from "./EmergencyLine";
 import { QuickForm } from "./QuickForm";
 import { DaySummary, NoteComposer, pickWeeklySentence } from "./SavedDay";
 import { clearStoryDraft, readStoryDraft, writeStoryDraft } from "./storyDraft";
@@ -393,6 +394,8 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
             <strong>About your medicines:</strong> {keptMedNotes.map((n) => `“${n.text}”`).join(", ")}
           </p>
         )}
+        {/* The same static 911 line as in "Here's what I heard", read from the words that will be saved. */}
+        {describesEmergencySign(story) && <EmergencyLine />}
         {/* The same static Poison Control line as in "Here's what I heard" (all notes read, kept or taken off). */}
         {needsPoisonLine(medNotes) && <MedSafetyLine />}
         {story.trim() && (
@@ -428,6 +431,8 @@ function Day({ date, example }: { date: ISODate; example: number | null }) {
             scrollToId("main-content");
           }}
         />
+        {/* The saved words keep the static 911 line next to them, like the editor and the "Is this right?" dialog. */}
+        {describesEmergencySign(saved.story) && <EmergencyLine className="pt-medsafety--flow" />}
         {/* The saved day keeps only the notes she kept; the static Poison Control line stays next to them. */}
         {needsPoisonLine(saved.medNotes) && <MedSafetyLine className="pt-medsafety--flow" />}
         <NoteComposer date={date} />

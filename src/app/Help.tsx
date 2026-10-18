@@ -3,7 +3,8 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react";
 import { CalendarClock, HeartHandshake, Phone, PhoneCall, ShieldAlert, Siren } from "lucide-react";
 import { Button, Modal } from "../ui";
-import { EMERGENCY_LINE, SAFETY_NET_FOR_ANYONE } from "../engine/brief/safetyNet";
+import { SAFETY_NET_FOR_ANYONE } from "../engine/brief/safetyNet";
+import { EMERGENCY_SIGNS } from "../engine/safety/emergencySigns";
 
 interface HelpApi {
   openHelp: () => void;
@@ -42,18 +43,33 @@ export const POISON_CONTROL = { text: "1\u2011800\u2011222\u20111222", tel: "180
 /**
  * A static line under the 911 row: everyday warning signs in an older adult that can be an emergency. Like the
  * rest of this dialog it never depends on what was recorded, so it is not triage. One constant holds the sentence
- * (safetyNet.ts EMERGENCY_LINE, which also ends the brief's safety-net line); the dialog shows it only here.
+ * (safetyNet.ts EMERGENCY_LINE, which also ends the brief's safety-net line), shared through
+ * engine/safety/emergencySigns.ts with the rules that decide when the patient check-in shows this row's words
+ * (views/patient/EmergencyLine.tsx). The dialog shows it only here.
  */
-export const EMERGENCY_SIGNS = EMERGENCY_LINE;
+export { EMERGENCY_SIGNS };
+
+/**
+ * The 911 row's own words, written once: the dialog's first row and the check-in's static 911 line
+ * (views/patient/EmergencyLine.tsx) print the same sentences.
+ */
+export const EMERGENCY_CALL = {
+  title: `If this is an emergency, call ${EMERGENCY_NUMBER.text}`,
+  detail: "Outside the US, call your local emergency number.",
+  telLabel: `Call ${EMERGENCY_NUMBER.text}`,
+} as const;
+
+/** Nobody watches Kinwise: said in the dialog's notes and next to the check-in's 911 line. */
+export const NOT_MONITORED = "Kinwise is not monitored by anyone and does not notify anyone.";
 
 const LINES: { icon: ReactNode; title: string; detail: string; note?: string; tel: string; telLabel: string }[] = [
   {
     icon: <Siren size={22} />,
-    title: `If this is an emergency, call ${EMERGENCY_NUMBER.text}`,
-    detail: "Outside the US, call your local emergency number.",
+    title: EMERGENCY_CALL.title,
+    detail: EMERGENCY_CALL.detail,
     note: EMERGENCY_SIGNS,
     tel: EMERGENCY_NUMBER.tel,
-    telLabel: "Call 911",
+    telLabel: EMERGENCY_CALL.telLabel,
   },
   {
     icon: <ShieldAlert size={22} />,
@@ -81,7 +97,7 @@ export function HelpNotes() {
       <p>
         <Phone size={16} aria-hidden="true" />
         <span>
-          <strong>Kinwise is not monitored by anyone and does not notify anyone.</strong> Alex can see your entries
+          <strong>{NOT_MONITORED}</strong> Alex can see your entries
           when they open Kinwise, but no one is alerted.
         </span>
       </p>
