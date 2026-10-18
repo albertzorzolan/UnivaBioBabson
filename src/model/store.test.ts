@@ -4,13 +4,15 @@ import {
   commitStore,
   DEFAULT_SETTINGS,
   loadStore,
+  emptyRecord,
+  removeUnreadableCopies,
   saveStore,
   STORAGE_KEY,
   UNREADABLE_PREFIX,
   validateStore,
   type StorageLike,
 } from "./store";
-import { createSeed, demoDatasetId, demoFreshness, refreshDemo } from "./seed";
+import { createSeed, demoDatasetId, demoFreshness } from "./seed";
 import type { CheckIn, Medication, Note, StoreData } from "./types";
 
 const TODAY = "2026-10-10";
@@ -29,6 +31,12 @@ class MemoryStorage implements StorageLike {
   }
   removeItem(key: string): void {
     this.map.delete(key);
+  }
+  get length(): number {
+    return this.map.size;
+  }
+  key(i: number): string | null {
+    return [...this.map.keys()][i] ?? null;
   }
 }
 
@@ -270,34 +278,78 @@ describe("loadStore / saveStore", () => {
     expect(r.data).toEqual(d);
   });
 
-  // Current loadStore behaviour: a saved record is returned as it is, even when it is demo data built for an
-  // earlier day. The story's dates then drift (the fall is no longer "5 days ago"). demoFreshness (seed.ts)
-  // detects this; whether loadStore refreshes automatically is the lead's decision. These tests show that the
-  // pieces compose, so wiring them in is a small change to loadStore.
-  it("returns a demo record saved on an earlier day as it is, and demoFreshness flags it", () => {
-    const storage = new MemoryStorage();
-    saveStore(storage, base);
-    const r = loadStore(storage, "2026-10-12");
-    expect(r.status).toBe("loaded");
-    expect(r.data.datasetId).toBe(base.datasetId);
-    expect(demoFreshness(r.data, "2026-10-12")).toBe("refresh");
-    expect(demoFreshness(r.data, TODAY)).toBe("current");
-  });
-
-  it("an unedited stale demo record can be rebuilt for the new day without losing settings", () => {
+  // Demo dates: the demo record is built around the day it was first opened ("the fall 5 days ago", this week's
+  // chart). loadStore asks demoFreshness (seed.ts) whether a saved demo record still fits today.
+  it("rebuilds an unedited demo record saved on an earlier day for today, keeping display settings, and saves it", () => {
     const storage = new MemoryStorage();
     const themed = commitStore(base, { ...base, settings: { ...base.settings, theme: "dark", tourCompleted: true } }, "patient", NOW);
+    expect(themed.revision).toBe(1); // settings-only changes do not count as edits
     saveStore(storage, themed);
-    const later = "2026-10-13";
-    const loaded = loadStore(storage, later).data;
-    expect(demoFreshness(loaded, later)).toBe("refresh");
-    const rebuilt = refreshDemo(loaded, later);
-    saveStore(storage, rebuilt);
-    const again = loadStore(storage, later);
-    expect(again.status).toBe("loaded");
-    expect(again.data.datasetId).toBe(demoDatasetId(later));
-    expect(again.data.settings).toEqual({ ...DEFAULT_SETTINGS, theme: "dark", tourCompleted: true });
-    expect(demoFreshness(again.data, later)).toBe("current");
+    const later = "2026-10-26";
+    const r = loadStore(storage, later);
+    expect(r.status).toBe("loaded");
+    expect(r.staleDemo).toBeNull();
+    expect(r.data.datasetId).toBe(demoDatasetId(later));
+    expect(r.data.checkIns.map((c) => c.date)).toEqual(createSeed(later).checkIns.map((c) => c.date));
+    expect(r.data.settings).toEqual({ ...DEFAULT_SETTINGS, theme: "dark", tourCompleted: true });
+    // Saved, so the next visit (or another tab) reads the rebuilt record.
+    expect(JSON.parse(storage.getItem(STORAGE_KEY)!).datasetId).toBe(demoDatasetId(later));
+    expect(demoFreshness(loadStore(storage, later).data, later)).toBe("current");
+  });
+
+  // A failed save is not unreadable data: the record read fine, only writing the rebuilt one failed.
+  it("still uses the rebuilt demo record when saving it fails (storage full), and never reports it as unreadable", () => {
+    const storage = new MemoryStorage();
+    saveStore(storage, base);
+    const saved = storage.getItem(STORAGE_KEY);
+    const full: StorageLike = {
+      getItem: (k) => storage.getItem(k),
+      removeItem: (k) => storage.removeItem(k),
+      setItem: () => {
+        throw new Error("QuotaExceededError");
+      },
+    };
+    const later = "2026-10-26";
+    let r: ReturnType<typeof loadStore> | undefined;
+    expect(() => (r = loadStore(full, later, NOW))).not.toThrow();
+    expect(r!.status).toBe("loaded");
+    expect(r!.data.datasetId).toBe(demoDatasetId(later));
+    expect(r!.backupKey).toBeNull();
+    expect(r!.staleDemo).toBeNull();
+    // Nothing copied as "unreadable", and the old record is still there for the next visit to rebuild again.
+    expect([...storage.map.keys()]).toEqual([STORAGE_KEY]);
+    expect(storage.getItem(STORAGE_KEY)).toBe(saved);
+  });
+
+  it("opens even when storage refuses every write: first run and recovery still return a record", () => {
+    const storage = new MemoryStorage();
+    const readOnly: StorageLike = {
+      getItem: (k) => storage.getItem(k),
+      removeItem: (k) => storage.removeItem(k),
+      setItem: () => {
+        throw new Error("QuotaExceededError");
+      },
+    };
+    const first = loadStore(readOnly, TODAY, NOW);
+    expect(first.status).toBe("seeded");
+    expect(first.data).toEqual(createSeed(TODAY));
+    storage.setItem(STORAGE_KEY, "{not json");
+    const recovered = loadStore(readOnly, TODAY, NOW);
+    expect(recovered.status).toBe("recovered");
+    expect(recovered.backupKey).toBeNull();
+    expect(recovered.data).toEqual(createSeed(TODAY));
+  });
+
+  it("keeps an edited demo record from an earlier day as it is and reports the day it was built for", () => {
+    const storage = new MemoryStorage();
+    const withCheckIn = commitStore(base, { ...base, checkIns: [...base.checkIns, todaysCheckIn()] }, "patient", NOW);
+    saveStore(storage, withCheckIn);
+    const writes = storage.writes;
+    const r = loadStore(storage, "2026-10-12");
+    expect(r.status).toBe("loaded");
+    expect(r.data).toEqual(withCheckIn);
+    expect(r.staleDemo).toBe(TODAY);
+    expect(storage.writes).toBe(writes); // nothing rebuilt behind the user's back
   });
 
   it("a demo record that someone has changed is 'stale', so the app asks before rebuilding it", () => {
@@ -307,6 +359,31 @@ describe("loadStore / saveStore", () => {
     expect(demoFreshness(withCheckIn, "2026-10-11")).toBe("stale");
     const withNote = commitStore(base, { ...base, notes: [...base.notes, note("caregiver")] }, "caregiver", NOW);
     expect(demoFreshness(withNote, "2026-10-11")).toBe("stale");
+  });
+
+  it("loads a demo record built for today as it is, with no banner", () => {
+    const storage = new MemoryStorage();
+    saveStore(storage, base);
+    const r = loadStore(storage, TODAY);
+    expect(r.data).toEqual(base);
+    expect(r.staleDemo).toBeNull();
+  });
+
+  it("never touches a record that is not demo data, however old", () => {
+    const storage = new MemoryStorage();
+    const own = { ...emptyRecord(base, NOW), createdAt: "2026-09-01T10:00:00.000Z" };
+    saveStore(storage, own);
+    const imported = { ...clone(base), isDemoData: false };
+    const later = "2026-10-26";
+    const writes = storage.writes;
+    const r = loadStore(storage, later);
+    expect(r.data).toEqual(own);
+    expect(r.staleDemo).toBeNull();
+    saveStore(storage, imported);
+    const r2 = loadStore(storage, later);
+    expect(r2.data).toEqual(imported);
+    expect(r2.staleDemo).toBeNull();
+    expect(storage.writes).toBe(writes + 1); // only the test's own save
   });
 
   it("fills settings added in later versions with defaults", () => {
@@ -391,6 +468,47 @@ describe("loadStore / saveStore", () => {
     const writes = storage.writes;
     loadStore(storage, TODAY);
     expect(storage.writes).toBe(writes);
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe("Delete everything: emptyRecord / removeUnreadableCopies", () => {
+  it("empties the record and leaves the names blank, so no screen prints a placeholder as a name", () => {
+    const themed = { ...base, settings: { ...base.settings, theme: "dark" as const } };
+    const empty = emptyRecord(themed, NOW);
+    expect(validateStore(empty)).toBe(true);
+    expect(empty.isDemoData).toBe(false);
+    expect(empty.profile).toMatchObject({ displayName: "", preferredName: "", caregiverName: "", caregiverRelation: "", age: 0 });
+    expect(empty.profile.conditions).toEqual([]);
+    for (const list of [empty.medications, empty.medEvents, empty.checkIns, empty.checkInHistory, empty.notes, empty.reviewDecisions, empty.briefs, empty.savedQuestions])
+      expect(list).toEqual([]);
+    expect(empty.settings).toEqual(themed.settings);
+    expect(empty.revision).toBe(base.revision + 1);
+  });
+
+  it("removes every copy of unreadable data and nothing else", () => {
+    const storage = new MemoryStorage();
+    saveStore(storage, base);
+    storage.setItem(`${UNREADABLE_PREFIX}2026-10-10T16:00:00.000Z`, "{not json");
+    storage.setItem(`${UNREADABLE_PREFIX}2026-10-11T09:30:00.000Z`, "null");
+    storage.setItem("kinwise.v1.session", "caregiver");
+    storage.setItem("someone-else", "keep");
+    removeUnreadableCopies(storage);
+    expect([...storage.map.keys()].sort()).toEqual(["kinwise.v1.session", "kinwise.v1.store", "someone-else"]);
+  });
+
+  it("never throws when storage is blocked", () => {
+    const blocked = {
+      get length(): number {
+        throw new Error("SecurityError");
+      },
+      key: () => null,
+      getItem: () => null,
+      setItem: () => undefined,
+      removeItem: () => undefined,
+    };
+    expect(() => removeUnreadableCopies(blocked)).not.toThrow();
   });
 });
 

@@ -37,9 +37,11 @@ function PatientCard({ compact }: { compact?: boolean }) {
     <div className={cx("cg-patient", compact && "cg-patient--compact")}>
       <Avatar name={p.displayName} />
       <div className="cg-patient__text">
-        <p className="cg-patient__name">{p.displayName}</p>
+        {/* An emptied record (Settings › Delete everything) has no name and age 0, meaning "not entered". */}
+        <p className="cg-patient__name">{p.displayName.trim() || "Name not recorded"}</p>
         <p className="cg-patient__meta">
-          {p.age} · {data.isDemoData ? "fictional patient" : "patient"}
+          {p.age > 0 ? `${p.age} · ` : ""}
+          {data.isDemoData ? "fictional patient" : "patient"}
         </p>
       </div>
     </div>

@@ -2,9 +2,10 @@
 //
 //   1. Medication change selector — every start/stop the engine looked at (default: the medicine with the strongest
 //      signal; ?med=<id>[&event=started|stopped] selects one).
-//   2. Before/after comparison for that change — every diary item with counts AND denominators, pattern strength with
-//      the test and p-value, the caveat, other medicine changes in the same weeks, coverage of both windows, falls
-//      listed by date, and the exact reason when something could not be compared.
+//   2. Before/after comparison for that change — every diary item with counts AND denominators, the size of the
+//      difference in the Overview's words ("Large difference") with the test and p-value beside it, the caveat,
+//      other medicine changes in the same weeks, coverage of both windows, falls listed by date, and the exact
+//      reason when something could not be compared.
 //   3. The full timeline chart (period ?days=14|30|60|90) with the compared windows shaded.
 //   4. Every check-in in the period; a row (or ?day=YYYY-MM-DD) opens the day's full record with provenance and history.
 import { useMemo, useRef, useState, type KeyboardEvent } from "react";
@@ -18,7 +19,7 @@ import { getMetric, latestCheckInPerDate, metricValue } from "../../engine/timel
 import { analyzeEvent, type EventAnalysis, type MetricComparison } from "../../engine/timeline/signals";
 import { eventsForMed } from "../../engine/timeline/windows";
 import { formatPValue } from "../../engine/timeline/stats";
-import { MULTIPLE_COMPARISONS_NOTE, SENTINEL_NOTE, TIMELINE_METHOD_SUMMARY, TIMELINE_RULES } from "../../engine/timeline/rules";
+import { SENTINEL_NOTE, TIMELINE_METHOD_SUMMARY, TIMELINE_RULES } from "../../engine/timeline/rules";
 import { knownEffect } from "../../kb";
 import {
   Badge,
@@ -26,7 +27,6 @@ import {
   Callout,
   Card,
   CardHeader,
-  Disclosure,
   EmptyState,
   EvidenceLink,
   PageHeader,
@@ -36,7 +36,8 @@ import {
   cx,
 } from "../../ui";
 import { TimelineChart, excerptText, periodStart } from "../shared/caregiver-TimelineChart";
-import { fallsComparison, isSentinelMetric, strengthTone, unflaggedVerdict } from "../shared/caregiver-insights";
+import { STRENGTH_SIZE_WORD, TEST_NAME, fallsComparison, isSentinelMetric, strengthTone, unflaggedVerdict } from "../shared/caregiver-insights";
+import { ReliabilityDisclosure } from "../shared/caregiver-Reliability";
 import { DayRecordsDrawer, RecordsDrawer, recordedChips, rangeText, type RecordGroup } from "../shared/caregiver-Records";
 import "./timeline.css";
 
@@ -106,7 +107,7 @@ function barPct(c: MetricComparison, side: "before" | "after"): number {
 function ComparisonRow({ c, onRecords }: { c: MetricComparison; onRecords: () => void }) {
   const def = getMetric(c.metric);
   const kind = rowKind(c);
-  const test = c.test === "fisher_exact" ? "Fisher's exact test" : "Mann–Whitney U test";
+  const test = TEST_NAME[c.test];
   const need = TIMELINE_RULES.minAnsweredDays;
   return (
     <li className={cx("cg-tl-row", `is-${kind}`)}>
@@ -131,8 +132,10 @@ function ComparisonRow({ c, onRecords }: { c: MetricComparison; onRecords: () =>
           </span>
         ) : (
           <>
-            <Badge size="sm" tone={strengthTone(c.strength)}>
-              {kind === "flagged" ? `Pattern strength: ${c.strength}` : unflaggedVerdict(c.metric, c.strength)}
+            {/* The same size words as the Overview ("Large difference", "Clear difference"); the test and p-value stay
+                beside the badge so the rigor is visible, and the chance rates sit in "How this comparison works". */}
+            <Badge size="sm" tone={strengthTone(c.strength)} className={cx("cg-tl-row__size", kind === "flagged" && `is-${c.strength}`)}>
+              {kind === "flagged" && c.strength !== "none" ? STRENGTH_SIZE_WORD[c.strength] : unflaggedVerdict(c.metric, c.strength)}
             </Badge>
             {/* Falls are listed by date, not tested: no p-value beside them unless the difference was flagged. */}
             {(kind === "flagged" || !isSentinelMetric(c.metric)) && (
@@ -176,7 +179,7 @@ function EventPicker({ options, value, onChange }: { options: EventOption[]; val
         const checked = o.key === value;
         const t = o.timeline;
         const status =
-          t.status === "ok" ? (o.flagged > 0 ? `${o.flagged} ${o.flagged === 1 ? "change" : "changes"} flagged` : "No clear change") : STATUS_TEXT[t.status];
+          t.status === "ok" ? (o.flagged > 0 ? `${o.flagged} ${o.flagged === 1 ? "change" : "changes"} flagged` : "Nothing flagged") : STATUS_TEXT[t.status];
         return (
           <button
             key={o.key}
@@ -471,12 +474,9 @@ export function Timeline() {
               )}
             </dl>
 
-            <Disclosure summary="How this comparison works">
-              <div className="cg-tl-method">
-                <p>{TIMELINE_METHOD_SUMMARY}</p>
-                <p>{MULTIPLE_COMPARISONS_NOTE}</p>
-              </div>
-            </Disclosure>
+            {/* Same disclosure as the Overview's "How reliable is this?" (method, measured chance rates and caveat, all
+                from rules.ts). It keeps its older title here because scripts/a11y.mjs opens it by that name. */}
+            <ReliabilityDisclosure summary="How this comparison works" method={TIMELINE_METHOD_SUMMARY} bodyClassName="cg-tl-method" />
           </div>
         </Card>
       )}

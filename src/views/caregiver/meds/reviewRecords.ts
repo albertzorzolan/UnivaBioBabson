@@ -32,6 +32,24 @@ export const CATEGORY_CHIP: Record<FindingCategory, string> = {
   monitoring: "What to watch for",
 };
 
+/** Longest Beers condition shown on a chip; a longer one ("…unless other options face substantial barriers") reads
+ *  better in the prompt's own text, so the chip keeps the generic label. */
+const MAX_CHIP_CONDITION = 72;
+
+/**
+ * The chip label for one finding. A Beers "generally avoid" rule that only applies under a condition (AGS Beers
+ * 2023 targets PPIs taken daily for more than 8 weeks, not every PPI) shows that condition from the KB rule's
+ * `qualifier`, e.g. "Generally avoided when taken daily for more than 8 weeks". Parenthetical asides are dropped;
+ * everything else uses the category's short label.
+ */
+export function findingChip(f: Pick<Finding, "category" | "ruleId">): string {
+  const generic = CATEGORY_CHIP[f.category] ?? "Review prompt";
+  if (f.category !== "beers_avoid") return generic;
+  const rule = KB.beers.find((r) => r.id === f.ruleId);
+  const condition = (rule?.qualifier ?? "").replace(/\s*\([^)]*\)/g, "").replace(/\s+/g, " ").trim();
+  return condition && condition.length <= MAX_CHIP_CONDITION ? `${generic} ${condition}` : generic;
+}
+
 export const STATUS_LABEL: Record<ReviewStatus, string> = {
   open: "Not reviewed yet",
   to_discuss: "To discuss",

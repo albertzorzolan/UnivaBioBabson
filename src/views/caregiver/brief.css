@@ -628,6 +628,62 @@
   }
 }
 
+/* At a glance (BriefDocument Glance): the one tinted block on the page, so a clinician's eye lands on the
+   recorded change before anything else. Up to 3 labelled rows; the change row carries the weight. */
+.cg-vb-glance {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+}
+.cg-vb-glance__title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-text);
+}
+.cg-vb-glance__list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+}
+.cg-vb-glance__row {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  align-items: baseline;
+}
+.cg-vb-glance__row dt {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--primary-text);
+}
+.cg-vb-glance__row dd {
+  margin: 0;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.cg-vb-glance__row--change dd {
+  font-weight: var(--fw-semibold);
+}
+.cg-vb-glance__row.is-empty dd {
+  color: var(--ink-muted);
+  font-weight: var(--fw-regular);
+  font-style: italic;
+}
+/* Narrow paper (phones): the label sits above its line. */
+@container cg-vb-doc (max-width: 32rem) {
+  .cg-vb-glance__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+
 /* Sections */
 .cg-vb-sec {
   padding-top: var(--space-4);
@@ -867,21 +923,44 @@
   font-size: 0.75rem;
 }
 
-/* What we've noticed: sentences + chart side by side on wide paper */
+/* "In her words": a verbatim quote under the sentence it illustrates (BriefDocument Quote). On paper it runs on
+   after its sentence (brief-print.css); on screen it gets its own line, set like the family's words above. */
+@media screen {
+  .cg-vb-quote {
+    display: block;
+    margin-top: var(--space-1);
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--line-strong);
+  }
+}
+.cg-vb-quote__text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+.cg-vb-quote__meta {
+  display: inline-flex;
+  margin-left: 0.4rem;
+  vertical-align: 0.05em;
+}
+.cg-vb-quote__meta .cg-ev-chip {
+  font-size: 0.75rem;
+}
+.cg-vb-doc__safetynet {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+}
+
+/* What we've noticed: the sentences, then the chart at full width. On screen the strip keeps its text at 12px or
+   more (the screen readability rules below), which a half-width column could not hold without scrolling; on paper
+   the chart floats beside the sentences (brief-print.css). */
 .cg-vb-noticed {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
-@container cg-vb-doc (min-width: 40rem) {
-  .cg-vb-sec--noticed.has-chart .cg-vb-noticed {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: var(--space-5);
-    align-items: start;
-  }
-  .cg-vb-sec--noticed.has-chart .cg-vb-noticed__chart {
-    order: 2;
-  }
+.cg-vb-sec--noticed.has-chart .cg-vb-noticed__chart {
+  order: 2;
 }
 .cg-vb-noticed__chart {
   min-width: 0;
@@ -1016,18 +1095,36 @@
 .cg-vb-scroll.has-more::after {
   opacity: 1;
 }
-/* Phone: the strip keeps a readable size (about 12px labels) and scrolls instead of shrinking to ~5px text. */
-@media screen and (max-width: 37.49rem) {
-  .cg-vb-strip-scroll .cg-vb-strip__svg {
-    min-width: calc(var(--strip-w, 488px) * 1.15);
+/* Screen: no strip text below 12px. Its smallest text is set at 10.5 units here (column heads in sentence case so
+   "Before" still fits its column) and the strip is drawn at least 1.15 times its viewBox size, so 10.5 renders at
+   12px or more. The full-width chart fits that on a laptop; narrower paper scrolls it sideways (labels pinned)
+   instead of shrinking the text. Print draws the strip at its own size with the print sizes above. */
+@media screen {
+  .cg-vb-strip {
+    --cg-vb-strip-scale: 1.15;
   }
-  /* The strip opens on its "after" end (ScrollRegion startAtEnd); the labels stay pinned at the same 1.15 scale. */
+  .cg-vb-strip-scroll .cg-vb-strip__svg {
+    min-width: calc(var(--strip-w, 488px) * var(--cg-vb-strip-scale));
+    max-width: calc(var(--strip-w, 488px) * 1.6);
+  }
+  .cg-vb-strip__period,
+  .cg-vb-strip__axis {
+    font-size: 10.5px;
+  }
+  .cg-vb-strip__colhead {
+    font-size: 10.5px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+}
+@media screen {
+  /* The strip opens on its "after" end (ScrollRegion startAtEnd); the labels stay pinned at the same scale. */
   .cg-vb-strip:has(.cg-vb-scroll.is-scrollable) .cg-vb-strip__pinned {
     display: block;
     position: absolute;
-    top: calc(var(--strip-label-top, 22px) * 1.15);
+    top: calc(var(--strip-label-top, 22px) * var(--cg-vb-strip-scale));
     left: 0;
-    width: calc(var(--strip-label-w, 88px) * 1.15);
+    width: calc(var(--strip-label-w, 88px) * var(--cg-vb-strip-scale));
     height: auto;
     padding-right: 0.25rem;
     box-sizing: content-box;
@@ -1247,6 +1344,23 @@
 .cg-vb-pml__foot p:first-child {
   color: var(--ink);
   font-weight: var(--fw-semibold);
+}
+
+/* Screen readability: no text in the brief preview below 12px (0.75rem at the standard text size). The small
+   print sizes stay in brief-print.css; these rules are screen-only, so paper is unchanged. */
+@media screen {
+  .cg-vb-doc__meta dt,
+  .cg-vb-sec__ai,
+  .cg-vb-strip__legend,
+  .cg-vb-table thead th,
+  .cg-vb-flag,
+  .cg-vb-new,
+  .cg-vb-table-note,
+  .cg-vb-doc__prov,
+  .cg-vb-sent__meta .cg-ev-chip,
+  .cg-vb-chart-ev .cg-ev-chip {
+    font-size: 0.75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

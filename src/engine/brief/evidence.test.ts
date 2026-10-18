@@ -11,8 +11,10 @@ import {
   defaultPeriod,
   entryText,
   evidenceById,
+  fallsSinceStartParts,
   fallsSinceStartText,
   fallsText,
+  sentinelList,
   includedConcerns,
   medText,
   metricCountText,
@@ -156,6 +158,24 @@ describe("item renderers", () => {
   it("fallsSinceStartText compares the 21 days before the start", () => {
     const r = fallsSinceStartText(days, lorazepam, TODAY);
     expect(r.text).toMatch(/^From Sep 24, when Lorazepam \(Ativan\) was started, through Oct 10: 1 fall \(Oct 5\) and 2 near-falls \(Sep 26, Sep 29\) were recorded on \d+ answered days, compared with .* in the 21 days before\.$/);
+  });
+
+  it("fallsSinceStartParts exposes the same falls/near-falls lists the sentence is built from", () => {
+    const parts = fallsSinceStartParts(days, lorazepam, TODAY);
+    const r = fallsSinceStartText(days, lorazepam, TODAY);
+    expect(parts.after.text).toBe("1 fall (Oct 5) and 2 near-falls (Sep 26, Sep 29)");
+    expect(r.text).toContain(`${parts.after.text} were recorded on ${parts.after.answered} answered days`);
+    expect(parts.after.falls).toEqual(["2026-10-05"]);
+    expect(parts.after.nearFalls).toEqual(["2026-09-26", "2026-09-29"]);
+    expect(parts.windows.after.from).toBe(lorazepam.startDate);
+    expect(r.data.positive).toBe(parts.after.dates.length);
+  });
+
+  it("sentinelList lists falls and near-falls of one window with their dates", () => {
+    const s = sentinelList(days, lorazepam.startDate, TODAY, TODAY);
+    expect(s.text).toBe("1 fall (Oct 5) and 2 near-falls (Sep 26, Sep 29)");
+    expect(s.dates).toEqual(["2026-09-26", "2026-09-29", "2026-10-05"]);
+    expect(sentinelList(days, addDays(TODAY, -60), addDays(TODAY, -50), TODAY).text).toBe("no falls or near-falls");
   });
 
   it("medText shows hidden ingredients, over-the-counter status and stop dates", () => {

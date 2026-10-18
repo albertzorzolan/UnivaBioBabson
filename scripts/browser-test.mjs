@@ -109,6 +109,8 @@ const CHECKS = [
       ]) {
         const { page } = await open();
         await go(page, base, "/");
+        // The demo sign-in form is collapsed by default (Welcome.tsx disclosure); open it first.
+        await page.getByRole("button", { name: "Have the demo credentials? Sign in" }).click();
         await page.getByLabel("Username").fill(u);
         await page.getByLabel("Password").fill(p);
         await page.getByRole("button", { name: "Sign in", exact: true }).click();
@@ -125,6 +127,8 @@ const CHECKS = [
     async run({ open, base }) {
       const { page } = await open();
       await go(page, base, "/");
+      // The demo sign-in form is collapsed by default (Welcome.tsx disclosure); open it first.
+      await page.getByRole("button", { name: "Have the demo credentials? Sign in" }).click();
       await page.getByLabel("Username").fill("babson1");
       await page.getByLabel("Password").fill("wrong-password");
       await page.getByRole("button", { name: "Sign in", exact: true }).click();

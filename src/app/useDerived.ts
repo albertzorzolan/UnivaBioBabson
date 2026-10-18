@@ -32,7 +32,8 @@ export function useDerived(): Derived {
       weekly: weeklyTrends(data.checkIns, today),
       active: activeMeds(data.medications, today),
     };
-    // Revision changes on every source edit; profile/meds/check-ins are covered by it.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // The store bumps `revision` on every edit to the profile, medicines or check-ins (src/model/store.ts), so
+    // revision, dataset and today are the only dependencies needed. Listing `data` itself would also recompute
+    // after edits that cannot change these numbers (settings, saved briefs).
   }, [data.revision, data.datasetId, today]);
 }

@@ -37,6 +37,7 @@ import { HeardPanel, conceptLabel, type AiState } from "./HeardPanel";
 import { QuickForm } from "./QuickForm";
 import { DaySummary, NoteComposer, pickWeeklySentence } from "./SavedDay";
 import { clearStoryDraft, readStoryDraft, writeStoryDraft } from "./storyDraft";
+import { readyLine } from "../../app/layouts/greeting";
 import "./patient.css";
 
 /** Example days in Margaret's voice. Each one exercises a different part of the reading. */
@@ -117,6 +118,7 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
   const aiRun = useRef(0);
   const isToday = date === today;
   const dayWord = isToday ? "today" : weekday(date);
+  const caregiver = data.profile.caregiverName.trim() || "a friend";
 
   useEffect(() => warmUpNlp(), []);
 
@@ -160,7 +162,8 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
     exampleDone.current = true;
     setStory(ex.text);
     read(ex.text);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Only `example` is listed on purpose: `read` is a new function on every render, so listing it would rerun this
+    // effect after every keystroke for nothing. The exampleDone ref keeps it to one run per editor either way.
   }, [example]);
 
   const runAi = async () => {
@@ -237,14 +240,17 @@ function CheckInEditor({ date, existing, example, onSaved, onCancel }: EditorPro
       )}
       {/* Step 1 — her words */}
       <section className="pt-tell" aria-labelledby="pt-tell-title" data-tour="checkin-story">
-        <p className="ui-eyebrow">In your own words</p>
+        <p className="ui-eyebrow pt-tell__eyebrow">In your own words</p>
         <h2 id="pt-tell-title" className="pt-section-title">
           Tell me about {isToday ? "your day" : `${weekday(date)}`}
         </h2>
-        <p className="pt-section-lead">
-          Write it the way you’d tell {data.profile.caregiverName || "a friend"}. I’ll fill in the questions for you to check — nothing is
-          saved until you say so.
+        {/* Two lengths of the same invitation: phones get the short one so the writing box fits on the first
+            screen above the bottom tabs (patient.css shows one or the other). */}
+        <p className="pt-section-lead pt-tell__lead">
+          Write it the way you’d tell {caregiver}. I’ll fill in the questions for you to check — nothing is saved until you
+          say so.
         </p>
+        <p className="pt-section-lead pt-tell__lead--short">Write it as you’d tell {caregiver}. Nothing is saved until you say so.</p>
         <TextArea
           label={`Tell me about ${isToday ? "your day" : weekday(date)}`}
           hideLabel
@@ -447,12 +453,7 @@ export function Today() {
   const badDate = dateParam !== null && dateParam !== date && dateParam !== today;
   const isToday = date === today;
   const days = useMemo(() => checkedInDays(data.checkIns, today), [data.checkIns, today]);
-  const name = data.profile.preferredName;
-
-  const progress =
-    days === 0
-      ? `Whenever you’re ready, ${name} — a few words are enough.`
-      : `You’ve checked in on ${days} of the last 7 days — thank you.`;
+  const progress = readyLine(days, data.profile.preferredName);
 
   return (
     <div className="pt-today">

@@ -28,7 +28,6 @@ export const DEMO_URL = "https://albertzorzolan.github.io/UnivaBioBabson/";
 /** Public video link (e.g. YouTube). A person uploads the video, so it is passed in: VIDEO_URL="https://…". */
 export const VIDEO_URL = process.env.VIDEO_URL?.trim() || null;
 export const DEFAULT_TEAM = "Albert Zorzolan and Neil Shah, Babson College";
-export const PLANNED_DEMO_URL = DEMO_URL; // deprecated alias, codetour.mjs migrates in P2
 
 /** A URL without its scheme or trailing slash, for printing ("github.com/…"). */
 export function shortUrl(url) {

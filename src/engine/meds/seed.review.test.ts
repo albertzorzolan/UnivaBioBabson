@@ -8,6 +8,8 @@ import { analyzeTimeline } from "../timeline/signals";
 import { knownEffect } from "../../kb";
 import { reviewMedications, findingSummaryForMed, REQUIRED_NOTICE, previewAddition } from "./review";
 import { bannedWordsIn, sentences } from "./text";
+import { buildEvidence, defaultPeriod, evidenceId } from "../brief/evidence";
+import { verifySentence } from "../brief/verify";
 
 const TODAY = "2026-10-10";
 const data = createSeed(TODAY);
@@ -170,11 +172,39 @@ describe("seed acceptance: Margaret's medication review (SPEC §2)", () => {
   });
 });
 
+describe("seed acceptance: lying and standing blood pressure (CDC STEADI)", () => {
+  // Amlodipine (blood-pressure medicine) and furosemide (water pill) are fall-risk medicines whose fall link is
+  // blood pressure dropping on standing, and the diary records falls and dizziness, so the fall-risk prompt adds
+  // the STEADI orthostatic check as a second question.
+  const BP_QUESTION = "Could Margaret's blood pressure be checked lying and standing (CDC STEADI)?";
+  const [f] = review.findings.filter((x) => x.category === "fall_risk");
+
+  it("adds the question to the fall-risk prompt and cites CDC STEADI", () => {
+    expect(f.medIds).toEqual(expect.arrayContaining(["med-amlodipine", "med-furosemide"]));
+    expect(sentences(f.question).at(-1)).toBe(BP_QUESTION);
+    expect(f.sourceIds).toContain("steadi");
+    expect(bannedWordsIn(f.question)).toEqual([]);
+  });
+
+  it("the new sentence passes the brief's claim verifier as a question citing the finding", () => {
+    const { from, to } = defaultPeriod(TODAY, 30);
+    const pkg = buildEvidence({ data, from, to, review, timeline });
+    const res = verifySentence({ text: BP_QUESTION, evidenceIds: [evidenceId.finding(f.key)] }, pkg, {
+      medNames: data.medications.map((m) => m.name),
+      patientNames: [data.profile.preferredName ?? "", data.profile.displayName].filter(Boolean),
+      expect: "question",
+    });
+    expect(res.issues).toEqual([]);
+    expect(res.ok).toBe(true);
+  });
+});
+
 describe("seed acceptance: counts carry denominators (SPEC §3)", () => {
   it("the fall-risk prompt states falls, near-falls and dizziness with answered-day denominators", () => {
     const [f] = review.findings.filter((x) => x.category === "fall_risk");
     expect(f.question).toBe(
-      "With 1 fall and 2 near-falls on 26 answered days, and dizziness on 10 of 25 answered days in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk?",
+      "With 1 fall and 2 near-falls on 26 answered days, and dizziness on 10 of 25 answered days in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk? " +
+        "Could Margaret's blood pressure be checked lying and standing (CDC STEADI)?",
     );
     expect(f.question).not.toMatch(/recorded recently/);
   });

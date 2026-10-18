@@ -8,8 +8,6 @@
 
 import type { BriefContent, EvidencePackage, Extraction, Finding } from "../model/types";
 
-export const FIXTURE_TODAY = "2026-10-11";
-
 const LZ = "Lorazepam (Ativan)";
 const after = (subject: string, a: string, b: string) =>
   `${subject} was recorded on ${a} answered days from Sep 25, when ${LZ} was started, through Oct 11, compared with ${b} answered days in the 21 days before.`;

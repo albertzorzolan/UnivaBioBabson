@@ -1,8 +1,13 @@
-// Shown at the top of both shells when the record in this browser could not be read and the demo record was
-// loaded instead (loadStore status "recovered"). The unreadable text is not lost: loadStore keeps a copy under
-// "kinwise.v1.store.unreadable-<time>", which this notice offers as a download. Dismissing hides it for this visit.
-import { Download, X } from "lucide-react";
+// Shown at the top of both shells, above the page:
+//  - when the record in this browser could not be read and the demo record was loaded instead (loadStore status
+//    "recovered"). The unreadable text is not lost: loadStore keeps a copy under "kinwise.v1.store.unreadable-<time>",
+//    which this notice offers as a download.
+//  - when the demo record was built for an earlier day and has been changed since (loadStore "staleDemo"), so its
+//    "this week" and "5 days ago" no longer line up with today. An untouched one is rebuilt silently instead.
+// Dismissing either one hides it for this visit.
+import { CalendarClock, Download, RotateCcw, X } from "lucide-react";
 import { useStore } from "../StoreProvider";
+import { parseDate } from "../../model/dates";
 import { Button, Callout, IconButton } from "../../ui";
 import "./shellExtras.css";
 
@@ -27,7 +32,55 @@ function download(name: string, text: string) {
   }
 }
 
+/** "Saturday, October 17" */
+function longDay(date: string): string {
+  return parseDate(date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+}
+
+/** "Demo dates are from …": offers the same rebuild as Settings › Restore the demo record. */
+function StaleDemoNotice() {
+  const { staleDemo, dismissStaleDemo, resetDemo } = useStore();
+  if (!staleDemo) return null;
+  return (
+    <div className="shell-recovery">
+      <Callout
+        tone="info"
+        icon={<CalendarClock size={20} aria-hidden="true" />}
+        title={`Demo dates are from ${longDay(staleDemo.builtFor)}.`}
+        action={<IconButton label="Dismiss this message" icon={<X size={20} aria-hidden="true" />} onClick={dismissStaleDemo} />}
+      >
+        <p>
+          “This week” and “days ago” no longer match today. Refreshing rebuilds the demo for today and removes the
+          check-ins, notes and decisions added since.
+        </p>
+        <Button
+          size="sm"
+          variant="secondary"
+          className="shell-recovery__download"
+          iconLeft={<RotateCcw size={16} aria-hidden="true" />}
+          onClick={() => {
+            resetDemo();
+            // The button disappears with the notice: put focus at the top of the page rather than lose it.
+            document.getElementById("main-content")?.focus();
+          }}
+        >
+          Refresh demo dates
+        </Button>
+      </Callout>
+    </div>
+  );
+}
+
 export function RecoveryNotice() {
+  return (
+    <>
+      <StaleDemoNotice />
+      <UnreadableNotice />
+    </>
+  );
+}
+
+function UnreadableNotice() {
   const { recovery, dismissRecovery, readStored } = useStore();
   if (!recovery) return null;
   const copy = recovery.backupKey ? readStored(recovery.backupKey) : null;

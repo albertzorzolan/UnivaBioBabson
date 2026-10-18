@@ -17,6 +17,33 @@ import { CATEGORY_LABEL } from "../../engine/meds/labels";
 /** "beers_avoid" → "Generally avoided in older adults (AGS Beers 2023)". */
 const catLabel = (c: FindingCategory) => `“${CATEGORY_LABEL[c] ?? c}”`;
 
+/**
+ * A 0–1 score as a percent rounded DOWN to one decimal (0.9985 → "99.8%"): the same rule as `floorPct` in
+ * scripts/submission/facts.mjs, so the development-set score on this page reads exactly as in the PDFs and is never
+ * shown higher than measured. The 1e-9 absorbs floating-point noise (0.29 × 1000 = 289.99999999999994 → "29.0%").
+ * The held-out score keeps ordinary rounding there and here.
+ */
+export function floorPct(x: number, digits = 1): string {
+  const scale = 10 ** digits;
+  return `${(Math.floor(x * 100 * scale + 1e-9) / scale).toFixed(digits)}%`;
+}
+
+/** A 0–1 score as a percent with ordinary rounding (0.97248 → "97.2%"); the held-out card and the tables use it. */
+export const pct = (x: number, digits = 1) => `${(x * 100).toFixed(digits)}%`;
+
+/**
+ * Precision, recall and F1 recomputed from the raw counts. The evaluator's report already rounds its rates to four
+ * decimals (106/109 = 0.97248 is stored as 0.9725), so formatting that stored value rounds twice and shows 97.3%.
+ * scripts/submission/facts.mjs computes heldoutP/heldoutR from tp/fp/fn for the same reason; doing it here keeps
+ * the page and the PDFs on the measured value. Empty denominators follow `prf` in evaluate.ts (nothing to find → 1).
+ */
+export function microRates(m: { tp: number; fp: number; fn: number }): { precision: number; recall: number; f1: number } {
+  const precision = m.tp + m.fp === 0 ? 1 : m.tp / (m.tp + m.fp);
+  const recall = m.tp + m.fn === 0 ? 1 : m.tp / (m.tp + m.fn);
+  const f1 = precision + recall === 0 ? 0 : (2 * precision * recall) / (precision + recall);
+  return { precision, recall, f1 };
+}
+
 /** Let React paint the "running" state before a synchronous run blocks the main thread. */
 const nextFrame = () => new Promise<void>((r) => setTimeout(r, 40));
 

@@ -1,5 +1,6 @@
-# Continuous integration for Kinwise: type check, the full Vitest suite (unit tests + the NLP and medication evals)
-# and the knowledge-base integrity check. Read-only: no secrets, no deploy (publishing the live demo is pages.yml).
+# Continuous integration for Kinwise: type check, the full Vitest suite (unit tests + the NLP and medication evals),
+# the knowledge-base integrity and drift check, and the submission-material checks. Read-only: no secrets, no deploy
+# (publishing the live demo is pages.yml). Nothing here needs tmp/, dist/, public/models/ or a downloaded model.
 #
 # Badge: add it to README.md only after this workflow has run once on GitHub (before that it shows "no status"):
 #   [![CI](https://github.com/albertzorzolan/UnivaBioBabson/actions/workflows/ci.yml/badge.svg?branch=medwatch-v2)](https://github.com/albertzorzolan/UnivaBioBabson/actions/workflows/ci.yml)
@@ -37,6 +38,12 @@ jobs:
       - name: Tests (unit tests + NLP and medication evals)
         run: npm test
       # Builds the knowledge base in memory from kb-src/ and validates it (integrity, rating cross-checks, banned
-      # wording); exits 1 on any problem and writes nothing. Offline: it reads only repository files.
-      - name: Knowledge-base check
-        run: python3 -I kb-src/build_kb.py --check
+      # wording), then compares it byte-for-byte with the committed src/kb/data/*.json and kb-src/build-report.json,
+      # so a hand edit of the JSON or a kb-src change committed without a rebuild fails here. Writes nothing; offline.
+      - name: Knowledge-base check and drift
+        run: npm run kb:verify
+      # The PDF/video generator unit tests (node --test scripts/submission/*.test.mjs; the one-pager fit test uses the
+      # runner's preinstalled Google Chrome) and check-facts.mjs: no stale wording, and every number in README.md,
+      # submission/DEVPOST.md, docs/EVALUATION.md, docs/DEMO-SCRIPT.md and the subtitles equals facts.mjs.
+      - name: Submission materials
+        run: npm run test:submission

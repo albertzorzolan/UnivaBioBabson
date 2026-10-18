@@ -17,7 +17,9 @@
     "eval:meds": "vitest run eval/meds.eval.test.ts",
     "model:download": "node scripts/download-model.mjs",
     "test:e2e": "node scripts/browser-test.mjs",
-    "test:a11y": "node scripts/a11y.mjs"
+    "test:a11y": "node scripts/a11y.mjs",
+    "test:submission": "node --test scripts/submission/*.test.mjs && SKIP_VITEST=1 node scripts/submission/check-facts.mjs",
+    "kb:verify": "python3 -I kb-src/build_kb.py --verify-committed"
   },
   "dependencies": {
     "@mlc-ai/web-llm": "0.2.85",

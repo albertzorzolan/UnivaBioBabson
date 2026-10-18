@@ -210,6 +210,12 @@
   align-items: center;
   gap: 0.25rem var(--space-2);
 }
+/* Size badge: one hue in two steps. "Large difference" is the filled caution badge (strengthTone); "Clear
+   difference" is the neutral badge with a caution outline and ink, the softer step (tokens.css has no softer tone). */
+.cg-tl-row__size.is-moderate {
+  color: var(--caution-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--caution) 55%, transparent);
+}
 .cg-tl-row__p,
 .cg-tl-row__untested {
   font-size: var(--fs-xs);

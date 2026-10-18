@@ -9,6 +9,7 @@ import { useDerived } from "../../../app/useDerived";
 import { Badge, cx } from "../../../ui";
 import type { MedDraft } from "./medRecords";
 import { acbThresholds, diffPrompts, type PromptChange } from "./reviewRecords";
+import { previewTitle } from "./previewName";
 
 const MAX_LISTED = 4;
 /** The example offered in the empty Add drawer: a common OTC sleep aid that shows the preview at work. */
@@ -187,7 +188,7 @@ export function ReviewPreview({ draft, editing, assumedName, choosing, onTry }: 
                 {CATEGORY_LABEL[f.category] ?? "Review prompt"}
                 {change && <span className="cg-pv__item-tag">{changeTag(change)}</span>}
               </span>
-              <span className="cg-pv__item-title">{f.title}</span>
+              <span className="cg-pv__item-title">{previewTitle(f.title)}</span>
             </li>
           ))}
           {added.length > MAX_LISTED && <li className="cg-pv__more">and {added.length - MAX_LISTED} more</li>}
@@ -201,7 +202,7 @@ export function ReviewPreview({ draft, editing, assumedName, choosing, onTry }: 
             {removed.slice(0, MAX_LISTED).map((f) => (
               <li key={f.key} className="cg-pv__item cg-pv__item--removed">
                 <span className="cg-pv__item-cat">{CATEGORY_LABEL[f.category] ?? "Review prompt"}</span>
-                <span className="cg-pv__item-title">{f.title}</span>
+                <span className="cg-pv__item-title">{previewTitle(f.title)}</span>
               </li>
             ))}
           </ul>

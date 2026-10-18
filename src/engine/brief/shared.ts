@@ -79,7 +79,7 @@ export const DEFAULT_KB: BriefKb = {
   },
 };
 
-/** Whether src/kb/index.ts was found at build time (shown in diagnostics). */
+/** Whether src/kb/index.ts was found at build time. Not read by the app at present. */
 export const KB_BOUND = Boolean(kbModule?.getDrug);
 
 /** Short citation names for a finding's sources, de-duplicated, in order ("AGS Beers Criteria 2023"). */
@@ -97,8 +97,9 @@ export function sourceShorts(sourceIds: string[], kb: BriefKb): string[] {
 
 /** Single line: control characters, bidi overrides and whitespace runs collapse to one space. */
 export function oneLine(text: string): string {
-  // eslint-disable-next-line no-control-regex
-  return (text ?? "").replace(/[\s\u0000-\u001f\u007f-\u009f‪-‮⁦-⁩]+/g, " ").trim();
+  // Same character class as medName (timeline/text.ts): control characters (C0, DEL, C1) and the bidi
+  // embedding/override (U+202A-U+202E) and isolate (U+2066-U+2069) marks are matched on purpose.
+  return (text ?? "").replace(/[\s\u0000-\u001f\u007f-\u009f\u202A-\u202E\u2066-\u2069]+/g, " ").trim();
 }
 
 /** Text safe to place inside double quotes: one line, inner double quotes become single quotes. */
@@ -160,7 +161,7 @@ export function dateListWords(dates: ISODate[], refDate: ISODate, max = 6): stri
   return `${shown} and ${dates.length - (max - 1)} more days`;
 }
 
-/** Calendar month name for an ISO date ("September"). */
+/** Calendar month name for an ISO date ("September"). Not used by the current brief wording. */
 export function monthName(date: ISODate): string {
   return parseDate(date).toLocaleDateString("en-US", { month: "long" });
 }
@@ -174,6 +175,7 @@ export interface Pronouns {
   possessive: string; // her / his / their
 }
 
+/** Pronouns from the profile's recorded sex ("they" when not recorded). Not used by the current brief wording. */
 export function pronounsFor(profile: PatientProfile): Pronouns {
   if (profile.sex === "female") return { subject: "she", object: "her", possessive: "her" };
   if (profile.sex === "male") return { subject: "he", object: "him", possessive: "his" };

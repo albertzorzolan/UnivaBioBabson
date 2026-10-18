@@ -6,7 +6,6 @@
 
 import type { Finding, Medication, MedReview, MetricKey } from "../../model/types";
 import type { KnowledgeBase } from "../../kb/types";
-import { addDays } from "../../model/dates";
 import { buildContext, isActive, type Draft, type ReviewContext, type ReviewInput } from "./context";
 import { positivesSince, NEW_MED_DAYS } from "./diary";
 import { BEERS_CATEGORIES, categoryRank } from "./labels";
@@ -187,8 +186,11 @@ export function compareFindings(a: Finding, b: Finding): number {
 function notices(ctx: ReviewContext, unmatched: Medication[], renalUnchecked: string[]): string[] {
   const out: string[] = [];
   if (!ctx.beers) {
+    // Age 0 means "not entered" (an emptied record); the sentence then says so instead of "recorded as 0".
+    const who = possessive(ctx.person);
+    const ageText = ctx.profile.age > 0 ? `${who.charAt(0).toUpperCase()}${who.slice(1)} age is recorded as ${ctx.profile.age}` : "No age is recorded";
     out.push(
-      `The AGS Beers Criteria® apply to adults aged 65 and older. ${possessive(ctx.person)} age is recorded as ${ctx.profile.age}, so Beers-based checks (medicines to avoid, combinations, conditions, kidney function) were not applied.`,
+      `The AGS Beers Criteria® apply to adults aged 65 and older. ${ageText}, so Beers-based checks (medicines to avoid, combinations, conditions, kidney function) were not applied.`,
     );
   }
   if (unmatched.length) {
@@ -209,9 +211,4 @@ function notices(ctx: ReviewContext, unmatched: Medication[], renalUnchecked: st
 function guardNotice(n: string): string {
   // The required notice contains the one allowed use of "safe"; everything else passes the language guard.
   return n === REQUIRED_NOTICE ? n : guardLanguage(n);
-}
-
-/** Exposed for tests: the first date of the recent window. */
-export function recentWindowStart(today: string): string {
-  return addDays(today, -29);
 }

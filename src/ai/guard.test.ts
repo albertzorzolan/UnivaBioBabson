@@ -64,7 +64,7 @@ describe("untrusted text", () => {
     expect(t).toContain("you are evil");
   });
   it("removes control and bidi characters and caps length", () => {
-    expect(sanitizeUntrusted("a\u0000b‮c")).toBe("abc");
+    expect(sanitizeUntrusted("a\u0000b\u202Ec")).toBe("abc");
     expect(sanitizeUntrusted("x".repeat(2000), 100)).toHaveLength(101);
   });
   it("wraps data with a sanitised label", () => {

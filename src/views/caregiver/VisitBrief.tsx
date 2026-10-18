@@ -8,12 +8,15 @@
 //                   evidence chips that open the records behind it; edited sentences are re-checked by the claim checker.
 //   Print           a portal outside the app root holds only the brief (or the medication list); brief-print.css
 //                   hides everything else and lays it out on US Letter. An unreviewed brief prints a notice instead.
+//   AI draft        sections that passed the claim check are AI-written; the rest come from the standard template, and
+//                   each section is labelled with where it came from. "What the check removed" lists the AI sentences
+//                   that were not put in the brief, with the reason in plain words.
 //
 // Briefs persist in data.briefs (VisitBrief); the newest is the one being worked on.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { ClipboardCopy, FileText, ListChecks, Printer, RefreshCw, ShieldCheck } from "lucide-react";
-import type { BriefContent, Finding, Note, StoreData, VisitBrief as VisitBriefRecord } from "../../model/types";
+import type { BriefContent, Finding, GenerationInfo, Note, StoreData, VisitBrief as VisitBriefRecord } from "../../model/types";
 import { newId } from "../../model/ids";
 import { formatShort } from "../../model/dates";
 import {
@@ -24,11 +27,13 @@ import {
   toVisitBrief,
 } from "../../engine/brief";
 import { decisionFor } from "../../engine/brief/shared";
-import { AIValidationError, LLMError, aiDraftBrief, cancel as cancelAI, useLLM } from "../../ai";
+import { AIValidationError, LLMError, aiDraftBrief, cancel as cancelAI, useLLM, type DroppedSentence } from "../../ai";
+import type { BriefSections } from "../../ai/tasks";
 import { useStore } from "../../app/StoreProvider";
 import { useDerived } from "../../app/useDerived";
 import { Button, Callout, EmptyState, Modal, PageHeader, cx, formatDuration, useToast } from "../../ui";
 import { BriefDocument, NotReviewedNotice } from "./brief/BriefDocument";
+import { CheckRemoved } from "./brief/CheckRemoved";
 import { ConcernsPanel, DraftPanel, FindingsPanel, QuestionsPanel } from "./brief/Builder";
 import { EvidenceDrawer } from "./brief/EvidenceDrawer";
 import { FhirExportCard, PmlSheet } from "./brief/Exports";
@@ -73,6 +78,18 @@ type Pending = { kind: "template" | "ai"; days?: PeriodDays } | null;
 
 const nowIso = () => new Date().toISOString();
 
+/**
+ * An AI brief's generation info with the origin of each section. Stored in data.briefs next to the GenerationInfo
+ * fields (like MarkedSentence's extra fields, other readers ignore it), so the labels survive a reload.
+ */
+type AiGeneration = GenerationInfo & { sections?: BriefSections };
+
+/** Where each section of this brief came from, or null for a template brief (or an AI brief saved before sections were recorded). */
+function sectionsOf(b: VisitBriefRecord): BriefSections | null {
+  if (b.generation.mode !== "ai") return null;
+  return (b.generation as AiGeneration).sections ?? null;
+}
+
 function timeWords(iso: string | null): string {
   if (!iso) return "";
   const d = new Date(iso);
@@ -101,6 +118,12 @@ export function VisitBrief() {
   const [printTarget, setPrintTarget] = useState<"brief" | "pml">("brief");
   const [copyFallback, setCopyFallback] = useState<string | null>(null);
   const [nudge, setNudge] = useState(false);
+  /**
+   * AI sentences the claim check removed in the last AI run (shown as "What the check removed"), with the id of the
+   * brief that run saved. It is shown only while that brief is the current one, so a brief replaced in any other
+   * way (the standard template, a period change, a reset of the records) never shows sentences from an older run.
+   */
+  const [removed, setRemoved] = useState<{ briefId: string; items: DroppedSentence[] } | null>(null);
   const reviewBox = useRef<HTMLInputElement>(null);
 
   // ---- Build a template brief the first time the screen opens -------------------------------------------
@@ -113,8 +136,8 @@ export function VisitBrief() {
     } catch (e) {
       setBuildError(e instanceof Error ? e.message : "The brief could not be built.");
     }
-    // Only when there is no brief yet.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Runs only when there is no brief yet (brief === null flips once). Listing inputs or update here would rebuild
+    // the template on every record change and overwrite the family's brief, so the dependency list is kept narrow.
   }, [brief === null]);
 
   // Return to the brief after printing the medication list.
@@ -164,6 +187,7 @@ export function VisitBrief() {
       const b = makeTemplate(optionsFor(days));
       if (save((prev) => upsertBrief(prev, b))) {
         setNotice(null);
+        setRemoved(null);
         toast.show({ tone: "success", title: "Brief rebuilt from the records", description: "Standard template · review it before printing." });
       }
     } catch (e) {
@@ -182,6 +206,7 @@ export function VisitBrief() {
     }
     setAiBusy(true);
     setNotice(null);
+    setRemoved(null);
     const base = { pkg: built.pkg, data, includedConcernIds: opts.includedConcernIds };
     try {
       const res = await aiDraftBrief(built.pkg, built.content, {
@@ -195,13 +220,20 @@ export function VisitBrief() {
       }
       const savedIds = opts.savedIds ?? data.savedQuestions.map((q) => q.id);
       const content: BriefContent = { ...res.content, questions: mergeQuestions(res.content.questions, savedQuestionSentences(data, savedIds, built.pkg)) };
-      const b = toVisitBrief({ id: newId("brief"), ...base, content, generation: res.info });
+      const generation: AiGeneration = { ...res.info, sections: res.sections };
+      const b = toVisitBrief({ id: newId("brief"), ...base, content, generation });
       save((prev) => upsertBrief(prev, b));
+      setRemoved({ briefId: b.id, items: res.report.dropped });
       const dropped = res.info.droppedSentences;
+      const checked = `Every AI sentence was checked against the records${dropped ? `; ${dropped} ${dropped === 1 ? "sentence was" : "sentences were"} removed because ${dropped === 1 ? "it" : "they"} didn’t match` : " and all of them matched"}.`;
+      // Partial draft: the AI observations passed, too few AI questions did (assembleBrief).
+      const partial = res.sections.questions === "template";
       setNotice({
-        tone: "success",
-        title: `AI draft ready in ${formatDuration(res.info.durationMs ?? 0)}`,
-        body: `Every sentence was checked against the records${dropped ? `; ${dropped} ${dropped === 1 ? "sentence was" : "sentences were"} removed because ${dropped === 1 ? "it" : "they"} didn’t match` : " and all of them matched"}. Review prompts, the medicine table and the limitations stay code-written.`,
+        tone: partial ? "info" : "success",
+        title: partial ? `AI draft ready in ${formatDuration(res.info.durationMs ?? 0)}, with standard questions` : `AI draft ready in ${formatDuration(res.info.durationMs ?? 0)}`,
+        body: partial
+          ? `${checked} Fewer than 2 AI questions passed, so “Our questions” uses the standard template’s questions. Review prompts, the medicine table and the limitations stay code-written.`
+          : `${checked} Review prompts, the medicine table and the limitations stay code-written.`,
       });
     } catch (e) {
       if (e instanceof LLMError && e.code === "cancelled") {
@@ -210,7 +242,9 @@ export function VisitBrief() {
       }
       // Validation failure, timeout or engine error → the standard template, with a visible notice (SPEC §7).
       const generation = { ...templateGenerationInfo(built.pkg, review), generatedAt: nowIso() };
-      save((prev) => upsertBrief(prev, toVisitBrief({ id: newId("brief"), ...base, content: built.content, generation })));
+      const fallback = toVisitBrief({ id: newId("brief"), ...base, content: built.content, generation });
+      save((prev) => upsertBrief(prev, fallback));
+      if (e instanceof AIValidationError) setRemoved({ briefId: fallback.id, items: e.dropped });
       const why =
         e instanceof AIValidationError
           ? `${e.message}${e.dropped.length ? ` (${e.dropped.length} ${e.dropped.length === 1 ? "sentence" : "sentences"} removed by the check.)` : ""}`
@@ -390,6 +424,7 @@ export function VisitBrief() {
     brief.generation.mode === "ai"
       ? `On-device AI draft · ${timeWords(brief.generation.generatedAt)}${brief.generation.durationMs ? ` · ${formatDuration(brief.generation.durationMs)}` : ""}`
       : `Standard template · built ${timeWords(brief.generation.generatedAt)}`;
+  const sections = sectionsOf(brief);
   const checks = (section: EditableSection, index: number) => checkEditedSentence(brief.content[section][index], section, pkg, data);
   const whoWrote = (n: Note) => (n.author === "caregiver" ? p.caregiverName || "You" : p.preferredName || "Patient");
 
@@ -435,6 +470,7 @@ export function VisitBrief() {
               {notice.body}
             </Callout>
           )}
+          {removed?.briefId === brief.id && removed.items.length > 0 && <CheckRemoved items={removed.items} name={p.preferredName || p.displayName} />}
           {recordsChanged && (
             <Callout
               tone="info"
@@ -450,6 +486,7 @@ export function VisitBrief() {
             </Callout>
           )}
 
+          {/* BriefDocument labels only the sections the AI drafted (generation.sections); the builder lists each one's origin. */}
           <div className="cg-vb-paper">
             <BriefDocument
               brief={shown}
@@ -477,6 +514,7 @@ export function VisitBrief() {
             onAI={() => request("ai")}
             onCancelAI={() => cancelAI("Cancelled by the caregiver.")}
             statusLine={statusLine}
+            sections={sections}
           />
           <ConcernsPanel concerns={concerns} included={brief.includedConcernIds} onToggle={toggleConcern} onAdd={addConcern} whoWrote={whoWrote} />
           <FindingsPanel

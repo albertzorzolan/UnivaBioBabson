@@ -61,7 +61,8 @@ export function DaySummary({ checkIn, today, variant, weeklySentence, onChange }
         </span>
         <div>
           <h2 id="pt-saved-title" className="pt-saved__title" tabIndex={-1}>
-            {variant === "success" ? `Saved — thank you, ${name}.` : `${dayName} is saved`}
+            {/* An emptied record has no name: "Saved — thank you." rather than "thank you, ." */}
+            {variant === "success" ? `Saved — thank you${name.trim() ? `, ${name}` : ""}.` : `${dayName} is saved`}
           </h2>
           <p className="pt-saved__meta">
             {isToday ? "Today" : formatLong(checkIn.date)}

@@ -244,6 +244,20 @@ export interface WindowStat {
   value: number;
 }
 
+/**
+ * Runs-aware check of a before/after difference: a seeded circular block-permutation test that shuffles whole runs
+ * of days instead of single days (engine/timeline/blockPermutation.ts).
+ */
+export interface RunsCheck {
+  /** (1 + shuffles with a difference at least as large) / (permutations + 1). */
+  p: number;
+  /** Length of each shuffled run of days. */
+  blockDays: number;
+  permutations: number;
+  /** true when the runs check supports the strength the Fisher / Mann–Whitney test gave on its own. */
+  passed: boolean;
+}
+
 export interface Signal {
   id: string; // e.g. "sig:med-lorazepam:dizziness:started"
   medicationId: string;
@@ -261,6 +275,8 @@ export interface Signal {
   /** The KB lists this metric as a recognised effect of the medication. */
   knownEffect: boolean;
   text: string; // code-rendered sentence with counts
+  /** Runs-aware check of the same difference (optional: older saved analyses and fixtures do not have it). */
+  runsCheck?: RunsCheck;
 }
 
 export interface MedTimeline {

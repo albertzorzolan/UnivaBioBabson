@@ -225,6 +225,8 @@ function scenarios() {
       role: null,
       route: "/",
       prepare: async (page) => {
+        // The demo sign-in form is collapsed by default (Welcome.tsx disclosure); open it to scan its error state.
+        await page.getByRole("button", { name: "Have the demo credentials? Sign in" }).click();
         await page.getByLabel("Username").fill("babson");
         await page.getByLabel("Password").fill("nope");
         await page.getByRole("button", { name: "Sign in", exact: true }).click();

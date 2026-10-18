@@ -2,12 +2,12 @@
 // accidental reload doesn't lose them. Session-only on purpose: the draft disappears when the tab is closed, and it
 // is cleared as soon as the check-in is saved. Every storage call is guarded, so a blocked storage just means no draft.
 import type { ISODate } from "../../model/types";
-import type { StorageLike } from "../../model/store";
+import { removeKeysWithPrefix, type ListableStorage, type StorageLike } from "../../model/store";
 
 export const DRAFT_PREFIX = "kinwise.v1.storyDraft.";
 
 /** sessionStorage when the browser allows it, otherwise null (private mode, sandboxed previews, tests). */
-function sessionStore(): StorageLike | null {
+function sessionStore(): ListableStorage | null {
   try {
     return typeof window === "undefined" ? null : window.sessionStorage;
   } catch {
@@ -39,4 +39,9 @@ export function clearStoryDraft(date: ISODate, storage: StorageLike | null = ses
   } catch {
     /* nothing to clear */
   }
+}
+
+/** Remove the unsaved drafts of every day ("Delete everything" in Settings). */
+export function clearAllStoryDrafts(storage: ListableStorage | null = sessionStore()): void {
+  if (storage) removeKeysWithPrefix(storage, DRAFT_PREFIX);
 }

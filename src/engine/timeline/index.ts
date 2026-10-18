@@ -2,6 +2,7 @@
 //
 //   rules.ts     thresholds, fixed wording (caveat, method summary, multiple-comparisons note)
 //   stats.ts     Fisher's exact test, Mann–Whitney U (exact + normal), p-value formatting
+//   blockPermutation.ts  runs-aware check: seeded circular block-permutation test (shuffles whole runs of days)
 //   metrics.ts   the 9 diary metrics, answered-day window summaries
 //   windows.ts   medication starts/stops, before/after windows, overlapping changes
 //   sentinel.ts  falls and near-falls listed by date (never tested)
@@ -17,6 +18,9 @@ export {
   formatPValue,
 } from "./stats";
 export type { MannWhitneyResult, MannWhitneyOptions } from "./stats";
+
+export { blockPermutationTest, stableHash, mulberry32 } from "./blockPermutation";
+export type { BlockPermutationOptions, BlockPermutationResult } from "./blockPermutation";
 
 export {
   METRICS,
@@ -53,6 +57,7 @@ export {
   timelineSentinels,
   compareMetric,
   classifyStrength,
+  gatedStrength,
   isSignalStrength,
   isAdverseConsistent,
   compareSignals,
@@ -65,6 +70,7 @@ export {
 export type {
   AnalyzeTimelineInput,
   AnalyzeEventInput,
+  CompareOptions,
   DailyRow,
   EventAnalysis,
   MetricComparison,

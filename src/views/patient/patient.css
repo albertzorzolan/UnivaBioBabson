@@ -61,12 +61,16 @@
   color: var(--ink-muted);
   line-height: var(--lh-body);
 }
-.pt-anchor,
-.pt-q,
-.pt-saved,
-.pt-heard,
-.pt-entry {
-  scroll-margin-top: 6.5rem;
+/* The tab bar stays on screen (sticky at the top on tablets and computers, fixed at the bottom on phones), so
+   nothing scrolled to or focused may end up underneath it (WCAG 2.2 · 2.4.11 Focus Not Obscured). Its height:
+   tab min-height (4rem at both sizes, layouts.css) + its 1px border.
+   The page's scroll-padding covers it, so jump targets (#pt-heard-anchor, a question, a saved day) need no
+   scroll-margin of their own: they land --space-4 below the bar. That is less than the flow gap (--space-5), so
+   the controls above a target (e.g. the example chips above "Here's what I heard") scroll fully out of view
+   instead of being left half-hidden under the bar. */
+[data-shell="patient"] {
+  --pt-tabbar-h: calc(4rem + 1px);
+  scroll-padding-top: calc(var(--pt-tabbar-h) + var(--space-4));
 }
 
 /* ===== Today · step 1: her words ============================================ */
@@ -80,6 +84,9 @@
 }
 .pt-tell__field {
   margin-top: var(--space-2);
+}
+.pt-tell__lead--short {
+  display: none;
 }
 .pt-tell__field .ui-textarea {
   min-height: 8.5rem;
@@ -875,12 +882,22 @@
     padding: var(--space-4);
     border-radius: var(--radius-lg);
   }
-  .pt-anchor,
-  .pt-q,
-  .pt-saved,
-  .pt-heard,
-  .pt-entry {
-    scroll-margin-top: var(--space-4);
+  /* Phones: the header scrolls away and the bar is fixed at the bottom (plus the home-indicator area). */
+  [data-shell="patient"] {
+    scroll-padding-top: var(--space-4);
+    scroll-padding-bottom: calc(var(--pt-tabbar-h) + env(safe-area-inset-bottom) + var(--space-3));
+  }
+  /* First screen on a phone (390 × 844): "Need help now?", the greeting, the question and the whole writing box
+     above the bottom tabs. The section title already says what to do, so the eyebrow goes and the lead is short. */
+  .pt-page-header {
+    margin-bottom: var(--space-4);
+  }
+  .pt-tell__eyebrow,
+  .pt-tell__lead {
+    display: none;
+  }
+  .pt-tell__lead--short {
+    display: block;
   }
   .pt-story {
     padding: var(--space-4);

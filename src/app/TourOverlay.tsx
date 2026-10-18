@@ -61,10 +61,9 @@ export const TOUR_STEPS: TourStep[] = [
         <p>
           {c.name}
           {c.age > 0 ? `, ${c.age},` : ""} takes {c.medCount} {c.medCount === 1 ? "medicine" : "medicines"}
-          {c.prescribers > 1 ? ` from ${c.prescribers} prescribers` : ""}. In one primary-care study, 37% (19 of 51) of
-          medication side effects whose harm could have been reduced were attributed to the patient not telling the
-          doctor about the symptom
-          (Gandhi, NEJM 2003).
+          {c.prescribers > 1 ? ` from ${c.prescribers} prescribers` : ""}. In one primary-care study, 37% of medication
+          side effects whose harm could have been reduced were attributed to the patient not telling the doctor about
+          the symptom (Gandhi, NEJM 2003).
         </p>
         <p>This tour follows one week of her story — from her own words to a one-page brief for the visit.</p>
       </>
@@ -163,15 +162,17 @@ export const TOUR_STEPS: TourStep[] = [
   {
     role: "caregiver",
     route: "/how-it-works",
-    // "how-eval" (the benchmark card) is found first and its Run button pressed; then the scorecards appear.
-    targets: ["how-eval-scores", "how-eval", "how-arch"],
+    // "how-eval" (the benchmark card) is found first and its Run button pressed; then the held-out scorecard (the
+    // headline result) appears and the spotlight moves to it. The other ids are fallbacks.
+    targets: ["how-eval-heldout", "how-eval-scores", "how-eval", "how-arch"],
     runBenchmark: true,
     eyebrow: "How it works",
     title: "Check our work",
     body: () => (
       <p>
-        The language benchmark just ran live in this browser, over hundreds of hand-labelled stories. Below it: the
-        medication-review test cases, the architecture, every source, and an honest list of what is finished and planned.
+        The language benchmark just ran live in this browser, over hundreds of fictional, AI-written stories with gold
+        labels; the held-out set was never used for tuning. Below it: the medication-review test cases, the
+        architecture, every source, and an honest list of what is finished and planned.
       </p>
     ),
   },
@@ -318,8 +319,8 @@ export function TourOverlay({ step: index }: { step: number }) {
   useEffect(() => {
     if (role !== step.role) loginAs(step.role);
     navigate(step.route);
-    // Only on step change; the user may wander off afterwards and that's fine.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Keyed on the step index alone: this runs once as a step begins. Listing `role` or `step` would pull the user
+    // back to the step's view whenever they sign in as someone else or wander off mid-step, which is allowed.
   }, [index]);
 
   // Find the best target for this step (polling while lazy views render), and run the step's action once.

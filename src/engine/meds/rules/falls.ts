@@ -2,6 +2,10 @@
 // (CDC STEADI / STEADI-Rx, EuGMS STOPPFall, AGS Beers 2023), emphasised when the diary recorded falls,
 // near-falls or dizziness in the last 30 days. FRID status is a population-level association, so the text
 // describes timing and counts only.
+//
+// When the finding is emphasised and a listed medicine lowers blood pressure (blood-pressure medicines, water pills,
+// alpha-blockers, nitrates, centrally acting blood-pressure medicines), the question adds the CDC STEADI step of
+// measuring orthostatic (lying and standing) blood pressure. It asks for a measurement; it never suggests a change.
 
 import type { Draft, MedInfo, ReviewContext } from "../context";
 import { listJoin, plural, possessive, shortDate } from "../text";
@@ -11,15 +15,23 @@ export interface FallRiskResult {
   draft: Draft | null;
 }
 
+/** FRID classes (frids.json classId) whose fall link is blood pressure dropping on standing. */
+const BP_LOWERING_FRIDS: ReadonlySet<string> = new Set(["bp_lowering", "diuretic", "alpha1_blocker", "nitrate", "central_alpha_agonist"]);
+
+/** CDC STEADI (sources.json id): its assessment includes measuring orthostatic blood pressure. */
+const STEADI_SOURCE = "steadi";
+
 export function fallRisk(ctx: ReviewContext): FallRiskResult {
   const frids: MedInfo[] = [];
   const sourceIds: string[] = [];
   const classNames: string[] = [];
+  let lowersBp = false;
   for (const m of ctx.meds) {
     let hit = false;
     for (const id of m.ingredients) {
       for (const f of ctx.ix.fridsOf(id)) {
         hit = true;
+        if (BP_LOWERING_FRIDS.has(f.classId)) lowersBp = true;
         if (f.sourceId && !sourceIds.includes(f.sourceId)) sourceIds.push(f.sourceId);
         if (f.display && !classNames.includes(f.display)) classNames.push(f.display);
       }
@@ -58,6 +70,11 @@ export function fallRisk(ctx: ReviewContext): FallRiskResult {
       : `${frids.length} of ${possessive(ctx.person)} medicines are on published lists of medicines linked to falls in older adults${shorts.length ? ` (${listJoin(shorts)})` : ""}: ${names}.`;
   const diaryLine = emphasised ? ` In the last 30 days the diary recorded ${commaJoin(events)}.` : "";
   const clinClasses = classNames.length ? ` (${classNames.join("; ")})` : "";
+  // Second question sentence (CDC STEADI orthostatic check). The first sentence stays exactly as it was, and
+  // STEADI is cited for the check without being added to the lead's "(lists …)" credit above.
+  const bpCheck = emphasised && lowersBp;
+  const bpQuestion = bpCheck ? ` Could ${possessive(ctx.person)} blood pressure be checked lying and standing (CDC STEADI)?` : "";
+  const cited = bpCheck && ctx.ix.source(STEADI_SOURCE) && !sourceIds.includes(STEADI_SOURCE) ? [...sourceIds, STEADI_SOURCE] : sourceIds;
   return {
     medIds: frids.map((m) => m.med.id),
     draft: {
@@ -68,9 +85,9 @@ export function fallRisk(ctx: ReviewContext): FallRiskResult {
       plain: `${lead}${diaryLine}`,
       clinician: `${plural(frids.length, "fall-risk-increasing drug")} (FRIDs)${clinClasses}.${emphasised ? ` Diary, last 30 days: ${events.join("; ")}.` : ""}`,
       question: emphasised
-        ? `With ${commaJoin(bareEvents)} in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk?`
+        ? `With ${commaJoin(bareEvents)} in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk?${bpQuestion}`
         : `Could these medicines be reviewed for fall risk, for example as part of a fall-risk check (CDC STEADI)?`,
-      sourceIds,
+      sourceIds: cited,
       evidenceGrade: null,
       symptomQuestion: false,
     },

@@ -1,5 +1,7 @@
 # MedWatch v2 — product & technical specification (build contract)
 
+> **Numbers, file names and AI roles in this contract are pre-build targets; results as built are in [EVALUATION.md](EVALUATION.md) and [ARCHITECTURE.md](ARCHITECTURE.md).**
+>
 > **Note (Oct 11 2026):** this is the original build contract, written under the working name "MedWatch". The product is
 > now **Kinwise** (see §13 of SPEC.md); the app's user-facing text says Kinwise, and "MedWatch" there refers only to
 > FDA's adverse-event reporting program. Kinwise is not affiliated with the FDA.

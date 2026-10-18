@@ -4,8 +4,10 @@
 //   3. what was deliberately NOT added and why ("that's about someone else")
 //   4. other symptoms and medicine remarks she can keep or remove
 //   5. optionally, a second look by the on-device language model (only when it is already loaded)
+// When the story gives no answer to fill in, it says so and offers a jump to the questions (the quick form below).
 import { useMemo, useState } from "react";
 import {
+  ArrowDown,
   Check,
   CircleCheck,
   CircleSlash,
@@ -17,9 +19,9 @@ import {
 } from "lucide-react";
 import type { CheckIn, DiaryAnswers, DiaryField, Extraction, Medication, OtherSymptom, Proposal } from "../../model/types";
 import { CONCEPTS, isConceptId } from "../../engine/nlp/lexicon";
-import { AIBadge, Badge, Button, cx, type Tone } from "../../ui";
+import { AIBadge, Badge, Button, Callout, cx, type Tone } from "../../ui";
 import { layoutStory, type MarkKind, type StoryMark } from "./highlight";
-import { FIELD_LABEL, FIELD_TAG, answerWords, dedupeSkipped, isAccepted, type CheckInForm } from "./checkin";
+import { FIELD_LABEL, FIELD_TAG, MAIN_FIELDS, answerWords, dedupeSkipped, isAccepted, type CheckInForm } from "./checkin";
 
 const NO_TAG: Partial<Record<DiaryField, string>> = {
   dizziness: "Not dizzy",
@@ -219,11 +221,15 @@ export function HeardPanel(props: HeardPanelProps) {
 
   const needDecision = proposals.filter((p) => p.certainty !== "explicit" && !isAccepted(form, p)).length;
   const counts = [
-    `${proposals.length} ${proposals.length === 1 ? "answer" : "answers"}`,
+    proposals.length > 0 ? `${proposals.length} ${proposals.length === 1 ? "answer" : "answers"}` : null,
     others.length > 0 ? `${others.length} other ${others.length === 1 ? "symptom" : "symptoms"}` : null,
     medNotes.length > 0 ? `${medNotes.length} ${medNotes.length === 1 ? "note" : "notes"} about your medicines` : null,
   ].filter(Boolean) as string[];
   const ms = extraction.durationMs;
+  // No answer to fill in: say so plainly and offer the questions, starting with the first one still open.
+  const noAnswers = proposals.length === 0;
+  const firstOpen = MAIN_FIELDS.find((f) => form.answers[f] === null) ?? MAIN_FIELDS[0];
+  const countsText = counts.length > 1 ? `${counts.slice(0, -1).join(", ")} and ${counts[counts.length - 1]}` : counts[0];
 
   return (
     <section className="pt-heard" aria-labelledby="pt-heard-title" data-tour="checkin-heard">
@@ -234,9 +240,11 @@ export function HeardPanel(props: HeardPanelProps) {
             Here’s what I heard
           </h2>
           <p className="pt-section-lead" aria-live="polite">
-            {proposals.length === 0 && others.length === 0 && medNotes.length === 0
-              ? "I didn’t find anything to fill in from these words. You can answer the questions below yourself."
-              : `I found ${counts.length > 1 ? `${counts.slice(0, -1).join(", ")} and ${counts[counts.length - 1]}` : counts[0]}.`}
+            {noAnswers && others.length === 0 && medNotes.length === 0
+              ? "I didn’t find a symptom I can fill in."
+              : noAnswers
+                ? `I found ${countsText}, but no symptom I can fill in.`
+                : `I found ${countsText}.`}
             {needDecision > 0 && ` ${needDecision === 1 ? "One needs" : `${needDecision} need`} your check.`}
           </p>
         </div>
@@ -253,6 +261,16 @@ export function HeardPanel(props: HeardPanelProps) {
           <Pencil size={16} aria-hidden="true" />
           You’ve changed your words since I read them. Tap “Fill in my check-in” again to update this.
         </p>
+      )}
+
+      {noAnswers && (
+        // The button sits in the body (not the side action slot) so it wraps under the text on a phone.
+        <Callout tone="info">
+          <p>You can answer the questions below directly.</p>
+          <Button size="lg" variant="secondary" iconRight={<ArrowDown size={18} aria-hidden="true" />} onClick={() => props.onChange(firstOpen)}>
+            Go to the questions
+          </Button>
+        </Callout>
       )}
 
       <blockquote className="pt-story" aria-label="Your words, with the parts I used marked">

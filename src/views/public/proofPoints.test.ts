@@ -18,8 +18,13 @@ describe("Welcome proof strip", () => {
 
   it("states the privacy promise precisely (the app itself is served by GitHub Pages; model files are downloaded)", () => {
     const device = PROOF_POINTS.find((p) => p.key === "device")!;
-    expect(device.label).toBe("Your records never leave this device.");
-    expect(device.label).not.toMatch(/nothing is sent anywhere/i);
+    expect(device.label).toBe("Your records stay on this device unless you print or export them.");
+    expect(device.label).not.toMatch(/nothing is sent anywhere|never leave/i);
+  });
+
+  it("calls the medication-review cases synthetic: a written spec, not clinician-reviewed", () => {
+    const med = PROOF_POINTS.find((p) => p.key === "meds")!;
+    expect(`${med.figure} ${med.label}`).toMatch(/^\d+\/\d+ synthetic medication-review cases pass \(a written spec; not clinician-reviewed\)/);
   });
 
   it("exposes the lexicon-only baseline when the results file has one (null otherwise, never a made-up number)", () => {

@@ -529,7 +529,7 @@
 }
 
 /* Phones: 18px base (SPEC minimum), tabs become a fixed bottom bar, header compacts to
-   [Need help now?][Sign out] / [demo chip] / greeting. */
+   [Need help now?][Sign out] / [date][demo chip] / [demo switch] / greeting. */
 @media (max-width: 40rem) {
   [data-shell="patient"] {
     --shell-scale: 1.125;
@@ -563,8 +563,16 @@
     min-width: var(--target-patient);
     padding: 0 0.625rem;
   }
+  /* Date, demo chip and demo switch share one wrapping line (date + chip fit side by side at 390px), so the
+     check-in box still fits on the first screen. */
   .pt-greeting {
-    padding: var(--space-3) 0 var(--space-4);
+    padding: var(--space-2) 0 var(--space-3);
+  }
+  .pt-greeting__meta {
+    gap: 0 var(--space-2);
+  }
+  .pt-greeting .ui-demo-chip__trigger {
+    padding-inline: 0.5rem;
   }
   .pt-tabs {
     position: fixed;
@@ -593,7 +601,7 @@
     border-top-color: var(--primary);
   }
   .pt-main {
-    padding: var(--space-5) var(--space-4) var(--space-6);
+    padding: var(--space-4) var(--space-4) var(--space-6);
   }
   .pt-footer {
     padding-inline: var(--space-4);

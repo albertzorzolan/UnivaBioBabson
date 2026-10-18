@@ -3,6 +3,8 @@
 
     python3 -I kb-src/build_kb.py            # from the repo root: writes src/kb/data/*.json + kb-src/build-report.json
     python3 -I kb-src/build_kb.py --check    # build in memory and validate only (exit 1 on any problem)
+    python3 -I kb-src/build_kb.py --verify-committed   # --check, then compare byte-for-byte with the committed
+                                             # src/kb/data/*.json and kb-src/build-report.json (exit 1 on drift)
     python3 -I kb-src/build_kb.py --needs    # print the RxNorm lookups still missing (input for kb/rx_extra.py)
 
 Inputs (all in kb-src/):
@@ -680,7 +682,64 @@ def needs():
     print(json.dumps({"names": names, "brands": sorted(set(brands))}, indent=1))
 
 
+def serialize(value):
+    """The exact text written for one output file (shared by the writer and --verify-committed)."""
+    return json.dumps(value, indent=1, ensure_ascii=False) + "\n"
+
+
+def outputs(data, report):
+    """Every file the build writes, as {repo-relative path: text}. docs/CLINICAL-SOURCES.md is left out: it quotes
+    the date of the latest medication-eval run (eval/results/meds-eval.json), so it changes whenever the eval runs."""
+    files = {os.path.relpath(os.path.join(OUT, f"{name}.json"), ROOT): serialize(value) for name, value in data.items()}
+    files[os.path.relpath(os.path.join(HERE, "build-report.json"), ROOT)] = serialize(report)
+    return files
+
+
+def first_difference(a, b):
+    """1-based line number of the first line where texts a and b differ (or where the shorter one ends)."""
+    al, bl = a.split("\n"), b.split("\n")
+    for i, (x, y) in enumerate(zip(al, bl), 1):
+        if x != y:
+            return i
+    return min(len(al), len(bl)) + 1
+
+
+def verify_committed(data, report):
+    """Compare the in-memory build with the committed files; return one line per mismatch (empty = in sync).
+
+    Catches a hand edit of src/kb/data/*.json, or a change to kb-src/ that was committed without re-running the
+    build. Compares bytes, so formatting drift counts too."""
+    drift = []
+    expected = outputs(data, report)
+    for rel, text in expected.items():
+        path = os.path.join(ROOT, rel)
+        if not os.path.exists(path):
+            drift.append(f"{rel}: missing (the build produces it)")
+            continue
+        with open(path, "rb") as f:
+            committed = f.read()
+        built = text.encode("utf-8")
+        if committed != built:
+            line = first_difference(committed.decode("utf-8", errors="replace"), text)
+            drift.append(f"{rel}: differs from the build (first difference at line {line}; "
+                         f"committed {len(committed)} bytes, built {len(built)} bytes)")
+    # A JSON file in src/kb/data that the build no longer produces is stale.
+    for name in sorted(os.listdir(OUT)) if os.path.isdir(OUT) else []:
+        rel = os.path.relpath(os.path.join(OUT, name), ROOT)
+        if name.endswith(".json") and rel not in expected:
+            drift.append(f"{rel}: not produced by the build (stale file)")
+    return drift
+
+
+FLAGS = {"--check", "--needs", "--verify-committed"}
+
+
 def main(argv):
+    unknown = [a for a in argv if a not in FLAGS]
+    if unknown:
+        # An unknown or misspelt flag must never fall through to the default, which overwrites the committed KB.
+        print(f"unknown argument(s): {' '.join(unknown)}; expected none or one of {', '.join(sorted(FLAGS))}")
+        return 2
     if "--needs" in argv:
         needs()
         return 0
@@ -692,17 +751,23 @@ def main(argv):
             print("PROBLEM:", p)
         print(f"{len(problems)} problem(s); nothing written.")
         return 1
+    if "--verify-committed" in argv:
+        drift = verify_committed(data, report)
+        if drift:
+            for d in drift:
+                print("DRIFT:", d)
+            print(f"{len(drift)} file(s) out of sync with kb-src/; run `python3 -I kb-src/build_kb.py` and commit the result.")
+            return 1
+        print(f"ok: {len(outputs(data, report))} committed files match the build:", json.dumps(report["counts"]))
+        return 0
     if "--check" in argv:
         print("ok:", json.dumps(report["counts"]))
         return 0
     os.makedirs(OUT, exist_ok=True)
-    for name, value in data.items():
-        with open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8") as f:
-            json.dump(value, f, indent=1, ensure_ascii=False)
-            f.write("\n")
-    with open(os.path.join(HERE, "build-report.json"), "w", encoding="utf-8") as f:
-        json.dump(report, f, indent=1, ensure_ascii=False)
-        f.write("\n")
+    for rel, text in outputs(data, report).items():
+        # newline="" writes the text exactly as built (no platform line-ending translation).
+        with open(os.path.join(ROOT, rel), "w", encoding="utf-8", newline="") as f:
+            f.write(text)
     print("wrote", ", ".join(f"{k}.json" for k in data), "->", os.path.relpath(OUT, ROOT))
     print("wrote", os.path.relpath(write_docs(data, report), ROOT))
     print(json.dumps(report["counts"]))

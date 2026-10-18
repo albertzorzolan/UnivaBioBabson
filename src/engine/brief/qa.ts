@@ -91,15 +91,47 @@ export type QuestionRoute =
 
 /** The fixed, kind redirect for questions only a clinician can answer. */
 export function redirectText(patientName?: string): string {
-  const who = oneLine(patientName ?? "") ? `${oneLine(patientName ?? "")}'s` : "her";
+  const named = oneLine(patientName ?? "");
+  // A placeholder kept from an older "Delete everything" ("Your relative") reads as words, not a name.
+  const who = !named ? "her" : /^(?:your|my|our) /i.test(named) ? `${named.toLowerCase()}'s` : `${named}'s`;
   return `That's a question for ${who} doctor or pharmacist. Want to add it to your visit questions?`;
 }
 
-/** Shown instead of an answer when the question contains emergency words. */
+/** Shown instead of an answer when the question contains emergency words (the same numbers as the Help dialog). */
 export const EMERGENCY_REDIRECT =
-  `If something feels like an emergency, call 911 now. ${PRODUCT_NAME} can't help in an emergency — it only answers questions about the records.`;
+  `If something feels like an emergency, call 911 now. If someone took too much of a medicine or the wrong one, call Poison Control at 1-800-222-1222 (US, free, 24/7). ${PRODUCT_NAME} can't help in an emergency — it only answers questions about the records.`;
 
-const PERSON = "(?:she|he|i|we|they|mom|mum|mother|dad|father|margaret|the patient|my (?:mom|mum|mother|dad|father))";
+/**
+ * Words for the person the questions are about. The scope rules put this in their "person" slot; routeQuestion adds
+ * the profile's own names at call time (see personPattern), so "Should John stop…" is caught for any name.
+ */
+const PERSON_WORDS = [
+  "she", "he", "i", "we", "they", "him", "her", "them", "the patient",
+  "mom", "mum", "mother", "dad", "father", "grandma", "grandpa", "grandmother", "grandfather", "granny", "grandad", "granddad",
+  "nana", "nan", "papa", "gran", "husband", "wife", "partner",
+  "(?:my|our|your) (?:mom|mum|mother|dad|father|parents?|grandma|grandpa|grandmother|grandfather|granny|nana|papa|husband|wife|partner|relative|loved one)",
+];
+/** Generic words for a medicine, for the "medicine" slot (the list's own names and brands are added at call time). */
+const MED_NOUNS = "pills?|tablets?|caplets?|capsules?|medicines?|medications?|meds|drugs?|sleeping pills?|sleep aids?|water pills?";
+/** Name parts that are words, not names ("Your relative" placeholder, titles). */
+const NAME_STOP = new Set("your my our the a an of mr mrs ms miss dr relative person patient loved one".split(" "));
+
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** "(?:she|he|…|grandpa|robert|diaz)": generic person words plus each word of the names passed in. */
+function personPattern(names: string[]): string {
+  const parts = names.flatMap((n) => oneLine(n).toLowerCase().split(/[^a-z'-]+/)).filter((w) => w.length >= 2 && !NAME_STOP.has(w));
+  return `(?:${[...new Set([...parts.map(escapeRe), ...PERSON_WORDS])].join("|")})`;
+}
+
+/** "(?:pills?|…|lorazepam|ativan)": generic medicine words plus the list's names and brands, as findMeds reads them. */
+function medPattern(medNames: string[]): string {
+  const names = medNames
+    .flatMap((n) => [n.replace(/\(.*?\)/g, " "), ...[...n.matchAll(/\(([^)]*)\)/g)].map((x) => x[1])])
+    .map((n) => oneLine(n).toLowerCase().replace(/\b(?:otc|over the counter)\b/g, "").replace(/\s+/g, " ").trim())
+    .filter((n) => n.length >= 3);
+  return `(?:${[...new Set(names.map(escapeRe)), MED_NOUNS].join("|")})`;
+}
 const ACTION =
   "(?:stop|start|quit|discontinue|taper|wean|switch|swap|replace|skip|halve|double|take|give|try|use|keep|continue|go back|cut|reduce|lower|increase|raise|change|avoid|come off|get off|be on|stay on|drink|mix|combine)";
 /** Symptom words that make "right now" / "just now" an emergency signal rather than a records question. */
@@ -147,15 +179,94 @@ interface ScopeRule {
   test?: (t: string) => boolean;
 }
 
-/** Ordered rules; the first match wins. Each is tested against lower-cased, punctuation-normalised text. */
-const SCOPE_RULES: ScopeRule[] = [
+/** "Is she dizzy because of zolpidem?": a medicine (any KB name or generic word, on her list or not) offered as the reason. */
+function becauseOfAMedicine(t: string): boolean {
+  const m = /\b(?:because of|due to|from) (?:the |her |his |that |this )?(?:new )?([a-z'+-]+(?: [a-z'+-]+)?)\b[^?]*\?$/.exec(t);
+  return Boolean(m && namesAMedicine(m[1]));
+}
+
+/** "Take John off zolpidem?": taking someone off a medicine the question names (any name in the person slot). */
+function takesOffAMedicine(t: string): boolean {
+  const m = /\b(?:take|taking|took|get|getting|got) [a-z'-]+ off (?:of )?(?:the |her |his |that |this |all )?([a-z'+-]+(?: [a-z'+-]+)?)/.exec(t);
+  return Boolean(m && namesAMedicine(m[1]));
+}
+
+/** The 1–2 words after `prefix` (a regex source ending where the medicine would start), for namesAMedicine. */
+function wordsAfter(t: string, prefix: string): string[] {
+  const re = new RegExp(`${prefix}((?:[a-z'+-]+ ?){1,2})`, "g");
+  return [...t.matchAll(re)].map((m) => m[1]);
+}
+
+/** Verbs of taking or giving a medicine, for the overdose forms below ("had" only where a medicine must follow). */
+const TOOK = "\\b(?:took|taken|swallowed|ate|eaten|given|gave)(?: (?:him|her|them|me))?";
+const POSS = "(?:her |his |my |the |their |its )?";
+
+/**
+ * A possible overdose that names the medicine itself, not a pill noun: "She took 8 lorazepam", "he took 6 ambien",
+ * "took 10 of his zolpidem", "took a handful of lorazepam", "took all of her Ativan", "a whole bottle of Tylenol PM",
+ * "took extra zolpidem", "took too many Ativan". The word after the amount must name a medicine (namesAMedicine:
+ * the KB's names and brands, so medicines that are not on the list count too). A small count needs "of" ("took 2 of
+ * her pills"; "took 2 caplets of Tylenol PM", the listed dose, stays answerable), and a strength in milligrams is
+ * not a count ("took 20 mg of her water pill" reads "mg", not a medicine).
+ */
+function overdoseOfAMedicine(t: string, MED: string): boolean {
+  const COUNT =
+    "(?:(?:[2-3]|two|three) of |(?:[4-9]|[1-9]\\d+|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|a handful|handfuls|several|a bunch|a whole (?:bunch|lot|handful))\\b (?:of )?)";
+  const prefixes = [
+    `${TOOK} ${COUNT}${POSS}`,
+    `${TOOK} all (?:of )?${POSS}`,
+    `${TOOK}\\b[^?.]{0,20}\\b(?:a|the) (?:whole |entire |full )?(?:bottle|pack|packet|box|strip|blister pack) of ${POSS}`,
+    `${TOOK} (?:an? |one )?(?:extra|another|more|additional|a second|second) (?:of )?${POSS}`,
+    `\\b(?:took|taken|swallowed|had|given|gave)\\b[^?.]{0,30}\\btoo many (?:of )?${POSS}`,
+  ];
+  const listed = new RegExp(`^${MED}\\b`);
+  return prefixes.some((p) => wordsAfter(t, p).some((w) => namesAMedicine(w) || listed.test(w)));
+}
+
+/** "Can grandma have another lorazepam tonight?", "could he take an extra Ambien": one more dose of a medicine. */
+function anotherDoseOf(t: string, MED: string): boolean {
+  const prefix = "\\b(?:can|could|may|should|shall|is it (?:ok|okay|alright|fine) (?:for|to)) (?:[a-z'-]+ ){0,3}?(?:have|get|take|give|use) (?:[a-z'-]+ )?(?:another|an extra|extra|more|one more|a second|a 2nd|an additional) (?:of )?(?:her |his |the |their )?";
+  const listed = new RegExp(`^${MED}\\b`);
+  return wordsAfter(t, prefix).some((w) => namesAMedicine(w) || listed.test(w));
+}
+
+/** Conditions a diagnosis question names, and the verbs that tie them to a person ("does she have", "is he getting"). */
+const CONDITION = "(?:dementia|alzheimer\\w*|parkinson\\w*|stroke|mini[- ]stroke|tia|uti|infection|depression|delirium|vertigo|cancer|tumou?r|neuropathy|hypotension|low blood pressure|heart (?:problem|failure|disease|condition)|kidney (?:problem|failure|disease)|seizure disorder|condition|disease|illness)";
+const DIAGNOSIS_VERB = "(?:have|has|had|be|getting|developing|showing signs of|a sign of|signs of|symptoms? of)";
+/** "for people with dementia", "patients who have Parkinson's": a reference (Beers) question about a group, not her. */
+const ABOUT_A_GROUP = /\b(?:people|patients|someone|anyone|adults|older adults|seniors|the elderly|those|residents)(?: who (?:have|has|had)| with| living with)\b/;
+const DIAGNOSIS_ANY_SUBJECT = new RegExp(`\\b(?:does|do|could|might|may|is|has|can) ([a-z'-]+)\\b[^?]*\\b${DIAGNOSIS_VERB}\\b[^?]*\\b${CONDITION}\\b`);
+
+/**
+ * "Does grandpa have dementia?", "Is Robert getting Parkinson's?": any one-word subject, so a name the person slot
+ * doesn't know is caught. Not when the subject is a medicine or the person asking ("Does lorazepam have a Beers
+ * warning for people with dementia?", "can you…") or the condition is about a group: those are reference questions.
+ */
+function asksForADiagnosis(t: string): boolean {
+  const m = DIAGNOSIS_ANY_SUBJECT.exec(t);
+  if (!m || ABOUT_A_GROUP.test(t)) return false;
+  // A determiner, possessive or quantifier is not the person ("Does the Beers list have anything about kidney
+  // disease?", "Does her list have…", "Do the notes have…"); "the patient", "it", "this" stay with the PERSON rule.
+  if (/^(?:the|a|an|her|his|their|my|our|your|its|any|some|every|each|all|no|there|you|u|i|we|people|patients|anyone|someone)$/.test(m[1])) return false;
+  return !namesAMedicine(m[1]);
+}
+
+/**
+ * Ordered rules; the first match wins. Each is tested against lower-cased, punctuation-normalised text.
+ *
+ * Built per profile (routeQuestion caches the last set): PERSON is the person slot (generic words such as "she",
+ * "grandpa", "my mother" plus the profile's names) and MED the medicine slot (generic words such as "pills" plus the
+ * list's names and brands). Where a rule is about changing a treatment, a cause or a prediction, the verb carries
+ * the meaning and the slot accepts any word, so a name or medicine the slots don't know is still caught.
+ */
+const SCOPE_RULES = (PERSON: string, MED: string): ScopeRule[] => [
   {
     // Deliberately broad: a false alarm costs one tap; a missed emergency is never acceptable.
     category: "emergency",
     reason: "This sounds like it could be an emergency.",
     pattern: new RegExp(
       [
-        "\\b(?:911|emergency|ambulance|paramedics?|unconscious|unresponsive|not breathing|can'?t breathe|cannot breathe|trouble breathing|struggling to breathe|gasping|chest pains?|heart attack|stroke|mini[- ]?stroke|tia|droop\\w*|slurr\\w*|overdos\\w*|took too many|taken too many|swallowed (?:a|the|too|all|her|his)|seizures?|having a fit|convuls\\w*|passed out|fainted|collaps\\w*|hit (?:her|his|my) head|bleeding (?:a lot|heavily|badly|won'?t stop)|won'?t wake|can'?t wake|can'?t get up|cannot get up|can'?t move|cannot move|unable to move|suicid\\w*|kill (?:her|him|my)self|poison\\w*|choking|anaphyla\\w*|throat (?:is )?(?:swelling|closing)|(?:vomiting|throwing up|coughing up) blood)\\b",
+        "\\b(?:911|emergency|ambulance|paramedics?|unconscious|unresponsive|not breathing|can'?t breathe|cannot breathe|trouble breathing|struggling to breathe|gasping|chest pains?|heart attack|stroke|mini[- ]?stroke|tia|droop\\w*|slurr\\w*|overdos\\w*|swallowed (?:a|the|too|all|her|his)|seizures?|having a fit|convuls\\w*|passed out|fainted|collaps\\w*|hit (?:her|his|my) head|bleeding (?:a lot|heavily|badly|won'?t stop)|won'?t wake|can'?t wake|can'?t get up|cannot get up|can'?t move|cannot move|unable to move|suicid\\w*|kill (?:her|him|my)self|poison\\w*|choking|anaphyla\\w*|throat (?:is )?(?:swelling|closing)|(?:vomiting|throwing up|coughing up) blood)\\b",
         // Colour change: "her lips are blue", "face looks grey".
         "\\b(?:lips?|face|skin|fingers?) (?:are |is |look\\w* |turn\\w* |went |gone |going )+(?:blue|grey|gray|purple|white)\\b",
         // Acute confusion: "not making sense", "doesn't know where she is".
@@ -163,22 +274,42 @@ const SCOPE_RULES: ScopeRule[] = [
         // Medicine taken by mistake or all at once.
         "\\b(?:took|taken|take|swallowed|had|given|gave|ate)\\b[^?]*\\b(?:by mistake|by accident|accidentally|all at once|at once|at the same time|double dose|the whole (?:bottle|pack|box|week))\\b",
         "\\b(?:took|taken|swallowed|had|given) (?:two|2|three|3|four|4|double|an extra|extra|all|her whole|his whole|the whole|a week'?s?)\\b[^?]*\\b(?:pills?|tablets?|doses?|meds|medicines?|bottle)\\b",
+        // Medicine taken by mistake, with the adverb first: "she accidentally took her pills", "mistakenly gave him".
+        // (Not "accidentally had a fall": a fall on its own is a records question.)
+        "\\b(?:accidentally|by mistake|by accident|mistakenly)\\b[^?.]{0,20}\\b(?:took|taken|take|swallowed|had|gave|given|ate)\\b(?! (?:a |another )?(?:fall|near-fall|trip|slip|tumble)s?\\b)",
+        // Possible overdose, any person: "Robert took 10 of his sleeping pills", "swallowed a handful of tablets".
+        // A small count needs "of" ("took 2 of her pills"); "took 2 caplets of Tylenol PM", the listed dose, and a
+        // strength in milligrams ("took 20 mg of her water pill") stay answerable.
+        `\\b(?:took|taken|swallowed|ate|eaten|given|gave)(?: (?:him|her|them|me))? (?:(?:[2-3]|two|three) of|(?:[4-9]|[1-9]\\d+|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|a handful|handfuls|several|a bunch|a whole (?:bunch|lot|handful))\\b(?!\\s?(?:mg|mcg|milligrams?|micrograms?|g|ml|units?|iu)\\b)(?: of)?)[^?.]{0,40}?\\b(?:${MED}|pills?|tablets?|caplets?|capsules?|gummies|meds|medicines?|medications?|doses?)\\b`,
+        // "Too many" only of a medicine ("has taken too many pills", "took too many of her lorazepam"), or with
+        // nothing after it ("she may have taken too many"); not "had too many falls" or "took too many naps".
+        `\\b(?:took|taken|swallowed|had|given|gave)\\b[^?.]{0,30}\\btoo many (?:of )?(?:her |his |my |the |their )?(?:[a-z'-]+ )?(?:${MED}|pills?|tablets?|caplets?|capsules?|gummies|meds|medicines?|medications?|doses?)\\b`,
+        // A whole container, or a multiple of the usual dose: "took a whole bottle", "he took twice his dose".
+        "\\b(?:took|taken|swallowed|ate|eaten|had|given|gave)\\b[^?.]{0,20}\\b(?:a|the) (?:whole|entire|full) (?:bottle|pack|packet|box|strip|blister pack)\\b",
+        "\\b(?:took|taken|swallowed|had|given|gave)\\b[^?.]{0,20}\\b(?:twice|double|triple|three times) (?:her|his|my|the|their) (?:usual |normal |regular |prescribed )?(?:dose|dosage|amount)\\b",
+        "\\b(?:took|taken|swallowed|given|gave)\\b[^?.]{0,30}\\btoo many(?: of (?:her|his|my|the|their) [a-z'-]+(?: [a-z'-]+)?)?(?: (?:today|tonight|last night|this morning|this evening|yesterday))?\\s*(?:[?.!,]|$)",
+        // The same medicine twice: "I think she took her lorazepam twice", "he took his zolpidem twice last night".
+        // (Not a schedule: "twice a day", "twice daily", "twice this week".)
+        "\\b(?:took|taken|swallowed|had|gave|given)(?: (?:him|her|them|me))? (?:her|his|my|their|the|both|all|its)(?: [a-z'-]+){1,3}? (?:twice|two times)\\b(?! (?:a|per|each|every|in a) (?:day|night|week|month)\\b| (?:this|last|that|in the past) (?:week|month|year)\\b| (?:daily|weekly)\\b)",
+        "\\b(?:double|doubled|extra|second|wrong) (?:doses?|pills?|tablets?|medicines?|medications?)\\b[^?]*\\b(?:by mistake|by accident|accidentally|in error)\\b|\\b(?:by mistake|by accident|accidentally|in error)\\b[^?]*\\b(?:double|doubled|extra|second|wrong) (?:doses?|pills?|tablets?|medicines?|medications?)\\b|\\b(?:doubled|double[- ]dosed)\\b[^?]*\\b(?:by mistake|by accident|accidentally)\\b",
         // Happening now: "she fell again just now", "she just collapsed", "really confused right now".
         "\\bjust (?:fell|fallen|collapsed|passed out|fainted|had a fall)\\b",
         "\\bcan'?t stop (?:shaking|vomiting|throwing up|bleeding|coughing|twitching)\\b",
         `\\b(?:right now|just now|at the moment|tonight|this minute|a (?:minute|moment|few minutes) ago|minutes ago)\\b[^?]*\\b${ACUTE_SYMPTOM}|\\b${ACUTE_SYMPTOM}\\b[^?]*\\b(?:right now|just now|at the moment|tonight|this minute|a (?:minute|moment|few minutes) ago|minutes ago)\\b`,
       ].join("|"),
     ),
+    // A possible overdose that names the medicine instead of "pills" (any KB medicine, listed or not).
+    test: (t) => overdoseOfAMedicine(t, MED),
   },
   {
     category: "safety",
     reason: `Whether a medicine is right for her is a judgment for her clinician; ${PRODUCT_NAME} only shows what was recorded and published criteria.`,
     pattern: new RegExp(
       [
-        "\\b(?:safe|safer|safely|safest|unsafe|dangerous|harmful|risky|riskier|overmedicat\\w*|over-medicat\\w*|bad for (?:her|him|mom|me))\\b",
+        `\\b(?:safe|safer|safely|safest|unsafe|dangerous|harmful|risky|riskier|overmedicat\\w*|over-medicat\\w*|bad for (?:${PERSON}|me))\\b`,
         "\\b(?:is|would) (?:it|that|this) (?:be )?(?:ok|okay|alright|all right|fine|wise|a good idea|smart|better|best)\\b",
         "\\bbe better (?:than|for)\\b|\\b(?:a |the )?better (?:option|pill|medicine|medication|drug|choice|alternative|sleeping pill|sleep aid)\\b",
-        "\\b(?:worse|worst|better|best|gentler|milder|stronger) for (?:her|him|mom|mum|margaret|an? |someone|older|elderly|seniors?|the elderly)\\b",
+        `\\b(?:worse|worst|better|best|gentler|milder|stronger) for (?:${PERSON}|an? |someone|older|elderly|seniors?|the elderly)\\b`,
         "\\bwhich (?:one|of (?:them|these|those|the two|her \\w+)|medicine|med|pill|drug|tablet)s?\\b[^?]*\\b(?:worse|worst|better|best|riskier|safer|more harmful|stronger|gentler)\\b",
         // Alcohol and food with a medicine: "Can she drink wine with lorazepam?"
         "\\b(?:drink|drinking|alcohol|wine|beer|liquor|spirits|whiske?y|grapefruit)\\b[^?]*\\bwith\\b|\\bwith (?:alcohol|wine|beer|a drink|grapefruit)\\b|\\bmix(?:ing|ed)? (?:\\w+ )?with\\b",
@@ -200,7 +331,12 @@ const SCOPE_RULES: ScopeRule[] = [
     pattern: new RegExp(
       [
         `\\b(?:should|shall|can|could|may|might|must|ought to|need(?:s)? to|have to|has to|do(?:es)? (?:${PERSON}) (?:still )?need to)\\s+(?:${PERSON})\\s+(?:still |just |now |really |also |maybe |try to |not )*${ACTION}\\b`,
-        `\\bshould (?:${PERSON}|it|this|that|lorazepam|\\w+) (?:be )?(?:stopped|started|changed|switched|reduced|lowered|increased|replaced|tapered|discontinued)\\b`,
+        `\\bshould (?:${PERSON}|it|this|that|\\w+) (?:be )?(?:stopped|started|changed|switched|reduced|lowered|increased|replaced|tapered|discontinued)\\b`,
+        // Any subject, any medicine: "Should John stop zolpidem?", "Could grandpa come off the valerian root?",
+        // "Is it ok for Dad to skip it?". The modal + change verb carries the meaning; up to 3 words between them.
+        `\\b(?:should|shall|can|could|may|might|must|ought to|need(?:s)? to|have to|has to|is it (?:ok|okay|alright|all right|fine) (?:for|to)|would it be (?:ok|okay|alright|fine) (?:for|to))\\s+(?:[a-z'.-]+\\s+){0,3}?(?:still |just |now |really |also |maybe |try to |not )*(?:stop|start|quit|cut|cut back on|lower|reduce|increase|double|halve|skip|pause|hold|come off|get off|switch|swap|discontinue|taper|wean)\\b(?! (?:dates?|times?|day)\\b)`,
+        // "Should the zolpidem be stopped?", "Can her water pill be lowered?" with a longer subject.
+        `\\b(?:should|can|could|must|ought to|needs? to)\\b[^?]{0,40}?\\bbe (?:stopped|started|changed|switched|reduced|lowered|increased|replaced|tapered|discontinued|cut|halved|doubled|paused|skipped)\\b`,
         `\\b(?:does|do|did) (?:${PERSON}) (?:still |really )?need\\b`,
         `\\bstill (?:need|needed|necessary)\\b`,
         `\\bwhat (?:should|can|could|do|shall|would) (?:${PERSON}) (?:do|give|try|use|take|change)\\b`,
@@ -210,21 +346,36 @@ const SCOPE_RULES: ScopeRule[] = [
         `\\bhow (?:do|can|should) (?:i|we) (?:stop|taper|wean|get her off|switch|treat|fix|help her sleep|manage)\\b`,
         `\\b(?:treat|treatment|cure|remedy|therapy) (?:for|of)\\b|\\bhow (?:to|do (?:i|we)) treat\\b`,
         `\\b(?:recommend|suggest|advise|advice)\\b`,
-        `\\bis (?:it|this|lorazepam|the \\w+) (?:working|helping|effective|the right (?:medicine|medication|choice))\\b`,
+        // "Is Ativan working?", "is the zolpidem still helping": whether a medicine works is the prescriber's call.
+        `\\bis (?:it|this|that|(?:the |her |his |my |this |that )?[a-z'-]+(?: [a-z'-]+)?) (?:still |really |even )?(?:working|helping|effective|doing (?:anything|any good|its job)|the right (?:medicine|medication|choice|one))\\b`,
         // "tell me if I should take her off lorazepam", "should she still take it" with the subject first.
         `\\b(?:i|we|she|he|you) should\\b[^?]*\\b${ACTION}\\b`,
-        `\\b(?:take|taking|took|get|getting|got) (?:her|him|mom|mum|margaret|dad) off\\b`,
+        `\\b(?:take|taking|took|get|getting|got) (?:${PERSON}) off\\b`,
         `\\b(?:should|could|can|would|must) (?:\\w+ )?(?:go|come off|be stopped|be dropped|be cut) first\\b|\\bgo first\\b`,
         `\\bwhat would you do\\b|\\bif you were me\\b|\\bin my (?:shoes|place)\\b|\\b(?:taper|tapering|wean|weaning)\\b`,
         `\\b(?:cut|drop|get rid of|ditch) (?:out )?(?:one|some|any|which|a few) (?:of )?(?:her |his |the )?(?:medicines?|medications?|meds|pills|drugs)\\b`,
+        // "Is lorazepam right for her?", "is the Ativan the right one": whether a medicine suits her (any word).
+        `\\bis (?:the |her |his |their |my )?(?!(?:it|this|that|there)\\b)[a-z'+-]+(?: [a-z'+-]+)? (?:the )?right (?:for|medicine|medication|one|choice|pill)\\b`,
+        // "Do we keep giving the Ativan?", "should I continue giving it", "Should Bob keep taking zolpidem?".
+        `\\b(?:do|should|shall|can) (?:we|i) (?:keep|continue|stop) (?:giving|taking|using)\\b`,
+        `\\b(?:should|shall|can|could|may|must|need(?:s)? to) (?:[a-z'.-]+\\s+){1,3}?(?:keep (?:taking|giving|using)|continue (?:taking|giving|using|with|on)|stay on)\\b`,
       ].join("|"),
     ),
+    // "Take John off zolpidem?" and "Can grandma have another lorazepam tonight?" (an extra dose of a named medicine).
+    test: (t) => takesOffAMedicine(t) || anotherDoseOf(t, MED),
   },
   {
     category: "diagnosis",
     reason: `${PRODUCT_NAME} doesn't diagnose; her doctor can look into what's behind these symptoms.`,
-    pattern:
-      /\bdiagnos\w*|\bwhat'?s wrong\b|\bwhat is wrong\b|\bwhat (?:is|could be|might be) (?:the )?(?:matter|problem|going on)\b|\b(?:does|could|might|may|is|has) (?:she|he|mom|mum|margaret|it|this|that)\b[^?]*\b(?:have|has|had|be|getting|developing|showing signs of|a sign of|signs of|symptoms? of)\b[^?]*\b(?:dementia|alzheimer\w*|parkinson\w*|stroke|mini[- ]stroke|tia|uti|infection|depression|delirium|vertigo|cancer|tumou?r|neuropathy|hypotension|low blood pressure|heart (?:problem|failure|disease|condition)|kidney (?:problem|failure|disease)|seizure disorder|condition|disease|illness)\b|\bis (?:this|it|that) (?:dementia|alzheimer\w*|a stroke|parkinson\w*|delirium|an infection|a uti)\b/,
+    pattern: new RegExp(
+      [
+        `\\bdiagnos\\w*|\\bwhat'?s wrong\\b|\\bwhat is wrong\\b|\\bwhat (?:is|could be|might be) (?:the )?(?:matter|problem|going on)\\b`,
+        // (A possessive before a record is not the person: "Does her list have any medicines for low blood pressure?")
+        `\\b(?:does|do|could|might|may|is|has|can) (?:${PERSON}|it|this|that)\\b(?! (?:list|notes?|records?|timeline|brief|medicines?|medications?|meds|pills?|chart|diary|check-ins?|doctor|pharmacist|file)\\b)[^?]*\\b${DIAGNOSIS_VERB}\\b[^?]*\\b${CONDITION}\\b`,
+        `\\bis (?:this|it|that) (?:dementia|alzheimer\\w*|a stroke|parkinson\\w*|delirium|an infection|a uti)\\b`,
+      ].join("|"),
+    ),
+    test: asksForADiagnosis,
   },
   {
     category: "cause",
@@ -234,23 +385,37 @@ const SCOPE_RULES: ScopeRule[] = [
         // "Why is she dizzy?" (but not "why does she take lorazepam?", which asks what it is for)
         `\\bwhy (?:is|was|does|did|has|have|do|are|would|could|might) (?:${PERSON}|it|this|that|the \\w+|her \\w+)\\b(?! (?:take|taking|on|prescribed|given|using|use)\\b)`,
         `\\bwhy (?:so |all )?(?:dizzy|dizziness|drowsy|sleepy|confused|foggy|falling|tired|swollen)\\b`,
+        // "Why is grandpa so dizzy?", "why does Robert keep falling": any subject, then a symptom.
+        `\\bwhy (?:is|was|does|did|has|have|do|are|would|could|might) (?:[a-z'-]+ ){1,3}?(?:so |still |always |more |getting |feeling |been |keeps? )*(?:dizz\\w*|drows\\w*|sleepy|confus\\w*|foggy|fall\\w*|fell|tired|woozy|unsteady|wobbly|groggy|forgetful|swollen|swell\\w*|sick|weak|shaky)\\b`,
         `\\b(?:what'?s|what is|what was|what'?s been|is \\w+|is (?:the|her) \\w+|could (?:the|her) \\w+|could \\w+|might \\w+|are (?:the|her) \\w+) (?:\\w+ )?(?:causing|behind|responsible for|to blame for)\\b`,
         `\\bwhat (?:caused|causes|made|makes) (?:${PERSON}|her|him|the|this|that)\\b`,
         `\\b(?:caused|causing|triggered|brought on|induced) (?:by|her|his|the|this)\\b`,
-        `\\b(?:the|her|his|this|that|these|those) (?:\\w+ )?(?:dizziness|dizzy spells|drowsiness|confusion|fog|falls?|near-falls?|swelling|tiredness|symptoms?|sleepiness)\\b[^?]*\\b(?:from|because of|due to|related to|linked to|caused by|a side effect|side effects|a reaction)\\b`,
+        `\\b(?:the|her|his|this|that|these|those|[a-z'-]+'s) (?:\\w+ )?(?:dizziness|dizzy spells|drowsiness|confusion|fog|falls?|near-falls?|swelling|tiredness|symptoms?|sleepiness)\\b[^?]*\\b(?:from|because of|due to|related to|linked to|caused by|a side effect|side effects|a reaction)\\b`,
         `\\b(?:is|are|was|were|could|might|may) (?:it|this|that|these|those|her \\w+|the \\w+|${PERSON})\\b[^?]*\\b(?:a side effect|side effects|a reaction|an adverse)\\b`,
-        `\\b(?:because of|due to|from) (?:the |her |his )?(?:new )?(?:medicines?|medications?|meds|pills?|tablets?|drugs?|lorazepam|ativan|tylenol pm|oxybutynin|amlodipine|furosemide|lasix|sleeping pills?)\\b[^?]*\\?$`,
+        `\\b(?:because of|due to|from) (?:the |her |his )?(?:new )?${MED}\\b[^?]*\\?$`,
         // "Did lorazepam cause her dizziness?" (but not the general "Does lorazepam cause dizziness?", which is
         // answered from the reference set): a past-tense question, or one about her own symptoms.
         `\\b(?:did|was|were|has|have)\\b[^?]{0,60}\\bcaus(?:e|ed|ing)\\b`,
-        `\\b(?:does|do|could|can|might|may|would|is|are)\\b[^?]{0,60}\\bcause\\w* (?:her|his|mom|mum|margaret|dad|the (?:falls?|near-falls?|dizziness|drowsiness|confusion|fog|swelling|symptoms?|problems?)|these|those|this|that|all (?:this|these|of this))\\b`,
-        `\\b(?:make|made|makes|making) (?:her|him|mom|mum|margaret|dad) (?:so |more |feel |feeling |a bit |go )*(?:dizz\\w*|drowsy|sleepy|confused|foggy|fall\\w*|tired|woozy|unsteady|wobbly|groggy|forgetful|swell\\w*|sick)\\b`,
-        `\\bwhy (?:she|he|mom|mum|margaret)(?:'s| is| was| has been| keeps?| kept)\\b(?! (?:taking|on|prescribed|given|using)\\b)`,
+        `\\b(?:does|do|could|can|might|may|would|is|are)\\b[^?]{0,60}\\bcause\\w* (?:${PERSON}|his|the (?:falls?|near-falls?|dizziness|drowsiness|confusion|fog|swelling|symptoms?|problems?)|these|those|this|that|all (?:this|these|of this))\\b`,
+        // "Did the lorazepam make Margaret dizzy?" for any name (not the general "does it make people dizzy?").
+        `\\b(?:make|made|makes|making) (?!(?:you|people|someone|anyone|one|folks|patients|older|elderly|seniors)\\b)(?:${PERSON}|[a-z'-]+) (?:so |more |feel |feeling |a bit |go )*(?:dizz\\w*|drowsy|sleepy|confused|foggy|fall\\w*|tired|woozy|unsteady|wobbly|groggy|forgetful|swell\\w*|sick)\\b`,
+        `\\bwhy (?:${PERSON})(?:'s| is| was| has been| keeps?| kept)\\b(?! (?:taking|on|prescribed|given|using)\\b)`,
         `\\b(?:be|is|are|was|were) behind\\b|\\b(?:responsible for|to blame)\\b`,
-        `\\bthe reason (?:why )?(?:she|he|mom|mum|margaret)\\b(?! (?:takes?|taking|is on|is taking|was prescribed|was given|was put on|uses?|started)\\b)|\\bthe reason for (?:her|his|the|all|these|those|this) (?!(?:taking|prescription|medicine|medication|pills?|tablets?)\\b)`,
+        // "Could zolpidem be the reason John is falling?" (any subject) and "the reason she fell".
+        `\\bbe (?:the |a |part of the )?(?:reason|cause)\\b`,
+        // "Is lorazepam why she fell?", "Could the zolpidem be why his ankles are swollen?": any word in the medicine
+        // slot. (Not "can you tell me why she takes lorazepam?", which asks what it is for.)
+        `\\b(?:is|was|are|were|could|might|may|can)\\b[^?]{0,40}?\\bwhy\\b(?! (?:does|did|do) )(?!(?: [a-z'-]+){1,2} (?:takes?|taking|is on|is taking|was prescribed|was given|was put on|uses?|started)\\b)`,
+        // "Does zolpidem explain why he fell?", "Might the Ambien explain the falls?": a subject that explains, not
+        // the person asking ("Can you explain the Beers list?") or a page of the app ("does the timeline explain…").
+        `\\b(?:does|do|did|could|might|may|would|can|is|was)\\s+(?!(?:you|u|i|we|someone|anyone|${escapeRe(PRODUCT_NAME.toLowerCase())}|(?:the|her|his|this) (?:timeline|brief|record|records|chart|list|report|app|page|score))\\b)(?:[a-z'+-]+ ){1,3}?explain(?:s|ing)?\\b(?! (?:to|what|how)\\b)`,
+        `\\b${MED} explains?\\b`,
+        // "Is the Ativan the problem?", "could her water pill be the culprit".
+        `\\b(?:is|was|could|might|may) (?:[a-z'-]+ ){1,3}?(?:be )?the (?:problem|culprit|issue|trouble)\\b`,
+        `\\bthe reason (?:why )?(?:${PERSON})\\b(?! (?:takes?|taking|is on|is taking|was prescribed|was given|was put on|uses?|started)\\b)|\\bthe reason for (?:her|his|the|all|these|those|this) (?!(?:taking|prescription|medicine|medication|pills?|tablets?)\\b)`,
       ].join("|"),
     ),
-    test: blamesAMedicine,
+    test: (t) => blamesAMedicine(t) || becauseOfAMedicine(t),
   },
   {
     category: "urgency",
@@ -261,8 +426,17 @@ const SCOPE_RULES: ScopeRule[] = [
   {
     category: "prediction",
     reason: `${PRODUCT_NAME} can't predict what will happen; her clinician can talk through her situation.`,
-    pattern:
-      /\bwill (?:she|he|mom|mum|margaret|it|this|that) (?:fall|get|be|recover|improve|need|die|happen|go away|stop|keep|have)\b|\b(?:is|are) (?:she|he|mom|margaret) (?:going to|likely to|at risk|at high risk|high risk)\b|\b(?:risk of|chances?|odds|likelihood|likely to)\b|\bprognosis\b|\bwhat (?:happens|will happen|would happen|could happen|might happen|is going to happen) (?:if|when|next|to her|to him)\b|\bif (?:she|he|mom|margaret) keeps? (?:falling|getting|being|on|taking)\b/,
+    pattern: new RegExp(
+      [
+        `\\bwill (?:${PERSON}|it|this|that) (?:fall|get|be|recover|improve|need|die|happen|go away|stop|keep|have)\\b`,
+        // "Will grandpa fall again?", "will Robert ever recover": any one or two words as the subject.
+        `\\bwill (?:[a-z'-]+ ){1,2}?(?:ever |still |keep |continue to )?(?:fall|get worse|get better|recover|improve|die|need|be (?:ok|okay|alright|all right|fine|able)|go away|end up|break)\\b`,
+        // ("Is there going to be a summary?" is about the app, not a person.)
+        `\\b(?:is|are) (?:${PERSON}|(?!there\\b)[a-z'-]+) (?:going to|likely to|at risk|at high risk|high risk)\\b`,
+        `\\b(?:risk of|chances?|odds|likelihood|likely to)\\b|\\bprognosis\\b|\\bwhat (?:happens|will happen|would happen|could happen|might happen|is going to happen) (?:if|when|next|to her|to him)\\b`,
+        `\\bif (?:${PERSON}) keeps? (?:falling|getting|being|on|taking)\\b`,
+      ].join("|"),
+    ),
   },
 ];
 
@@ -280,14 +454,35 @@ function normalizeQuestion(q: string): string {
     .trim();
 }
 
+export interface RouteOptions {
+  /** Personalises the redirect ("That's a question for Margaret's doctor or pharmacist …"); also a person name. */
+  patientName?: string;
+  /** The profile's names (displayName, preferredName): each word joins the scope rules' person slot. */
+  personNames?: string[];
+  /** The list's medicine names ("Lorazepam (Ativan)"): names and brands join the medicine slot. */
+  medNames?: string[];
+}
+
+/** The last rule set built (Ask passes the same profile on every question, so this is built once per profile). */
+let rulesCache: { key: string; rules: ScopeRule[] } | null = null;
+
+function rulesFor(opts: RouteOptions): ScopeRule[] {
+  const person = personPattern([opts.patientName ?? "", ...(opts.personNames ?? [])]);
+  const med = medPattern(opts.medNames ?? []);
+  const key = `${person}\n${med}`;
+  if (rulesCache?.key !== key) rulesCache = { key, rules: SCOPE_RULES(person, med) };
+  return rulesCache.rules;
+}
+
 /**
- * Decide whether Kinwise may answer a question from the records. `patientName` personalises the redirect
- * ("That's a question for Margaret's doctor or pharmacist …").
+ * Decide whether Kinwise may answer a question from the records. Pass the profile's names and the list's
+ * medicine names so the scope rules know them; the treatment, cause, prediction, diagnosis and overdose rules
+ * also catch names and medicines they don't know (over-redirecting is the safe failure).
  */
-export function routeQuestion(q: string, opts: { patientName?: string } = {}): QuestionRoute {
+export function routeQuestion(q: string, opts: RouteOptions = {}): QuestionRoute {
   const t = normalizeQuestion(q);
   if (!t) return { inScope: true };
-  for (const rule of SCOPE_RULES) {
+  for (const rule of rulesFor(opts)) {
     if (!rule.pattern.test(t) && !rule.test?.(t)) continue;
     if (rule.category === "emergency") {
       return { inScope: false, category: "emergency", reason: rule.reason, redirect: EMERGENCY_REDIRECT, offerVisitQuestion: false };
@@ -902,10 +1097,14 @@ export function retrieveForQuestion(q: string, input: RetrieveInput): QaResult {
       const stat = windowStatFromDays(days, m, from, to);
       const dates = days.filter((c) => c.date >= from && c.date <= to && metricValue(c, m) === 1).map((c) => c.date);
       const span = lead ?? spanWords(from, to, today);
+      // One day with one answer reads as yes or no, not "0 of 1 answered day" (one check-in per day is counted).
+      const oneDay = !lead && from === to && stat.answered === 1;
       const text =
         stat.answered === 0
           ? `The ${m === "appetiteWorse" ? "appetite" : def.label.toLowerCase()} question was not answered ${span}.`
-          : `${SUBJECT_VERB[m]} recorded on ${stat.positive} of ${stat.answered} answered ${plural(stat.answered, "day")} ${span}${dates.length && dates.length <= 6 ? ` (${dateListWords(dates, today)})` : ""}.`;
+          : oneDay
+            ? `${SUBJECT_VERB[m]} ${stat.positive ? "" : "not "}recorded ${span} (1 check-in that day).`
+            : `${SUBJECT_VERB[m]} recorded on ${stat.positive} of ${stat.answered} answered ${plural(stat.answered, "day")} ${span}${dates.length && dates.length <= 6 ? ` (${dateListWords(dates, today)})` : ""}.`;
       a.fact(slug("fact:qa:count", m, from, to), text, { metric: m, from, to, positive: stat.positive, answered: stat.answered, dates });
       return;
     }
@@ -1424,7 +1623,9 @@ function medLead(t: string, med: Medication, today: ISODate): { kind: string; te
   }
   if (/\b(?:dose|dosage|how much|how often|what strength|how many)\b/.test(t)) {
     const how = [oneLine(med.dose), oneLine(med.frequency)].filter(Boolean).join(", ");
-    return { kind: "dose", text: how ? `The list records ${name} as ${how}${med.asNeeded ? ", as needed" : ""}.` : `No dose is recorded for ${name}.` };
+    // "as needed" once: the frequency often says it already ("at bedtime as needed").
+    const prn = med.asNeeded && !/\bas needed\b/i.test(how) ? ", as needed" : "";
+    return { kind: "dose", text: how ? `The list records ${name} as ${how}${prn}.` : `No dose is recorded for ${name}.` };
   }
   return null;
 }

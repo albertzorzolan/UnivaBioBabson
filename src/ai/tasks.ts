@@ -28,6 +28,7 @@ import {
   extractNumericFacts,
   formatIssues,
   metricsIn,
+  sentenceShape,
   splitSentences,
   verifyClaims,
   verifySentence,
@@ -71,10 +72,70 @@ export interface DroppedSentence {
   issues: string[];
 }
 
+/**
+ * One check reason in plain words, for the "What the check removed" list shown to the family. Issues are
+ * "code: detail" strings (verify.ts formatIssues and the section checks below); the code picks the wording and
+ * the quoted words, when there are any, are kept so the family can see what was matched.
+ */
+export function plainIssue(issue: string): string {
+  const at = issue.indexOf(":");
+  const code = at < 0 ? issue : issue.slice(0, at);
+  const detail = at < 0 ? "" : issue.slice(at + 1).trim();
+  const quoted = /"([^"]+)"/.exec(detail)?.[1];
+  const q = quoted ? ` ("${quoted}")` : "";
+  switch (code) {
+    case "banned":
+      // "advice: names a medicine together with an action word ("pause")" → "blocked: names a medicine …"
+      return `blocked: ${detail.replace(/^[a-z-]+:\s*/, "")}`;
+    case "number_unsupported":
+      return "has a number that is not in the records it cites";
+    case "pair_unsupported":
+    case "pair_context":
+      return "has a count that does not match the records it cites";
+    case "date_unsupported":
+      return "has a date that is not in the records it cites";
+    case "quantifier_unsupported":
+      return `says how often${q}, which the records it cites do not`;
+    case "med_unknown":
+      return `names a medicine that is not on the list${q}`;
+    case "binding_unsupported":
+      return "describes a medicine differently from the records";
+    case "quote_unsupported":
+      return "quotes words that are not in the records";
+    case "condition_unsupported":
+      return `names a condition the records it cites do not mention${q}`;
+    case "unresolved_reference":
+      return `says "since then" without saying when`;
+    case "garbled":
+      return `leaves a word out of the records it copies${q}`;
+    case "evidence_topic":
+      return "cites a record about something other than what it asks";
+    case "no_evidence":
+    case "unknown_evidence":
+      return "does not point to a record";
+    case "form":
+      return /question for the clinician/.test(detail) ? "is not written as a question for the clinician" : "is a question where a statement belongs";
+    case "duplicate":
+      return "repeats an earlier sentence";
+    case "overflow":
+      return "goes over the number of sentences this section holds";
+    case "too_long":
+      return "is too long";
+    case "too_short":
+      return "is too short to be useful";
+    case "id_echo":
+      return "shows internal record codes";
+    case "unsafe_content":
+      return `contains text that does not belong in a brief${detail ? ` (${detail})` : ""}`;
+    default:
+      return "did not pass the check";
+  }
+}
+
 /** A host-side edit made before verification (logged for transparency and evaluation). */
 export interface HostEdit {
   section: string;
-  kind: "softened" | "citation_added" | "split";
+  kind: "softened" | "citation_added" | "citation_removed" | "split";
   before: string;
   after: string;
 }
@@ -132,9 +193,10 @@ function asSentence(x: unknown): BriefSentence | null {
 }
 
 /**
- * Questions only: soften the two wordings small models most often produce despite the rules, so a
+ * Questions only: soften the wordings small models most often produce despite the rules, so a
  * useful question is not lost for one word. Each rewrite only weakens the claim ("be causing" →
- * "be contributing to"; "a safer alternative" → "an alternative") and the result is still verified.
+ * "be contributing to"; "a safer alternative" → "an alternative"; and, for an alternative only, "less likely to
+ * cause" → "less likely to be linked to", see softenAlternative) and the result is still verified.
  * Statements are never rewritten.
  */
 const SOFTENINGS: [RegExp, string][] = [
@@ -143,10 +205,28 @@ const SOFTENINGS: [RegExp, string][] = [
   [/\bsafer (alternatives|options)\b/gi, "$1"],
   [/\b(alternative|option)s? that (?:is|are|would be) safer\b/gi, "$1"],
 ];
+
+/**
+ * "Is there an alternative to Tylenol PM (OTC) for sleep that is less likely to cause drowsiness or falls?" asks the
+ * clinician to compare options; the demo replay lost it for the word "cause". This rewrite is deliberately narrow,
+ * so the causal ban is not loosened anywhere else:
+ *   - only "less likely to cause" ("more likely to cause" asks what harmed her, and stays blocked),
+ *   - only when "alternative(s)" or "option(s)" comes first, at most 80 characters before it,
+ *   - only in a genuine question with nothing before the interrogative clause, and never a "why" question
+ *     (sentenceShape; a statement or a preamble is checked as a claim),
+ *   - not when her/his/their symptom follows ("less likely to cause her falls" presumes the cause).
+ */
+const ALTERNATIVE_LESS_LIKELY = /\b(alternatives?|options?)\b([^?]{0,80}?)\bless likely to cause\b(?!\s+(?:her|his|their)\b)/i;
+function softenAlternative(text: string): string {
+  const shape = sentenceShape(text);
+  if (shape.form !== "question" || shape.presupposing || shape.preamble.trim()) return text;
+  return text.replace(ALTERNATIVE_LESS_LIKELY, "$1$2less likely to be linked to");
+}
+
 export function softenQuestion(text: string): string {
   let t = text;
   for (const [re, to] of SOFTENINGS) t = t.replace(re, to);
-  return t;
+  return softenAlternative(t);
 }
 
 /**
@@ -233,6 +313,21 @@ export function verifySection(
         s = { ...s, text: softened };
       }
     }
+    // A question's evidence chips must be about what it asks (runtime audit: every AI question cited the same
+    // "Before vs after · dizziness" chip). When the question also cites an item about what it asks, only the
+    // off-topic chip is removed; a question with no on-topic item is dropped below.
+    if (opts.expect === "question") {
+      const text = s.text;
+      // Unknown ids are left in place so the evidence check reports them.
+      const onTopic = s.evidenceIds.filter((id) => {
+        const item = pkg.items.find((i) => i.id === id);
+        return !item || sharesTopic(text, item, opts.knownDrugNames);
+      });
+      if (onTopic.length && onTopic.length < s.evidenceIds.length) {
+        opts.edits?.push({ section, kind: "citation_removed", before: s.evidenceIds.join(","), after: onTopic.join(",") });
+        s = { ...s, evidenceIds: onTopic };
+      }
+    }
     if (opts.pool) {
       const completed = completeCitations(s, opts.pool, opts.knownDrugNames);
       if (completed.evidenceIds.length !== s.evidenceIds.length) {
@@ -242,8 +337,7 @@ export function verifySection(
     }
     const v = verifySentence(s, pkg, opts);
     const issues = HANDLE_ECHO.test(s.text) ? [...v.issues, "id_echo: evidence handles belong in evidenceIds, not in the sentence"] : v.issues;
-    // A question's evidence chips must be about what it asks: the runtime audit found every AI question
-    // citing the same "Before vs after · dizziness" chip, including one about Tylenol PM and drowsiness.
+    // Whatever is still off-topic after the pruning above (every chip, or one added by citation completion).
     if (opts.expect === "question") {
       for (const id of s.evidenceIds) {
         const item = pkg.items.find((i) => i.id === id);
@@ -284,40 +378,59 @@ interface BriefOutput {
   questions?: unknown;
 }
 
+/** Where each written section of a brief came from: the on-device model (verified) or the standard template. */
+export type SectionOrigin = "ai" | "template";
+export interface BriefSections {
+  reason: SectionOrigin;
+  noticed: SectionOrigin;
+  questions: SectionOrigin;
+}
+
 /**
  * Validate a raw brief output against the package and merge it with the template. Pure (no model);
  * exported so the post-processing is unit-tested and can be replayed on logged outputs.
+ *
+ * Fewer than 2 verified observations → AIValidationError (the whole template brief is shown).
+ * Fewer than 2 verified questions → a partial draft: the AI observations stay and the questions come from
+ * the template, with `sections` saying which is which so the UI can label each section.
  */
 export function assembleBrief(
   value: BriefOutput,
   pkg: EvidencePackage,
   template: BriefContent,
   opts: AiOptions & { pool?: EvidenceItem[] } = {},
-): { content: BriefContent; dropped: DroppedSentence[]; edits: HostEdit[] } {
+): { content: BriefContent; dropped: DroppedSentence[]; edits: HostEdit[]; sections: BriefSections } {
   const edits: HostEdit[] = [];
   const v = { ...verifyOpts(opts), pool: opts.pool ?? pkg.items, edits };
   const reason = verifySection("reason", value.reason, pkg, { ...v, expect: "statement", max: 1 });
   const noticed = verifySection("noticed", value.noticed, pkg, { ...v, expect: "statement", max: 4 });
   const questions = verifySection("questions", value.questions, pkg, { ...v, expect: "question", max: 5 });
   const dropped = [...reason.dropped, ...noticed.dropped, ...questions.dropped];
-  if (noticed.kept.length < 2 || questions.kept.length < 2) {
+  if (noticed.kept.length < 2) {
     throw new AIValidationError(
       `Only ${noticed.kept.length} observation(s) and ${questions.kept.length} question(s) passed the evidence check, so the template brief is shown instead.`,
       dropped,
       JSON.stringify(value),
     );
   }
+  const sections: BriefSections = {
+    reason: reason.kept.length ? "ai" : "template",
+    noticed: "ai",
+    // One AI question on its own is not used: the template's questions cover every included finding.
+    questions: questions.kept.length >= 2 ? "ai" : "template",
+  };
   return {
     content: {
-      reason: reason.kept.length ? reason.kept : template.reason,
+      reason: sections.reason === "ai" ? reason.kept : template.reason,
       noticed: noticed.kept,
       // Review prompts and limitations stay deterministic: they come straight from the engines.
       reviewPrompts: template.reviewPrompts,
-      questions: questions.kept,
+      questions: sections.questions === "ai" ? questions.kept : template.questions,
       limitations: template.limitations,
     },
     dropped,
     edits,
+    sections,
   };
 }
 
@@ -325,13 +438,13 @@ export function assembleBrief(
  * Draft "Why we're coming in", "What we've noticed" and "Our questions" from the evidence package, in
  * two focused generations: (1) reason + observations, verified; (2) clinician questions, which see the
  * verified observations. Throws AIValidationError (→ template brief) when fewer than 2 observations
- * or 2 questions survive verification.
+ * survive verification; with fewer than 2 questions it returns a partial draft (see assembleBrief).
  */
 export async function aiDraftBrief(
   pkg: EvidencePackage,
   template: BriefContent,
   opts: AiOptions & { kbVersion?: string; budget?: EvidenceBudget } = {},
-): Promise<{ content: BriefContent; info: GenerationInfo; report: TaskReport } | null> {
+): Promise<{ content: BriefContent; info: GenerationInfo; report: TaskReport; sections: BriefSections } | null> {
   if (!isModelReady()) return null;
   const shown = selectEvidence(pkg.items, opts.budget ?? BRIEF_BUDGET);
   if (!shown.length) throw new AIValidationError("There is no evidence to draft from yet.", [], "");
@@ -390,7 +503,7 @@ export async function aiDraftBrief(
     completionTokens: sum(r1.completionTokens, r2.completionTokens),
     salvaged: r1.salvaged || r2.salvaged,
   };
-  return { content: assembled.content, info, report: rep };
+  return { content: assembled.content, info, report: rep, sections: assembled.sections };
 }
 
 // ---------------------------------------------------------------------------

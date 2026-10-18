@@ -186,8 +186,8 @@ and suggested they "might be able to replace some" of them "to reduce these risk
 - **Name.** The product was renamed from its working name "MedWatch" because FDA MedWatch is FDA's adverse-event
   reporting program and there are third-party trademark filings for that name. Kinwise is not affiliated with the
   FDA or its MedWatch program. A future feature could prepare a Form FDA 3500B draft that the family submits
-  themselves (the form allows someone else to fill it in); it is **planned, not built**, and would never submit
-  automatically.
+  themselves (the form allows someone else to fill it in); it is an idea only (not built, and not on the Planned
+  row of the Status table in README.md), and it would never submit automatically.
 - **Model licence.** The default on-device model, Qwen2.5-3B-Instruct, is under the Qwen Research License; commercial
   use would need a different model or licence.
 
@@ -195,12 +195,24 @@ and suggested they "might be able to replace some" of them "to reduce these risk
 
 1. **Clinician review of the knowledge base** by geriatric pharmacists and physicians, with a documented update
    process when the Beers Criteria, labels or cascade evidence change.
-2. **A validation study**: accuracy of extraction on real older adults' and caregivers' writing (with consent and
-   ethics review), usability testing with family caregivers, and clinician assessment of whether the brief is
-   accurate, readable and useful within a short visit. Outcome claims (fewer falls, fewer adverse drug events) would
-   need a separate trial; the evidence base for the approach (for example EMPOWER, 27% vs 5% benzodiazepine
-   discontinuation, and D-PRESCRIBE, 43% vs 12% discontinuation of potentially inappropriate medicines, after
-   education aimed at patients (EMPOWER; the booklet included a stepwise taper plan) or at patients plus a
+2. **A validation pilot (planned, not started; mirrored in submission/DEVPOST.md "What's next").** Kinwise has not
+   been tested with real patients, caregivers or clinicians. The design below would be pre-registered (sample size,
+   analysis plan and endpoints) before enrolment, with consent and ethics review:
+   - **Step 1, accuracy and usefulness:** pharmacists rate the accuracy and usefulness of briefs built from
+     consenting caregivers' diaries (with extraction accuracy measured on that real writing, and usability testing
+     with the caregivers).
+   - **Step 2, endpoints:** primary, the share of visits in which the clinician discusses at least one flagged
+     medicine; secondary, pharmacy-fill changes for flagged Beers medicines at 6 months, the 6-month endpoint used by
+     EMPOWER (benzodiazepine discontinuation) and D-PRESCRIBE (no longer filling the inappropriate prescription).
+   - **Safety (planned):** adverse events after any change the clinician makes (for example withdrawal symptoms,
+     falls, ED visits) are recorded and reviewed; any change is the clinician's decision, never Kinwise's.
+   - **Path to users (planned):** pharmacists doing Medicare Part D Comprehensive Medication Reviews (42 CFR 423.153;
+     kb-src/research/regulatory.md §5.1: the CMR may be done with the caregiver when the beneficiary cannot take part
+     because of cognitive impairment), and caregiver organisations.
+
+   Outcome claims (fewer falls, fewer adverse drug events) would need a separate trial; the evidence base for the
+   approach (for example EMPOWER, 27% vs 5% benzodiazepine discontinuation, and D-PRESCRIBE, 43% vs 12%
+   discontinuation of potentially inappropriate medicines, after education aimed at patients (EMPOWER; the booklet included a stepwise taper plan) or at patients plus a
    pharmaceutical opinion sent to their physicians (D-PRESCRIBE)) is a reason to study it, not proof that Kinwise
    works. Kinwise gives no taper plan; that stays with the clinician.
 3. **A regulatory assessment** by qualified counsel of each function against the current FDA guidance, the

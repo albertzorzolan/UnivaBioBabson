@@ -132,7 +132,8 @@ compiled KB (tests bind it to fixtures in `test-kb.ts`).
        window, or the marker's reason text mentions the adverse effect.
      - `duplicates.ts`, `monitoring.ts`: same-class duplicates; "what to watch for" for anticoagulants,
        antiplatelets, insulin and sulfonylureas, opioids and digoxin (added because those classes account for most
-       acute medication-harm ED visits, while Beers "avoid" drugs account for 1.2–1.8%; Budnitz 2011, Shehab 2016).
+       acute medication-harm ED visits, while medicines on Beers-based avoid or high-risk lists account for
+       1.2–1.8%; Budnitz 2011, Shehab 2016).
   3. `dedupe`, then `finalize`: attach diary symptoms recorded in the last 30 days that the KB lists as effects of
      the medicines involved, attach timeline signal ids, and run `guardLanguage` (`text.ts`).
   4. Sort with `compareFindings`: findings linked to recorded symptoms first, then `CATEGORY_ORDER` in `labels.ts`.
@@ -164,6 +165,9 @@ Entry point: `analyzeTimeline({ checkIns, meds, today, isKnownEffect })` in `sig
   was started, through Oct 11, compared with 2 of 19 answered days in the 21 days before." Every signal carries the
   caveat that it describes a change in what was recorded and cannot show whether the medicine was responsible.
 - **Patient view:** `weeklyTrends` compares this week with last week (at least 3 answered days in each).
+- **Runs check** (`blockPermutation.ts` → `blockPermutationTest`): shuffles the diary in whole 4-day blocks (999
+  times in the app) and stores `runsCheck: { p, blockDays, permutations, passed }` with every comparison. It is
+  measured but does not yet change which differences are flagged (`TIMELINE_RULES.runsCheck.gate = false`).
 - **Multiple comparisons** are measured, not assumed: `signals.null.test.ts` simulates diaries with no real change
   and fails if false-alarm rates drift from what the How-it-works page states (see [EVALUATION.md](EVALUATION.md)).
 
@@ -201,6 +205,9 @@ development machine.
 - `template.ts` → `templateBrief(pkg, …)`: the fully deterministic brief (always available). Sections: why we're
   coming in (pinned concern, quoted and attributed), what we've noticed (up to 3 signals), review prompts (up to 5
   findings with source short names), our questions, medication table, limitations.
+- `safetyNet.ts` → `safetyNetLine(name)`: one static footer line for the brief and the Help dialog ("You don't have to
+  wait for the visit: … doctor or pharmacist can be contacted at any time about a fall, a new medicine or new
+  confusion."). The words never depend on what was recorded, so the app does not triage.
 - `verify.ts` → `verifyClaims(text, support, opts)` / `verifySentence`: the claim checker. A sentence passes only
   if it cites existing evidence ids; every number, date, "N of M" pair (with its before/after side and symptom) and
   quantifier appears in the cited evidence; every medicine named is on the person's list or in the evidence; quoted
@@ -208,7 +215,8 @@ development machine.
   diagnosis, regulatory claims, risk scores). A narrow allowance lets a genuine question to the clinician ask
   "Could X be contributing to Y?". It also rejects URLs, HTML, echoed ids and prompt-injection text, and caps length
   at 280 characters.
-- `qa.ts` → `routeQuestion(q)` sends questions about diagnosis, treatment, doses, starting or stopping, "is it safe",
+- `qa.ts` → `routeQuestion(q, opts)` (ordered keyword and pattern rules, tested with several fictional patient names
+  and medicines in `qa.test.ts`) sends questions about diagnosis, treatment, doses, starting or stopping, "is it safe",
   urgency, cause or prediction to a fixed redirect ("add to visit questions"); emergency words get the 911 line.
   `retrieveForQuestion(q, …)` parses symptoms (with everyday synonyms), medicines (via `matchDrug`), date phrases
   ("since lorazepam started") and an intent, and returns evidence items plus 1–4 deterministic answer sentences,
@@ -220,9 +228,8 @@ development machine.
   is text-only because no SNOMED concept was found), DetectedIssue per finding the family has not dismissed
   (severity deliberately omitted). Ids are deterministic. Every resource is tagged `fictional-demo-data` and
   `HTEST`. The sample in [samples/kinwise-fhir-bundle.json](samples/kinwise-fhir-bundle.json) (270 resources)
-  returned 0 errors from the public HAPI FHIR R4 `$validate` endpoint
-  ([samples/kinwise-fhir-validation.json](samples/kinwise-fhir-validation.json)); the remaining warnings are code
-  systems that server does not load and links to external sources.
+  was validated against base R4 structure with the HAPI validator: 0 errors; codes not terminology-checked (25
+  warnings); no US Core/IPS profile ([samples/kinwise-fhir-validation.json](samples/kinwise-fhir-validation.json)).
 - `cmr.ts` → `toPersonalMedicationList`, `pmlToPlainText`, `briefToPlainText`: a Personal Medication List in the
   column layout of the CMS Part D medication-review form ("Medication | How I take it | Why I use it |
   Prescriber"), with symptoms listed as "recorded (not assessed for cause)".
@@ -325,17 +332,23 @@ devices: in the demo, the patient and caregiver views share one browser.
   dose or indication left out on purpose (`meta.json` → `notEncoded`). No dose checks, no allergy checks, and
   drug–drug interactions only from Beers Table 5. The KB has not been reviewed by a licensed clinician.
 - **Statistics on small samples.** Windows are at most 21 days, so tests have low power, and 9 items are compared
-  per change, so some differences appear by chance (measured rates in [EVALUATION.md](EVALUATION.md)). Overlapping
-  medicine changes are listed, not adjusted for. A signal is a prompt for a conversation, not a conclusion.
-- **NLP is English-only and rule-based.** Held-out errors cluster in fall vs near-fall wording (6 of 18
-  stories), pseudo-negation (3 of 5) and dizziness-severity words (4 of 7 missed); one caregiver-voice story had
-  three errors in other symptoms (see [EVALUATION.md](EVALUATION.md)).
-- **The verifier is strong on numbers and wording, weaker on meaning.** The 2026-10-11 live run found it let through
-  a garbled "why we're coming in" sentence, an AI diary suggestion of dizziness quoted from "Slept like a log last
-  night", and a "can cause" phrasing in a finding explanation (the same explanation also suggested medicines might be replaced
-  "to reduce these risks"); brief cancel and navigate-away states were fragile.
-  These were recorded in [eval/results/ai-live.json](../eval/results/ai-live.json) and have not been re-measured
-  since.
+  per change, so some differences appear by chance (measured rates in [EVALUATION.md](EVALUATION.md) §3: 11.2% of
+  changes with independent days, 85.8% when each answer repeats the previous day's with an assumed probability of
+  0.8). The runs check (`blockPermutation.ts`) is computed and stored for every comparison but does not yet gate
+  (`TIMELINE_RULES.runsCheck.gate = false`). Overlapping medicine changes are listed, not adjusted for. A signal is a
+  prompt for a conversation, not a conclusion.
+- **NLP is English-only and rule-based.** Held-out errors cluster in fall vs near-fall wording (6 field errors in
+  18 stories), pseudo-negation (3 field errors in 5 stories) and dizziness-severity words (4 of 7 missed); one
+  caregiver-voice story had three errors in other symptoms (see [EVALUATION.md](EVALUATION.md)).
+- **The verifier is strong on numbers and wording, weaker on meaning.** In the 2026-10-11 live run, at least 6
+  flawed AI sentences (from 5 outputs) got past it: a garbled "why we're coming in" sentence, two AI diary
+  suggestions quoted from unrelated words ("Slept like a log last night" as dizziness, "Pretty tired today" as a sleep
+  rating), a "can cause" phrasing and a suggestion that medicines might be replaced "to reduce these risks" in one
+  finding explanation, and a prediction of "another fall" in another; brief cancel and navigate-away states were
+  fragile. They are recorded in [eval/results/ai-live.json](../eval/results/ai-live.json) and listed as `live-01` to
+  `live-06` in [eval/verifier-redteam.json](../eval/verifier-redteam.json). All six are now blocked offline, but the
+  live app run has not been repeated, and a probe written after the rules and run once still got through (10 of 22
+  caught; 10 of 23 after one label correction; [EVALUATION.md §5](EVALUATION.md)).
 - **The on-device model is slow on a laptop GPU** (about a minute for a brief on an M1 Pro) and needs WebGPU and
   about 1.7 GB of download; we have measured it only on one machine. The app is fully usable without it.
 - **Demo-only sign-in.** The credentials are not security and must never protect real health information.

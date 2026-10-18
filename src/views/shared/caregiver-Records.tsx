@@ -383,7 +383,7 @@ function NotesList({ notes }: { notes: Note[] }) {
         {notes.map((n) => (
           <li key={n.id}>
             <span className="cg-rec-list__meta">
-              {n.author === "caregiver" ? data.profile.caregiverName : data.profile.preferredName}
+              {n.author === "caregiver" ? data.profile.caregiverName || "The caregiver" : data.profile.preferredName || "The patient"}
               {n.pinned ? " · pinned concern" : ""}:{" "}
             </span>
             {n.text}
@@ -419,7 +419,7 @@ export function DayRecordsDrawer({ date, onClose }: { date: ISODate | null; onCl
       description={
         c ? (
           <>
-            Checked in by {data.profile.preferredName} · saved {timeOf(c.confirmedAt)}
+            Checked in by {data.profile.preferredName || "the patient"} · saved {timeOf(c.confirmedAt)}
             {edited ? " · edited" : ""}
           </>
         ) : (

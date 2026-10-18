@@ -7,7 +7,7 @@ import { BEERS_CATEGORIES } from "../../../engine/meds";
 import type { DiaryFacts } from "../../../engine/meds/diary";
 import { formatShort } from "../../../model/dates";
 import { Card, CardHeader, EvidenceLink, Meter, SourceCitation, cx, type MeterBand } from "../../../ui";
-import { CATEGORY_CHIP, acbThresholds, fridClassesFor, metricCount } from "./reviewRecords";
+import { acbThresholds, findingChip, fridClassesFor, metricCount } from "./reviewRecords";
 
 function acbBands(): MeterBand[] {
   const t = acbThresholds();
@@ -158,7 +158,7 @@ export function BeersCard({ review, meds, person }: { review: MedReview; meds: M
   const byMed = new Map<string, Finding[]>();
   for (const f of beers) for (const id of f.medIds) byMed.set(id, [...(byMed.get(id) ?? []), f]);
   const rows = [...byMed.entries()]
-    .map(([id, fs]) => ({ med: meds.get(id), cats: [...new Set(fs.map((f) => CATEGORY_CHIP[f.category]))] }))
+    .map(([id, fs]) => ({ med: meds.get(id), cats: [...new Set(fs.map((f) => findingChip(f)))] }))
     .filter((r): r is { med: Medication; cats: string[] } => Boolean(r.med))
     .sort((a, b) => b.cats.length - a.cats.length || a.med.name.localeCompare(b.med.name));
   const source = getSource("beers2023") ?? beers.flatMap((f) => f.sourceIds).map((id) => getSource(id)).find(Boolean);

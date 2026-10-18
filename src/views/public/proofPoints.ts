@@ -36,13 +36,16 @@ export const PROOF_POINTS: ProofPoint[] = [
   {
     key: "meds",
     figure: `${MED_CASES_PASSED}/${MED_CASES}`,
-    label: "medication-review test cases pass (Beers 2023, ACB, fall-risk)",
+    // The cases were written from the published criteria by a separate AI agent and were in the repo while the
+    // engine was built (eval/MED-CASES-METHOD.md), so 57/57 checks a written spec, not a blind test.
+    label: "synthetic medication-review cases pass (a written spec; not clinician-reviewed)",
     section: "how-evaluation",
   },
   {
     key: "device",
     figure: "On-device",
-    label: "Your records never leave this device.",
+    // Printing and the FHIR/backup exports are the user's own ways out; nothing else sends the records anywhere.
+    label: "Your records stay on this device unless you print or export them.",
     section: "how-trust",
   },
 ];

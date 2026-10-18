@@ -246,6 +246,24 @@
     {"id": "d242", "story": "Slept about 5 hours, not great.", "expect": {"sleep": 2}, "expectOther": {}, "tags": ["qualitative"]},
     {"id": "d243", "story": "Felt shaky and sweaty before lunch, better after a biscuit.", "expect": {}, "expectOther": {"tremor": true}, "tags": ["multi_symptom"]},
     {"id": "d244", "story": "Noticed some bruising on my arms I can't explain.", "expect": {}, "expectOther": {}, "tags": []},
-    {"id": "d245", "story": "Typing for my mother: she says she's had a headache and felt sick after breakfast.", "expect": {}, "expectOther": {"headache": true, "nausea": true}, "tags": ["caregiver_voice", "multi_symptom"]}
+    {"id": "d245", "story": "Typing for my mother: she says she's had a headache and felt sick after breakfast.", "expect": {}, "expectOther": {"headache": true, "nausea": true}, "tags": ["caregiver_voice", "multi_symptom"]},
+    {"id": "d246", "story": "The room went round and round when I bent down to the oven.", "expect": {"dizziness": true}, "expectOther": {}, "tags": ["colloquial"]},
+    {"id": "d247", "story": "Everything went round after I stood up too quickly, but no falls.", "expect": {"dizziness": true, "fall": false}, "expectOther": {}, "tags": ["colloquial", "negation"]},
+    {"id": "d248", "story": "The room didn't go round today, and no dizziness at all.", "expect": {"dizziness": false}, "expectOther": {}, "tags": ["negation"]},
+    {"id": "d249", "story": "Couldn't pee properly this morning and my mouth was dry.", "expect": {}, "expectOther": {"urinary_problem": true, "dry_mouth": true}, "tags": ["colloquial", "multi_symptom"]},
+    {"id": "d250", "story": "It was hard to pass water today, otherwise fine.", "expect": {}, "expectOther": {"urinary_problem": true}, "tags": ["colloquial"]},
+    {"id": "d251", "story": "No trouble passing water today.", "expect": {}, "expectOther": {"urinary_problem": false}, "tags": ["negation"]},
+    {"id": "d252", "story": "My husband couldn't pee properly, but I was fine.", "expect": {}, "expectOther": {}, "tags": ["experiencer_other", "no_symptoms"]},
+    {"id": "d253", "story": "She was very confused this evening, kept calling me by her sister's name.", "expect": {"confusion": true}, "expectOther": {}, "tags": ["caregiver_voice"]},
+    {"id": "d254", "story": "My husband's car broke down, felt dizzy waiting in the cold.", "expect": {"dizziness": true}, "expectOther": {}, "tags": ["experiencer_other"]},
+    {"id": "d255", "story": "I visited her in hospital and felt woozy on the way home.", "expect": {"dizziness": true}, "expectOther": {}, "tags": ["experiencer_other", "colloquial"]},
+    {"id": "d256", "story": "Not unsteady at all today and no dizziness.", "expect": {"dizziness": false}, "expectOther": {}, "tags": ["negation"]},
+    {"id": "d257", "story": "My husband's knee gave way, fell in the garden.", "expect": {}, "expectOther": {}, "tags": ["experiencer_other", "no_symptoms"]},
+    {"id": "d258", "story": "She says the new tablets make me dizzy.", "expect": {"dizziness": true}, "expectOther": {}, "tags": ["experiencer_other"]},
+    {"id": "d259", "story": "She gave me a new pill at the surgery and it made me dizzy.", "expect": {"dizziness": true}, "expectOther": {}, "tags": ["experiencer_other"]},
+    {"id": "d260", "story": "He was dizzy and gave me a fright.", "expect": {}, "expectOther": {}, "tags": ["experiencer_other", "no_symptoms"]},
+    {"id": "d261", "story": "Mum threw a wobbly this morning about her tablets.", "expect": {}, "expectOther": {}, "tags": ["caregiver_voice", "no_symptoms"]},
+    {"id": "d262", "story": "Love makes the world go round, as Mum always said.", "expect": {}, "expectOther": {}, "tags": ["colloquial", "no_symptoms"]},
+    {"id": "d263", "story": "Everything went round fine at the party today.", "expect": {}, "expectOther": {}, "tags": ["colloquial", "no_symptoms"]}
   ]
 }

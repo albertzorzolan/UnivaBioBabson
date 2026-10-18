@@ -1,6 +1,7 @@
 // Welcome: the product story + one-click entry into both demo views (SPEC §8).
-// Left: value proposition, privacy promise and checked results. Right: the guided tour (the main way in),
-// "Try as Margaret / Alex", and a demo-credential form. Below: an HTML/CSS walk-through of one check-in
+// Left: value proposition, privacy promise and checked results. Right: the guided tour (the main way in) and
+// "Try as Margaret / Alex" as the only visible choices; the demo-credential form waits behind a closed
+// "Have the demo credentials? Sign in" disclosure. Below: an HTML/CSS walk-through of one check-in
 // becoming a clinician question. On phones the access card comes straight after the headline, and a
 // "Try the demo" button in the top bar jumps to it, so a way in is always on the first screen.
 import { useId, useState, type FormEvent, type ReactNode } from "react";
@@ -19,16 +20,24 @@ import {
 } from "lucide-react";
 import type { Role } from "../../model/types";
 import { DEMO_ACCOUNTS, login, loginAs, logout, useSession } from "../../app/session";
-import { homeFor, href, isRoute, navigate, ROUTES, routeRole, useRoute, type Route } from "../../app/router";
+import { homeFor, href, isRoute, navigate, parseHash, ROUTES, routeRole, useRoute, type Route } from "../../app/router";
 import { useShellAttribute } from "../../app/layouts/useDocumentSettings";
 import { SkipLink } from "../../app/layouts/ShellParts";
-import { Badge, Button, Callout, DemoDataChip, Logo, TextInput, useMediaQuery } from "../../ui";
+import { Badge, Button, Callout, DemoDataChip, Disclosure, Logo, TextInput, useMediaQuery } from "../../ui";
 import { JOURNEY_AFTER_LABEL, JOURNEY_AFTER_PCT, JOURNEY_BEFORE_LABEL, JOURNEY_BEFORE_PCT, JOURNEY_QUESTION } from "./journeyFigures";
 import { PROOF_POINTS } from "./proofPoints";
 import { SOURCE_CODE_URL } from "./links";
 import "./public.css";
 
 const ROLE_NAME: Record<Role, string> = { patient: "Margaret (patient view)", caregiver: "Alex (caregiver view)" };
+
+/** Shown on Welcome when the address named a page that doesn't exist (the router maps it to "/"). */
+export const NOT_FOUND_HINT = "That page doesn’t exist; choose a view below.";
+
+/** True when `hash` names a path that is not a route ("#/c/nope"). The empty hash and "#/" are the home page. */
+export function isUnknownHash(hash: string): boolean {
+  return !parseHash(hash).known;
+}
 
 /** A `?next=` route is honoured only if it belongs to the role being entered. */
 function destinationFor(role: Role, next: string | null): Route {
@@ -90,6 +99,9 @@ export function Welcome() {
   const role = useSession();
   const { params } = useRoute();
   const next = params.get("next");
+  // useRoute() re-renders on every hash change, so reading the hash here stays current. The router keeps an
+  // unknown address in the bar and renders Welcome; this only explains why.
+  const unknownRoute = typeof window !== "undefined" && isUnknownHash(window.location.hash);
   const nextLabel = next && isRoute(next) ? ROUTES[next].title : null;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -223,6 +235,7 @@ export function Welcome() {
               {!role && nextLabel && (
                 <Callout tone="info" className="pub-access__session" title={`Choose a view to open “${nextLabel}”.`} />
               )}
+              {unknownRoute && <Callout tone="info" className="pub-access__session" title={NOT_FOUND_HINT} />}
               <h2 id="access-title" className="pub-access__title" tabIndex={-1}>
                 See it from both sides
               </h2>
@@ -263,63 +276,63 @@ export function Welcome() {
                 />
               </div>
 
-              <div className="pub-divider" role="presentation">
-                <span>or sign in with a demo account</span>
-              </div>
+              {/* Closed by default: the tour and the two buttons above are the ways in. Judges handed the demo
+                  credentials can still open the form; the trigger is a real button with aria-expanded. */}
+              <Disclosure className="pub-signin" summary="Have the demo credentials? Sign in">
+                <form className="pub-form" onSubmit={onSubmit} noValidate aria-describedby="demo-auth-note">
+                  <div className="pub-form__fields">
+                    <TextInput
+                      label="Username"
+                      name="username"
+                      autoComplete="username"
+                      autoCapitalize="none"
+                      spellCheck={false}
+                      value={username}
+                      aria-invalid={error ? true : undefined}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <TextInput
+                      label="Password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      value={password}
+                      error={error ?? undefined}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                  <Button type="submit" variant="secondary" block iconRight={<ArrowRight size={18} aria-hidden="true" />}>
+                    Sign in
+                  </Button>
+                </form>
 
-              <form className="pub-form" onSubmit={onSubmit} noValidate aria-describedby="demo-auth-note">
-                <div className="pub-form__fields">
-                  <TextInput
-                    label="Username"
-                    name="username"
-                    autoComplete="username"
-                    autoCapitalize="none"
-                    spellCheck={false}
-                    value={username}
-                    aria-invalid={error ? true : undefined}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                  <TextInput
-                    label="Password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    value={password}
-                    error={error ?? undefined}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" variant="secondary" block iconRight={<ArrowRight size={18} aria-hidden="true" />}>
-                  Sign in
-                </Button>
-              </form>
-
-              <table className="pub-creds">
-                <caption className="ui-visually-hidden">Demo accounts</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">View</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Password</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {DEMO_ACCOUNTS.map((a) => (
-                    <tr key={a.username}>
-                      <th scope="row">{a.label}</th>
-                      <td data-label="Username">
-                        <code>{a.username}</code>
-                      </td>
-                      <td data-label="Password">
-                        <code>{a.password}</code>
-                      </td>
+                <table className="pub-creds">
+                  <caption className="ui-visually-hidden">Demo accounts</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">View</th>
+                      <th scope="col">Username</th>
+                      <th scope="col">Password</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              <p id="demo-auth-note" className="pub-access__note">
-                Demo role picker — not real authentication. Please don’t enter real health information.
-              </p>
+                  </thead>
+                  <tbody>
+                    {DEMO_ACCOUNTS.map((a) => (
+                      <tr key={a.username}>
+                        <th scope="row">{a.label}</th>
+                        <td data-label="Username">
+                          <code>{a.username}</code>
+                        </td>
+                        <td data-label="Password">
+                          <code>{a.password}</code>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p id="demo-auth-note" className="pub-access__note">
+                  Demo role picker — not real authentication. Please don’t enter real health information.
+                </p>
+              </Disclosure>
             </div>
           </section>
         </div>
