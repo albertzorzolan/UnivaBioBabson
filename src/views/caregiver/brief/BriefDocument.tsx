@@ -1,17 +1,35 @@
 // The one-page visit brief (SPEC §6.6), styled like a clinical document. Rendered twice by the Visit brief view:
 // on screen ("screen": click-to-edit sentences, evidence chips, claim-checker notes) and into the print root
 // ("print": plain text only). Every number on the page is code-rendered from the record.
-import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+//
+// Reading order for a 15-minute visit: "At a glance" (≤3 lines: the lead change, falls, the first question) comes
+// before the family's own words, so the clinician sees the finding first; "In her words" quotes sit under the
+// sentences they illustrate; the footer ends with the safety line and the static safety-net line.
+import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Check, PencilLine, RotateCcw, Sparkles, Trash2, TriangleAlert } from "lucide-react";
-import type { BriefSentence, EvidenceItem, EvidencePackage, VisitBrief } from "../../../model/types";
+import type { BriefSentence, EvidenceItem, EvidencePackage, GenerationInfo, VisitBrief } from "../../../model/types";
 import { formatLong, formatShort } from "../../../model/dates";
 import { CONDITION_LABEL, PRODUCT_NAME, SAFETY_LINE, evidenceId } from "../../../engine/brief";
-import { caregiverLabel, medName } from "../../../engine/brief/shared";
+import { caregiverLabel, medName, oneLine } from "../../../engine/brief/shared";
+import { briefSafetyLines } from "../../../engine/brief/template";
 import { LogoMark, cx } from "../../../ui";
 import { BeforeAfterStrip } from "./BeforeAfterStrip";
 import { ScrollRegion } from "./ScrollRegion";
 import { EvidenceChips } from "./EvidenceDrawer";
-import { editSummary, isEdited, medTable, periodLength, signalStrip, type BriefInputs, type EditableSection, type MarkedSentence } from "./compose";
+import {
+  atAGlance,
+  editSummary,
+  isEdited,
+  medTable,
+  patientQuotes,
+  periodLength,
+  signalStrip,
+  type BriefInputs,
+  type BriefQuote,
+  type EditableSection,
+  type GlanceLine,
+  type MarkedSentence,
+} from "./compose";
 
 export interface BriefDocumentProps {
   brief: VisitBrief;
@@ -203,6 +221,74 @@ const SECTION_TITLE: Record<EditableSection, string> = {
   questions: "Our questions",
 };
 
+/**
+ * "At a glance": at most 3 labelled lines the clinician can read in 30 seconds. Each restates a sentence further
+ * down (compose.ts atAGlance), so it carries no chips of its own; the sentences below do.
+ */
+function Glance({ lines, headingId }: { lines: GlanceLine[]; headingId: string }) {
+  if (lines.length === 0) return null;
+  return (
+    <section className="cg-vb-glance" aria-labelledby={headingId}>
+      <h3 id={headingId} className="cg-vb-glance__title">
+        At a glance
+      </h3>
+      <dl className="cg-vb-glance__list">
+        {lines.map((l) => (
+          // A change line with no evidence is a placeholder ("(no flagged change …)"): muted. Questions may cite nothing.
+          <div key={l.key} className={cx("cg-vb-glance__row", `cg-vb-glance__row--${l.key}`, l.key === "change" && l.evidenceIds.length === 0 && "is-empty")}>
+            <dt>{l.label}</dt>
+            {/* Display only: a date never breaks between month and day ("Oct 1"). The text itself is unchanged. */}
+            <dd>{l.text.replace(/\b([A-Z][a-z]{2}) (\d{1,2})\b/g, "$1\u00a0$2")}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
+
+/** 'In her words (Sep 30): “the room was spinning”' under a noticed sentence, with its check-in chip on screen. */
+function Quote({ q, screen, lookup, onEvidence }: { q: BriefQuote; screen: boolean } & Pick<BriefDocumentProps, "lookup" | "onEvidence">) {
+  return (
+    <span className="cg-vb-quote">
+      {/* A space keeps the printed run-in quote apart from its sentence (print shows it on the same line). */}{" "}
+      <span className="cg-vb-quote__text">{q.text}</span>
+      {screen && (
+        <span className="cg-vb-quote__meta ui-no-print">
+          <EvidenceChips ids={[q.evidenceId]} lookup={lookup} onOpen={(ids, focus) => onEvidence?.(ids, focus, q.text)} context="quote" />
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** Where each editable section came from in an AI brief (src/ai/tasks.ts BriefSections, same shape). */
+export type BriefSectionOrigins = Record<EditableSection, "ai" | "template">;
+
+/**
+ * The footer line of an AI brief. It names only the sections the AI drafted, so a partial draft (questions from the
+ * template) never tells the clinician the AI wrote "Our questions". Older briefs without `sections` keep the
+ * original wording, which was true for them.
+ */
+export function aiProvenance(g: GenerationInfo, sections: BriefSectionOrigins | null): string {
+  const by = `${g.model ?? "the on-device model"} (prompt ${g.promptVersion ?? "n/a"})`;
+  const removed = g.droppedSentences ? `, ${g.droppedSentences} removed by the check` : "";
+  const tail = " Review prompts, medicine table and counts are rendered by code.";
+  const order: EditableSection[] = ["reason", "noticed", "questions"];
+  const fromTemplate = sections ? order.filter((k) => sections[k] === "template") : [];
+  if (!sections || fromTemplate.length === 0) {
+    return `Drafted on this device by ${by}; every sentence checked against the records${removed}.${tail}`;
+  }
+  const names = (ks: EditableSection[]) => {
+    const t = ks.map((k) => SECTION_TITLE[k]);
+    return t.length > 1 ? `${t.slice(0, -1).join(", ")} and ${t[t.length - 1]}` : (t[0] ?? "");
+  };
+  const fromAi = order.filter((k) => sections[k] === "ai");
+  return (
+    `${names(fromAi)} drafted on this device by ${by} and checked against the records${removed}; ` +
+    `${names(fromTemplate)}: ${PRODUCT_NAME}'s standard template (no AI).${tail}`
+  );
+}
+
 function SectionHead({ n, title, ai }: { n: number; title: string; ai?: boolean }) {
   return (
     <h3 className="cg-vb-sec__title">
@@ -225,9 +311,14 @@ export function BriefDocument(props: BriefDocumentProps) {
   const { data, review } = inputs;
   const screen = mode === "screen";
   const headingId = useId();
+  const glanceId = useId();
   const p = data.profile;
   const c = brief.content;
   const ai = brief.generation.mode === "ai";
+  // Which sections the AI drafted (stored next to an AI brief's GenerationInfo since the partial-draft change; absent
+  // on older AI briefs, which drafted "What we've noticed" and "Our questions" and kept the template's reason).
+  const sections = ai ? ((brief.generation as GenerationInfo & { sections?: BriefSectionOrigins }).sections ?? null) : null;
+  const aiDrafted = (k: EditableSection): boolean => ai && (sections ? sections[k] === "ai" : k !== "reason");
   const editor = p.caregiverName || "the caregiver";
   const rows = medTable(inputs, brief);
   const strip = signalStrip(inputs, c, pkg, medName);
@@ -235,6 +326,14 @@ export function BriefDocument(props: BriefDocumentProps) {
   const madeOn = dateOf(brief.generation.generatedAt, inputs.today);
   const year = brief.to.slice(0, 4);
   const conditions = p.conditions.map((t) => CONDITION_LABEL[t] ?? t);
+  const glance = atAGlance(inputs, c, pkg);
+  const quotes = patientQuotes(inputs, c, pkg);
+  const [safetyLine, safetyNet] = briefSafetyLines(p);
+  // An emptied record has no name and age 0 ("not entered"): show neither "0 years" nor an empty heading.
+  const name = oneLine(p.displayName) || "Name not recorded";
+  const demographics = [p.age > 0 ? `${p.age} years` : "", p.sex && p.sex !== "other" ? p.sex : "", data.isDemoData ? "fictional demo patient" : ""]
+    .filter(Boolean)
+    .join(" · ");
   const sentenceProps = {
     lookup,
     onEdit: props.onEdit,
@@ -246,6 +345,15 @@ export function BriefDocument(props: BriefDocumentProps) {
     editor,
   };
 
+  // Each quote sits under the first noticed sentence that cites its anchor (the lead change, the falls sentence).
+  const quoteAt = new Map<number, BriefQuote[]>();
+  for (const q of quotes) {
+    const at = c.noticed.findIndex((s) => s.evidenceIds.includes(q.anchorId));
+    if (at >= 0) quoteAt.set(at, [...(quoteAt.get(at) ?? []), q]);
+  }
+  const afterNoticed = (i: number): ReactNode =>
+    quoteAt.get(i)?.map((q) => <Quote key={q.checkInId} q={q} screen={screen} lookup={lookup} onEvidence={onEvidence} />);
+
   const list = (section: EditableSection, ordered = false) => {
     const items = c[section];
     if (items.length === 0) return <p className="cg-vb-empty">{section === "questions" ? "No questions added yet." : "Nothing to show for this period."}</p>;
@@ -255,17 +363,17 @@ export function BriefDocument(props: BriefDocumentProps) {
         {items.map((s, i) => (
           <li key={`${section}-${i}`} className="cg-vb-list__item">
             <Sentence s={s} section={section} index={i} removable={section !== "reason" || items.length > 1} {...sentenceProps} />
+            {section === "noticed" && afterNoticed(i)}
           </li>
         ))}
       </Tag>
     );
   };
 
-  const provenance =
-    brief.generation.mode === "ai"
-      ? `Drafted on this device by ${brief.generation.model ?? "the on-device model"} (prompt ${brief.generation.promptVersion ?? "n/a"}); every sentence checked against the records${brief.generation.droppedSentences ? `, ${brief.generation.droppedSentences} removed by the check` : ""}. Review prompts, medicine table and counts are rendered by code.`
-      : // Kept short so the footer stays on one printed line (the brief is one Letter page).
-        `Written by ${PRODUCT_NAME}'s template (no AI) from ${pkg.items.length} evidence records.`;
+  const provenance = ai
+    ? aiProvenance(brief.generation, sections)
+    : // Kept short so the footer stays on one printed line (the brief is one Letter page).
+      `Written by ${PRODUCT_NAME}'s template (no AI) from ${pkg.items.length} evidence records.`;
 
   return (
     <article
@@ -287,13 +395,10 @@ export function BriefDocument(props: BriefDocumentProps) {
         </div>
         <div className="cg-vb-doc__id">
           <div>
-            <h2 id={headingId} className="cg-vb-doc__name">
-              {p.displayName}
+            <h2 id={headingId} className={cx("cg-vb-doc__name", !oneLine(p.displayName) && "is-missing")}>
+              {name}
             </h2>
-            <p className="cg-vb-doc__demo">
-              {p.age} years{p.sex && p.sex !== "other" ? ` · ${p.sex}` : ""}
-              {data.isDemoData ? " · fictional demo patient" : ""}
-            </p>
+            {demographics && <p className="cg-vb-doc__demo">{demographics}</p>}
           </div>
           <dl className="cg-vb-doc__meta">
             <div>
@@ -319,13 +424,15 @@ export function BriefDocument(props: BriefDocumentProps) {
         )}
       </header>
 
+      <Glance lines={glance} headingId={glanceId} />
+
       <section className="cg-vb-sec cg-vb-sec--reason">
-        <SectionHead n={1} title={SECTION_TITLE.reason} />
+        <SectionHead n={1} title={SECTION_TITLE.reason} ai={aiDrafted("reason") && screen} />
         {list("reason")}
       </section>
 
       <section className={cx("cg-vb-sec cg-vb-sec--noticed", strip && "has-chart")}>
-        <SectionHead n={2} title={SECTION_TITLE.noticed} ai={ai && screen} />
+        <SectionHead n={2} title={SECTION_TITLE.noticed} ai={aiDrafted("noticed") && screen} />
         <div className="cg-vb-noticed">
           {strip && (
             <div className="cg-vb-noticed__chart">
@@ -365,7 +472,7 @@ export function BriefDocument(props: BriefDocumentProps) {
       </section>
 
       <section className="cg-vb-sec cg-vb-sec--questions">
-        <SectionHead n={4} title={SECTION_TITLE.questions} ai={ai && screen} />
+        <SectionHead n={4} title={SECTION_TITLE.questions} ai={aiDrafted("questions") && screen} />
         {list("questions", true)}
       </section>
       </div>
@@ -442,7 +549,9 @@ export function BriefDocument(props: BriefDocumentProps) {
       </section>
 
       <footer className="cg-vb-doc__foot">
-        <p className="cg-vb-doc__safety">{SAFETY_LINE}</p>
+        <p className="cg-vb-doc__safety">{safetyLine}</p>
+        {/* Screen only: it speaks to the family; the printed copy goes to the clinician (see brief-print.css). */}
+        <p className="cg-vb-doc__safetynet ui-no-print">{safetyNet}</p>
         <p className="cg-vb-doc__prov">
           {provenance} Knowledge base {review.kbVersion || "n/a"} · evidence {brief.generation.evidenceHash.slice(0, 8)}
           {edits.count > 0 && ` · ${edits.count} ${edits.count === 1 ? "sentence" : "sentences"} edited by ${edits.editors.join(", ")}`}

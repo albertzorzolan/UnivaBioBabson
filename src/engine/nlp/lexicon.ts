@@ -69,7 +69,10 @@ export const CONCEPTS: Record<ConceptKey, ConceptCoding> = {
   headache: { label: "headache", field: null, snomed: "25064002", display: "Headache (finding)" },
   cough: { label: "cough", field: null, snomed: "49727002", display: "Cough (finding)" },
   blurred_vision: { label: "blurred vision", field: null, snomed: "111516008", display: "Blurring of visual image (finding)" },
-  urinary_problem: { label: "bladder problems", field: null, snomed: "165232002", display: "Urinary incontinence (finding)" },
+  urinary_problem: {
+    label: "bladder problems", field: null, snomed: "165232002", display: "Urinary incontinence (finding)",
+    verify: "One combined concept: leaking, night-time urination and difficulty passing urine ('trouble peeing', 'couldn't pee properly'). Difficulty passing urine is not incontinence, so the FHIR export (fhir.ts CONCEPT_CODES) sends this concept as text only, with no SNOMED code, until a broader code is checked on a terminology server.",
+  },
   low_mood: { label: "low mood", field: null, snomed: "366979004", display: "Depressed mood (finding)" },
   anxiety: { label: "anxiety", field: null, snomed: "48694002", display: "Anxiety (finding)" },
   pain: { label: "pain", field: null, snomed: "22253000", display: "Pain (finding)" },
@@ -153,6 +156,8 @@ const MACROS: Record<string, string> = {
   ENERGY: "(?:energy(?: levels?| level)?(?:'s| has)?|get[ -]up[ -]and[ -]go|pep|oomph|stamina|vitality)",
   APP: "(?:appetite(?:'s| has)?)",
   WASNT: "(?:wasn't|was not|isn't|is not|weren't|were not|hasn't been|has not been)",
+  WOBBLYTHING:
+    "table|chair|stool|ladder|shelf|tooth|teeth|wheel|trolley|cart|bike|step|fence|gate|picture|lamp|desk|filling|crown|dentures?|jelly|tummy|voice|handwriting|hands?|fingers?|signal|connection|wifi|internet|bridge|post|frame|walker|knees? (?:brace|support)|weather|times|economy|market|ground|surface|path|pavement",
   // Between a field anchor and its value: punctuation ("Sleep: ok", "Energy - low") or a space with an
   // optional time phrase ("sleep last night was ok", "energy today is low").
   PUNC: "(?: ?[?:!-]+ ?| (?:(?:last night|overnight|today|this morning|this afternoon|this evening|tonight|so far(?: today)?|lately|these days|again|wise|levels?) )?)",
@@ -213,6 +218,23 @@ export const TERMS: readonly TermDef[] = [
     // Pushed or knocked off balance by something outside the body is not a dizziness symptom, so the
     // unsteadiness guess below must not fire. A fall in the same sentence is still matched on its own.
     "(?:knock(?:ed|s|ing)?|push(?:ed|es|ing)?|bump(?:ed|s|ing)?|threw|thrown|throws?|throwing|tip(?:ped|s|ping)?|jostled|jolted) (?:(?:me|her|him|{PRO} \\w+) )?off[- ]balance",
+    // Things that are wobbly or unsteady are not the person ("the table is wobbly", "a wobbly tooth", "my hands were
+    // unsteady" = shaky hands, not balance), so the unsteadiness guess below must not fire on them.
+    "(?:{WOBBLYTHING}) (?:{WAS} )?(?:{INT} )?(?:wobbly|unsteady)",
+    "(?:wobbly|unsteady) (?:{WOBBLYTHING})",
+    // British idiom: "threw a wobbly", "had a bit of a wobbly" is a tantrum or emotional outburst, and "wobbly
+    // emotionally" is about mood. Neither is unsteadiness on her feet.
+    "(?:throw|throws|threw|thrown|throwing|chuck(?:ed|s|ing)?|ha(?:d|ve|s|ving)) (?:a |another |one of (?:her|his|my|their) )?(?:(?:bit of a|real|massive|big|little|full|proper) )?wobbl(?:y|ies|er)",
+    "wobbly (?:emotionally|inside|in (?:my|her|his) (?:head|heart))",
+    // Thoughts going round in her head ("everything went round and round in my head, worrying") is rumination, not a
+    // spinning room, so neither vertigo idiom below may fire on it.
+    "(?:room|world|everything|head|ceiling|house|kitchen)(?:'s)? (?:(?:went|goes|go|kept going|keeps going|started going|seemed to go|was going|is going|were going|going) )?(?:round|around)(?: and (?:round|around))? in (?:my|her|his|the|their|your) (?:head|mind|brain|thoughts)",
+    // Figures of speech, not a spinning room: "love makes the world go round", "everything went round in circles at
+    // the GP", "everything went round fine", "the world is going round as usual". Each covers the subject, so it is
+    // longer than (and wins over) the vertigo terms below.
+    "(?:make|makes|made|making|keep|keeps|kept|keeping) (?:the )?world go(?:es)? (?:a)?round",
+    "(?:room|world|everything|things|ceiling|house|kitchen)(?:'s)? (?:goes|go|went|keeps? going|kept going|is going|was going|going) (?:a)?round in circles",
+    "(?:room|world|everything|things|ceiling|house|kitchen)(?:'s)? (?:goes|go|went|keeps? going|kept going|is going|was going|going) (?:a)?round (?:smoothly|fine|well|ok|okay|as usual|as normal|as always|like clockwork|without a hitch)",
   ]),
 
   // ----- Dizziness ---------------------------------------------------------------------------
@@ -227,6 +249,16 @@ export const TERMS: readonly TermDef[] = [
     "vertigo",
     "(?:room|world|everything|head|ceiling|house|kitchen|floor) (?:was |were |is |kept |started |starting |began |went |seemed to be |felt like it was )?(?:spinning|spun|going round|going around|whirling|swimming|swirling|tilting|moving|swaying)",
     "(?:head|room|everything) (?:spins|swims|swam|whirled)",
+    // "The room went round and round": the same spinning-room report in plain words. The subject must come right
+    // before the verb, so "the room didn't go round" matches nothing (it never becomes a yes), and "went round to
+    // my sister's" / "the news went round the village" are not about a room or the world.
+    // Doubled ("went round and round"): any continuation, except the rumination blocker above ("… in my head").
+    "(?:room|world|everything|ceiling|house|kitchen)(?:'s)? (?:went|goes|go|kept going|keeps going|started going|seemed to go|was going|is going) (?:round|around) and (?:round|around)",
+    // Single ("the room went round"): only a room or "everything" (not "the world", and not the present "go/goes",
+    // which are mostly figures of speech), and only before the end of the clause or a word that says when it
+    // happened ("when I sat up", "after I bent down", "for a minute"). An allow-list, because a single "went round"
+    // is so often figurative ("went round fine", "went round in circles").
+    "(?:room|everything|ceiling|house|kitchen)(?:'s)? (?:went|kept going|keeps going|started going|seemed to go|was going|is going) (?:round|around)(?=\\s*(?:$|[.,;:!?])| (?:when|whenever|after|as soon as|as (?:i|she|he) (?:stood|got|sat|bent|turned|lay)|if|again|this|last|all|every|each|first|for a (?:moment|minute|second|bit|while)|then|and (?:i|she|he))(?![a-z]))",
     "spinning (?:head|room|sensation|feeling)",
     "(?:felt|feel|feeling|feels|went|going|was|got|getting|a bit|bit|a little|very|so|quite) faint(?:ish)?",
     "faintness",
@@ -250,7 +282,14 @@ export const TERMS: readonly TermDef[] = [
       "legs? (?:{WAS} )?(?:{INT} )?(?:wobbly|unsteady|shaky|like jelly|jelly)",
       "(?:wobbly|jelly) legs",
       "off[- ]balance",
-      "unsteady on (?:{PRO} )?(?:feet|legs)",
+      // "a bit wobbly (on the stairs / on my feet / on my pins)", "so unsteady (on my feet)". Things that are wobbly
+      // ("the table", "a wobbly tooth") are blocked above; negation ("not unsteady at all") is ConText's job and a
+      // denied guess proposes nothing (extract.ts).
+      "(?:wobbl(?:y|iness)|unstead(?:y|iness))(?: on (?:{PRO} )?(?:feet|legs|pins|pegs)| on the (?:stairs|steps))?",
+      // Needing to hold on to get about ("had to hold the wall", "kept having to hold onto the furniture"). Grabbing or
+      // holding on to stop a fall is the near-fall cue above; the same phrase is not also offered as a dizziness guess
+      // (matchLexicon), nor is a guess in a sentence that describes a near-fall or fall (extract.ts).
+      "(?:had to|have to|having to|needed to|need to|kept having to|had to keep)(?: (?:hold|cling|hang|lean))(?: (?:on to|onto|on|hold of|against))? (?:the|a|my|her|his) (?:\\w+ )?(?:walls?|furniture|rails?|railing|banister|bannister|handrail|hand rail|counter|worktop|doorframe|door frame)",
     ],
     { guess: "unsteadiness", secondary: true },
   ),
@@ -623,6 +662,9 @@ export const TERMS: readonly TermDef[] = [
     "(?:peeing|weeing|urinating|going to the (?:toilet|loo|bathroom)) (?:a lot|all the time|constantly|every hour|non[- ]stop|more than usual|all night)",
     "(?:burning|stinging|pain|it hurts|it hurt) when (?:i|she|he) (?:pee|wee|pass water|urinate)",
     "(?:trouble|difficulty|problems?) (?:peeing|weeing|urinating|passing water)",
+    // Difficulty passing urine ("couldn't pee properly", "hard to pee", "struggling to pass water"). The check-in has
+    // no bladder question, so this stays an "Also mentioned" symptom (no diary field), like the wordings above.
+    "(?:couldn't|could not|can't|cannot|could hardly|could barely|struggl(?:ed|ing) to|hard to|difficult to|a struggle to|straining to|strained to|trouble|difficulty) (?:pee|wee|urinate|pass water|empty (?:my|her|his) bladder)(?: properly| much| at all| fully| very well)?",
     "(?:bladder|waterworks) (?:{WAS} )?(?:playing up|acting up|bad|troublesome)",
   ]),
   ...t(
@@ -825,8 +867,12 @@ export function matchLexicon(text: string): LexMatch[] {
   // One word, one symptom: "felt shaky" is coded as tremor only, not also as the secondary "shakiness or sweating"
   // (which then showed twice under "Also mentioned"). Sweating still codes shakiness_or_sweating from its own words
   // ("shaky and sweaty" → tremor + shakiness_or_sweating, as the annotation guide's gold case d243 expects).
+  // Same rule for unsteadiness guesses: "had to grab the counter to stop myself falling" is the near-fall it names, not
+  // also a dizziness guess.
   const kept = taken.filter(
-    (m) => !(m.term.secondary && m.term.concept === "shakiness_or_sweating" && taken.some((x) => x.term.concept === "tremor" && overlaps(m, x))),
+    (m) =>
+      !(m.term.secondary && m.term.concept === "shakiness_or_sweating" && taken.some((x) => x.term.concept === "tremor" && overlaps(m, x))) &&
+      !(m.term.guess && taken.some((x) => (x.term.concept === "nearFall" || x.term.concept === "fall") && overlaps(m, x))),
   );
   return kept.sort((a, b) => a.start - b.start || a.end - b.end);
 }

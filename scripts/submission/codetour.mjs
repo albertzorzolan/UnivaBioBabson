@@ -10,7 +10,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-// Namespace import: CODE_URL, DEMO_URL and DEFAULT_TEAM are optional exports (older lib.mjs versions lack them).
+// Namespace import: CODE_URL, DEMO_URL and DEFAULT_TEAM are read with fallbacks below.
 import * as lib from "./lib.mjs";
 import { highlightLines, tokenize } from "./highlight.mjs";
 
@@ -20,7 +20,7 @@ const { ROOT, TOKENS_CSS, escapeHtml: h, fontFaceCss } = lib;
 const CODE_URL = lib.CODE_URL ?? `${lib.REPO_URL}/tree/${lib.REPO_BRANCH}`;
 /** Per-file links: …/blob/<branch>/<path>. */
 const BLOB_URL = CODE_URL.includes("/tree/") ? CODE_URL.replace("/tree/", "/blob/") : `${lib.REPO_URL}/blob/${lib.REPO_BRANCH}`;
-const DEMO_URL = lib.DEMO_URL ?? lib.PLANNED_DEMO_URL;
+const DEMO_URL = lib.DEMO_URL;
 const TEAM = lib.DEFAULT_TEAM ?? "Albert Zorzolan and Neil Shah, Babson College";
 
 /** GitHub link to one file (optionally one line) on the code branch. */
@@ -236,7 +236,7 @@ export const SECTIONS = [
     id: "brief",
     title: "Visit brief: claim checker and FHIR export",
     intro:
-      "The evidence package (engine/brief/evidence.ts, in the appendix) turns every fact into one code-written sentence with a stable id. verify.ts is the gate between the language model and a person: each AI sentence must cite evidence ids that exist, every number, date and “N of M” pair must appear in the cited text on the same side and for the same symptom, medicine names must be on the list, and banned wording (causal claims, advice, urgency, “safe”) is checked for and rejected. The patterns are not complete: the live run in eval/results/ai-live.json found a “can cause” sentence that got through. fhir.ts exports the record as a FHIR R4 document Bundle; the sample in docs/samples returned {FHIR_RESULT} from the public HAPI FHIR R4 $validate endpoint.",
+      "The evidence package (engine/brief/evidence.ts, in the appendix) turns every fact into one code-written sentence with a stable id. verify.ts is the gate between the language model and a person; it opens with a numbered list of its checks and is organised as one commented section per check, so each rule can be read on its own. Each AI sentence must cite evidence ids that exist, every number, date and “N of M” pair must appear in the cited text on the same side and for the same symptom, medicine names must be on the list, and banned wording (causal claims, advice, urgency, “safe”) is checked for and rejected. The patterns are not complete: the live run in eval/results/ai-live.json found a “can cause” sentence that got through. fhir.ts exports the record as a FHIR R4 document Bundle; the sample in docs/samples returned {FHIR_RESULT} from the public HAPI FHIR R4 $validate endpoint.",
     files: [
       {
         path: "src/engine/brief/verify.ts",
@@ -366,7 +366,7 @@ export const WALK = [
   },
   {
     title: "The model drafts, code checks every sentence",
-    text: "The on-device model only drafts sentences that cite evidence ids; verifySection softens questions and adds missing citations, then checks each sentence through verifySentence and verifyClaims (the cited ids exist, every number, date and “N of M” pair appears in the cited evidence, medicine names are known, none of the BANNED_PATTERNS causal, advice or urgency wording) and drops the ones that fail. The patterns are not exhaustive: in a live run the checker let {LIVE_SLIPPED} flawed outputs through (eval/results/ai-live.json), so the template brief stays the default and a person reviews every AI draft.",
+    text: "The on-device model only drafts sentences that cite evidence ids; verifySection softens questions and adds missing citations, then checks each sentence through verifySentence and verifyClaims (the cited ids exist, every number, date and “N of M” pair appears in the cited evidence, medicine names are known, none of the BANNED_PATTERNS causal, advice or urgency wording) and drops the ones that fail. The patterns are not exhaustive: in a live run the checker let {LIVE_SLIPPED} through (the sentences tagged live-escape in eval/verifier-redteam.json, copied from the run in eval/results/ai-live.json), so the template brief stays the default and a person reviews every AI draft.",
     anchors: [
       ["src/ai/tasks.ts", "verifySection"],
       ["src/engine/brief/verify.ts", "verifyClaims"],
@@ -840,7 +840,10 @@ function git(args) {
  */
 export function branchSync(printed, index) {
   const branch = lib.REPO_BRANCH;
+  // Read at build time. Only the checked-out branch name is printed, never the HEAD hash: the PDF is committed after
+  // it is built, so a hash printed in it would already be one commit old (the first tour printed "HEAD 15452c3").
   const head = git(["rev-parse", "--short", "HEAD"]).trim();
+  const headBranch = git(["rev-parse", "--abbrev-ref", "HEAD"]).trim();
   let sha = null;
   for (const ref of [branch, `origin/${branch}`]) {
     try {
@@ -854,13 +857,14 @@ export function branchSync(printed, index) {
   const changed = sha ? new Set(git(["diff", "--name-only", "--no-renames", sha, "--", ...printed]).split("\n").filter(Boolean)) : new Set(printed);
   const differ = printed.filter((p) => changed.has(p) || uncommitted.has(p));
   const dirty = git(["status", "--porcelain", "--", ...printed]).trim() !== "";
-  return { branch, sha, head, dirty, differ, total: printed.length, clean: Boolean(sha) && differ.length === 0 };
+  return { branch, sha, head, headBranch: headBranch === "HEAD" ? null : headBranch, dirty, differ, total: printed.length, clean: Boolean(sha) && differ.length === 0 };
 }
 
 /** One sentence for the cover and the walkthrough: do the line numbers match the files on GitHub? */
 function syncSentence(sync) {
   if (sync.clean) return `Line numbers match the files on ${sync.branch} at commit ${sync.sha}.`;
-  const base = sync.dirty ? `Built from uncommitted changes (HEAD ${sync.head})` : `Built from HEAD ${sync.head}`;
+  const from = sync.headBranch ? `branch ${sync.headBranch}` : "a detached checkout";
+  const base = sync.dirty ? `Built from uncommitted changes on ${from}` : `Built from ${from}`;
   const vs = sync.sha ? `${sync.branch} (${sync.sha})` : `${sync.branch} (not found in this clone)`;
   return `${base}: ${sync.differ.length} of the ${sync.total} printed files differ from ${vs}, so the GitHub line links match only once this tree is pushed to ${sync.branch}. The line numbers printed in this PDF are those of the tree it was built from.`;
 }
@@ -874,6 +878,13 @@ function kbBannedWords() {
   const words = block ? [...block[0].matchAll(/,\s*"([^"]+)"\),?\s*$/gm)].map((m) => m[1].replace(/\s*\(.*\)$/, "")) : [];
   if (!words.length) throw new Error("code tour: the BANNED table was not found in kb-src/build_kb.py; update kbBannedWords()");
   return words.join(", ");
+}
+
+/** The canonical flaw count from facts.mjs; the tour refuses to build without it rather than print another wording. */
+function liveSlippedPhrase(facts) {
+  const p = facts.ai?.liveSlippedPhrase;
+  if (!p) throw new Error("code tour: facts.ai.liveSlippedPhrase is missing (facts.mjs counts it from eval/verifier-redteam.json)");
+  return p;
 }
 
 /** HAPI $validate result of the sample bundle ("0 errors (25 terminology warnings, …)"), from facts or the file itself. */
@@ -924,7 +935,8 @@ export function codeTourHtml({ facts }) {
     "{CSS_FILES}": String(stats.cssFiles),
     "{KB_BANNED}": kbBannedWords(),
     "{FHIR_RESULT}": fhirResult(facts),
-    "{LIVE_SLIPPED}": String(facts.ai.liveSlippedText ?? facts.ai.liveSlipped),
+    // "at least 6 flawed AI sentences (from 5 outputs)": facts.mjs counts it from eval/verifier-redteam.json.
+    "{LIVE_SLIPPED}": liveSlippedPhrase(facts),
   };
   const fill = (text) => {
     const out = Object.entries(vars).reduce((t, [k, v]) => t.replaceAll(k, v), text);
@@ -1086,6 +1098,7 @@ a.gh { color: var(--info); }
 .cover .mark { width: 54px; height: 54px; border-radius: 14px; background: var(--primary); display: grid; place-items: center; }
 .cover h1 { font-family: var(--font-serif); font-weight: 600; font-size: 40pt; line-height: 1.05; margin: 22px 0 8px; letter-spacing: -0.01em; }
 .cover .lede { font-family: var(--font-serif); font-size: 14pt; line-height: 1.35; max-width: 6in; color: var(--ink); }
+.cover .start { font-size: 10.4pt; margin-top: 6px; max-width: 6.2in; font-weight: 600; color: var(--ink); background: var(--primary-soft); border-radius: 6px; padding: 4px 9px; display: inline-block; }
 .cover .what { font-size: 10.4pt; margin-top: 12px; max-width: 6.2in; font-weight: 500; color: var(--primary); }
 .kv { display: grid; grid-template-columns: 1.45in 1fr; gap: 6px 14px; font-size: 10pt; margin-top: 22px; }
 .kv dt { color: var(--ink-muted); }
@@ -1190,6 +1203,7 @@ td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
     <h1>Kinwise<br>code tour</h1>
     <p class="lede">A guided, readable selection of the source behind Kinwise, the private, on-device co-pilot that helps families bring a clear medication question to the doctor or pharmacist.</p>
     <p class="what">This PDF is a guided tour plus an index of every source file; the complete source is at the Code link.</p>
+    <p class="start">Start with pages <span data-page-of="fm-walk">2</span>–<span data-page-of="fm-tests">6</span> (5-minute walkthrough, claim-to-code table, limits); the rest is reference.</p>
     <dl class="kv">
       <dt>Code</dt><dd><a href="${h(CODE_URL)}">${h(CODE_URL)}</a></dd>
       <dt>Live demo</dt><dd><a href="${h(DEMO_URL)}">${h(DEMO_URL)}</a></dd>
@@ -1267,7 +1281,7 @@ td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
     <p>All commands run from the repository root after <code>npm ci</code>. Browser checks start their own Vite server and drive the system Chrome headless. Counts below are read from the reports when this PDF was built (Vitest is run by the generator; the E2E and accessibility counts come from the last run’s reports in <code>test-results/</code>).</p>
     <table><thead><tr><th style="width:2.1in">Command</th><th>What it checks</th></tr></thead><tbody>${testRows}</tbody></table>
     <h3>What the evaluations do not show</h3>
-    <p>The diary stories and medication cases are synthetic, written by the team with AI assistance (the medication cases by an AI agent directed by the team; see <code>eval/MED-CASES-METHOD.md</code>), and were not reviewed by a clinician. The knowledge base has not been reviewed by a licensed clinician. The medication eval checks that published criteria fire correctly, not clinical outcomes, and no flag does not mean a medicine is free of risk. In a live end-to-end run of the on-device model (<code>eval/results/ai-live.json</code>), the claim checker let ${facts.ai.liveSlippedText ?? facts.ai.liveSlipped} flawed AI outputs through (a garbled sentence, a “can cause” explanation, a diary suggestion quoted from the wrong sentence); that is why the template brief stays the default and every AI draft needs a person’s review.</p>
+    <p>The diary stories and medication cases are synthetic, written by the team with AI assistance (the medication cases by an AI agent directed by the team; see <code>eval/MED-CASES-METHOD.md</code>), and were not reviewed by a clinician. The knowledge base has not been reviewed by a licensed clinician. The medication eval checks that published criteria fire correctly, not clinical outcomes, and no flag does not mean a medicine is free of risk. In a live end-to-end run of the on-device model (<code>eval/results/ai-live.json</code>; the flawed sentences are listed as live-escape items in <code>eval/verifier-redteam.json</code>), the claim checker let ${h(liveSlippedPhrase(facts))} through (among them a garbled sentence, a “can cause” explanation, a suggestion to replace medicines, a prediction of another fall, and diary suggestions quoted from unrelated words); that is why the template brief stays the default and every AI draft needs a person’s review.</p>
     <h3>How to regenerate this PDF</h3>
     <p><code>node scripts/submission/make-pdfs.mjs --only=code</code> (or without <code>--only</code> for all three submission PDFs). It starts Vite on port 5222 unless <code>BASE_URL</code> is set, uses the system Chrome through Playwright, and writes to <code>submission/</code>. The build fails if any symbol the walkthrough, pointers or claim table refer to has been renamed, moved out of an excerpt or duplicated, and it prints a note on the cover and the walkthrough (and warns on the console) when the printed files differ from ${h(lib.REPO_BRANCH)}, whose GitHub pages the line links open.</p>
   </div>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { CheckIn, Medication } from "../../model/types";
 import { createSeed } from "../../model/seed";
-import { cellFor, cellWords, chartMedEvents, daySummary, excerptText, shortMedName, STRIP_ROWS } from "./caregiver-TimelineChart";
+import { TIP_WIDTH, cellFor, cellWords, chartMedEvents, daySummary, excerptText, placeTip, shortMedName, STRIP_ROWS, tipWidthFor } from "./caregiver-TimelineChart";
 import { storySegments } from "./caregiver-Records";
 
 const TODAY = "2026-10-11";
@@ -61,5 +61,37 @@ describe("story highlighting", () => {
     const c = byDate("2026-10-10");
     const labels = storySegments(c.story, c.provenance, [], c.answers).flatMap((s) => s.labels);
     expect(labels).toContain("dizziness · no");
+  });
+});
+
+describe("day tooltip placement", () => {
+  it("sits beside the column on the preferred side when there is room", () => {
+    // Wide screen, no sideways scroll: the whole plot (and the label column, x < 0) is visible.
+    expect(placeTip({ colLeft: 100, colRight: 110, width: 248, visibleFrom: -156, visibleTo: 1000, prefer: "start" })).toBe(120);
+    expect(placeTip({ colLeft: 700, colRight: 710, width: 248, visibleFrom: -156, visibleTo: 1000, prefer: "end" })).toBe(700 - 10 - 248);
+  });
+
+  it("flips to the other side when the preferred side would leave the visible area", () => {
+    expect(placeTip({ colLeft: 900, colRight: 910, width: 248, visibleFrom: -156, visibleTo: 1000, prefer: "start" })).toBe(900 - 10 - 248);
+    expect(placeTip({ colLeft: 20, colRight: 30, width: 248, visibleFrom: 0, visibleTo: 1000, prefer: "end" })).toBe(40);
+  });
+
+  it("stays inside the visible part of a scrolled plot on a phone (390 px)", () => {
+    // 60 days on a 542 px plot scrolled to its end; 312 px of scroll box are visible, 84 px of them over the
+    // sticky row labels (the tooltip is drawn above them), so plot x 230..542 is on screen.
+    const width = tipWidthFor(312);
+    for (let day = 0; day < 60; day++) {
+      const colLeft = (day / 60) * 542;
+      if (colLeft < 230) continue; // under the row labels until scrolled
+      const left = placeTip({ colLeft, colRight: colLeft + 542 / 60, width, visibleFrom: 230, visibleTo: 542, prefer: day / 60 > 0.6 ? "end" : "start" });
+      expect(left).toBeGreaterThanOrEqual(230);
+      expect(left + width).toBeLessThanOrEqual(542);
+    }
+  });
+
+  it("never grows wider than the scroll box, and pins to its left edge when even that does not fit", () => {
+    expect(tipWidthFor(1200)).toBe(TIP_WIDTH);
+    expect(tipWidthFor(200)).toBe(192);
+    expect(placeTip({ colLeft: 50, colRight: 60, width: 300, visibleFrom: 10, visibleTo: 250, prefer: "start" })).toBe(10);
   });
 });

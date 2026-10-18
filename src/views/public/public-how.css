@@ -587,10 +587,19 @@
 .pub-how-results__meta > svg {
   color: var(--primary-text);
 }
+/* Held-out card first and wider (3 : 2); the two wrap to a column, held-out on top, when there is no room. */
 .pub-how-scores {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
   gap: var(--space-4);
+}
+.pub-how-scores > * {
+  flex: 3 1 min(20rem, 100%);
+  min-width: 0;
+}
+.pub-how-scores > .pub-how-score--secondary {
+  flex: 2 1 min(15rem, 100%);
 }
 .pub-how-score {
   display: grid;
@@ -600,6 +609,16 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface-raised);
+}
+.pub-how-score--primary {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+  box-shadow: var(--shadow-1);
+}
+.pub-how-score__eyebrow {
+  margin: 0 0 2px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--primary-text);
 }
 .pub-how-score__title {
   margin: 0;
@@ -624,6 +643,21 @@
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--primary-text);
+}
+/* Development set: same facts, quieter — smaller figure in ink, tighter tiles. */
+.pub-how-score--secondary {
+  gap: var(--space-3);
+  background: var(--surface);
+}
+.pub-how-score--secondary .pub-how-score__title {
+  font-size: var(--fs-md);
+}
+.pub-how-score--secondary .pub-how-score__big {
+  font-size: 1.875rem;
+  color: var(--ink);
+}
+.pub-how-score--secondary .pub-how-score__grid dd {
+  font-size: var(--fs-md);
 }
 .pub-how-score__big-label {
   font-size: var(--fs-sm);

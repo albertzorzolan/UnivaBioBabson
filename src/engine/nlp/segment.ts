@@ -26,7 +26,7 @@ export interface Segment {
 // Words keep internal apostrophes ("didn't") and "-in-law" compounds ("brother-in-law's") so that
 // person nouns stay one token for the experiencer rules.
 const TOKEN_RE =
-  /in-laws?(?![A-Za-z])|[A-Za-zÀ-ɏ]+(?:-in-laws?)?(?:['’][A-Za-zÀ-ɏ]+)*|\d+(?:[.,]\d+)?|\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*|[^\s]/gu;
+  /in-laws?(?![A-Za-z])|[A-Za-zÀ-ɏ]+(?:-in-laws?)?(?:['’][A-Za-zÀ-ɏ]+)*|\d+(?:[.,]\d+)?|\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*|[^\s]/gu;
 
 /** Tokenise into words, numbers, emoji and single punctuation characters, keeping offsets. */
 export function tokenize(text: string, from = 0, to = text.length): Token[] {
@@ -73,7 +73,7 @@ function trimSegment(text: string, start: number, end: number): Segment | null {
  */
 export function splitSentences(text: string): Segment[] {
   const cuts: number[] = [];
-  const re = /[.!?]+|\n+|\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
+  const re = /[.!?]+|\n+|\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
   let lastCut = 0;
   for (let m = re.exec(text); m; m = re.exec(text)) {
     const tok = m[0];
@@ -223,32 +223,4 @@ export function findBoundaries(text: string, from: number, to: number, tokens?: 
   // Dedupe + sort.
   out.sort((a, b) => a.start - b.start || a.end - b.end);
   return out.filter((b, i) => i === 0 || b.start !== out[i - 1].start);
-}
-
-/** Split one sentence into clauses at boundaries (used for quotes and the explanation UI). */
-export function splitClauses(text: string, sentence: Segment, boundaries?: Boundary[]): Segment[] {
-  const bs = boundaries ?? findBoundaries(text, sentence.start, sentence.end);
-  const out: Segment[] = [];
-  let start = sentence.start;
-  for (const b of bs) {
-    const seg = trimSegment(text, start, b.start);
-    if (seg) out.push(seg);
-    start = b.kind === "termination" && /^[a-z]/i.test(b.word) ? b.start : b.end;
-  }
-  const last = trimSegment(text, start, sentence.end);
-  if (last) out.push(last);
-  // Trim trailing sentence punctuation from clause text.
-  return out.map((c) => {
-    let end = c.end;
-    while (end > c.start && /[.!?,;:]/.test(text[end - 1])) end--;
-    return { start: c.start, end, text: text.slice(c.start, end) };
-  });
-}
-
-/** Index of the sentence containing `pos` (or -1). */
-export function sentenceIndexAt(sentences: Segment[], pos: number): number {
-  for (let i = 0; i < sentences.length; i++) {
-    if (pos >= sentences[i].start && pos < sentences[i].end) return i;
-  }
-  return -1;
 }

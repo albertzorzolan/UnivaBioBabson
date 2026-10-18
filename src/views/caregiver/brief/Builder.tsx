@@ -5,6 +5,7 @@ import type { Finding, FindingCategory, Note, ReviewStatus, StoreData } from "..
 import { formatShort } from "../../../model/dates";
 import { href } from "../../../app/router";
 import type { LLMState } from "../../../ai";
+import type { BriefSections } from "../../../ai/tasks";
 import { Badge, Button, Card, CardHeader, Segmented, Spinner, cx } from "../../../ui";
 import { MAX_SAVED_IN_BRIEF, PERIOD_OPTIONS, type PeriodDays } from "./compose";
 
@@ -65,13 +66,47 @@ export interface DraftPanelProps {
   onAI: () => void;
   onCancelAI: () => void;
   statusLine: string;
+  /** Where each section of an AI brief came from (null for a template brief). */
+  sections?: BriefSections | null;
 }
 
-export function DraftPanel({ period, onPeriod, llm, aiBusy, onTemplate, onAI, onCancelAI, statusLine }: DraftPanelProps) {
+/** The origin label for one section of an AI brief. */
+const ORIGIN_ROWS: { key: keyof BriefSections; title: string; template: string }[] = [
+  { key: "reason", title: "Why we’re coming in", template: "Standard template (the AI wording did not pass the check)" },
+  { key: "noticed", title: "What we’ve noticed", template: "Standard template" },
+  { key: "questions", title: "Our questions", template: "Standard template (the AI questions did not pass the check)" },
+];
+
+export function DraftPanel({ period, onPeriod, llm, aiBusy, onTemplate, onAI, onCancelAI, statusLine, sections }: DraftPanelProps) {
   const ready = llm.status === "ready" || llm.status === "generating";
   return (
     <Card as="section" className="cg-vb-panel" aria-labelledby="cg-vb-draft-title">
       <CardHeader level={2} id="cg-vb-draft-title" title="Draft" subtitle={statusLine} />
+      {sections && (
+        // A <dl> takes no aria-label (axe aria-prohibited-attr), so the group carries the name.
+        <div role="group" aria-label="Who wrote each section">
+          <dl className="cg-vb-origin">
+            {ORIGIN_ROWS.map((r) => (
+              <div key={r.key} className={cx("cg-vb-origin__row", sections[r.key] === "ai" ? "is-ai" : "is-template")}>
+                <dt className="cg-vb-origin__section">{r.title}</dt>
+                <dd className="cg-vb-origin__value">
+                  {sections[r.key] === "ai" ? (
+                    <>
+                      <Sparkles size={13} aria-hidden="true" />
+                      AI draft · checked
+                    </>
+                  ) : (
+                    <>
+                      <FileText size={13} aria-hidden="true" />
+                      {r.template}
+                    </>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
       <Segmented<PeriodDays>
         label="Diary period"
         value={period}

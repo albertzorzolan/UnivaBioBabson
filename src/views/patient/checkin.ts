@@ -369,9 +369,4 @@ export function dedupeSkipped<T extends SkippedLike>(skipped: T[]): { quote: str
   return out;
 }
 
-/** Concept ids for chips, sorted with present ones first. */
-export function sortOthers(others: OtherSymptom[]): OtherSymptom[] {
-  return [...others].sort((a, b) => Number(b.present) - Number(a.present));
-}
-
 export type { ConceptId };

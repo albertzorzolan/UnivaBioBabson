@@ -298,6 +298,31 @@ export function tickAlign(i: number, n: number, plotWidth: number, visibleFrom: 
   return centre >= visibleFrom ? "start" : "end";
 }
 
+/** The day tooltip's width (15.5rem at the default 16px root size); tipWidthFor narrows it on a small screen. */
+export const TIP_WIDTH = 248;
+
+/** Tooltip width for a scroll box `viewport` px wide: never wider than the box, with 4px clear on each side. */
+export function tipWidthFor(viewport: number): number {
+  return viewport > 0 ? Math.min(TIP_WIDTH, viewport - 8) : TIP_WIDTH;
+}
+
+/**
+ * Left edge (plot px) of the day tooltip. It sits beside the hovered column, 10px away, on the preferred side, then
+ * on the other side, and only otherwise is clamped over the column. It always stays inside [visibleFrom, visibleTo],
+ * the stretch of plot x that is on screen. That stretch includes the strip under the sticky row labels (negative x
+ * when the plot is not scrolled), because the tooltip is drawn above them (z-index in caregiver-timeline-chart.css).
+ */
+export function placeTip(o: { colLeft: number; colRight: number; width: number; visibleFrom: number; visibleTo: number; prefer: "start" | "end" }): number {
+  const gap = 10;
+  const right = o.colRight + gap;
+  const left = o.colLeft - gap - o.width;
+  const rightFits = right + o.width <= o.visibleTo;
+  const leftFits = left >= o.visibleFrom;
+  if (o.prefer === "start" ? rightFits : !leftFits && rightFits) return right;
+  if (leftFits) return left;
+  return Math.max(o.visibleFrom, Math.min(right, o.visibleTo - o.width));
+}
+
 /** Symptom strips + rating lines + medication markers on one shared day axis. */
 export function TimelineChart({
   checkIns,
@@ -319,6 +344,8 @@ export function TimelineChart({
   const [plotRef, plotWidth] = useElementWidth<HTMLDivElement>();
   const [scrollRef, scrollWidth, scrollEl] = useElementWidth<HTMLDivElement>();
   const [labelsRef, labelsWidth] = useElementWidth<HTMLDivElement>();
+  // How far the plot is scrolled sideways (narrow screens), so the tooltip can stay on screen.
+  const [scrollLeft, setScrollLeft] = useState(0);
   const colors = useSeriesColors();
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -357,6 +384,7 @@ export function TimelineChart({
   useLayoutEffect(() => {
     const el = scrollEl;
     if (el && el.scrollWidth > el.clientWidth) el.scrollLeft = el.scrollWidth;
+    setScrollLeft(el?.scrollLeft ?? 0);
   }, [from, to, view, scrollEl]);
 
   if (n === 0) return null;
@@ -386,8 +414,25 @@ export function TimelineChart({
 
   const activeDate = active !== null ? days[active] : null;
   const activeCheckIn = activeDate ? byDate.get(activeDate) : undefined;
-  // The tooltip sits beside the hovered column (never over it): to its right on the left 60% of the plot.
-  const tipAnchor: "start" | "end" = active !== null && active / n > 0.6 ? "end" : "start";
+  // The tooltip sits beside the hovered column (never over it when there is room): to its right on the left 60% of
+  // the part on screen, else to its left, and clamped inside what is on screen. In plot px, the scroll box shows
+  // x = scrollLeft − labels width (the sticky labels, which the tooltip covers) to scrollLeft + box − labels width.
+  const viewport = Math.max(0, scrollWidth - 4); // the scroll box has 2px padding each side
+  const tipFrom = scrollLeft - labelsWidth;
+  const tipTo = viewport > labelsWidth ? Math.min(plotWidth, scrollLeft + viewport - labelsWidth) : plotWidth;
+  const tipWidth = tipWidthFor(viewport);
+  const plotShownFrom = Math.max(0, scrollLeft); // first plot x not under the row labels
+  const tipLeft =
+    active !== null && plotWidth > 0
+      ? placeTip({
+          colLeft: (active / n) * plotWidth,
+          colRight: ((active + 1) / n) * plotWidth,
+          width: tipWidth,
+          visibleFrom: tipFrom,
+          visibleTo: tipTo,
+          prefer: ((active + 0.5) / n) * plotWidth - plotShownFrom > 0.6 * (tipTo - plotShownFrom) ? "end" : "start",
+        })
+      : 0;
 
   const style = {
     "--tlc-days": n,
@@ -434,7 +479,7 @@ export function TimelineChart({
       {view === "table" ? (
         <ChartTable days={days} byDate={byDate} markers={markers} label={label} onDayClick={onDayClick} />
       ) : (
-        <div className="cg-tlc__scroll" ref={scrollRef}>
+        <div className="cg-tlc__scroll" ref={scrollRef} onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}>
           <figure className="cg-tlc__figure" aria-labelledby={`${id}-cap`}>
             <figcaption id={`${id}-cap`} className="ui-visually-hidden">
               {label}. One column per day. Use the day buttons or "View as table" for the values.
@@ -619,11 +664,7 @@ export function TimelineChart({
                 </div>
 
                 {activeDate && (
-                  <div
-                    className={cx("cg-tlc__tip", `is-${tipAnchor}`)}
-                    style={{ left: pct(tipAnchor === "start" ? active! + 1 : active!) }}
-                    aria-hidden="true"
-                  >
+                  <div className="cg-tlc__tip" style={{ left: `${tipLeft}px`, width: `${tipWidth}px` }} aria-hidden="true">
                     <DayTip date={activeDate} c={activeCheckIn} canOpen={!!onDayClick && !!activeCheckIn} markers={markers.filter((m) => m.date === activeDate)} />
                   </div>
                 )}

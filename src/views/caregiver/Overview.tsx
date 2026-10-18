@@ -3,8 +3,9 @@
 //   1. "What Kinwise noticed" — up to 3 insights that join timeline signals (before/after a medicine change,
 //      with counts, denominators and the size of the difference), falls/near-falls listed by date, and the medication
 //      review findings for the same medicine. Each ends in a question for the visit. The first card is laid out so a
-//      caregiver sees, without scrolling at 1366×860: headline → before/after bars → "not what caused it" → falls →
-//      the question. Test names, p-values and the Beers detail sit one click away in disclosures.
+//      caregiver sees, without scrolling at 1366×860: headline → before/after bars → "not what caused it" plus one
+//      plain line on chance → falls → the question. Test names, p-values, the measured chance rates and the Beers
+//      detail sit one click away ("How reliable is this?", "Why this medicine is on the list").
 //   2. Stats row — check-ins, dizziness days, falls & near-falls, anticholinergic burden, medicines; every number
 //      opens "Show the records".
 //   3. Symptom timeline chart (shared module), Today, review summary, pinned concerns.
@@ -35,8 +36,7 @@ import { href, navigate, setParams, useRoute } from "../../app/router";
 import { newId } from "../../model/ids";
 import { formatShort } from "../../model/dates";
 import { getMetric, latestCheckInPerDate, windowStat } from "../../engine/timeline/metrics";
-import { formatPValue } from "../../engine/timeline/stats";
-import { MULTIPLE_COMPARISONS_NOTE, TIMELINE_RULES } from "../../engine/timeline/rules";
+import { TIMELINE_RULES } from "../../engine/timeline/rules";
 import { CATEGORY_LABEL } from "../../engine/meds/labels";
 import { getSource } from "../../kb";
 import {
@@ -63,12 +63,13 @@ import {
 import { TimelineChart, excerptText, periodStart } from "../shared/caregiver-TimelineChart";
 import { RecordsDrawer, latestFor, rangeText, type RecordGroup } from "../shared/caregiver-Records";
 import {
+  CHANCE_NOTE,
   STRENGTH_SIZE_WORD,
   fallsComparison,
   reviewPromptsSummary,
-  strengthCalibration,
   triggerFirstSymptoms,
 } from "../shared/caregiver-insights";
+import { ReliabilityDisclosure } from "../shared/caregiver-Reliability";
 import "./overview.css";
 
 const PERIODS = [14, 30, 60] as const;
@@ -91,7 +92,7 @@ interface BarRow {
   after: WindowStat;
   /** This row's own signal strength: each row is labelled by its own size word, never by the headline's. */
   strength: Signal["strength"];
-  /** The test behind this row and its p-value, shown in "How this comparison works". */
+  /** The test behind this row and its p-value, shown in "How reliable is this?". */
   test: Signal["test"];
   pValue: number;
 }
@@ -368,58 +369,19 @@ function FindingLine({ f, more }: { f: Finding; more: number }) {
   );
 }
 
-const TEST_NAME: Record<Signal["test"], string> = { fisher_exact: "Fisher's exact test", mann_whitney: "Mann–Whitney U test" };
-
-/** Strength order for the calibration lines: largest first. */
-const STRENGTH_ORDER: Signal["strength"][] = ["strong", "moderate", "weak"];
-
 /**
- * Under the bars and caveat: for each size word that actually appears on a row (deduplicated, largest first), one line on how
- * often a difference that size appeared by chance in simulated diaries (quoted from rules.ts; see
- * strengthCalibration). A card with only "Large" rows shows only the "large" line, and so on.
+ * "How reliable is this?": the test and p-value behind each bar, the flagging rule (read from rules.ts so it always
+ * matches the code; "moderate" is the lowest flagged strength), then the measured chance rates and the caveat,
+ * rendered verbatim from rules.ts by the shared disclosure.
  */
-function StrengthNote({ bars }: { bars: BarRow[] }) {
-  const present = STRENGTH_ORDER.filter((st) => bars.some((b) => b.strength === st));
-  const lines = present
-    .map((st) => ({ st, text: strengthCalibration(st) }))
-    .filter((x): x is { st: Signal["strength"]; text: string } => x.text !== null);
-  if (lines.length === 0) return null;
-  return (
-    <ul className="cg-ov-strength" role="list" aria-label="How often a difference this size appears by chance">
-      {lines.map(({ st, text }) => (
-        <li key={st} data-strength={st}>
-          <Info size={13} aria-hidden="true" className="cg-ov-strength__icon" />
-          <span>{text}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-/** "How this comparison works": the test and p-value behind each bar, and the measured chance rates. */
 function MethodDisclosure({ bars }: { bars: BarRow[] }) {
   return (
-    <Disclosure summary="How this comparison works" className="cg-ov-insight__disclosure">
-      <div className="cg-ov-method">
-        <ul className="cg-ov-method__tests" role="list" aria-label="Test behind each comparison">
-          {bars.map((b) => (
-            <li key={b.metric}>
-              <TimelineDot metric={b.metric} size={9} />
-              <span>
-                {b.label}: {TEST_NAME[b.test]}, <span className="ui-num">{formatPValue(b.pValue)}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p>
-          {/* The threshold is read from rules.ts so this line always matches the code ("moderate" is the lowest flagged strength). */}
-          Only days with an answer are counted. A difference is shown when it is sizeable and its p-value is below{" "}
-          {TIMELINE_RULES.thresholds.boolean.moderate.p}. “Large difference” is what the Timeline calls a strong pattern,
-          and “Clear difference” a moderate one.{" "}
-          {MULTIPLE_COMPARISONS_NOTE}
-        </p>
-      </div>
-    </Disclosure>
+    <ReliabilityDisclosure
+      className="cg-ov-insight__disclosure"
+      bodyClassName="cg-ov-method"
+      tests={bars.map((b) => ({ key: b.metric, metric: b.metric, label: b.label, test: b.test, pValue: b.pValue }))}
+      method={`Only days with an answer are counted. A difference is shown when it is sizeable and its p-value is below ${TIMELINE_RULES.thresholds.boolean.moderate.p}.`}
+    />
   );
 }
 
@@ -466,15 +428,17 @@ function InsightCard({
             </div>
           </div>
         )}
+        {/* The caveat, then one plain line on chance with no numbers; the measured rates are in "How reliable is
+            this?" below the question, so the question and its button come first on a phone. */}
         {ins.kind === "signal" && (
-          <p className="cg-ov-insight__caveat">
+          <div className="cg-ov-insight__caveat">
             <Info size={16} aria-hidden="true" />
-            <span>{COMPARISON_CAVEAT}</span>
-          </p>
+            <div>
+              <p className="cg-ov-insight__caveat-main">{COMPARISON_CAVEAT}</p>
+              <p className="cg-ov-insight__chance">{CHANCE_NOTE}</p>
+            </div>
+          </div>
         )}
-        {/* After the caveat, so "not what caused it" stays on the first screen: how often each size word shown on
-            the rows appeared by chance. */}
-        {ins.strength && ins.bars.length > 0 && <StrengthNote bars={ins.bars} />}
         {/* Without bars (a falls-only card) the falls line is the evidence itself, so it stays in the main column. */}
         {ins.sentinel && ins.bars.length === 0 && <FallsLine s={ins.sentinel} today={today} />}
         {ins.kind === "finding" && ins.finding && (
@@ -515,7 +479,8 @@ function InsightCard({
               Added to visit questions
             </Badge>
           ) : (
-            <Button size="sm" variant="primary" iconLeft={<Plus size={16} aria-hidden="true" />} onClick={() => onSave(ins)}>
+            // Outline, as on the Review page (FindingCard): "Prepare visit brief" is the page's only filled button.
+            <Button size="sm" variant="secondary" iconLeft={<Plus size={16} aria-hidden="true" />} onClick={() => onSave(ins)}>
               Add to visit questions
             </Button>
           )}
@@ -523,13 +488,13 @@ function InsightCard({
             <ButtonLink
               href={href("/c/timeline", { med: ins.timelineMed })}
               size="sm"
-              variant="secondary"
+              variant="ghost"
               iconLeft={<LineChartIcon size={16} aria-hidden="true" />}
             >
               See timeline
             </ButtonLink>
           ) : (
-            <ButtonLink href={href("/c/review")} size="sm" variant="secondary" iconLeft={<BookOpenCheck size={16} aria-hidden="true" />}>
+            <ButtonLink href={href("/c/review")} size="sm" variant="ghost" iconLeft={<BookOpenCheck size={16} aria-hidden="true" />}>
               See in review
             </ButtonLink>
           )}

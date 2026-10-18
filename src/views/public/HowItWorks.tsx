@@ -41,7 +41,7 @@ import type { FieldError } from "../../engine/nlp/evaluate";
 import { startTour } from "../../app/Tour";
 import { useRoute } from "../../app/router";
 import { HowArchitecture } from "./HowArchitecture";
-import { runMedSuite, runNlpBenchmark, type CorpusRun, type MedRun, type NlpRun } from "./howEval";
+import { floorPct, microRates, pct, runMedSuite, runNlpBenchmark, type CorpusRun, type MedRun, type NlpRun } from "./howEval";
 import { FLOW_STEPS, PROBLEM_STATS, REFS, WHO_FOR, type Ref } from "./howContent";
 import { LIMITATIONS, statusGroups, type Status } from "./howStatus";
 import { RECORDED_RUN, RED_TEAM, RED_TEAM_SENTENCE, type RecordedAsk } from "./modelRun";
@@ -103,8 +103,6 @@ const BEERS_TABLE_LABEL: Record<string, string> = {
 
 // ---------------------------------------------------------------------------------------------
 // Small helpers
-
-const pct = (x: number, digits = 1) => `${(x * 100).toFixed(digits)}%`;
 
 function fmtValue(v: FieldError["gold"]): string {
   if (v === null || v === undefined) return "—";
@@ -170,21 +168,46 @@ type RunState<T> = { status: "idle" } | { status: "running" } | { status: "done"
 /**
  * One corpus' scores. `baseline` (held-out only) is the lexicon-only F1 from the committed results file, shown for
  * comparison when that file has one; it is not re-run live.
+ *
+ * The held-out card is the headline ("primary": first, larger figure; the tour's last step spotlights it). The
+ * development card is "secondary" and prints its scores with `floorPct` (rounded down, as in the PDFs), because the
+ * rules were tuned on that set and its score is the one most likely to flatter.
+ *
+ * The three headline rates are recomputed from tp/fp/fn (`microRates`), as scripts/submission/facts.mjs does: the
+ * report's own rates are pre-rounded to four decimals, and formatting them again would print 97.3% for 106/109.
  */
-function Scorecard({ title, note, c, baseline = null }: { title: string; note: string; c: CorpusRun; baseline?: number | null }) {
+function Scorecard({
+  title,
+  note,
+  c,
+  baseline = null,
+  rank = "primary",
+  fmt = pct,
+  tour,
+}: {
+  title: string;
+  note: string;
+  c: CorpusRun;
+  baseline?: number | null;
+  rank?: "primary" | "secondary";
+  fmt?: (x: number) => string;
+  tour?: string;
+}) {
   const r = c.report;
+  const rates = microRates(r.micro);
   return (
-    <div className="pub-how-score">
+    <div className={`pub-how-score pub-how-score--${rank}`} data-tour={tour}>
       <div className="pub-how-score__head">
+        {rank === "primary" && <p className="pub-how-score__eyebrow">Headline score</p>}
         <h4 className="pub-how-score__title">{title}</h4>
         <p className="pub-how-score__note">{note}</p>
       </div>
       <div className="pub-how-score__hero">
-        <span className="pub-how-score__big ui-num">{pct(r.micro.f1)}</span>
+        <span className="pub-how-score__big ui-num">{fmt(rates.f1)}</span>
         <span className="pub-how-score__big-label">
           micro-F1 over {r.micro.support} labelled answers
           <br />
-          precision {pct(r.micro.precision)} · recall {pct(r.micro.recall)}
+          precision {fmt(rates.precision)} · recall {fmt(rates.recall)}
           {baseline !== null && (
             <>
               <br />
@@ -256,20 +279,28 @@ function NlpResults({ run }: { run: NlpRun }) {
         )}
       </p>
 
+      {/* Held-out first (left on desktop, top on phones): it is the score that was never used for tuning. */}
       <div className="pub-how-scores" data-tour="how-eval-scores">
-        <Scorecard title="Development set" note={`${dev.report.cases} stories, used while building the rules`} c={dev} />
         {heldout ? (
           <Scorecard
             title="Held-out set"
-            note={`${heldout.report.cases} stories written independently, never used for tuning`}
+            note={`${heldout.report.cases} stories written separately from the dev set, never used for tuning`}
             c={heldout}
             baseline={HELDOUT_BASELINE_F1}
+            tour="how-eval-heldout"
           />
         ) : (
           <Callout tone="neutral" title="Held-out set not found">
             Only the development set was available in this build.
           </Callout>
         )}
+        <Scorecard
+          title="Development set"
+          note={`${dev.report.cases} stories, used while building the rules`}
+          c={dev}
+          rank="secondary"
+          fmt={floorPct}
+        />
       </div>
 
       <div className="pub-how-table-wrap">
@@ -550,7 +581,7 @@ function LiveEvaluation() {
           icon={<ScanText size={20} />}
           eyebrow="Benchmark 1 · clinical language processing"
           title="Does it hear her correctly?"
-          subtitle="Hundreds of fictional check-in stories, labelled by hand, including negations, other people’s falls, past events and “what ifs”."
+          subtitle="Hundreds of fictional check-in stories written by separate AI agents directed by the team, with gold labels that follow our annotation guide, including negations, other people’s falls, past events and “what ifs”."
           actions={
             <Button variant="primary" iconLeft={<PlayCircle size={18} />} loading={nlp.status === "running"} onClick={runNlp}>
               {nlp.status === "done" ? "Run again" : "Run the extraction benchmark now"}
@@ -577,7 +608,7 @@ function LiveEvaluation() {
           icon={<ListChecks size={20} />}
           eyebrow="Benchmark 2 · medication review"
           title="Does it flag what the criteria say?"
-          subtitle="Test cases written from the published criteria (AGS Beers 2023, ACB, STEADI/STOPPFall, ThinkCascades, STOPP/START) by an author who did not read the engine."
+          subtitle="Test cases written from the published criteria (AGS Beers 2023, ACB, STEADI/STOPPFall, ThinkCascades, STOPP/START) by a separate AI agent, directed by the team, that did not read the engine code; not clinician-reviewed. The case file was available while the engine was built, so 57/57 shows the code meets a written spec, not a blind test."
           actions={
             <Button variant="secondary" iconLeft={<PlayCircle size={18} />} loading={med.status === "running"} onClick={runMed}>
               {med.status === "done" ? "Run again" : "Run the medication-review suite"}
@@ -700,14 +731,14 @@ function AskOutcome({ a, tone, label }: { a: RecordedAsk; tone: "success" | "cau
   );
 }
 
-/** A long recorded quote shortened to its first sentence; the ellipsis sits outside the quote marks. */
-function firstSentence(text: string): { quote: string; cut: boolean } {
-  const sentence = text.match(/^[^.!?]+[.!?]/)?.[0].trim();
-  return sentence && sentence.length < text.trim().length ? { quote: sentence, cut: true } : { quote: text, cut: false };
-}
-
 function ModelRun() {
   const r = RECORDED_RUN;
+  // Six sentences come from five outputs (two share one explanation); the explanations are also shown whole below.
+  const flawedOutputs = [...new Set(r.flawed.map((f) => f.output))];
+  const flawedFull = flawedOutputs.flatMap((output) => {
+    const full = r.flawed.find((f) => f.output === output && f.full)?.full;
+    return full ? [{ output, ...full }] : [];
+  });
   return (
     <div className="pub-how-run">
       <p className="pub-how-run__stamp">
@@ -736,19 +767,18 @@ function ModelRun() {
           <h3 id="run-flawed-title" className="pub-how-run__title">
             <TriangleAlert size={18} aria-hidden="true" /> What the code check let through
           </h3>
+          <p className="pub-how-run__meta">
+            At least <span className="ui-num">{r.flawed.length}</span> flawed sentences from{" "}
+            <span className="ui-num">{flawedOutputs.length}</span> AI outputs, each quoted exactly as logged.
+          </p>
           <ul className="pub-how-run__flaws pub-how-run__flaws--stack" role="list">
-            {r.flawed.map((f) => {
-              const { quote, cut } = firstSentence(f.quote);
-              return (
-                <li key={f.where}>
-                  <span className="pub-how-run__where">{f.where}</span>
-                  <span className="pub-how-run__flaw-quote">
-                    <q>{quote}</q>
-                    {cut && <span className="pub-how-muted"> … (shortened; full text below)</span>}
-                  </span>
-                </li>
-              );
-            })}
+            {/* One sentence per item, so nothing is shortened; the two explanations appear whole further down. */}
+            {r.flawed.map((f) => (
+              <li key={f.where}>
+                <span className="pub-how-run__where">{f.where}</span>
+                <q className="pub-how-run__flaw-quote">{f.quote}</q>
+              </li>
+            ))}
           </ul>
         </section>
       </div>
@@ -784,18 +814,25 @@ function ModelRun() {
             <blockquote className="pub-how-run__quote pub-how-run__quote--system">{r.blockedExplain.message}</blockquote>
           </section>
         </div>
-        <ul className="pub-how-run__flaws pub-how-run__flaws--full" role="list" aria-label="The flawed outputs in full">
-          {r.flawed.map((f) => (
-            <li key={f.where}>
-              <span className="pub-how-run__where">{f.where}, in full</span>
-              <q className="pub-how-run__flaw-quote">{f.quote}</q>
-            </li>
-          ))}
-        </ul>
+        {flawedFull.length > 0 && (
+          <ul className="pub-how-run__flaws pub-how-run__flaws--full" role="list" aria-label="The flawed explanations in full">
+            {flawedFull.map((f) => (
+              <li key={f.output}>
+                <span className="pub-how-run__where">Explanation of “{f.finding}”, in full</span>
+                <q className="pub-how-run__flaw-quote">{f.text}</q>
+              </li>
+            ))}
+          </ul>
+        )}
         <figure className="pub-how-run__verdict">
           <figcaption>Verdict written with the run</figcaption>
           <blockquote>{r.verdict}</blockquote>
         </figure>
+        {/* The verdict text stays as recorded; this line accounts for the gap between its three and the six above. */}
+        <p className="pub-how-fine">
+          The verdict named three; a later read of the same log for the red-team set found three more sentences
+          (<code>eval/verifier-redteam.json</code> live-04 to live-06), which are listed above.
+        </p>
         <p className="pub-how-fine">
           The run’s demo dates differ from today’s because the demo record is generated relative to the current date.
           {/* Shown only with its post-fix probe (modelRun.ts redTeamSentence): the score alone would overstate the check. */}
@@ -928,7 +965,8 @@ function Trust() {
               <CircleCheck size={18} aria-hidden="true" />
               <span>
                 The app’s files come from GitHub Pages, like any web page. The optional AI model downloads once from Hugging
-                Face (its graphics library from the WebLLM project’s GitHub). Your records never leave this device.
+                Face (its graphics library from the WebLLM project’s GitHub). Your records stay on this device unless you print or
+                export them.
               </span>
             </li>
             <li>
@@ -1033,7 +1071,8 @@ export function HowItWorks() {
     if (!section || !(SECTIONS.some((s) => s.id === section) || REFERENCE_BLOCKS.includes(section))) return;
     const timer = window.setTimeout(() => jump(section), 250);
     return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Deliberately keyed on `section` alone: `jump` is recreated on every render and `reduceMotion` only changes how
+    // it scrolls, so re-running on them would jump back to the section after the reader has scrolled away.
   }, [section]);
 
   return (

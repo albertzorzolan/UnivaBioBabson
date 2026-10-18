@@ -88,6 +88,9 @@ export function Review() {
     return c;
   }, [review.findings, decisions]);
   const linkedCount = review.findings.filter((f) => f.relatedSymptoms.length > 0 || f.signalIds.length > 0).length;
+  // The progress pills ("0 to discuss", "0 discussed", …) only say something once a prompt has a status: until
+  // then the tally shows the prompt count (and diary links / saved questions when there are any).
+  const anyStatusSet = statusCounts.to_discuss + statusCounts.discussed + statusCounts.dismissed > 0;
 
   // A new medicine scope starts from all categories.
   useEffect(() => setFilter("all"), [medFilter]);
@@ -199,23 +202,31 @@ export function Review() {
         <li>
           <strong className="ui-num">{review.findings.length}</strong> review {review.findings.length === 1 ? "prompt" : "prompts"}
         </li>
-        <li>
-          <strong className="ui-num">{linkedCount}</strong> seen in the diary
-        </li>
-        <li>
-          <strong className="ui-num">{statusCounts.to_discuss}</strong> to discuss
-        </li>
-        <li>
-          <strong className="ui-num">{statusCounts.discussed}</strong> discussed
-        </li>
-        <li>
-          <strong className="ui-num">{statusCounts.dismissed}</strong> not relevant
-        </li>
-        <li>
-          <a href={href("/c/brief")}>
-            <strong className="ui-num">{data.savedQuestions.length}</strong> visit {data.savedQuestions.length === 1 ? "question" : "questions"} saved
-          </a>
-        </li>
+        {linkedCount > 0 && (
+          <li>
+            <strong className="ui-num">{linkedCount}</strong> seen in the diary
+          </li>
+        )}
+        {anyStatusSet && (
+          <>
+            <li>
+              <strong className="ui-num">{statusCounts.to_discuss}</strong> to discuss
+            </li>
+            <li>
+              <strong className="ui-num">{statusCounts.discussed}</strong> discussed
+            </li>
+            <li>
+              <strong className="ui-num">{statusCounts.dismissed}</strong> not relevant
+            </li>
+          </>
+        )}
+        {data.savedQuestions.length > 0 && (
+          <li>
+            <a href={href("/c/brief")}>
+              <strong className="ui-num">{data.savedQuestions.length}</strong> visit {data.savedQuestions.length === 1 ? "question" : "questions"} saved
+            </a>
+          </li>
+        )}
       </ul>
 
       <div className="cg-review__cards">

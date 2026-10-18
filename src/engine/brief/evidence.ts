@@ -202,8 +202,25 @@ export function fallsText(days: CheckIn[], from: ISODate, to: ISODate): { text: 
   return { text, data: { from, to, dates: all, checkInIds: [...f.ids, ...n.ids], positive: f.dates.length + n.dates.length } };
 }
 
-/** "1 fall (Oct 5) and 2 near-falls (Sep 26, Sep 29)" / "no falls or near-falls" for one window. */
-function sentinelList(days: CheckIn[], from: ISODate, to: ISODate, ref: ISODate): { text: string; answered: number; dates: ISODate[]; ids: string[] } {
+/** Falls and near-falls of one window (see sentinelList). */
+export interface SentinelList {
+  /** "1 fall (Oct 5) and 2 near-falls (Sep 26, Sep 29)" / "no falls or near-falls". */
+  text: string;
+  /** Days with the fall or the near-fall question answered. */
+  answered: number;
+  /** Fall days and near-fall days, sorted. */
+  dates: ISODate[];
+  falls: ISODate[];
+  nearFalls: ISODate[];
+  /** Check-in ids of those days. */
+  ids: string[];
+}
+
+/**
+ * Falls and near-falls in one window, with dates. Exported so the brief's "At a glance" box restates exactly the
+ * list a falls sentence was built from (same days, same wording).
+ */
+export function sentinelList(days: CheckIn[], from: ISODate, to: ISODate, ref: ISODate): SentinelList {
   const inWin = days.filter((c) => c.date >= from && c.date <= to);
   const answered = inWin.filter((c) => metricValue(c, "fall") !== null || metricValue(c, "nearFall") !== null).length;
   const falls = inWin.filter((c) => metricValue(c, "fall") === 1);
@@ -215,7 +232,20 @@ function sentinelList(days: CheckIn[], from: ISODate, to: ISODate, ref: ISODate)
     text: parts.length ? parts.join(" and ") : "no falls or near-falls",
     answered,
     dates: [...falls, ...nears].map((c) => c.date).sort(),
+    falls: falls.map((c) => c.date),
+    nearFalls: nears.map((c) => c.date),
     ids: [...falls, ...nears].map((c) => c.id),
+  };
+}
+
+/** The before/after windows of a medicine's start and the falls/near-falls in each (fallsSinceStartText's parts). */
+export function fallsSinceStartParts(days: CheckIn[], med: Medication, today: ISODate): { windows: EventWindows; after: SentinelList; before: SentinelList } {
+  const change: MedChange = { medicationId: med.id, kind: "started", date: med.startDate };
+  const windows: EventWindows = eventWindows(med, change, today);
+  return {
+    windows,
+    after: sentinelList(days, windows.after.from, windows.after.to, today),
+    before: sentinelList(days, windows.before.from, windows.before.to, today),
   };
 }
 
@@ -226,10 +256,7 @@ function sentinelList(days: CheckIn[], from: ISODate, to: ISODate, ref: ISODate)
  * 21 days before."
  */
 export function fallsSinceStartText(days: CheckIn[], med: Medication, today: ISODate): { text: string; data: EvidenceData } {
-  const change: MedChange = { medicationId: med.id, kind: "started", date: med.startDate };
-  const w: EventWindows = eventWindows(med, change, today);
-  const after = sentinelList(days, w.after.from, w.after.to, today);
-  const before = sentinelList(days, w.before.from, w.before.to, today);
+  const { windows: w, after, before } = fallsSinceStartParts(days, med, today);
   const beforeDays = daysBetween(w.before.from, w.before.to) + 1;
   const name = medName(med);
   const lead =

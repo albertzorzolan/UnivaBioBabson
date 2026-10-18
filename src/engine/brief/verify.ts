@@ -19,6 +19,10 @@
 //      condition ("delirium", "stroke") must appear in the cited text, "since then" needs a date or a
 //      medicine start in the same sentence, a near-copy of the evidence may not drop its verb, and
 //      "<medicine> for <reason>" must match how the records describe that medicine.
+//   7. Medicine actions (added after the third red-team round, see "Medicine-action rule" below): a statement
+//      in which a medicine is the thing acted on by a word from a fixed action lexicon ("pause the lorazepam",
+//      "the Tylenol PM can be left out") is dropped, whatever the phrasing around it. Unlike the advice
+//      patterns in rule 4 this needs no "should" or "you": the structure alone is enough.
 //
 // Failing sentences are dropped by the caller (src/ai/tasks.ts) and counted in GenerationInfo.
 
@@ -534,6 +538,135 @@ function drugPatterns(d: string): { pattern: RegExp; detail: string }[] {
       pattern: new RegExp(`${D}\\s+(?:is|are|seems?|looks?|appears?)\\s+(?:to be\\s+)?(?:\\w+\\s+)?(?:fine|okay|ok|alright|appropriate|reasonable|acceptable|well[- ]tolerated)\\b`, "i"),
     },
   ];
+}
+
+// ---------------------------------------------------------------------------
+// Medicine-action rule (see header, rule 7)
+//
+// The advice patterns above list ways of *saying* "change the medicine" ("should stop", "can skip"). Paraphrases
+// kept escaping them: the post-fix probe 2 missed "It makes sense to pause the lorazepam until the visit." and
+// "The Tylenol PM can be left out at bedtime." Stopping a regularly used benzodiazepine abruptly is a recognised
+// withdrawal risk (the app's own Beers text says it is changed gradually with the prescriber), so this rule is
+// structural instead: in a statement, a medicine may not be the object of an action word, in any wording.
+//
+//   active    <action> [the/her/bedtime/dose of …] <medicine>      "pause the lorazepam", "cut back on the Ativan"
+//   split     <leave|give> <medicine> <out|up>                    "leave the Tylenol PM out"
+//   passive   <medicine> [can/could …] <be|is|was|…> <done>       "the Tylenol PM can be left out"
+//
+// <medicine> is a name on the person's list or in the drug vocabulary, a generic word ("the sleeping pill"), or
+// "it"/"them" when the same sentence names a medicine. A medicine as the *subject* of the verb is not an action
+// on it ("Furosemide can lower the sodium level"), so the KB's own wording passes.
+// Record forms ("Mom skipped her Tylenol PM", "the lorazepam was stopped") are allowed only when the cited text
+// uses the same verb: then the sentence restates a record instead of proposing a change. Questions to the
+// clinician ("Could the Tylenol PM be left out on some nights?") stay with the question rules in rule 4; a
+// statement preamble before a question ("It makes sense to pause X; could …?") is still checked, and so is the
+// whole of a "why" question ("Why not pause the lorazepam until the visit?"), which takes the action as given,
+// as the causal rules already treat it (SentenceShape.presupposing).
+
+/**
+ * The action lexicon. `label` is the word shown in the reason, `propose` the forms that propose an action (base,
+ * gerund, infinitive), `record` the forms that can report one (past tense, "-s", participle after "is/was").
+ * `split` entries also take the medicine between the verb and its particle ("leave the Tylenol PM out").
+ */
+const MED_ACTIONS: {
+  label: string;
+  propose: string;
+  record: string;
+  participle: string;
+  split?: { propose: string; record: string; particle: string };
+  /** The proposing form passes when the cited text contains the same words (a dose copied from the med record). */
+  restatable?: boolean;
+  /** Only a named medicine counts, not a generic word or "it" ("taking two medicines that …" is a record). */
+  namedOnly?: boolean;
+}[] = [
+  { label: "pause", propose: "paus(?:e|ing)", record: "paused|pauses", participle: "paused" },
+  { label: "hold", propose: "hold(?:ing)?(?:\\s+off(?:\\s+on)?)?", record: "held|holds", participle: "held(?:\\s+off)?" },
+  { label: "skip", propose: "skip(?:ping)?", record: "skipped|skips", participle: "skipped" },
+  { label: "leave out", propose: "leav(?:e|ing)\\s+out", record: "left\\s+out|leaves\\s+out", participle: "left\\s+out", split: { propose: "leav(?:e|ing)", record: "left|leaves", particle: "out" } },
+  { label: "cut back", propose: "cut(?:s|ting)?\\s+(?:back|down)(?:\\s+on)?", record: "(?!)", participle: "cut\\s+(?:back|down)" },
+  { label: "lower", propose: "lower(?:ing)?", record: "lowered|lowers", participle: "lowered" },
+  { label: "reduce", propose: "reduc(?:e|ing)", record: "reduced|reduces", participle: "reduced" },
+  { label: "decrease", propose: "decreas(?:e|ing)", record: "decreased|decreases", participle: "decreased" },
+  // "cut" is also its own past tense, so (like "quit") every "cut out" counts as proposing: the conservative side.
+  { label: "cut out", propose: "cut(?:ting)?\\s+out", record: "(?!)", participle: "cut\\s+out", split: { propose: "cut(?:ting)?", record: "(?!)", particle: "out" } },
+  { label: "taper", propose: "taper(?:ing)?", record: "tapered|tapers", participle: "tapered" },
+  { label: "wean", propose: "wean(?:ing)?(?:\\s+off)?", record: "weaned|weans", participle: "weaned(?:\\s+off)?" },
+  { label: "switch", propose: "switch(?:ing)?", record: "switched|switches", participle: "switched" },
+  { label: "drop", propose: "drop(?:ping)?", record: "dropped|drops", participle: "dropped" },
+  { label: "come off", propose: "(?:come|coming)\\s+off", record: "came\\s+off|comes\\s+off", participle: "(?!)" },
+  { label: "stop", propose: "stop(?:ping)?", record: "stopped|stops", participle: "stopped" },
+  // "quit" is also its own past tense, so "Mom quit the Tylenol PM" counts as proposing: the conservative side.
+  { label: "quit", propose: "quit(?:ting)?", record: "quits", participle: "quit" },
+  { label: "swap", propose: "swap(?:ping)?", record: "swapped|swaps", participle: "swapped" },
+  { label: "replace", propose: "replac(?:e|ing)", record: "replaced|replaces", participle: "replaced" },
+  { label: "try without", propose: "try(?:ing)?\\s+without", record: "tried\\s+without|tries\\s+without", participle: "(?!)" },
+  { label: "do without", propose: "(?:do|doing|go|going)\\s+without", record: "did\\s+without|went\\s+without|does\\s+without|goes\\s+without", participle: "(?!)" },
+  { label: "give up", propose: "giv(?:e|ing)\\s+up", record: "gave\\s+up|gives\\s+up", participle: "given\\s+up", split: { propose: "giv(?:e|ing)", record: "gave|gives", particle: "up" } },
+  { label: "take a break from", propose: "tak(?:e|ing)\\s+a\\s+break\\s+from", record: "took\\s+a\\s+break\\s+from", participle: "(?!)" },
+  { label: "halve", propose: "halv(?:e|ing)", record: "halved|halves", participle: "halved" },
+  { label: "double", propose: "doubl(?:e|ing)", record: "doubled|doubles", participle: "doubled" },
+  { label: "increase", propose: "increas(?:e|ing)", record: "increased|increases", participle: "increased" },
+  { label: "up the dose", propose: "up(?:ping)?\\s+(?:the|her|his|their)\\s+dose(?:\\s+of)?", record: "upped", participle: "upped" },
+  // Extra doses ("Mom could take two lorazepam tablets", "give Mom an extra lorazepam"): one optional word for the
+  // person, then a word that adds a dose. Proposal-only ("takes"/"took" do not match), and a dose restated from the
+  // cited med record ("take 2 caplets of Tylenol PM" when the record says so) passes.
+  {
+    label: "extra dose",
+    propose: "(?:tak(?:e|ing)|giv(?:e|ing))\\s+(?:[\\w'-]+\\s+)?(?:(?:an?|one)\\s+)?(?:extra|another|additional|more|second|two|2)",
+    record: "(?!)",
+    participle: "(?!)",
+    restatable: true,
+    namedOnly: true,
+  },
+];
+
+/** Words allowed between the action and the medicine ("skip a night of the bedtime lorazepam"). */
+const ACTION_FILLER =
+  "(?:the|her|his|their|its|this|that|these|those|a|an|some|any|all|one|of|nightly|bedtime|evening|night-?time|daily|regular|usual|new|current|dose|doses|dosage|night|nights|tablet|tablets|pill|pills|caplet|caplets)";
+/** Auxiliaries of the passive: "be/being/get" propose ("can be left out"), the rest report ("was stopped"). */
+const PASSIVE_PROPOSE = "be|get|getting";
+const PASSIVE_RECORD = "is|are|was|were|been|being|gets|got";
+
+/**
+ * The first medicine action in one sentence, or null. `refs` are the medicine references to look for (escaped
+ * regex alternatives, longest first); `statementOnly` is false for a question's preamble, where only the
+ * proposing forms count (a conditional "If it is ever lowered, …?" reports nothing). `support` is the cited text.
+ */
+function medicineAction(sentence: string, refs: string[], support: string, statementOnly: boolean): string | null {
+  if (!refs.length) return null;
+  const refPattern = (r: string[]) => `(?:${r.join("|")})\\b(?:\\s*\\([^)]*\\))*`;
+  const ALL_REFS = refPattern(refs);
+  const named = refs.filter((r) => r !== MED_WORDS && r !== "it" && r !== "them");
+  const gap = `(?:${ACTION_FILLER}\\s+){0,3}`;
+  for (const a of MED_ACTIONS) {
+    if (a.namedOnly && !named.length) continue;
+    const REF = a.namedOnly ? refPattern(named) : ALL_REFS;
+    const forms: { re: RegExp; record: boolean }[] = [
+      // (?<![\\w-]): the last part of a compound adjective is not an action ("blood-pressure-lowering medicine").
+      { re: new RegExp(`(?<![\\w-])(?:${a.propose})\\s+${gap}${REF}`, "i"), record: false },
+      { re: new RegExp(`(?<![\\w-])(?:${a.record})\\s+${gap}${REF}`, "i"), record: true },
+      { re: new RegExp(`\\b${REF}\\s+(?:[\\w'-]+\\s+){0,3}?(?:${PASSIVE_PROPOSE})\\s+(?:\\w+\\s+)?(?:${a.participle})\\b`, "i"), record: false },
+      { re: new RegExp(`\\b${REF}\\s+(?:[\\w'-]+\\s+){0,3}?(?:${PASSIVE_RECORD})\\s+(?:\\w+\\s+)?(?:${a.participle})\\b`, "i"), record: true },
+    ];
+    if (a.split) {
+      // One extra word may follow the name ("leave the Tylenol PM out" when only "tylenol" is in the vocabulary).
+      const { propose, record, particle } = a.split;
+      forms.push(
+        { re: new RegExp(`\\b(?:${propose})\\s+${gap}${REF}(?:\\s+[\\w-]+)?\\s+${particle}\\b`, "i"), record: false },
+        { re: new RegExp(`\\b(?:${record})\\s+${gap}${REF}(?:\\s+[\\w-]+)?\\s+${particle}\\b`, "i"), record: true },
+      );
+    }
+    for (const f of forms) {
+      const m = f.re.exec(sentence);
+      if (!m) continue;
+      if (f.record && !statementOnly) continue;
+      if (a.restatable && support.toLowerCase().includes(m[0].toLowerCase())) continue;
+      // A record form restating the cited text ("Alex wrote that Mom skipped her Tylenol PM").
+      if (f.record && new RegExp(`\\b(?:${a.propose}|${a.record})\\b`, "i").test(support)) continue;
+      return a.label;
+    }
+  }
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -1053,6 +1186,14 @@ export function verifyClaims(
         if (m) issues.push({ code: "banned", detail: `${p.detail} ("${m[0].trim()}")` });
       }
     }
+
+    // Rule 7: a medicine as the thing acted on ("pause the lorazepam"), checked on the statement part, or on the
+    // whole sentence for a "why" question (only the proposing forms count there, as asStatement is false).
+    const named = [...detectDrugNames(sentence, opts.knownDrugNames), ...medTokens.filter((x) => new RegExp(`\\b${escapeRegExp(x)}\\b`, "i").test(sentence))];
+    const refs = [...new Set(named)].sort((a, b) => b.length - a.length).map(escapeRegExp);
+    const actionScope = shape.presupposing ? sentence : statementPart;
+    const action = medicineAction(actionScope, [...refs, MED_WORDS, ...(refs.length ? ["it", "them"] : [])], supportJoined, asStatement);
+    if (action) issues.push({ code: "banned", detail: `advice: names a medicine together with an action word ("${action}")` });
 
     // A listed condition applied to this person is a diagnosis, whatever the cited text says. Like the other
     // diagnosis rules this has no question allowance ("Could her confusion be delirium?" is blocked too).

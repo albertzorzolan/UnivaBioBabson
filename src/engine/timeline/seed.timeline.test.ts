@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import type { Medication, MetricKey } from "../../model/types";
 import { addDays, formatShort } from "../../model/dates";
 import { DEMO_TODAY_OFFSETS, createSeed } from "../../model/seed";
-import { analyzeTimeline, describeSignal } from "./signals";
+import { TIMELINE_RULES, analyzeTimeline, describeSignal } from "./signals";
 
 const TODAY = "2026-10-10";
 const O = DEMO_TODAY_OFFSETS;
@@ -62,6 +62,19 @@ describe("timeline on the demo seed (createSeed)", () => {
     expect(p.drowsiness).toBeCloseTo(0.0060732, 6);
     expect(p.confusion).toBeCloseTo(0.0215844, 6);
     expect(p.energy).toBeCloseTo(0.0035176, 6);
+  });
+
+  it("runs the runs check on every flagged item; it is report-only, so the strengths above are unchanged", () => {
+    // TIMELINE_RULES.runsCheck.gate is off: these p-values are recorded but do not change any strength. With the gate
+    // on, all five would stay flagged, but drowsiness (p = 0.011 ≥ 0.01) would drop from strong to moderate.
+    expect(TIMELINE_RULES.runsCheck.gate).toBe(false);
+    const runs = Object.fromEntries(result.signals.map((s) => [s.metric, s.runsCheck]));
+    expect(runs.dizziness).toEqual({ p: 0.007, blockDays: 4, permutations: 999, passed: true });
+    expect(runs.drowsiness).toEqual({ p: 0.011, blockDays: 4, permutations: 999, passed: false });
+    expect(runs.confusion).toMatchObject({ p: 0.005, passed: true });
+    expect(runs.energy).toMatchObject({ p: 0.016, passed: true });
+    expect(runs.sleep).toMatchObject({ p: 0.006, passed: true });
+    for (const s of result.signals) expect(s.runsCheck!.p).toBeLessThan(0.05); // every signal would stay flagged
   });
 
   it("renders the sentences the brief and the demo script quote", () => {

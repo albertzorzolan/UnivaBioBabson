@@ -13,9 +13,9 @@
 //
 // What it does:
 //   0. Checks that docs/DEMO-SCRIPT.md contains every narration line below, word for word (fails unless
-//      ALLOW_MISMATCH=1), that the hook card's statistics are still in kb-src/research/market-evidence.md, and that
-//      every atPhrase cue is in its shot's narration. The evaluation numbers in the narration are read from
-//      eval/results/*.json at startup.
+//      ALLOW_MISMATCH=1), that the hook card's statistics (Gandhi et al., NEJM 2003; CDC falls) are still in
+//      kb-src/research/market-evidence.md, and that every atPhrase cue is in its shot's narration. The evaluation
+//      numbers in the narration are read from eval/results/*.json at startup.
 //   1. Writes each shot's narration to an .aiff with macOS `say` (or takes NARRATION_DIR/<shot id>[.<variant>].wav,
 //      .m4a or .aiff when that file exists) and measures it with ffprobe FIRST, so every shot stays on screen at
 //      least as long as its narration. A shot's optional `spoken` text (phonetic respellings such as "fire" for
@@ -28,6 +28,10 @@
 //      then drafts the plainer answer in the Ask shot. Every other screen is deterministic code (the visit brief
 //      uses the standard template). Requests to model hosts are blocked, so nothing is downloaded from the
 //      internet. If the local model files are missing, or NO_AI=1, the template-only narration is used instead.
+//      Every route the video visits is also opened once off camera (warmRoutes), so no lazily loaded page shows its
+//      loading skeleton on camera. A shot that changes page does so in its ENTER step, before its clock starts, and
+//      every shot waits for the page's main heading and for no loading skeleton (waitForScreen) before its chapter
+//      label and narration begin, so the narration never plays over a half-loaded page.
 //      A visible cursor is injected so viewers can follow the clicks, plus recorder-only overlays (never app code):
 //      a highlight ring and short zoom-ins ("punch-ins") timed to the narration, a chapter label at each shot start
 //      and burned-in captions for muted viewers. They live in one popover in the browser's top layer, so they also
@@ -37,7 +41,8 @@
 //      sync marker in the bottom-right corner changes colour at every shot start and cursor move. ffmpeg finds
 //      those changes in the raw frames, retimes each segment back to real time (setpts), paints the marker out
 //      (delogo), converts to H.264 mp4 (yuv420p, 30 fps, crf 20), places each narration clip at its shot start
-//      (adelay + amix normalize=0) and muxes.
+//      (adelay + amix normalize=0), normalises the loudness to -16 LUFS with -1.5 dBTP peaks (loudnorm, the usual
+//      level for online video; the `say` mix was about -19 dB) and muxes.
 //   5. Writes kinwise-demo.mp4 and kinwise-demo.srt to OUT_DIR (default submission/) and timings.json to the
 //      working folder, which is always under tmp/ (see WORK below).
 //
@@ -46,7 +51,7 @@
 import { spawn, execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
 import { CODE_URL as CODE_LINK, DEMO_URL, REPO_BRANCH, shortUrl } from "./lib.mjs";
 
@@ -84,6 +89,8 @@ const VIEW = { width: 1440, height: 900 };
 const RATE = Number(process.env.RATE ?? 175); // words per minute for `say`
 const LEAD_IN = 0.3; // s between a shot's start and its narration
 const TAIL = 0.45; // s of breathing room after a shot's narration (a shot can override it with `tail`)
+// Loudness normalisation for the mixed narration (ffmpeg loudnorm: -16 LUFS integrated, -1.5 dBTP true peak).
+export const AUDIO_LOUDNORM = "loudnorm=I=-16:TP=-1.5";
 const SESSION_KEY = "kinwise.v1.session";
 const SCRIPT_DOC = join(ROOT, "docs", "DEMO-SCRIPT.md");
 
@@ -115,43 +122,50 @@ const EVAL = readEvalNumbers();
 // ---------------------------------------------------------------------------------------------------------------
 // Narration. Health-language rules (docs/SPEC.md §3): no causal claims, no safe/unsafe, no stop/start/change
 // advice, numerators AND denominators, questions for the clinician, honest about finished vs planned.
-// Sources for every number: CDC Older Adult Falls, "more than 1 in 4 … less than half tell their doctor"
-// (kb-src/research/market-evidence.md row 4) and NCHS Health, United States, 43.0% of adults 65+ on 5 or more
-// prescription drugs, 2017–March 2020 (market-evidence.md row 1), both on the hook card only; Margaret 78, eight
-// medicines, urgent-care sleeping pill (seed, src/model/seed.ts: lorazepam started at an urgent care visit for
-// "my nerves and the not sleeping"); 9 of 14 / 2 of 19, 1 fall + 2 near-falls, 2 of 14 near-fall days (seed +
-// live app); ACB 7 (live app, src/model/seed.test.ts); 3 new prompts for Advil PM (live preview); 270 FHIR
-// resources (live app, docs/samples/kinwise-fhir-bundle.json); held-out micro-F1 and story count
-// (eval/results/nlp-eval.json) and cases passed (eval/results/meds-eval.json), read by readEvalNumbers(). The
-// on-device model's text is never quoted in the narration; the recorder checks what it puts on screen passed the
-// app's checks and contains no banned wording (BANNED_ON_SCREEN).
+// Sources for every number: the hook is Gandhi et al., NEJM 2003 (kb-src/research/market-evidence.md row 7: of the
+// ameliorable adverse drug events in primary care, 37% were attributed to the patient not telling the physician;
+// "more than a third" is that 37%, and "could have been eased" is the paper's "ameliorable"). The 19-of-51 counts
+// behind it are deliberately not used (market-evidence.md notes they were not re-checked). The hook card adds the
+// CDC falls figure, "less than half tell their doctor" (market-evidence.md row 4), on the card only. Margaret 78,
+// eight medicines, urgent-care sleeping pill (seed, src/model/seed.ts: lorazepam started at an urgent care visit for
+// "my nerves and the not sleeping"); 9 of 14 / 2 of 19, 1 fall + 2 near-falls, 2 of 14 near-fall days (seed + live
+// app); Fisher's exact test p = 0.0023 for dizziness 9 of 14 vs 2 of 19 (src/engine/timeline/stats.ts fisherExact,
+// shown by the live timeline); ACB 7 (live app, src/model/seed.test.ts); "3-billion-parameter" is Qwen2.5 3B
+// Instruct, the model the Ask badge names; 270 FHIR resources (live app, docs/samples/kinwise-fhir-bundle.json);
+// held-out micro-F1 and story count (eval/results/nlp-eval.json) and cases passed (eval/results/meds-eval.json), read
+// by readEvalNumbers(). The on-device model's text is never quoted in the narration; the recorder checks what it puts
+// on screen passed the app's checks and contains no banned wording (BANNED_ON_SCREEN).
+//
+// Order (judges mostly watch the first minute): the problem, the people, her check-in, what Alex sees, then the
+// medication review (from about 0:50) with the AI safety net, the statistics, the on-device AI draft in Ask, the
+// brief, the live evaluation, the honest status and the end card.
 //
 // Fields: `title` is the chapter label shown at the shot's start; `spoken` (optional) is what `say` reads instead
 // of `narration`; `narrationNoAi` replaces `narration` in the template-only cut; `aiOnly` shots are left out of
 // that cut; `variants` holds alternative narrations, one of which CHOOSE[id] picks from the screen just before the
 // shot starts (audio for every variant is made up front); `tail` and `minSec` adjust how long the shot holds.
 
-const ALL_SHOTS = [
+export const ALL_SHOTS = [
   {
     id: "hook",
     title: "The problem",
     route: "#/ (title card over Welcome)",
-    narration: "More than one in four older adults fall each year, and less than half tell their doctor.",
+    narration:
+      "In a primary-care study, more than a third of medicine side effects that could have been eased went on because the doctor was never told.",
     tail: 0.15,
     chapter: false,
   },
   {
     id: "who",
-    title: "Who it is for",
-    route: "#/",
+    title: "Margaret and Alex",
+    route: "#/ → #/p/today",
     narration:
       "Meet Margaret, seventy-eight, on eight medicines, and her daughter Alex, both fictional. " +
-      "After urgent care started a new sleeping pill, Alex thinks Mom seems foggier. " +
-      "Kinwise helps families notice what changes after a medicine change, and bring a clear question to the doctor.",
+      "Urgent care started a new sleeping pill.",
   },
   {
     id: "checkin",
-    title: "Check-in in her own words",
+    title: "Her check-in, in her own words",
     route: "#/p/today",
     narration: "Margaret describes her day in her own words. A clinical language engine reads it on her device.",
   },
@@ -164,41 +178,34 @@ const ALL_SHOTS = [
       "Sofia's fall is set aside as someone else's. Margaret confirms each answer before saving.",
   },
   {
+    // ENTER.overview switches to Alex with the in-app "Demo: switch to Alex's view" control, off the narration.
     id: "overview",
     title: "What Alex sees",
     route: "#/c/overview",
     narration:
-      "Alex signs in. Since lorazepam started, dizziness was recorded on 9 of 14 answered days, " +
+      "Since lorazepam started, dizziness was recorded on 9 of 14 answered days, " +
       "compared with 2 of 19 before. One fall and two near-falls were recorded on those 14 days. " +
       "It shows a change in what was recorded, not what caused it.",
   },
   {
-    id: "timeline",
-    title: "Before and after, with statistics",
-    route: "#/c/timeline",
-    narration:
-      "The timeline compares answered days before and after, with Fisher's exact and Mann-Whitney tests. " +
-      "Falls are listed by date: too few to test.",
-  },
-  {
     id: "review",
-    title: "Medication review, with sources",
+    title: "Medication review: code, with sources",
     route: "#/c/review",
     narration:
-      "The review checks her eight medicines against AGS Beers 2023, anticholinergic burden, " +
+      "Deterministic code, not AI, checks her eight medicines against AGS Beers 2023, anticholinergic burden, " +
       "where she scores 7, fall-risk lists, and possible prescribing cascades, like furosemide for ankle swelling after amlodipine. " +
       "Each finding ends in a sourced question for her doctor or pharmacist.",
     spoken:
-      "The review checks her eight medicines against A G S Beers 2023, anticholinergic burden, " +
+      "Deterministic code, not A I, checks her eight medicines against A G S Beers 2023, anticholinergic burden, " +
       "where she scores 7, fall-risk lists, and possible prescribing cascades, like furosemide for ankle swelling after amlodipine. " +
       "Each finding ends in a sourced question for her doctor or pharmacist.",
   },
   {
     // AI cut only. "Explain in simpler words" is clicked on the cascade finding during the review shot; CHOOSE.verify
     // reads the outcome off the screen and picks the matching narration (generation is temperature 0, but the
-    // recorder never assumes which way it goes).
+    // recorder never assumes which way it goes). The blocked outcome is the one the last renders showed.
     id: "verify",
-    title: "AI wording, checked by code",
+    title: "The safety net: AI wording checked by code",
     route: "#/c/review (Explain in simpler words)",
     aiOnly: true,
     variants: {
@@ -207,25 +214,24 @@ const ALL_SHOTS = [
           "The on-device model rewrites the wording in plain language; code checks every sentence against the source first.",
       },
       blocked: {
-        narration: "Here the model's wording failed the source check, so code hides it and the original text stays.",
+        narration: "The safety net: here the model's wording failed the source check, so code hides it and the original text stays.",
       },
     },
   },
   {
-    id: "addmed",
-    title: "Preview before adding a medicine",
-    route: "#/c/meds (Add medication)",
-    narration:
-      "Before adding a medicine, Alex sees what would change: Advil PM adds three review prompts, " +
-      "including a second diphenhydramine product. Nothing is saved until Alex saves.",
+    id: "timeline",
+    title: "The statistics behind it",
+    route: "#/c/timeline",
+    narration: "The timeline tests the change in dizziness: Fisher's exact test, p = 0.0023. Falls are listed by date: too few to test.",
+    spoken: "The timeline tests the change in dizziness: Fisher's exact test, p equals 0.0023. Falls are listed by date: too few to test.",
   },
   {
     id: "ask",
-    title: "Ask Kinwise",
+    title: "Ask Kinwise, with an on-device AI draft",
     route: "#/c/ask",
     narration:
       "Ask Kinwise answers from the records: near-falls on 2 of 14 answered days since lorazepam started. " +
-      "A plainer AI draft is checked by code first. " +
+      "A 3-billion-parameter model running on this laptop's GPU drafts a plainer answer; code checks every number and medicine name first. " +
       "Treatment questions are redirected to her doctor or pharmacist.",
     narrationNoAi:
       "Ask Kinwise answers from the records: near-falls on 2 of 14 answered days since lorazepam started. " +
@@ -249,15 +255,6 @@ const ALL_SHOTS = [
     narration:
       `Both test suites rerun live: ${EVAL.heldoutF1Pct} percent micro-F1 on ${EVAL.heldoutStories} held-out fictional diary stories, ` +
       `and ${EVAL.medsPassed} of ${EVAL.medsCases} synthetic medication cases passed.`,
-  },
-  {
-    id: "ai-privacy",
-    title: "What is AI here, and privacy",
-    route: "#/how-it-works (What is AI here? · Privacy)",
-    narration: "All safety logic is deterministic code with cited sources; the model only handles wording. Records stay in this browser.",
-    narrationNoAi:
-      "All safety logic is deterministic code with cited sources. An optional on-device model only drafts wording; " +
-      "this recording does not use it. Records stay in this browser.",
   },
   {
     // The "Partial" sentence only names items the page marks Partial: CHOOSE.honesty reads the Partial rows off the
@@ -286,7 +283,8 @@ const ALL_SHOTS = [
     title: "Try it",
     route: "end card",
     // The clinician-review and no-advice caveat is spoken here, over the end card that also shows it in writing.
-    narration: "Kinwise. Not yet clinician-reviewed; not medical advice. Try it in your browser at the link below.",
+    // "On screen", not "below": the link is on the end card while this plays (and there may be no text below).
+    narration: "Kinwise. Records stay in your browser. Not yet clinician-reviewed; not medical advice. Try it at the link on screen.",
     minSec: 6.5,
     chapter: false,
   },
@@ -358,9 +356,7 @@ function narrationTexts(s) {
  * variant lines and the evaluation numbers as they are in eval/results today. Fails unless ALLOW_MISMATCH is set.
  */
 function checkScriptSync() {
-  const norm = (t) => t.replace(/\s+/g, " ").trim();
-  const doc = norm(readFileSync(SCRIPT_DOC, "utf8"));
-  const missing = ALL_SHOTS.flatMap(narrationTexts).filter(([, text]) => !doc.includes(norm(text)));
+  const missing = scriptLinesMissing(readFileSync(SCRIPT_DOC, "utf8"));
   if (!missing.length) return console.log(`docs/DEMO-SCRIPT.md quotes all ${ALL_SHOTS.flatMap(narrationTexts).length} narration lines`);
   const msg =
     `docs/DEMO-SCRIPT.md is out of sync with the SHOTS table; these narration lines are not in it word for word:\n` +
@@ -369,17 +365,26 @@ function checkScriptSync() {
   console.warn(`\n${"!".repeat(100)}\nWARNING ${msg}\n${"!".repeat(100)}\n`);
 }
 
+/** The [label, text] narration lines (every shot, variant and NO_AI line) that `docText` does not quote word for word. */
+export function scriptLinesMissing(docText) {
+  const norm = (t) => t.replace(/\s+/g, " ").trim();
+  const doc = norm(docText);
+  return ALL_SHOTS.flatMap(narrationTexts).filter(([, text]) => !doc.includes(norm(text)));
+}
+
 /**
- * The hook card's two statistics must still be in the research file they are quoted from (the card itself is
- * recorder HTML, so expectText cannot check it against the app).
+ * The hook's statistics must still be in the research file they are quoted from (the card itself is recorder HTML,
+ * so expectText cannot check it against the app). The spoken hook says "more than a third" of the side effects that
+ * "could have been eased": that is Gandhi's share of ameliorable events attributed to the patient not telling the
+ * physician (37%), so the Gandhi row must still give that share and it must still be above a third. The card's
+ * second line is the CDC falls figure. `md` defaults to kb-src/research/market-evidence.md (the test passes text).
  */
-function checkHookSources() {
-  const md = readFileSync(join(ROOT, "kb-src", "research", "market-evidence.md"), "utf8");
-  for (const [what, rx] of [
-    ["CDC falls row", /More than 1 in 4\*\* older adults fall each year, but \*\*less than half tell their doctor/],
-    ["NCHS polypharmacy row", /\*\*43\.0%\*\* of US adults 65\+ used 5 or more prescription drugs/],
-  ]) {
-    if (!rx.test(md)) throw new Error(`hook card: ${what} no longer found in kb-src/research/market-evidence.md; update HOOK_CARD`);
+export function checkHookSources(md = readFileSync(join(ROOT, "kb-src", "research", "market-evidence.md"), "utf8")) {
+  const gandhi = md.match(/of the ameliorable ones,[^|\n]*\*\*(\d+(?:\.\d+)?)%\*\* to the patient not telling the physician\.? \| Gandhi et al\., NEJM 2003/);
+  if (!gandhi) throw new Error("hook card: Gandhi et al. (NEJM 2003) row no longer found in kb-src/research/market-evidence.md; update HOOK_CARD");
+  if (!(Number(gandhi[1]) > 100 / 3)) throw new Error(`hook: the Gandhi share (${gandhi[1]}%) no longer supports "more than a third"`);
+  if (!/More than 1 in 4\*\* older adults fall each year, but \*\*less than half tell their doctor/.test(md)) {
+    throw new Error("hook card: CDC falls row no longer found in kb-src/research/market-evidence.md; update HOOK_CARD");
   }
 }
 
@@ -387,7 +392,7 @@ function checkHookSources() {
  * Every `atPhrase(shot, "…")` cue in a shot's action must be in one of that shot's narration lines (a variant or the
  * NO_AI line counts), so an edited narration fails here in a second instead of minutes into a render.
  */
-function checkPhraseCues() {
+export function checkPhraseCues() {
   const bad = [];
   for (const s of ALL_SHOTS) {
     const texts = narrationTexts(s).map(([, t]) => t);
@@ -573,8 +578,8 @@ function cursorInit() {
         box-shadow:0 0 0 5px rgba(169,87,58,.2),0 8px 26px rgba(31,42,38,.12);opacity:0;transition:opacity .25s ease}
       #__kw_ring.move{transition:opacity .25s ease,left .32s ease,top .32s ease,width .32s ease,height .32s ease}
       #__kw_layer.punching #__kw_ring{opacity:0 !important}
-      #__kw_chapter{position:fixed;left:22px;top:18px;z-index:40;display:flex;align-items:center;gap:12px;padding:9px 18px 10px 14px;
-        border-radius:12px;background:rgba(31,42,38,.92);color:#fff;font-size:24px;font-weight:600;letter-spacing:-.005em;
+      #__kw_chapter{position:fixed;right:22px;top:18px;z-index:40;display:flex;align-items:center;gap:12px;padding:9px 18px 10px 14px;
+        border-radius:12px;background:#1f2a26;color:#fff;font-size:24px;font-weight:600;letter-spacing:-.005em;
         box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(-10px);transition:opacity .3s ease,transform .3s ease}
       #__kw_chapter.on{opacity:1;transform:none}
       #__kw_chapter b{display:block;width:6px;height:26px;border-radius:3px;background:#d98a6a}
@@ -710,9 +715,10 @@ function cursorInit() {
         img.src = src;
       });
 
-    // Chapter label (top left) for the first seconds of a shot. Top left on purpose: the bottom of the frame holds the
-    // burned-in captions (one or two lines), and a lower-third label would collide with two-line captions. It covers
-    // the app's logo for about 2.8 s per shot.
+    // Chapter label (top right, opaque) for the first seconds of a shot. At the top because the bottom of the frame
+    // holds the burned-in captions (one or two lines), and a lower-third label would collide with two-line captions.
+    // On the right because the top left holds the Kinwise logo (the caregiver sidebar and the patient and public top
+    // bars), which a top-left label used to cover; the top right holds page actions, covered for about 2.8 s.
     let chapterTimer = 0;
     window.__kwChapter = (title, ms = 2800) => {
       clearTimeout(chapterTimer);
@@ -802,24 +808,28 @@ const LOGO =
   '<svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="10" fill="#25584a"/>' +
   '<path d="M9 23h6l3-7 5 13 4-9 2 3h6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-// Hook card: two problem statistics, each with its source (kb-src/research/market-evidence.md rows 4 and 1). It is
-// on screen for the hook shot only (under 6 s). The card goes up about a second before the clock starts, so the
-// second statistic stays hidden until ACTIONS.hook adds the "in" class just before the narration's "and less than
-// half" (about 2.4 s into the video), so it lands after "fall each year" and stays up for the rest of the card.
+// Hook card: the problem in one sentence, with its source (kb-src/research/market-evidence.md row 7, checked by
+// checkHookSources), then the CDC falls figure (row 4) as a second line. It is on screen for the hook shot only
+// (about 7.5 s). The card goes up about a second before the clock starts; the second line stays hidden until
+// ACTIONS.hook adds the "in" class as the narration reaches "because the doctor was never told", so it lands after the
+// first statistic has been read and stays up for the rest of the card. "Could have been eased" is Gandhi's
+// "ameliorable" (an event whose severity or duration could have been reduced); the card names the term in its source
+// line so a reader can look it up.
 const HOOK_CARD = `
   <style>@keyframes __kw_in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
     #__kw_hook2{opacity:0} #__kw_hook2.in{animation:__kw_in .6s ease both}</style>
-  <div style="max-width:1060px;padding:0 72px">
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:48px">${LOGO}
+  <div style="max-width:1120px;padding:0 72px">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:44px">${LOGO}
       <span style="font-size:30px;font-weight:600;letter-spacing:-.01em">Kinwise<span style="color:#a9573a">.</span></span></div>
-    <p style="font-family:var(--font-serif,Georgia);font-size:64px;line-height:1.1;margin:0 0 18px;letter-spacing:-.01em">
-      More than <b style="color:#25584a">1 in 4</b> older adults fall each year &mdash;
-      <b style="color:#25584a">less than half</b> tell their doctor.</p>
-    <p style="font-size:22px;color:var(--ink-muted,#5e6a64);margin:0 0 44px">CDC, Facts About Older Adult Falls &middot; cdc.gov/falls</p>
+    <p style="font-family:var(--font-serif,Georgia);font-size:58px;line-height:1.12;margin:0 0 18px;letter-spacing:-.01em">
+      More than <b style="color:#25584a">a third</b> of medicine side effects that could have been eased went on because
+      <b style="color:#25584a">the doctor was never told</b>.</p>
+    <p style="font-size:22px;color:var(--ink-muted,#5e6a64);margin:0 0 40px">Gandhi et al., NEJM 2003 &middot; 4 Boston
+      primary-care practices &middot; 37% of ameliorable adverse drug events</p>
     <div id="__kw_hook2">
-      <p style="font-family:var(--font-serif,Georgia);font-size:40px;line-height:1.15;margin:0 0 14px">
-        <b style="color:#a9573a">43.0%</b> of US adults 65+ used 5 or more prescription drugs in the past 30 days.</p>
-      <p style="font-size:22px;color:var(--ink-muted,#5e6a64);margin:0">NCHS, Health, United States &middot; past 30 days, 2017&ndash;March 2020</p>
+      <p style="font-family:var(--font-serif,Georgia);font-size:38px;line-height:1.15;margin:0 0 12px">
+        Of older adults who fall, <b style="color:#a9573a">less than half</b> tell their doctor.</p>
+      <p style="font-size:22px;color:var(--ink-muted,#5e6a64);margin:0">CDC, Facts About Older Adult Falls &middot; cdc.gov/falls</p>
     </div>
   </div>`;
 
@@ -895,6 +905,9 @@ async function scrollTo(page, locator, offset = 24) {
   );
   await sleep(200);
 }
+
+/** `s` as a literal inside a RegExp ("94.2" → "94\.2"). */
+const escapeRx = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 async function expectText(locator, rx, what) {
   const t = (await locator.innerText({ timeout: 10000 })).replace(/\s+/g, " ");
@@ -1005,6 +1018,56 @@ async function nav(page, name, hashRx, h1Rx) {
   await sleep(250);
 }
 
+// Loading placeholders: the route-level fallback (ViewLoading in src/app/layouts/ViewBoundary.tsx) and the Skeleton
+// component (src/ui/components/Display.tsx).
+const SKELETON_SELECTOR = ".view-loading, .ui-skeleton";
+
+/**
+ * Wait until the page's main heading is on screen and no loading skeleton is visible. Every shot waits for this
+ * before its chapter label and narration start, so the narration never plays over a half-loaded page; a page that
+ * never gets there stops the run.
+ */
+async function waitForScreen(page, what) {
+  try {
+    await page.waitForFunction(
+      (skeletons) => {
+        const shown = (el) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden";
+        const h1 = document.querySelector("#main-content h1, main h1");
+        return !!h1 && shown(h1) && ![...document.querySelectorAll(skeletons)].some(shown);
+      },
+      SKELETON_SELECTOR,
+      { timeout: 20000 },
+    );
+  } catch {
+    throw new Error(`${what}: the page's main heading did not appear, or a loading skeleton stayed on screen`);
+  }
+}
+
+/**
+ * Off camera (before the clock starts): open every route the video visits once, in this page, so each lazily loaded
+ * view is already in memory and never shows its loading skeleton on camera. Only in-app navigation (hash changes and
+ * the app's own buttons) is used, so nothing reloads. Nothing is clicked inside the views, so no record changes.
+ * The visit brief is the exception: opening it builds and saves a first brief, so it is not opened here, only its
+ * module fetched (dev server only); the brief's ENTER step then waits out its short loading state off the narration.
+ */
+async function warmRoutes(page) {
+  await page.evaluate(() => import("/src/views/caregiver/VisitBrief.tsx").catch(() => {})).catch(() => {});
+  const visit = async (hash) => {
+    await page.evaluate((h) => (location.hash = h), hash);
+    await waitForScreen(page, `warm-up ${hash}`);
+  };
+  await page.getByRole("button", { name: /Try as Margaret/ }).click();
+  await page.waitForURL(/#\/p\/today/);
+  await waitForScreen(page, "warm-up #/p/today");
+  await page.getByRole("button", { name: "Sign out" }).first().click();
+  await page.getByRole("button", { name: /Try as Alex/ }).click();
+  await page.waitForURL(/#\/c\/overview/);
+  for (const r of ["#/c/overview", "#/c/review", "#/c/timeline", "#/c/ask", "#/how-it-works"]) await visit(r);
+  await visit("#/c/overview");
+  await page.getByRole("button", { name: "Sign out" }).first().click();
+  await page.getByRole("button", { name: /Try as Alex/ }).waitFor({ timeout: 10000 });
+}
+
 // ---------------------------------------------------------------------------------------------------------------
 // Shot actions. Each receives { page, base } and must leave the screen in the state the narration describes.
 
@@ -1014,33 +1077,33 @@ const STORY =
 
 const ACTIONS = {
   async hook({ page, shot }) {
-    // The card is put up before the clock starts (see main). Fade in the second statistic once the first is read.
-    await atPhrase(shot, "and less than half", 0.7);
+    // The card is put up before the clock starts (see main). Fade in the CDC line once the first statistic is read.
+    await atPhrase(shot, "because the doctor was never told", 0.4);
     await page.evaluate(() => document.getElementById("__kw_hook2")?.classList.add("in"));
   },
 
   async who({ page, shot }) {
     await hideCard(page);
-    const hero = page.locator("h1").first();
-    await expectText(hero, /Notice what changes/i, "welcome hero");
     await expectText(page.locator("body"), /Margaret Rivera \(78\) and her daughter Alex are fictional/i, "persona line");
     // "eight medicines" is checked on screen in the review shot ("checked Margaret's 8 medicines").
     const persona = page.getByText(/Margaret Rivera \(78\)/).first();
-    await moveTo(page, persona, { steps: 30 });
+    await moveTo(page, persona, { steps: 26 });
     await ring(page, persona, 6);
-    await atPhrase(shot, "Kinwise helps families");
-    await ring(page, hero, 14);
-    await atPhrase(shot, "and bring a clear question", 0.2);
-    await moveTo(page, page.getByRole("button", { name: /Try as Margaret/ }), { steps: 20 });
+    // Into Margaret's view while the sleeping pill is mentioned; the check-in shot types straight away.
+    const margaret = page.getByRole("button", { name: /Try as Margaret/ });
+    await atPhrase(shot, "Urgent care", 0.9);
+    await moveTo(page, margaret, { steps: 16 });
+    await ring(page, null);
+    await clickOn(page, margaret, { scroll: false, steps: 1 });
+    await page.waitForURL(/#\/p\/today/);
+    await waitForScreen(page, "Margaret's Today");
+    await scrollTo(page, page.locator("#pt-tell-title"), 120);
+    await moveTo(page, page.getByRole("textbox", { name: /Tell me about/ }), { steps: 16, scroll: false });
   },
 
   async checkin({ page }) {
-    await page.getByRole("button", { name: /Try as Margaret/ }).click();
-    await page.waitForURL(/#\/p\/today/);
-    await settle(page);
     const box = page.getByRole("textbox", { name: /Tell me about/ });
-    await scrollTo(page, page.locator("#pt-tell-title"), 120);
-    await clickOn(page, box, { scroll: false });
+    await clickOn(page, box, { scroll: false, steps: 1 });
     await ring(page, box, 6);
     await box.pressSequentially(STORY, { delay: 10 });
     await sleep(300);
@@ -1083,13 +1146,7 @@ const ACTIONS = {
   },
 
   async overview({ page, shot }) {
-    await ring(page, null);
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-    await clickOn(page, page.getByRole("button", { name: "Sign out" }).first(), { scroll: false, steps: 14 });
-    const alex = page.getByRole("button", { name: /Try as Alex/ });
-    await alex.waitFor({ timeout: 8000 });
-    await clickOn(page, alex, { steps: 14 });
-    await page.waitForURL(/#\/c\/overview/);
+    // ENTER.overview has already switched to Alex's view.
     await page.getByRole("heading", { name: /What Kinwise noticed/ }).waitFor({ timeout: 15000 });
     const main = page.locator("#main-content, main").first();
     const card = page.getByText(/Dizziness was recorded on \d+ of \d+ answered days/).first();
@@ -1118,32 +1175,30 @@ const ACTIONS = {
   },
 
   async timeline({ page, shot }) {
-    await ring(page, null);
-    await nav(page, "Symptoms & timeline", /#\/c\/timeline/, /Symptoms & timeline/);
+    // ENTER.timeline has opened Symptoms & timeline. The dizziness row is found by its numbers and test name, not by
+    // its size words, which other work may rename.
     const cmp = page.locator('[data-tour="timeline-compare"]');
     await cmp.waitFor();
     await expectText(cmp, /2 of 19 days.*9 of 14 days/, "timeline dizziness row");
-    await expectText(cmp, /Fisher.s exact test/, "Fisher");
-    await expectText(cmp, /Mann.Whitney/, "Mann-Whitney");
+    await expectText(cmp, /Fisher.s exact test, p = 0\.0023/, "Fisher's exact test, p = 0.0023");
     await scrollTo(page, cmp, 16);
-    await sleep(300);
-    const nine = cmp.getByText("9 of 14 days").first();
-    await moveTo(page, nine, { steps: 22, scroll: false });
-    await ring(page, nine, 6);
-    await atPhrase(shot, "Mann-Whitney", 0.6);
-    const mw = cmp.getByText(/Mann.Whitney U test/).first();
-    await moveTo(page, mw, { steps: 22, scroll: false });
-    await ring(page, mw, 6);
+    await sleep(200);
+    const row = await rowOf(cmp.getByText(/Fisher.s exact test, p = 0\.0023/).first());
+    await expectText(row, /2 of 19 days.*9 of 14 days/, "p-value row is the dizziness row");
+    await moveTo(page, cmp.getByText("9 of 14 days").first(), { steps: 20, scroll: false });
+    await ring(page, row, 6);
+    // Zoom the row (before/after bars and the test) while the test and p-value are spoken.
+    await atPhrase(shot, "Fisher's exact test", 0.6);
+    await punch(page, row, { scale: 1.35, hold: 1500, maxHeight: 200 });
     await atPhrase(shot, "Falls are listed", 0.4);
     const fallsBox = cmp.getByText(/Falls and near-falls, listed by date/).first();
     await scrollTo(page, fallsBox, 300);
-    await moveTo(page, fallsBox, { steps: 20, scroll: false });
+    await moveTo(page, fallsBox, { steps: 18, scroll: false });
     await ring(page, fallsBox, 8);
   },
 
   async review({ page, shot }) {
-    await ring(page, null);
-    await nav(page, "Medication review", /#\/c\/review/, /Medication review/);
+    // ENTER.review has opened Medication review.
     const main = page.locator("#main-content");
     await expectText(main, /checked Margaret.s 8 medicines/, "8 medicines");
     await expectText(main, /Anticholinergic burden Total score 7/, "ACB 7");
@@ -1221,46 +1276,8 @@ const ACTIONS = {
     }
   },
 
-  async addmed({ page, shot }) {
-    await ring(page, null);
-    await nav(page, "Medications", /#\/c\/meds/, /^Medications$/);
-    await clickOn(page, page.getByRole("button", { name: "Add medication" }).first(), { scroll: false });
-    const d = page.getByRole("dialog", { name: /Add a medicine/ });
-    await d.waitFor();
-    const name = d.getByRole("combobox", { name: "Medicine name" });
-    await clickOn(page, name, { scroll: false });
-    await name.pressSequentially("Advil PM", { delay: 70 });
-    const opt = d.getByRole("option", { name: /^Advil PM\b(?! Liqui)/ }).first();
-    await opt.waitFor({ timeout: 5000 });
-    await sleep(400);
-    await clickOn(page, opt, { scroll: false });
-    const pv = d.getByRole("region", { name: "Live review preview" }).or(d.locator(".cg-pv")).first();
-    await expectText(pv, /would add 3 new review prompts/, "Advil PM adds 3 prompts");
-    await expectText(pv, /same ingredient in 2 medicines: diphenhydramine/i, "duplicate diphenhydramine");
-    await sleep(300);
-    await scrollTo(page, pv, 140);
-    await atPhrase(shot, "Advil PM adds", 0.5);
-    const head = pv.getByText(/would add 3 new review prompts/);
-    await moveTo(page, head, { steps: 20, scroll: false });
-    await ring(page, pv, 4);
-    await punch(page, pv, { scale: 1.25, hold: 1500, maxHeight: 250 });
-    await atPhrase(shot, "including a second", 0.4);
-    const dup = pv.getByText(/same ingredient in 2 medicines/i).first();
-    await moveTo(page, dup, { steps: 18, scroll: false });
-    await ring(page, dup, 6);
-    await atPhrase(shot, "Nothing is saved", 0.3);
-    const save = d.getByRole("button", { name: "Save medication" });
-    await moveTo(page, save, { steps: 22, scroll: false });
-    await ring(page, save, 6);
-    await sleep(600);
-    // Close without saving: the medication list stays as seeded.
-    await ring(page, null);
-    await clickOn(page, d.getByRole("button", { name: "Cancel" }), { scroll: false });
-    await d.waitFor({ state: "hidden", timeout: 5000 });
-  },
-
   async ask({ page, shot }) {
-    await nav(page, "Ask Kinwise", /#\/c\/ask/, /Ask Kinwise/);
+    // ENTER.ask has opened Ask Kinwise.
     await clickOn(page, page.getByRole("button", { name: "How many near-falls since lorazepam started?" }));
     const ans = page.locator(".cg-ask-a").last();
     await ans.waitFor({ timeout: 8000 });
@@ -1271,11 +1288,10 @@ const ACTIONS = {
     await atPhrase(shot, "near-falls on 2 of 14", 0.5);
     await punch(page, recordsLine, { scale: 1.4, hold: 1100, maxHeight: 220 });
     if (USE_AI) {
-      // The on-device model drafts a plainer answer under the records answer (about 5 s once warm).
+      // The on-device model drafts a plainer answer under the records answer (about 5 s once warm). The recorder
+      // waits for the outcome and stops unless the draft passed the app's checks, so the narration stays true.
       const ai = ans.locator(".cg-ask-ai");
       await ai.waitFor({ timeout: 5000 });
-      await atPhrase(shot, "A plainer AI draft", 0.3);
-      await moveTo(page, ai, { steps: 20, scroll: false });
       await ans.locator(".cg-ask-ai--done, .cg-ask-ai--failed, .cg-ask-ai--empty").first().waitFor({ timeout: 60000 });
       const t = (await ai.innerText()).replace(/\s+/g, " ").trim();
       if (!(await ans.locator(".cg-ask-ai--done").count())) throw new Error(`the on-device AI draft did not pass its checks: "${t}"`);
@@ -1284,9 +1300,21 @@ const ACTIONS = {
       const draft = t.replace(/^.*?Instruct · [\d.]+ s\s*/, "").replace(/Checked against the records.*$/, "").trim();
       if (BANNED_ON_SCREEN.test(draft)) throw new Error(`AI draft contains banned wording: "${draft}"`);
       shot.aiDraft = t;
+      // The AI moment: ring the "AI draft · on this device · Qwen2.5 3B Instruct" header together with the draft's
+      // first sentence as the model is named, zoom them as "drafts a plainer answer" is said, then ring the
+      // "Checked against the records" line as the code check is said.
+      const badge = ai.locator(".ui-ai-badge").first();
+      const sentence = ai.locator(".cg-ask-sent").first();
       await scrollTo(page, ans, 150);
-      await ring(page, ai, 6);
-      await moveTo(page, ai.locator(".cg-ask-ai__note"), { steps: 18, scroll: false });
+      await atPhrase(shot, "A 3-billion-parameter model", 0.4);
+      await moveTo(page, badge, { steps: 18, scroll: false });
+      await ring(page, badge, 6, sentence);
+      await atPhrase(shot, "drafts a plainer answer", 0.5);
+      await punch(page, ai, { scale: 1.3, hold: 1600, maxHeight: 240 });
+      await atPhrase(shot, "code checks every number", 0.3);
+      const note = ai.locator(".cg-ask-ai__note").first();
+      await moveTo(page, note, { steps: 16, scroll: false });
+      await ring(page, note, 6);
       await atPhrase(shot, "Treatment questions", 1.6);
     } else {
       await sleep(700);
@@ -1307,8 +1335,7 @@ const ACTIONS = {
   },
 
   async brief({ page }) {
-    await ring(page, null);
-    await nav(page, "Visit brief", /#\/c\/brief/, /Visit brief/);
+    // ENTER.brief has opened the visit brief.
     await clickOn(page, page.getByRole("button", { name: "Use the standard template" }));
     const doc = page.locator('[data-tour="brief-doc"]');
     await doc.waitFor();
@@ -1322,6 +1349,15 @@ const ACTIONS = {
     await scrollTo(page, noticed, 120);
     await ring(page, noticed, 8);
     await sleep(600);
+    // Optional: the "What the check removed" list (AI sentences the claim check dropped) appears only after an AI
+    // brief run; this video uses the standard template, so it is usually absent. If it is there, ring it for a
+    // moment without opening or narrating it, and carry on either way.
+    const removed = page.getByText(/What the check removed/i).first();
+    if (await removed.isVisible().catch(() => false)) {
+      await scrollTo(page, removed, 200).catch(() => {});
+      await ring(page, removed, 6).catch(() => {});
+      await sleep(700);
+    }
     await ring(page, null);
     await scrollTo(page, page.locator("body"), 0);
     const review = page.getByRole("checkbox", { name: /reviewed this brief/i });
@@ -1346,17 +1382,12 @@ const ACTIONS = {
   },
 
   async evals({ page }) {
-    await ring(page, null);
-    await nav(page, "How Kinwise works", /#\/how-it-works/, /Private by design/);
-    await sleep(500);
-    await clickOn(page, page.getByRole("button", { name: "Run the live evaluation" }), { scroll: false });
-    await sleep(900);
+    // ENTER.evals has opened How Kinwise works and scrolled to the live evaluation.
     const runNlp = page.getByRole("button", { name: "Run the extraction benchmark now" });
     await clickOn(page, runNlp);
     await page.getByText(/micro-F1 over/).first().waitFor({ timeout: 60000 });
     const held = page.locator(".pub-how-score", { hasText: "Held-out set" });
-    const esc = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    await expectText(held, new RegExp(`${EVAL.heldoutStories} stories.*${esc(EVAL.heldoutF1Pct)}%`), `held-out ${EVAL.heldoutF1Pct}% on ${EVAL.heldoutStories}`);
+    await expectText(held, new RegExp(`${EVAL.heldoutStories} stories.*${escapeRx(EVAL.heldoutF1Pct)}%`), `held-out ${EVAL.heldoutF1Pct}% on ${EVAL.heldoutStories}`);
     await scrollTo(page, page.getByText(/Does it hear her correctly/).first(), 120);
     await moveTo(page, held.locator(".pub-how-score__big"), { steps: 22, scroll: false });
     await ring(page, held, 6);
@@ -1370,25 +1401,6 @@ const ACTIONS = {
     await scrollTo(page, page.getByText(/Does it flag what the criteria say/).first(), 120);
     await moveTo(page, tile, { steps: 20, scroll: false });
     await ring(page, tile, 6);
-  },
-
-  async "ai-privacy"({ page }) {
-    await ring(page, null);
-    await scrollTo(page, page.locator("#how-ai"), 10);
-    await expectText(page.locator("#how-ai"), /Language only/, "AI table");
-    const logic = page.getByText("All safety logic", { exact: false }).first();
-    await moveTo(page, logic, { steps: 24, scroll: false });
-    await ring(page, logic, 6);
-    await sleep(USE_AI ? 1500 : 2200);
-    const lang = page.getByText(/^Language only/).first();
-    await moveTo(page, lang, { steps: 22, scroll: false });
-    await ring(page, lang, 6);
-    await sleep(USE_AI ? 1200 : 2400);
-    const privacy = page.getByText("Privacy by architecture", { exact: true }).first();
-    await scrollTo(page, privacy, 110);
-    const stays = page.getByText(/Records are stored in this browser on this device/).first();
-    await moveTo(page, stays, { steps: 24, scroll: false });
-    await ring(page, stays, 6);
   },
 
   async honesty({ page, shot }) {
@@ -1438,6 +1450,56 @@ const ACTIONS = {
       if (c) c.style.opacity = "0";
     });
     await showCard(page, END_CARD);
+  },
+};
+
+/**
+ * Page changes, run just before a shot's clock starts (off the narration, the previous shot's picture stays up):
+ * each opens the shot's page, and the loop then waits for its heading and for no loading skeleton (waitForScreen),
+ * so the chapter label and narration begin on a finished page.
+ */
+const ENTER = {
+  async overview({ page }) {
+    // The in-app demo role switch on Margaret's screen ("Demo: switch to Alex's view"), found by its accessible name
+    // so it still works if the patient header moves it. Fallback: sign out and choose Alex on Welcome.
+    await ring(page, null);
+    const toAlex = page.getByRole("button", { name: /switch to Alex/i }).first();
+    if (await toAlex.count()) {
+      await clickOn(page, toAlex, { steps: 16 });
+    } else {
+      console.warn("WARN: no 'Demo: switch to Alex's view' control found; signing out and choosing Alex instead");
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      await clickOn(page, page.getByRole("button", { name: "Sign out" }).first(), { scroll: false, steps: 14 });
+      const alex = page.getByRole("button", { name: /Try as Alex/ });
+      await alex.waitFor({ timeout: 8000 });
+      await clickOn(page, alex, { steps: 14 });
+    }
+    await page.waitForURL(/#\/c\/overview/, { timeout: 10000 });
+  },
+  async review({ page }) {
+    await ring(page, null);
+    await nav(page, "Medication review", /#\/c\/review/, /Medication review/);
+  },
+  async timeline({ page }) {
+    await ring(page, null);
+    await nav(page, "Symptoms & timeline", /#\/c\/timeline/, /Symptoms & timeline/);
+  },
+  async ask({ page }) {
+    await ring(page, null);
+    await nav(page, "Ask Kinwise", /#\/c\/ask/, /Ask Kinwise/);
+  },
+  async brief({ page }) {
+    await ring(page, null);
+    await nav(page, "Visit brief", /#\/c\/brief/, /Visit brief/);
+  },
+  async evals({ page }) {
+    await ring(page, null);
+    await nav(page, "How Kinwise works", /#\/how-it-works/, /./);
+    // The live evaluation section (#how-evaluation today; #live-evaluation accepted too), in view before the
+    // narration starts.
+    const section = page.locator("#live-evaluation, #how-evaluation").first();
+    await section.waitFor({ timeout: 10000 });
+    await scrollTo(page, section, 20);
   },
 };
 
@@ -1528,12 +1590,19 @@ function srtTime(s) {
   return `${p(h)}:${p(m)}:${p(sec)},${p(r, 3)}`;
 }
 
+// A caption chunk of at most this many words is an orphan ("passed.", "after amlodipine."): too short to read
+// before it is gone. It joins the chunk before it when the two together stay within ORPHAN_MERGE_CHARS.
+const ORPHAN_WORDS = 2;
+const ORPHAN_MERGE_CHARS = 90;
+
 /**
  * Split a narration into caption chunks (sentence, then ≤ ~84 chars) timed in proportion to their length.
  * Sentences end only at . ! ? followed by whitespace, so decimals such as "94.2" stay inside their sentence, and
- * no text is ever dropped (checked by captionWordsMatch).
+ * no text is ever dropped (checked by assertCaptionWords). A chunk of ORPHAN_WORDS words or fewer is merged into the
+ * chunk before it (the first chunk: into the one after it) when the result stays within ORPHAN_MERGE_CHARS
+ * characters. Exported for the tests.
  */
-function captionChunks(text, start, dur) {
+export function captionChunks(text, start, dur) {
   const sentences = text
     .split(/(?<=[.!?])\s+/)
     .map((s) => s.trim())
@@ -1556,6 +1625,16 @@ function captionChunks(text, start, dur) {
     if (cur.trim()) parts.push(cur.trim());
     chunks.push(...parts);
   }
+  // Orphans: fold a chunk of one or two words into the one before it, if that does not make a cue too long to read.
+  // The first chunk has nothing before it ("Kinwise." on the end card), so it joins the chunk after it instead.
+  const short = (c) => c.split(" ").length <= ORPHAN_WORDS;
+  for (let k = chunks.length - 1; k > 0; k--) {
+    const merged = `${chunks[k - 1]} ${chunks[k]}`;
+    if (short(chunks[k]) && merged.length <= ORPHAN_MERGE_CHARS) chunks.splice(k - 1, 2, merged);
+  }
+  if (chunks.length > 1 && short(chunks[0]) && `${chunks[0]} ${chunks[1]}`.length <= ORPHAN_MERGE_CHARS) {
+    chunks.splice(0, 2, `${chunks[0]} ${chunks[1]}`);
+  }
   const total = chunks.reduce((n, c) => n + c.length, 0);
   let t = start;
   return chunks.map((c) => {
@@ -1567,7 +1646,7 @@ function captionChunks(text, start, dur) {
 }
 
 /** Throws unless the captions contain exactly the narration's words, in order. */
-function assertCaptionWords(shots, cues) {
+export function assertCaptionWords(shots, cues) {
   const norm = (t) => t.split(/\s+/).filter(Boolean);
   const said = shots.flatMap((s) => norm(s.narration));
   const shown = cues.flatMap((c) => norm(c.text));
@@ -1690,8 +1769,9 @@ async function main() {
     console.log(`  ${String(i + 1).padStart(2)}. ${s.id.padEnd(11)} ${sec.toFixed(2).padStart(6)} s  (narration ${detail})`);
   }
   console.log(`Planned total: ${planned.toFixed(1)} s (${fmt(planned)})`);
+  // The hook is one sourced sentence (about 7 s with `say`); more than 8 s would delay the product too long.
   const hookSec = plannedSec(SHOTS[0]);
-  if (hookSec > 6) console.warn(`WARN: the hook card would hold ${hookSec.toFixed(2)} s (target: at most 6 s)`);
+  if (hookSec > 8) console.warn(`WARN: the hook card would hold ${hookSec.toFixed(2)} s (target: at most 8 s)`);
   if (planned > 180) throw new Error(`planned length ${fmt(planned)} is over 3:00; shorten the narration`);
   if (PLAN_ONLY) return;
 
@@ -1780,6 +1860,7 @@ async function main() {
     });
     await page.reload();
     await settle(page);
+    await warmRoutes(page);
     if (USE_AI) await preloadModel(page);
     await ensureViewport();
     let reloads = 0;
@@ -1793,6 +1874,9 @@ async function main() {
     const now = SYNC.clock;
 
     for (const [i, s] of SHOTS.entries()) {
+      // Change page first (off the narration), then wait for a finished page: heading on screen, no skeleton.
+      if (ENTER[s.id]) await ENTER[s.id]({ page, shot: s });
+      await waitForScreen(page, `shot ${s.id}`);
       // A shot with variants picks its narration from the screen first (the previous shot stays on camera).
       if (s.variants) useVariant(s, await CHOOSE[s.id]({ page, shot: s }));
       if (await page.evaluate(() => !!document.querySelector("dialog[open]"))) throw new Error(`shot ${s.id} starts with a dialog open`);
@@ -1866,7 +1950,11 @@ async function main() {
     const ms = Math.round((s.start + LEAD_IN) * 1000);
     filters.push(`[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,adelay=${ms}|${ms}[a${i}]`);
   });
-  filters.push(`${SHOTS.map((_, i) => `[a${i}]`).join("")}amix=inputs=${SHOTS.length}:normalize=0:dropout_transition=0,apad[aout]`);
+  // Mix, then normalise the loudness to -16 LUFS integrated with peaks at most -1.5 dBTP (loudnorm resamples to
+  // 192 kHz internally, so it is brought back to 48 kHz), then pad with silence to the video's length.
+  filters.push(
+    `${SHOTS.map((_, i) => `[a${i}]`).join("")}amix=inputs=${SHOTS.length}:normalize=0:dropout_transition=0,${AUDIO_LOUDNORM},aresample=48000,apad[aout]`,
+  );
   const graphFile = join(WORK, "filtergraph.txt");
   writeFileSync(graphFile, filters.join(";\n"));
   sh(FFMPEG, [
@@ -1953,7 +2041,10 @@ function fmt(s) {
   return `${m}:${(s - m * 60).toFixed(1).padStart(4, "0")}`;
 }
 
-main().catch((e) => {
-  console.error(e?.stack ?? e);
-  process.exit(1);
-});
+// Run only when invoked as a script (record-demo.test.mjs imports the pure helpers without recording anything).
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  main().catch((e) => {
+    console.error(e?.stack ?? e);
+    process.exit(1);
+  });
+}

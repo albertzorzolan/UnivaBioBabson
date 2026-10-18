@@ -7,11 +7,14 @@
 //   - Any change to the content clears the "reviewed" mark (the family reviews what will actually print).
 //   - Review prompts are engine text (title + first plain sentence + citation) and are never reworded.
 //   - Quoted concerns get typographic quotes (“…”, ’) for print; the claim checker folds them back to ASCII.
+//   - "At a glance" and "In her words" add no new facts: each glance line restates a sentence the brief already shows
+//     (same evidence ids, numbers and dates), and each quote is a verbatim span of a story the package cites.
 
 import type {
   BriefContent,
   BriefSentence,
   CheckIn,
+  DiaryField,
   EvidencePackage,
   Finding,
   FindingCategory,
@@ -42,8 +45,10 @@ import {
   verifySentence,
 } from "../../../engine/brief";
 import type { BriefEvidenceItem, PmlRow } from "../../../engine/brief";
-import { firstSentence, oneLine, sentence } from "../../../engine/brief/shared";
+import { fallsSinceStartParts, sentinelList } from "../../../engine/brief/evidence";
+import { capitalize, dateWords, firstSentence, medName, oneLine, plural, pronounsFor, quotable, sentence } from "../../../engine/brief/shared";
 import { getMetric, latestCheckInPerDate, metricValue } from "../../../engine/timeline/metrics";
+import { oneDecimal } from "../../../engine/timeline/text";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -638,4 +643,222 @@ export function signalStrip(inp: BriefInputs, content: BriefContent, pkg: Eviden
     rows: out,
     signalIds: rows.map((s) => s.id),
   };
+}
+
+// ---------------------------------------------------------------------------
+// "At a glance" (the 30-second box at the top of the brief)
+//
+// At most 3 lines, computed from what the brief already holds (no BriefContent field, nothing new is claimed):
+//   change    the first before/after change "What we've noticed" cites, shortened to its counts
+//   falls     the falls and near-falls list behind the falls sentence "What we've noticed" cites, with dates
+//   question  the first question sentence of "Our questions"
+// The change and falls lines are recombinations of the cited evidence (same ids, same numbers and dates); the brief
+// tests run them through verifySentence like any AI sentence. When no sentence cites a change, the change line is:
+//   GLANCE_NO_CHECKINS  no check-in was recorded in the period (nothing to compare, so not an all-clear either)
+//   GLANCE_NO_CHANGE    check-ins were recorded and the timeline flagged no change in the period
+//   (left out)          the timeline flagged a change but the family removed its sentence: claiming "no flagged
+//                       change" at the top would contradict the record, so the box says nothing about it
+
+export type GlanceKey = "change" | "falls" | "question";
+
+export interface GlanceLine {
+  key: GlanceKey;
+  label: string;
+  text: string;
+  evidenceIds: string[];
+}
+
+export const GLANCE_NO_CHANGE = "(no flagged change in this period)";
+export const GLANCE_NO_CHECKINS = "(no check-ins recorded in this period)";
+
+const GLANCE_LABEL: Record<GlanceKey, string> = { change: "Recorded change", falls: "Falls", question: "First question" };
+
+/** The first timeline signal "What we've noticed" cites (and the package holds), or null. Follows the family's edits. */
+function citedSignal(inp: BriefInputs, content: BriefContent, pkg: EvidencePackage): Signal | null {
+  const inPkg = new Set(pkg.items.map((i) => i.id));
+  const byId = new Map(inp.timeline.signals.map((s) => [s.id, s]));
+  for (const s of content.noticed) for (const id of s.evidenceIds) if (inPkg.has(id) && byId.has(id)) return byId.get(id)!;
+  return null;
+}
+
+/** Whether the package holds any timeline signal (a flagged change in the period), cited by a sentence or not. */
+function flaggedInPeriod(inp: BriefInputs, pkg: EvidencePackage): boolean {
+  const inPkg = new Set(pkg.items.map((i) => i.id));
+  return inp.timeline.signals.some((s) => inPkg.has(s.id));
+}
+
+/** The falls item ("fact:falls-since:<med>" or "fact:falls") "What we've noticed" cites, or null. */
+function citedFallsId(content: BriefContent, pkg: EvidencePackage): string | null {
+  const inPkg = new Set(pkg.items.map((i) => i.id));
+  for (const s of content.noticed)
+    for (const id of s.evidenceIds) if (inPkg.has(id) && (id === evidenceId.falls || id.startsWith("fact:falls-since:"))) return id;
+  return null;
+}
+
+/**
+ * "Since Lorazepam (Ativan) was started (Sep 25): dizziness on 9 of 14 answered days, vs 2 of 19 before." The
+ * signal sentence's own numbers, shorter. When the after window ends before the brief does, it says so ("From …
+ * through …") instead of "Since".
+ */
+export function glanceChangeText(s: Signal, med: Medication | undefined, to: ISODate): string {
+  const def = getMetric(s.metric);
+  const subject = def.subject.charAt(0).toLowerCase() + def.subject.slice(1);
+  const verb = s.event === "started" ? "started" : "stopped";
+  const name = medName(med);
+  const lead =
+    s.after.to >= to
+      ? `Since ${name} was ${verb} (${dateWords(s.eventDate, to)})`
+      : `From ${dateWords(s.after.from, to)}, when ${name} was ${verb}, through ${dateWords(s.after.to, to)}`;
+  const { before: b, after: a } = s;
+  const days = `answered ${plural(a.answered, "day")}`;
+  return def.kind === "boolean"
+    ? `${lead}: ${subject} on ${a.positive} of ${a.answered} ${days}, vs ${b.positive} of ${b.answered} before.`
+    : `${lead}: ${subject} averaged ${oneDecimal(a.value)} out of 5 on ${a.answered} ${days}, vs ${oneDecimal(b.value)} out of 5 before.`;
+}
+
+/** "1 fall (Oct 6) and 2 near-falls (Sep 27, Sep 30) on 14 answered days since Sep 25." (null when unanswered) */
+function glanceFallsText(inp: BriefInputs, fallsId: string, pkg: EvidencePackage, lead: Signal | null): string | null {
+  const days = latestCheckInPerDate(inp.data.checkIns);
+  const to = pkg.to;
+  const counted = (n: number) => `on ${n} answered ${plural(n, "day")}`;
+  if (fallsId === evidenceId.falls) {
+    // The 30-day falls fact reports falls and near-falls with separate denominators ("on 1 of 20 answered days …
+    // and near-falls on 1 of 19"), so its own sentence is restated word for word: a shorter union count ("on 26
+    // answered days") would be a number that is not in the cited record.
+    const fact = pkg.items.find((i) => i.id === evidenceId.falls);
+    if (!fact || !sentinelList(days, pkg.from, to, to).answered) return null;
+    return oneLine(fact.text);
+  }
+  const med = inp.data.medications.find((m) => evidenceId.fallsSince(m.id) === fallsId);
+  if (!med) return null;
+  const { windows: w, after } = fallsSinceStartParts(days, med, to);
+  if (!after.answered) return null;
+  // Name the medicine only when the change line above is not about the same start.
+  const sameStart = lead && lead.medicationId === med.id && lead.event === "started";
+  const when = sameStart ? "" : `, when ${medName(med)} was started`;
+  const span = w.after.to >= to ? `since ${dateWords(w.after.from, to)}${when}` : `from ${dateWords(w.after.from, to)}${when}, through ${dateWords(w.after.to, to)}`;
+  return `${capitalize(after.text)} ${counted(after.answered)} ${span}.`;
+}
+
+/** The brief's "At a glance" lines (at most 3, in this order: change, falls, question). */
+export function atAGlance(inp: BriefInputs, content: BriefContent, pkg: EvidencePackage): GlanceLine[] {
+  const line = (key: GlanceKey, text: string, evidenceIds: string[], label = GLANCE_LABEL[key]): GlanceLine => ({ key, label, text, evidenceIds });
+  const out: GlanceLine[] = [];
+  const lead = citedSignal(inp, content, pkg);
+  const med = lead ? inp.data.medications.find((m) => m.id === lead.medicationId) : undefined;
+  if (lead) out.push(line("change", glanceChangeText(lead, med, pkg.to), [lead.id]));
+  else if (!latestCheckInPerDate(inp.data.checkIns).some((c) => c.date >= pkg.from && c.date <= pkg.to)) out.push(line("change", GLANCE_NO_CHECKINS, [], "Diary"));
+  else if (!flaggedInPeriod(inp, pkg)) out.push(line("change", GLANCE_NO_CHANGE, []));
+  const fallsId = citedFallsId(content, pkg);
+  const falls = fallsId ? glanceFallsText(inp, fallsId, pkg, lead) : null;
+  if (fallsId && falls) out.push(line("falls", falls, [fallsId]));
+  const q = content.questions.find((s) => oneLine(s.text));
+  if (q) out.push(line("question", oneLine(q.text).split(/(?<=\?)\s+(?=[A-Z])/)[0], [...q.evidenceIds]));
+  // The same rule the template applies to its own sentences: a recombined line that fails the claim checker (a number
+  // or date not in its cited record) is left out rather than printed at the top of the brief. Placeholders cite
+  // nothing and the question is the brief's own (already checked) sentence, so only the change and falls lines are run.
+  const data = inp.data;
+  const opts = {
+    medNames: data.medications.map((m) => m.name),
+    patientNames: [data.profile.preferredName, data.profile.displayName, "Mom", "Mum"].filter(Boolean),
+    expect: "statement" as const,
+    maxLength: 420,
+  };
+  return out.filter((l) => l.key === "question" || l.evidenceIds.length === 0 || verifySentence({ text: l.text, evidenceIds: l.evidenceIds }, pkg, opts).ok);
+}
+
+// ---------------------------------------------------------------------------
+// "In her words": verbatim quotes under the lead change and the most recent fall
+//
+// At most one quote each, never two from the same check-in. A quote is one provenance span of that day's story
+// (the words the diary answer was taken from; validateStore guarantees story.slice(start, end) === quote, checked
+// again here so an edited story is never misquoted). Only days that recorded the item ("yes"), inside the cited
+// window and listed in the evidence package (so the quote cites "entry:<check-in id>" and that item shows the same
+// words). Chosen deterministically: the fall first (most recent fall day, else most recent near-fall day), then the
+// change (most recent other day); on a day, the shortest span.
+
+export interface BriefQuote {
+  /** The noticed sentence's evidence id the quote sits under (a signal id or a falls fact id). */
+  anchorId: string;
+  checkInId: string;
+  /** "entry:<check-in id>" */
+  evidenceId: string;
+  date: ISODate;
+  metric: MetricKey;
+  /** Verbatim: story.slice(start, end). */
+  quote: string;
+  start: number;
+  end: number;
+  /** 'In her words (Sep 30): “the room was spinning”' */
+  text: string;
+}
+
+/** Longest span quoted (the brief is one page; the evidence item quotes up to 160 characters of the story). */
+const QUOTE_MAX_CHARS = 80;
+
+/** The diary field whose provenance spans support a yes/no item. Rating scales are not quoted. */
+const QUOTE_FIELD: Partial<Record<MetricKey, DiaryField>> = {
+  dizziness: "dizziness",
+  drowsiness: "drowsiness",
+  confusion: "confusion",
+  swelling: "swelling",
+  fall: "fall",
+  nearFall: "nearFall",
+  appetiteWorse: "appetite",
+};
+
+/** The shortest valid span behind a recorded "yes" for `metric` on this day, or null. */
+function spanFor(c: CheckIn, metric: MetricKey, entryText: string): { quote: string; start: number; end: number } | null {
+  const field = QUOTE_FIELD[metric];
+  if (!field || metricValue(c, metric) !== 1) return null;
+  const spans = (c.provenance?.[field]?.spans ?? []).filter(
+    (sp) =>
+      oneLine(sp.quote).length > 0 &&
+      sp.quote.length <= QUOTE_MAX_CHARS &&
+      c.story.slice(sp.start, sp.end) === sp.quote &&
+      entryText.includes(quotable(sp.quote)),
+  );
+  spans.sort((a, b) => a.quote.length - b.quote.length || a.start - b.start);
+  return spans[0] ? { quote: spans[0].quote, start: spans[0].start, end: spans[0].end } : null;
+}
+
+/** The brief's "In her words" quotes (0–2), in the order of the sentences they sit under. */
+export function patientQuotes(inp: BriefInputs, content: BriefContent, pkg: EvidencePackage): BriefQuote[] {
+  const entries = new Map(pkg.items.filter((i) => i.kind === "entry").map((i) => [i.id, i.text]));
+  const days = latestCheckInPerDate(inp.data.checkIns).sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  const whose = pronounsFor(inp.data.profile).possessive;
+  const pick = (anchorId: string, metrics: MetricKey[], from: ISODate, to: ISODate, skip: Set<string>): BriefQuote | null => {
+    for (const metric of metrics) {
+      for (const c of days) {
+        const entry = entries.get(evidenceId.entry(c.id));
+        if (c.date < from || c.date > to || entry === undefined || skip.has(c.id)) continue;
+        const sp = spanFor(c, metric, entry);
+        if (!sp) continue;
+        const text = `In ${whose} words (${dateWords(c.date, pkg.to)}): “${oneLine(sp.quote)}”`;
+        return { anchorId, checkInId: c.id, evidenceId: evidenceId.entry(c.id), date: c.date, metric, ...sp, text };
+      }
+    }
+    return null;
+  };
+  const later = (a: ISODate, b: ISODate) => (a > b ? a : b);
+  const earlier = (a: ISODate, b: ISODate) => (a < b ? a : b);
+
+  let fall: BriefQuote | null = null;
+  const fallsId = citedFallsId(content, pkg);
+  if (fallsId) {
+    let from = pkg.from;
+    let to = pkg.to;
+    const med = inp.data.medications.find((m) => evidenceId.fallsSince(m.id) === fallsId);
+    if (med) {
+      const w = fallsSinceStartParts(latestCheckInPerDate(inp.data.checkIns), med, pkg.to).windows;
+      from = later(from, w.after.from);
+      to = earlier(to, w.after.to);
+    }
+    fall = pick(fallsId, ["fall", "nearFall"], from, to, new Set());
+  }
+  const lead = citedSignal(inp, content, pkg);
+  const change = lead
+    ? pick(lead.id, [lead.metric], later(lead.after.from, pkg.from), earlier(lead.after.to, pkg.to), new Set(fall ? [fall.checkInId] : []))
+    : null;
+  return [change, fall].filter((q): q is BriefQuote => q !== null);
 }

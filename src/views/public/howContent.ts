@@ -26,16 +26,17 @@ export const REFS = {
 
 /**
  * The problem in four figures: polypharmacy (NCHS), the two Gandhi 2003 attributions for ameliorable adverse
- * drug events in primary care (19 + 32 = 51 events), and unreported falls (CDC). Same trio as README.md.
+ * drug events in primary care (percentages only: the event counts behind them were never checked against the
+ * abstract, kb-src/research/market-evidence.md §1.9), and unreported falls (CDC). Same trio as README.md.
  */
 export const PROBLEM_STATS: { value: string; text: string; source: Ref }[] = [
   { value: "43%", text: "of US adults 65 and older used five or more prescription medicines in the past 30 days (2017–March 2020).", source: REFS.nchs },
   {
     value: "37%",
-    text: "(19 of 51) of medication side effects whose harm could have been reduced, in a primary-care study, were attributed to the patient not telling the doctor about the symptom.",
+    text: "of medication side effects whose harm could have been reduced, in a primary-care study, were attributed to the patient not telling the doctor about the symptom.",
     source: REFS.gandhi,
   },
-  { value: "63%", text: "(32 of 51) to medication-related symptoms not being acted on.", source: REFS.gandhi },
+  { value: "63%", text: "to medication-related symptoms not being acted on.", source: REFS.gandhi },
   { value: "< 1 in 2", text: "older adults who fall tell their doctor, though more than 1 in 4 fall each year.", source: REFS.cdcFalls },
 ];
 

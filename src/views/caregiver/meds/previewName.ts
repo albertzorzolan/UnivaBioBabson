@@ -33,3 +33,18 @@ export function previewName(typed: string, match: Pick<DrugMatch, "ingredientIds
     return getDrug(match.ingredientIds[0])?.display ?? tidyTyped(t);
   return tidyTyped(t);
 }
+
+/**
+ * A prompt title for the preview list without a repeated drug name: Beers titles are "{med}: {rule label}", so
+ * "Warfarin: warfarin as the first blood thinner" becomes "Warfarin as the first blood thinner". The prefix is
+ * dropped only when the label starts with the same name as a whole word; any other title is returned unchanged.
+ */
+export function previewTitle(title: string): string {
+  const m = /^([^:]+):\s+(.+)$/.exec(title.trim());
+  if (!m) return title;
+  const [, drug, label] = m;
+  const head = label.slice(0, drug.length);
+  const next = label.charAt(drug.length);
+  if (head.toLowerCase() !== drug.toLowerCase() || /[a-z0-9]/i.test(next)) return title;
+  return `${drug}${label.slice(drug.length)}`;
+}

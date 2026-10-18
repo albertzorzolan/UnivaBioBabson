@@ -16,6 +16,8 @@
 //                 verifySentence with the same options as the AI draft, or it is left out.
 //   limitations   fixed, honest lines (coverage, as-needed doses, chance/expectation, what the review does not
 //                 check, provenance)
+//   footer        briefSafetyLines: SAFETY_LINE + the static safety-net line (safetyNet.ts), rendered by the view
+//                 for every brief (not stored in BriefContent, so older briefs show it too)
 
 import type {
   BriefContent,
@@ -26,6 +28,7 @@ import type {
   ISODate,
   MedReview,
   Medication,
+  PatientProfile,
   Signal,
   StoreData,
   TimelineAnalysis,
@@ -53,6 +56,7 @@ import {
 } from "./shared";
 import type { BriefKb } from "./shared";
 import { verifySentence } from "./verify";
+import { safetyNetLine } from "./safetyNet";
 
 export interface TemplateInput {
   data: StoreData;
@@ -80,6 +84,25 @@ export const LIMITATION_LINES = {
 /** The persistent safety line (SPEC §3), for print and "Copy as text" footers. */
 export const SAFETY_LINE =
   "Don't stop or change any medicine without talking to the prescriber. If something feels like an emergency, call 911.";
+
+/**
+ * The person's first name for brief wording, or "" when none was entered (an emptied record). The placeholder an
+ * older empty record stored as the name ("Your relative") counts as none, so the caller can word it in lower case.
+ */
+export function briefPatientName(profile: PatientProfile): string {
+  const preferred = oneLine(profile.preferredName);
+  if (preferred) return preferred;
+  const display = oneLine(profile.displayName);
+  return !display || /^your relative$/i.test(display) ? "" : display.split(" ")[0];
+}
+
+/**
+ * The brief's footer lines (screen and print): the safety line, then the static safety-net line (safetyNet.ts).
+ * Neither depends on what was recorded, so neither is triage; they are the same for every brief of this person.
+ */
+export function briefSafetyLines(profile: PatientProfile): string[] {
+  return [SAFETY_LINE, safetyNetLine(briefPatientName(profile))];
+}
 
 /** Findings shown as review prompts: not dismissed, ranked (linked to recorded symptoms first, then category order). */
 export function promptFindings(review: MedReview, data: StoreData): Finding[] {
@@ -205,10 +228,15 @@ export function templateBrief(pkg: EvidencePackage, input: TemplateInput): Brief
     const ids = [evidenceId.meds, evidenceId.coverage].filter(has);
     const meds = item(evidenceId.meds)?.data?.medIds?.length ?? 0;
     if (ids.length) {
+      // An emptied record has no names and no medicines: "your relative's" (lower case mid-sentence), and no
+      // "0 current medicines" clause.
+      const name = briefPatientName(data.profile);
+      const whose = name ? `${name}'s` : "your relative's";
+      const medsPart = meds > 0 ? `${whose} ${meds} current ${plural(meds, "medicine")} and ` : "";
       reason.push({
         text:
-          `${caregiverLabel(data.profile)} would like to go over ${patientFirstName(data.profile)}'s ${meds} current ` +
-          `${plural(meds, "medicine")} and what the diary recorded from ${dateWords(pkg.from, pkg.to)} through ${dateWords(pkg.to, pkg.to)}.`,
+          `${caregiverLabel(data.profile)} would like to go over ${medsPart}` +
+          `what the diary recorded from ${dateWords(pkg.from, pkg.to)} through ${dateWords(pkg.to, pkg.to)}.`,
         evidenceIds: ids,
       });
     }

@@ -4,19 +4,67 @@
 //   node scripts/submission/check-facts.mjs        # prints a report; exit code 1 if any check fails
 //
 // It does not run the test suite (SKIP_VITEST defaults to 1 here; test counts are not checked).
-// Checked files: README.md, submission/DEVPOST.md, docs/EVALUATION.md, docs/DEMO-SCRIPT.md, submission/kinwise-demo.srt.
+// Checked files (stale wording + numbers): README.md, submission/DEVPOST.md, docs/EVALUATION.md, docs/DEMO-SCRIPT.md,
+//   submission/kinwise-demo.srt, and submission/DEVPOST-if-not-pushed.md when it exists.
+// Checked for stale wording only (numbers in code are not prose): the app's public pages (src/views/public/*.ts(x),
+//   tests excluded: they assert that the old wording is gone) and the guided tour (src/app/TourOverlay.tsx).
 // Advisory files (reported, never fail the run): the PDF generators that still carry their own copy.
 // Release gate (reported, never fails the run): evidence from this working tree that is absent at REPO_BRANCH.
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { REPO_BRANCH, ROOT } from "./lib.mjs";
 
 const FILES = ["README.md", "submission/DEVPOST.md", "docs/EVALUATION.md", "docs/DEMO-SCRIPT.md", "submission/kinwise-demo.srt"];
+/** Checked like FILES, but only when present (the DEVPOST text for the fallback one-pager, if the team writes one). */
+const OPTIONAL_FILES = ["submission/DEVPOST-if-not-pushed.md"];
 const ADVISORY = ["scripts/submission/codetour.mjs", "scripts/submission/record-demo.mjs"];
 
-/** Wording that was true once and is not any more (case-insensitive). */
-export const STALE = ["not yet deployed", "Planned live demo", "[Team member", "planned, not yet", "has not run yet", "persisted because"];
+/** App text judges read in the live demo: stale wording only. Test files are left out (they assert its absence). */
+function appTextFiles() {
+  const dir = "src/views/public";
+  let names = [];
+  try {
+    names = readdirSync(join(ROOT, dir));
+  } catch {
+    names = [];
+  }
+  return [...names.filter((n) => /\.tsx?$/.test(n) && !/\.test\.tsx?$/.test(n)).sort().map((n) => `${dir}/${n}`), "src/app/TourOverlay.tsx"];
+}
+
+/**
+ * Wording that was true once, or never verified, and must not be printed (case-insensitive, whole words):
+ *   - the live demo has been public since 2026-10-11 ("not yet deployed", "Planned live demo", …);
+ *   - the flawed-AI count is facts.ai.liveSlippedPhrase, "at least 6 flawed AI sentences (from 5 outputs)", counted
+ *     from eval/verifier-redteam.json; the old hand count was "at least 3 flawed outputs";
+ *   - the NLP stories and their gold labels were written by the team with AI assistance and not double-annotated
+ *     (docs/EVALUATION.md §2), so "labelled by hand" / "hand-labelled" overstates how they were made;
+ *   - Gandhi 2003's "19 of 51" / "32 of 51" counts are not verified (kb-src/research/market-evidence.md §0 notes);
+ *     only the 37% is printed.
+ */
+export const STALE = [
+  "not yet deployed",
+  "Planned live demo",
+  "[Team member",
+  "planned, not yet",
+  "has not run yet",
+  "persisted because",
+  "at least 3 flawed",
+  "labelled by hand",
+  "labeled by hand",
+  "hand-labelled",
+  "hand-labeled",
+  "hand labelled",
+  "hand labeled",
+  "19 of 51",
+  "32 of 51",
+];
+
+/** A STALE phrase as a case-insensitive global regex; word boundaries at word-character ends, so "19 of 51" does not match "119 of 512". */
+export function staleRegex(phrase) {
+  const body = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`${/^\w/.test(phrase) ? "\\b" : ""}${body}${/\w$/.test(phrase) ? "\\b" : ""}`, "gi");
+}
 
 /** 1-based line number of a character offset. */
 const lineOf = (text, index) => text.slice(0, index).split("\n").length;
@@ -115,14 +163,16 @@ async function main() {
     out.push(
       `  claim checker red team: ${v.before ? `${v.before.caught} of ${v.harmfulTotal} as submitted, ` : ""}${v.caught} of ${v.harmfulTotal} after fixes (in-sample)` +
         `${v.postFixProbe ? ` · post-fix probe ${v.postFixProbe.caught} of ${v.postFixProbe.total}${v.postFixProbe.heldOut ? " (held out)" : " (before tuning; no longer held out)"}` : ""}` +
-        `${v.postFixProbe2 ? ` · held-out probe ${v.postFixProbe2.caught} of ${v.postFixProbe2.total}` : ""}` +
+        `${v.postFixProbe2 ? ` · second probe ${v.postFixProbe2.caught} of ${v.postFixProbe2.total}${v.postFixProbe2.heldOut ? " (held out)" : " (recorded held out; since used for tuning)"}` : ""}` +
+        `${v.postFixProbe3 ? ` · third probe ${v.postFixProbe3.caught} of ${v.postFixProbe3.total}${v.postFixProbe3.heldOut ? " (held out; written by an AI agent, not independent of the team)" : " (since used for tuning)"}` : ""}` +
         `${v.postFixUnreadable ? " · a probe is UNREADABLE (one-pager omits the bullet)" : ""}` +
         `${v.liveEscapes ? ` · live escapes listed: ${v.liveEscapes.total}` : ""}`,
     );
   }
+  out.push(`  live AI run: ${f.ai.liveSlippedPhrase} (eval/verifier-redteam.json live-escape items: ${f.ai.liveSlippedIds.join(", ")})`);
   out.push(`  optional results: verifier red team ${f.verifier ? "present" : "absent"} · timeline null ${f.timelineNull ? "present" : "absent"} · meds ablation ${f.meds.ablation ? "present" : "absent"}`);
 
-  const scan = (rel, { advisory = false } = {}) => {
+  const scan = (rel, { advisory = false, wordingOnly = false } = {}) => {
     const path = join(ROOT, rel);
     if (!existsSync(path)) {
       out.push(`\n${rel}: MISSING`);
@@ -132,10 +182,9 @@ async function main() {
     const text = readFileSync(path, "utf8");
     const lines = [];
     for (const s of STALE) {
-      const re = new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
-      for (const { line } of matches(text, re)) lines.push({ ok: false, msg: `stale wording "${s}" (line ${line})` });
+      for (const { line } of matches(text, staleRegex(s))) lines.push({ ok: false, msg: `stale wording "${s}" (line ${line})` });
     }
-    if (!advisory) {
+    if (!advisory && !wordingOnly) {
       for (const c of checks) {
         for (const r of c.run(text)) {
           if (r.canonical) seen.add(r.canonical);
@@ -144,12 +193,15 @@ async function main() {
       }
     }
     const bad = lines.filter((l) => !l.ok);
-    out.push(`\n${rel}${advisory ? " (advisory)" : ""}: ${bad.length ? `${bad.length} problem(s)` : "OK"} · ${lines.filter((l) => l.ok).length} number(s) match`);
+    const tag = advisory ? " (advisory)" : wordingOnly ? " (wording only)" : "";
+    out.push(`\n${rel}${tag}: ${bad.length ? `${bad.length} problem(s)` : "OK"}${wordingOnly ? "" : ` · ${lines.filter((l) => l.ok).length} number(s) match`}`);
     for (const l of bad) out.push(`  ${advisory ? "WARN" : "FAIL"} ${l.msg}`);
     if (!advisory) for (const l of bad) failures.push(`${rel}: ${l.msg}`);
   };
 
   for (const rel of FILES) scan(rel);
+  for (const rel of OPTIONAL_FILES) if (existsSync(join(ROOT, rel))) scan(rel);
+  for (const rel of appTextFiles()) scan(rel, { wordingOnly: true });
   for (const rel of ADVISORY) scan(rel, { advisory: true });
 
   // The headline figures must still be stated somewhere (a deleted claim is fine only if it is deliberate).

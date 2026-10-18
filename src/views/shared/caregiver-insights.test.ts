@@ -1,19 +1,27 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync, readdirSync } from "node:fs";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import type { Finding } from "../../model/types";
 import { createSeed } from "../../model/seed";
 import { analyzeTimeline } from "../../engine/timeline/signals";
 import { activeMeds, reviewMedications } from "../../engine/meds/review";
-import { MULTIPLE_COMPARISONS_NOTE } from "../../engine/timeline/rules";
+import { MULTIPLE_COMPARISONS_NOTE, SIGNAL_CAVEAT, TIMELINE_METHOD_SUMMARY } from "../../engine/timeline/rules";
 import {
+  CHANCE_NOTE,
+  RELIABILITY_TITLE,
+  SIGNAL_WORDS_KEY,
   STRENGTH_SIZE_LABEL,
   STRENGTH_SIZE_WORD,
+  TEST_NAME,
   strengthTone,
   fallsComparison,
   reviewPromptsSummary,
-  strengthCalibration,
   triggerFirstSymptoms,
   unflaggedVerdict,
+  usesEngineStrengthWords,
 } from "./caregiver-insights";
+import { ReliabilityDisclosure } from "./caregiver-Reliability";
 import { layoutMarkers, tickAlign } from "./caregiver-TimelineChart";
 
 const TODAY = "2026-10-11";
@@ -76,11 +84,14 @@ describe("review summary and finding symptoms", () => {
     expect(triggerFirstSymptoms({ ...f, title: "Unrelated", category: "beers_avoid" })).toEqual(["dizziness", "fall", "nearFall", "swelling"]);
   });
 
-  it("never labels falls with a test result, and says 'No clear difference' rather than 'none'", () => {
+  it("never labels falls with a test result, and says 'Not flagged' rather than 'none'", () => {
     expect(unflaggedVerdict("fall", "none")).toBe("Listed by date, too few events to test");
     expect(unflaggedVerdict("nearFall", "weak")).toBe("Listed by date, too few events to test");
-    expect(unflaggedVerdict("dizziness", "none")).toBe("No clear difference");
-    expect(unflaggedVerdict("sleep", "weak")).toBe("Pattern strength: weak (not flagged)");
+    expect(unflaggedVerdict("dizziness", "none")).toBe("Not flagged");
+    expect(unflaggedVerdict("sleep", "weak")).toBe("Small difference (not flagged)");
+    // The unflagged labels reuse the size vocabulary and never echo a flagged one ("Clear difference").
+    expect(unflaggedVerdict("sleep", "weak").startsWith(STRENGTH_SIZE_WORD.weak)).toBe(true);
+    expect(unflaggedVerdict("dizziness", "none")).not.toMatch(/clear|strength/i);
   });
 });
 
@@ -92,22 +103,12 @@ describe("signal strength wording for caregivers", () => {
     for (const label of Object.values(STRENGTH_SIZE_LABEL)) expect(label).not.toMatch(/strong|caus|safe|danger|risk|warning/i);
   });
 
-  it("quotes the chance rates measured in rules.ts, including the frequent-symptom and clustered-days figures", () => {
-    // The figures are copied from MULTIPLE_COMPARISONS_NOTE (measured in signals.null.test.ts); if that note changes,
-    // this test fails so the Overview line cannot drift from what the engine says.
-    expect(MULTIPLE_COMPARISONS_NOTE).toContain("about 1 in 10 medicine changes still showed a moderate signal");
-    expect(MULTIPLE_COMPARISONS_NOTE).toContain("about 1 in 100 a strong one");
-    expect(MULTIPLE_COMPARISONS_NOTE).toContain("nearly 1 in 5 and 1 in 35 when symptoms were recorded often");
-    expect(MULTIPLE_COMPARISONS_NOTE).toContain("about 9 in 10 medicine changes showed a moderate signal and about 6 in 10 a strong one");
-    expect(strengthCalibration("strong")).toBe(
-      "In simulated diaries with no real change, about 1 in 100 medicine changes showed a difference rated “large” " +
-        "(1 in 35 when symptoms were recorded often), and about 6 in 10 when symptoms came in runs of days.",
+  it("says in one plain visible line, without numbers, that a difference like this can appear by chance", () => {
+    expect(CHANCE_NOTE).toBe(
+      "Differences like this can also appear by chance, especially when symptoms come in runs of days, so it is a question for the clinician, not an answer.",
     );
-    expect(strengthCalibration("moderate")).toBe(
-      "In simulated diaries with no real change, about 1 in 10 medicine changes showed a difference rated “clear” or larger " +
-        "(nearly 1 in 5 when symptoms were recorded often), and about 9 in 10 when symptoms came in runs of days.",
-    );
-    expect(strengthCalibration("weak")).toBeNull();
+    expect(CHANCE_NOTE).not.toMatch(/\d/);
+    expect(CHANCE_NOTE).not.toMatch(/caus|safe|danger|stop taking|risk/i);
   });
 
   it("names a size word for each strength that matches its badge", () => {
@@ -117,11 +118,111 @@ describe("signal strength wording for caregivers", () => {
     for (const k of ["strong", "moderate", "weak"] as const) expect(STRENGTH_SIZE_LABEL[k].startsWith(STRENGTH_SIZE_WORD[k])).toBe(true);
   });
 
-  it("colours a badge by strength only, never green for a recorded change in either direction", () => {
+  it("colours a badge by strength only: one caution hue for a large difference, neutral otherwise, never green", () => {
     expect(strengthTone("strong")).toBe("caution");
-    expect(strengthTone("moderate")).toBe("info");
+    // tokens.css has no softer caution tone, so a clear (moderate) difference is neutral rather than a second hue.
+    expect(strengthTone("moderate")).toBe("neutral");
     expect(strengthTone("weak")).toBe("neutral");
     expect(strengthTone("none")).toBe("neutral");
+    for (const s of ["strong", "moderate", "weak", "none"] as const) expect(["caution", "neutral"]).toContain(strengthTone(s));
+  });
+});
+
+/** Visible text of server-rendered markup (tags stripped, the entities React escapes decoded). */
+function textOf(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ");
+}
+
+describe("'How reliable is this?' disclosure", () => {
+  const html = renderToStaticMarkup(
+    createElement(ReliabilityDisclosure, {
+      tests: [{ key: "dizziness", metric: "dizziness", label: "Dizziness", test: "fisher_exact", pValue: 0.0042 }],
+    }),
+  );
+  const text = textOf(html);
+
+  it("is titled 'How reliable is this?' and starts closed", () => {
+    expect(RELIABILITY_TITLE).toBe("How reliable is this?");
+    expect(text).toContain("How reliable is this?");
+    expect(html).toMatch(/aria-expanded="false"/);
+  });
+
+  it("renders the measured multiple-comparisons note and the signal caveat from rules.ts verbatim", () => {
+    expect(text).toContain(MULTIPLE_COMPARISONS_NOTE.replace(/\s+/g, " "));
+    expect(text).toContain(SIGNAL_CAVEAT);
+  });
+
+  it("names the test and p-value behind each row", () => {
+    expect(TEST_NAME.fisher_exact).toBe("Fisher's exact test");
+    expect(TEST_NAME.mann_whitney).toBe("Mann–Whitney U test");
+    expect(text).toMatch(/Dizziness: Fisher's exact test, p = 0\.004/);
+  });
+
+  it("keys the engine's 'strong'/'moderate' words to this page's size words, before the measured rates", () => {
+    // The rates in rules.ts are written per engine strength ("a moderate signal", "a strong one"). Without a key, a
+    // caregiver looking at a "Large difference" badge cannot tell which of those rates applies to it.
+    // If the note is ever reworded without the engine words, no key is needed (covered by the "leaves the key out" test).
+    if (!usesEngineStrengthWords(MULTIPLE_COMPARISONS_NOTE)) return;
+    expect(SIGNAL_WORDS_KEY).toContain(`“${STRENGTH_SIZE_WORD.strong}”`);
+    expect(SIGNAL_WORDS_KEY).toContain(`“${STRENGTH_SIZE_WORD.moderate}”`);
+    // "moderate" in the measured rates counts moderate-or-strong signals, so the key must not read as Clear-only.
+    expect(SIGNAL_WORDS_KEY).toMatch(/or larger/);
+    expect(SIGNAL_WORDS_KEY).not.toMatch(/\d/);
+    const note = text.indexOf(MULTIPLE_COMPARISONS_NOTE.replace(/\s+/g, " "));
+    const key = text.indexOf(SIGNAL_WORDS_KEY);
+    expect(key).toBeGreaterThan(-1);
+    expect(key).toBeLessThan(note);
+  });
+
+  it("puts the key before a method text that also uses the engine words (the Timeline's)", () => {
+    const t = textOf(renderToStaticMarkup(createElement(ReliabilityDisclosure, { method: TIMELINE_METHOD_SUMMARY })));
+    const method = t.indexOf(TIMELINE_METHOD_SUMMARY.replace(/\s+/g, " "));
+    expect(method).toBeGreaterThan(-1);
+    if (usesEngineStrengthWords(TIMELINE_METHOD_SUMMARY)) {
+      const key = t.indexOf(SIGNAL_WORDS_KEY);
+      expect(key).toBeGreaterThan(-1);
+      expect(key).toBeLessThan(method);
+    }
+  });
+
+  it("leaves the key out when no text in the panel uses the engine words", () => {
+    // Guard against a stale key: only checkable once rules.ts no longer says "strong"/"moderate".
+    if (usesEngineStrengthWords(MULTIPLE_COMPARISONS_NOTE)) return;
+    expect(text).not.toContain(SIGNAL_WORDS_KEY);
+  });
+
+  it("accepts a different summary where a script depends on the older title", () => {
+    const t = textOf(renderToStaticMarkup(createElement(ReliabilityDisclosure, { summary: "How this comparison works" })));
+    expect(t).toContain("How this comparison works");
+    expect(t).toContain(MULTIPLE_COMPARISONS_NOTE.replace(/\s+/g, " "));
+  });
+});
+
+describe("caregiver views keep one source for the numbers and one vocabulary for sizes", () => {
+  const files = [
+    ...readdirSync("src/views/caregiver").filter((f) => f.endsWith(".tsx")).map((f) => `src/views/caregiver/${f}`),
+    ...readdirSync("src/views/shared").filter((f) => /^caregiver-.*\.tsx?$/.test(f) && !f.includes(".test.")).map((f) => `src/views/shared/${f}`),
+  ];
+
+  it("never says 'Pattern strength' or 'No clear difference'", () => {
+    for (const f of files) {
+      const src = readFileSync(f, "utf8");
+      expect(src, f).not.toMatch(/Pattern strength|No clear difference/);
+    }
+  });
+
+  it("does not hard-code a chance rate (the rates live in engine/timeline/rules.ts)", () => {
+    for (const f of ["src/views/shared/caregiver-insights.ts", "src/views/caregiver/Overview.tsx", "src/views/caregiver/Timeline.tsx", "src/views/shared/caregiver-Reliability.tsx"]) {
+      const src = readFileSync(f, "utf8");
+      expect(src, f).not.toMatch(/\b\d+ in \d+\b/);
+    }
   });
 });
 

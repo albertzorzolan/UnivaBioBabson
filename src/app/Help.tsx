@@ -1,8 +1,9 @@
 // "Need help now?" — a static, always-available dialog. Kinwise does no triage: it only points to the
 // people who can help and states plainly that nobody monitors the app.
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react";
-import { HeartHandshake, Phone, PhoneCall, ShieldAlert, Siren } from "lucide-react";
+import { CalendarClock, HeartHandshake, Phone, PhoneCall, ShieldAlert, Siren } from "lucide-react";
 import { Button, Modal } from "../ui";
+import { SAFETY_NET_FOR_ANYONE } from "../engine/brief/safetyNet";
 
 interface HelpApi {
   openHelp: () => void;
@@ -54,6 +55,35 @@ const LINES: { icon: ReactNode; title: string; detail: string; tel: string; telL
   },
 ];
 
+/**
+ * The notes under the numbers. The middle one is the static safety-net line the visit brief also prints
+ * (engine/brief/safetyNet.ts): it never depends on what was recorded, so it is not triage. Exported for tests.
+ */
+export function HelpNotes() {
+  return (
+    <div className="help-notes">
+      <p>
+        <Phone size={16} aria-hidden="true" />
+        <span>
+          <strong>Kinwise is not monitored by anyone and does not notify anyone.</strong> Alex can see your entries
+          when they open Kinwise, but no one is alerted.
+        </span>
+      </p>
+      <p>
+        <CalendarClock size={16} aria-hidden="true" />
+        <span>{SAFETY_NET_FOR_ANYONE}</span>
+      </p>
+      <p>
+        <ShieldAlert size={16} aria-hidden="true" />
+        <span>
+          <strong>Don’t stop or change medicines without talking to the prescriber.</strong> Bring questions to the doctor
+          or pharmacist — the visit brief can help.
+        </span>
+      </p>
+    </div>
+  );
+}
+
 /** The dialog itself (exported for the /dev/ui gallery). */
 export function HelpDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   // Focus "Close" on open so a stray Enter can never start a phone call.
@@ -88,22 +118,7 @@ export function HelpDialog({ open, onClose }: { open: boolean; onClose: () => vo
           </li>
         ))}
       </ul>
-      <div className="help-notes">
-        <p>
-          <Phone size={16} aria-hidden="true" />
-          <span>
-            <strong>Kinwise is not monitored by anyone and does not notify anyone.</strong> Alex can see your entries
-            when they open Kinwise, but no one is alerted.
-          </span>
-        </p>
-        <p>
-          <ShieldAlert size={16} aria-hidden="true" />
-          <span>
-            <strong>Don’t stop or change medicines without talking to the prescriber.</strong> Bring questions to the doctor
-            or pharmacist — the visit brief can help.
-          </span>
-        </p>
-      </div>
+      <HelpNotes />
     </Modal>
   );
 }

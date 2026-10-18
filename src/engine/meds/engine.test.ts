@@ -419,7 +419,8 @@ describe("fall-risk medicines", () => {
     expect(f.title).toBe("Medicines linked to falls, with falls or dizziness recorded (2)");
     expect(f.plain).toContain("In the last 30 days the diary recorded 1 fall (Oct 5) and 1 near-fall (Sep 29) on 2 answered days, and dizziness on 1 of 2 answered days.");
     expect(f.question).toBe(
-      "With 1 fall and 1 near-fall on 2 answered days, and dizziness on 1 of 2 answered days in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk?",
+      "With 1 fall and 1 near-fall on 2 answered days, and dizziness on 1 of 2 answered days in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk? " +
+        "Could Rose's blood pressure be checked lying and standing (CDC STEADI)?",
     );
     expect(f.clinician).toContain("Diary, last 30 days: 1 fall (Oct 5) and 1 near-fall (Sep 29) on 2 answered days; dizziness on 1 of 2 answered days.");
   });
@@ -428,8 +429,47 @@ describe("fall-risk medicines", () => {
     const r = review(meds(), { checkIns: [checkIn(5, { fall: true, nearFall: null, dizziness: false }), checkIn(11, { fall: false, nearFall: true })] });
     const [f] = of(r, "fall_risk");
     expect(f.question).toBe(
-      "With 1 fall on 2 answered days, and 1 near-fall on 1 answered day in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk?",
+      "With 1 fall on 2 answered days, and 1 near-fall on 1 answered day in the last 30 days, could any of these medicines be contributing, and could the list be reviewed for fall risk? " +
+        "Could Rose's blood pressure be checked lying and standing (CDC STEADI)?",
     );
+  });
+
+  // CDC STEADI measures orthostatic (lying and standing) blood pressure as part of a fall-risk assessment. The
+  // follow-up question is only asked when the diary recorded falls or dizziness AND a FRID lowers blood pressure.
+  const BP_QUESTION = "Could Rose's blood pressure be checked lying and standing (CDC STEADI)?";
+
+  it("does not ask about lying and standing blood pressure when no FRID lowers blood pressure", () => {
+    const r = review([med(TODAY, "Ativan", ["lorazepam"], { id: "lz", start: -16 })], { checkIns: [checkIn(5, { fall: true, dizziness: true })] });
+    const [f] = of(r, "fall_risk");
+    expect(f.title).toContain("with falls or dizziness recorded");
+    expect(f.question).not.toContain("lying and standing");
+    expect(f.sourceIds).toEqual(["steadi"]);
+  });
+
+  it("does not ask about lying and standing blood pressure without falls, near-falls or dizziness", () => {
+    const r = review(meds(), { checkIns: [checkIn(5, { fall: false, nearFall: false, dizziness: false })] });
+    const [f] = of(r, "fall_risk");
+    expect(f.title).toBe("Medicines linked to falls (2)");
+    expect(f.question).toBe("Could these medicines be reviewed for fall risk, for example as part of a fall-risk check (CDC STEADI)?");
+  });
+
+  it("asks it for a water pill alone and adds the CDC STEADI source, without changing which lists name the medicine", () => {
+    const r = review([med(TODAY, "Lasix", ["furosemide"], { id: "fu", start: -95 })], { checkIns: [checkIn(3, { dizziness: true })] });
+    const [f] = of(r, "fall_risk");
+    expect(f.question.endsWith(` ${BP_QUESTION}`)).toBe(true);
+    // The lead still credits only the list that names diuretics; STEADI is cited for the blood-pressure check.
+    expect(f.plain).toMatch(/^Lasix is on published lists of medicines linked to falls in older adults \(STOPPFall\)\./);
+    expect(f.sourceIds).toEqual(["stoppfall", "steadi"]);
+  });
+
+  it("keeps the first question sentence unchanged and adds no banned wording", () => {
+    const r = review(meds(), { checkIns: [checkIn(5, { fall: true, dizziness: true })] });
+    const [f] = of(r, "fall_risk");
+    const parts = sentences(f.question);
+    expect(parts).toHaveLength(2);
+    expect(parts[0]).toMatch(/^With .* could any of these medicines be contributing, and could the list be reviewed for fall risk\?$/);
+    expect(parts[1]).toBe(BP_QUESTION);
+    expect(bannedWordsIn(f.question)).toEqual([]);
   });
 
   it("names a single FRID in the singular", () => {

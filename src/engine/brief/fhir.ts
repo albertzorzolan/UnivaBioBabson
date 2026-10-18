@@ -183,15 +183,21 @@ export const SEVERITY_CODES: Record<1 | 2 | 3, FhirCodeableConcept> = {
 };
 const SEVERITY_ATTRIBUTE = sct("246112005", "Severity");
 
-/** Extra symptoms from the patient's words. */
-export const CONCEPT_CODES: Record<ConceptId, FhirCoding> = {
+/**
+ * Extra symptoms from the patient's words. `null`: exported as CodeableConcept.text only, with no code, because no
+ * verified code covers the whole concept. urinary_problem joins leaking, night-time urination and difficulty passing
+ * urine ("couldn't pee properly"); coding it 165232002 "Urinary incontinence" would export possible urinary retention
+ * (an anticholinergic warning sign in AGS Beers 2023) as its opposite. Text only until a broader code is checked on a
+ * terminology server.
+ */
+export const CONCEPT_CODES: Record<ConceptId, FhirCoding | null> = {
   nausea: sct("422587007", "Nausea"),
   constipation: sct("14760008", "Constipation"),
   dry_mouth: sct("87715008", "Xerostomia"),
   headache: sct("25064002", "Headache"),
   cough: sct("49727002", "Cough"),
   blurred_vision: sct("111516008", "Blurring of visual image"),
-  urinary_problem: sct("165232002", "Urinary incontinence"),
+  urinary_problem: null,
   low_mood: sct("366979004", "Depressed mood"),
   anxiety: sct("48694002", "Anxiety"),
   pain: sct("22253000", "Pain"),
@@ -495,12 +501,12 @@ function observationsForCheckIn(ctx: Ctx, c: CheckIn, patient: FhirReference): D
   const seen = new Set<string>();
   for (const o of c.otherSymptoms ?? []) {
     const coding = CONCEPT_CODES[o.conceptId];
-    if (!coding || seen.has(o.conceptId)) continue;
+    if (coding === undefined || seen.has(o.conceptId)) continue;
     seen.add(o.conceptId);
     out.byField.set(`other:${o.conceptId}`, add(ctx, `obs:${c.id}:other:${o.conceptId}`, {
       ...base,
       text: narrative(p(`${c.date}: ${CONCEPT_LABEL[o.conceptId] ?? o.conceptId} ${o.present ? "mentioned" : "mentioned as absent"} in the patient's own words.`)),
-      code: { coding: [coding], text: `${CONCEPT_LABEL[o.conceptId] ?? o.conceptId} (from the patient's own words)` },
+      code: { ...(coding ? { coding: [coding] } : {}), text: `${CONCEPT_LABEL[o.conceptId] ?? o.conceptId} (from the patient's own words)` },
       valueBoolean: o.present,
       derivedFrom: story && o.span ? [story] : undefined,
     }));

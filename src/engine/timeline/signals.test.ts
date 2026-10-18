@@ -19,6 +19,7 @@ import {
   dailySeries,
   describeSignal,
   eventWindows,
+  gatedStrength,
   eventsForMed,
   isAdverseConsistent,
   isSignalStrength,
@@ -1032,5 +1033,84 @@ describe("public API (index.ts)", () => {
     expect(TIMELINE_RULES.windowDays).toBe(21);
     expect(TIMELINE_RULES.minAnsweredDays).toBe(5);
     expect(TIMELINE_RULES.signalStrengths).toEqual(["strong", "moderate"]);
+  });
+});
+
+describe("runs check (circular block permutation, blockPermutation.ts)", () => {
+  // Same counts as the SPEC example (2 of 15 before, 8 of 13 after); only the order of the days differs.
+  const clustered = lorazepamDiary(firstN("dizziness", 2), firstN("dizziness", 8));
+  /** Symptom days spread evenly through each window instead of bunched at its start. */
+  const spread = lorazepamDiary(
+    (i) => ({ dizziness: i === 3 || i === 10 }),
+    (i) => ({ dizziness: i % 3 !== 2 && i < 12 }),
+  );
+
+  it("adds a runs check to every tested comparison (and none to untested ones)", () => {
+    const ev = lorazepamEvent([...clustered, makeCheckIn("2026-08-01")]);
+    for (const c of ev.comparisons) {
+      expect(c.runsCheck).not.toBeNull();
+      expect(c.runsCheck).toMatchObject({ blockDays: TIMELINE_RULES.runsCheck.blockDays, permutations: 999 });
+      expect(c.runsCheck!.p).toBeGreaterThan(0);
+      expect(c.runsCheck!.p).toBeLessThanOrEqual(1);
+    }
+    const untested = lorazepamEvent(clustered.slice(0, 3));
+    expect(untested.status).toBe("insufficient");
+    for (const c of untested.comparisons) expect(c.runsCheck).toBeNull();
+  });
+
+  it("keeps Fisher's p-value and the effect description unchanged", () => {
+    const dizzy = lorazepamEvent(clustered).comparisons.find((c) => c.metric === "dizziness")!;
+    expect(dizzy.pValue).toBeCloseTo(0.016323417238749048, 12);
+    expect(dizzy.diff).toBeCloseTo(8 / 13 - 2 / 15, 14);
+    expect(dizzy.direction).toBe("worse");
+  });
+
+  it("is deterministic, and does not depend on the calendar date (the seed is the event id + metric)", () => {
+    const a = lorazepamEvent(clustered);
+    const b = lorazepamEvent(clustered.map((c) => ({ ...c })));
+    expect(b.comparisons.map((c) => c.runsCheck)).toEqual(a.comparisons.map((c) => c.runsCheck));
+    // The same diary one week later gives the same p-values.
+    const shifted = clustered.map((c) => ({ ...c, date: addDays(c.date, 7) }));
+    const later = analyzeEvent({
+      days: latestCheckInPerDate(shifted),
+      med: { ...LORAZEPAM, startDate: addDays(LORAZEPAM.startDate, 7) },
+      change: { medicationId: LORAZEPAM.id, kind: "started", date: addDays(LORAZEPAM.startDate, 7) },
+      meds: [LORAZEPAM],
+      today: addDays(TODAY, 7),
+    });
+    expect(later.comparisons.map((c) => c.runsCheck)).toEqual(a.comparisons.map((c) => c.runsCheck));
+  });
+
+  it("is more cautious when the symptom days come in one run than when they are spread out", () => {
+    const run = lorazepamEvent(clustered).comparisons.find((c) => c.metric === "dizziness")!;
+    const even = lorazepamEvent(spread).comparisons.find((c) => c.metric === "dizziness")!;
+    expect(even.before.positive).toBe(2);
+    expect(even.after.positive).toBe(8);
+    expect(even.pValue).toBeCloseTo(run.pValue!, 14); // Fisher's test cannot tell the two diaries apart
+    expect(run.runsCheck!.p).toBeGreaterThan(even.runsCheck!.p);
+  });
+
+  it("gatedStrength uses the larger of the two p-values against the same bars", () => {
+    expect(gatedStrength("boolean", 0.001, 0.005, 0.5)).toBe("strong");
+    expect(gatedStrength("boolean", 0.001, 0.03, 0.5)).toBe("moderate");
+    expect(gatedStrength("boolean", 0.03, 0.1, 0.5)).toBe("weak");
+    expect(gatedStrength("boolean", 0.03, 0.3, 0.5)).toBe("none");
+    expect(gatedStrength("scale", 0.001, 0.001, 0.7)).toBe("moderate"); // size bars unchanged
+  });
+
+  it("applies the gate as TIMELINE_RULES says, and records whether the runs check agreed", () => {
+    for (const diary of [clustered, spread]) {
+      const ev = lorazepamEvent(diary);
+      for (const c of ev.comparisons) {
+        const kind = METRICS.find((m) => m.key === c.metric)!.kind;
+        const plain = classifyStrength(kind, c.pValue!, c.diff);
+        const gated = gatedStrength(kind, c.pValue!, c.runsCheck!.p, c.diff);
+        expect(c.strength).toBe(TIMELINE_RULES.runsCheck.gate ? gated : plain);
+        expect(c.runsCheck!.passed).toBe(gated === plain);
+      }
+      for (const s of ev.signals) {
+        expect(s.runsCheck).toEqual(ev.comparisons.find((c) => c.metric === s.metric)!.runsCheck);
+      }
+    }
   });
 });

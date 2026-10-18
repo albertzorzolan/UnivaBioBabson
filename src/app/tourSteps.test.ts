@@ -18,7 +18,8 @@ describe("guided tour steps", () => {
   it("quotes Gandhi 2003 as an attribution, not as a cause of persistence", () => {
     const t = text(0);
     expect(t).toMatch(/attributed to the patient not telling the doctor/);
-    expect(t).toMatch(/19 of 51/);
+    expect(t).toMatch(/37% of medication side effects/);
+    expect(t).not.toMatch(/of 51/);
     expect(t).not.toMatch(/persisted because/);
   });
 
@@ -30,5 +31,24 @@ describe("guided tour steps", () => {
     const heard = readFileSync(new URL("../views/patient/HeardPanel.tsx", import.meta.url), "utf8");
     expect(heard).toContain('data-tour="checkin-heard"');
     expect(heard).toMatch(/className="pt-story"/);
+  });
+
+  it("ends on the held-out scorecard, with the benchmark card as the fallback that holds the Run button", () => {
+    const last = TOUR_STEPS[7];
+    expect(last.targets[0]).toBe("how-eval-heldout");
+    expect(last.targets).toContain("how-eval");
+    const how = readFileSync(new URL("../views/public/HowItWorks.tsx", import.meta.url), "utf8");
+    // Passed to the held-out Scorecard, which renders it as data-tour.
+    expect(how).toContain('tour="how-eval-heldout"');
+  });
+
+  it("describes the benchmark stories as fictional and AI-written, not hand-labelled", () => {
+    const t = text(7);
+    expect(t).toMatch(/over hundreds of fictional, AI-written stories with gold labels/);
+    expect(t).not.toMatch(/hand-labelled|by hand/);
+  });
+
+  it("uses the size words, not “Pattern strength”", () => {
+    for (let i = 0; i < TOUR_STEPS.length; i++) expect(text(i)).not.toMatch(/Pattern strength/i);
   });
 });

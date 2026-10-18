@@ -253,13 +253,34 @@ describe("toFhirBundle — diary observations", () => {
   it("uses only codes from the verified tables", () => {
     const verified = new Set([
       ...Object.values(DIARY_CODES).flatMap((d) => (d?.coding ? [d.coding.code] : [])),
-      ...Object.values(CONCEPT_CODES).map((c) => c.code),
+      ...Object.values(CONCEPT_CODES).flatMap((c) => (c ? [c.code] : [])),
       ...Object.values(APPETITE_CODES).flatMap((c) => c.coding!.map((x) => x.code)),
       "61150-9", "246112005", "255604002", "6736007", "24484000",
     ]);
     for (const o of obs) {
       for (const c of (o.code as { coding?: { code: string }[] }).coding ?? []) expect(verified.has(c.code), c.code).toBe(true);
     }
+  });
+});
+
+describe("toFhirBundle — bladder trouble is exported as text only", () => {
+  it("never codes difficulty passing urine as 165232002 'Urinary incontinence'", () => {
+    const { bundle } = bundleFor({
+      mutate: (d) => {
+        const c = d.checkIns.filter((x) => x.date >= FROM).at(-1)!;
+        c.story = "I couldn't pee properly today.";
+        c.otherSymptoms = [{ conceptId: "urinary_problem", present: true, span: null }];
+      },
+    });
+    const urinary = of(bundle, "Observation").filter((o) => /bladder or urinary/i.test(JSON.stringify((o as { code?: unknown }).code ?? "")));
+    expect(urinary.length).toBeGreaterThan(0);
+    for (const o of urinary) {
+      const code = (o as unknown as { code: { coding?: unknown[]; text: string } }).code;
+      expect(code.coding).toBeUndefined();
+      expect(code.text).toMatch(/bladder or urinary trouble \(from the patient's own words\)/i);
+    }
+    expect(JSON.stringify(bundle)).not.toContain("165232002");
+    expect(validateBundle(bundle)).toEqual([]);
   });
 });
 

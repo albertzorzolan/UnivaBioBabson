@@ -8,6 +8,7 @@
 //                      "AI draft · on this device · <model> · <time>", checked sentence by sentence. If it fails or
 //                      every sentence is dropped, the records-based answer simply stays. A draft that only repeats
 //                      the records answer (or is empty) is not shown twice: one muted line says so instead.
+//   Without WebGPU     the AI card says this browser can't run the model (no Settings hint: it can't load there).
 // The conversation lives in component state (nothing is stored); saved visit questions go to data.savedQuestions.
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { ArrowUp, BookOpenCheck, Check, FileText, ListChecks, MessageCircleQuestion, PhoneCall, RotateCcw, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
@@ -21,7 +22,7 @@ import { useDerived } from "../../app/useDerived";
 import { href } from "../../app/router";
 import { AIBadge, Badge, Button, ButtonLink, PageHeader, Skeleton, cx, useToast } from "../../ui";
 import { EvidenceChips, EvidenceDrawer } from "./brief/EvidenceDrawer";
-import { normalize, repeatsRecords } from "./askDraft";
+import { emptyDraftNote, leadWith, normalize, repeatsRecords } from "./askDraft";
 import "./ask.css";
 
 const MAX_CHARS = 400;
@@ -44,8 +45,9 @@ interface Turn {
   savedId: string | null;
 }
 
-/** Shown instead of an AI draft that is empty or adds nothing to the records answer. */
-const ALREADY_PLAIN = "The records answer is already plain.";
+/** The demo's question leads the chips: it shows a before/after count and usually gets a plainer AI draft. */
+const LEAD_QUESTION = "How many near-falls since lorazepam started?";
+const SUGGESTIONS = leadWith(SUGGESTED_QUESTIONS, LEAD_QUESTION);
 
 export function Ask() {
   const { data, today, update } = useStore();
@@ -71,6 +73,8 @@ export function Ask() {
   }, []);
 
   const aiReady = llm.status === "ready" || llm.status === "generating";
+  // No WebGPU (probed by useLLM): the model can't run in this browser at all, so don't point to Settings.
+  const aiUnsupported = llm.status === "unsupported";
   const modelLabel = llm.model ? (getModelOption(llm.model)?.label ?? llm.model) : null;
 
   // The evidence the answers draw on: the last 30 days (questions about other periods are rendered from the record).
@@ -118,7 +122,8 @@ export function Ask() {
       if (res.status === "not_in_records" || res.sentences.length === 0 || repeatsRecords(res.sentences, result.deterministicAnswer)) {
         patchTurn(id, (t) => ({
           ...t,
-          ai: { status: "empty", sentences: [], ms: res.ms, model: modelLabel, dropped: res.dropped, note: ALREADY_PLAIN },
+          // "Checked … nothing plainer to add" only when the model really ran (see emptyDraftNote).
+          ai: { status: "empty", sentences: [], ms: res.ms, model: modelLabel, dropped: res.dropped, note: emptyDraftNote(res.report, res.dropped, res.sentences.length) },
         }));
         return;
       }
@@ -140,7 +145,13 @@ export function Ask() {
     const question = raw.replace(/\s+/g, " ").trim().slice(0, MAX_CHARS);
     if (!question) return;
     const id = nextId.current++;
-    const route = routeQuestion(question, { patientName: p.preferredName });
+    // The profile's names and the list's medicines join the scope rules, so "Should Robert stop zolpidem?" is
+    // redirected for any person and medicine, not only the demo's.
+    const route = routeQuestion(question, {
+      patientName: p.preferredName,
+      personNames: [p.displayName, p.preferredName],
+      medNames: data.medications.map((m) => m.name),
+    });
     let result: QaResult | null = null;
     if (route.inScope && pkg) {
       try {
@@ -198,7 +209,7 @@ export function Ask() {
 
   const suggestions = (
     <ul className="cg-ask-suggest" role="list" aria-label="Suggested questions">
-      {SUGGESTED_QUESTIONS.map((q) => (
+      {SUGGESTIONS.map((q) => (
         <li key={q}>
           <button type="button" className="cg-ask-suggest__chip" onClick={() => ask(q)}>
             <MessageCircleQuestion size={16} aria-hidden="true" />
@@ -322,11 +333,13 @@ export function Ask() {
             <p className="cg-ask-card__text" aria-live="polite">
               {aiReady
                 ? `${modelLabel ?? "The model"} adds a plainer-language draft under an answer when it can say it more simply. Every sentence is checked against the records first.`
-                : llm.status === "loading"
-                  ? `Loading (${Math.round(llm.progress * 100)}%). Answers from the records work meanwhile.`
-                  : "Answers come straight from the records. Optionally, load the on-device AI in Settings for a plainer-language draft."}
+                : aiUnsupported
+                  ? "This browser can't run the on-device AI (it needs WebGPU). Every answer here comes from the records either way."
+                  : llm.status === "loading"
+                    ? `Loading (${Math.round(llm.progress * 100)}%). Answers from the records work meanwhile.`
+                    : "Answers come straight from the records. Optionally, load the on-device AI in Settings for a plainer-language draft."}
             </p>
-            {!aiReady && llm.status !== "unsupported" && llm.status !== "loading" && (
+            {!aiReady && !aiUnsupported && llm.status !== "loading" && (
               <a className="cg-ask-link" href={href("/c/settings")}>
                 Open Settings
               </a>
@@ -375,6 +388,16 @@ function TurnAnswer({
             Emergency
           </p>
           <p className="cg-ask-a__lead">{route.redirect}</p>
+          {/* One tap to call, as in the Help dialog (src/app/Help.tsx). */}
+          <div className="cg-ask-a__actions">
+            <a className="ui-btn ui-btn--primary ui-btn--sm" href="tel:911">
+              <PhoneCall size={16} aria-hidden="true" />
+              Call 911
+            </a>
+            <a className="ui-btn ui-btn--secondary ui-btn--sm" href="tel:18002221222">
+              Call Poison Control
+            </a>
+          </div>
         </div>
       );
     }

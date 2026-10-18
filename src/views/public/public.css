@@ -334,23 +334,18 @@
   color: var(--primary-ink);
 }
 
-.pub-divider {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin: var(--space-5) 0 var(--space-3);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
+/* Demo sign-in: a quiet disclosure under the two "Try as" buttons, closed by default (Welcome.tsx). A hairline
+   separates it from the main choices; the trigger keeps the shared Disclosure look, with a taller touch target. */
+.pub-signin {
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
 }
-.pub-divider::before,
-.pub-divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--line);
+.pub-signin > .ui-disclosure__trigger {
+  min-height: 2.75rem;
+}
+.pub-signin > .ui-disclosure__panel {
+  padding-top: var(--space-3);
 }
 
 .pub-form {

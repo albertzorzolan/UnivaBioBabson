@@ -444,6 +444,206 @@ describe("retrieveForQuestion — other intents", () => {
   });
 });
 
+describe("routeQuestion — safety routing works for any name or medicine (code audit round 2)", () => {
+  // The audit's probe questions (tmp/judge-kit/code-audit/r2/probe-ask*.ts): each was answered before, because
+  // the scope rules only knew "Margaret", "mom", "dad" and the demo's medicine names.
+  it.each([
+    ["Should John stop zolpidem?", "treatment"],
+    ["Should grandma stop the lorazepam?", "treatment"],
+    ["Should my grandmother stop lorazepam?", "treatment"],
+    ["Why is grandma so dizzy?", "cause"],
+    ["Will grandpa fall again?", "prediction"],
+    ["Will Dad fall again?", "prediction"],
+    ["Does grandpa have dementia?", "diagnosis"],
+    ["Is Ativan working?", "treatment"],
+    ["Could zolpidem be the reason John is falling?", "cause"],
+    ["Robert took 10 of his sleeping pills", "emergency"],
+  ])("%s → %s (with or without the profile's names)", (q, category) => {
+    for (const opts of [{}, { patientName: "John" }, { patientName: "Robert", personNames: ["Robert Diaz"], medNames: ["Zolpidem (Ambien)"] }]) {
+      const r = routeQuestion(q, opts);
+      expect(r.inScope, JSON.stringify(opts)).toBe(false);
+      if (!r.inScope) expect(r.category, JSON.stringify(opts)).toBe(category);
+    }
+  });
+
+  // The same questions for three different people, with the profile's names and medicines passed the way Ask passes
+  // them. {who} is how the family might refer to the person, {med} a medicine on (or typed for) their list.
+  const PROFILES = [
+    { label: "Margaret / lorazepam", who: "Margaret", pos: "her", med: "lorazepam", opts: { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name) } },
+    { label: "Robert / zolpidem", who: "Robert", pos: "his", med: "zolpidem", opts: { patientName: "Robert", personNames: ["Robert Diaz", "Robert"], medNames: ["Zolpidem (Ambien)", "Lisinopril"] } },
+    // A placeholder name and a medicine the reference set doesn't know: the family types "grandpa".
+    { label: "Your relative / unlisted medicine", who: "grandpa", pos: "his", med: "valerian root", opts: { patientName: "Your relative", personNames: ["Your relative"], medNames: ["Valerian root"] } },
+  ];
+  const QUESTIONS: [string, "in" | string][] = [
+    ["Should {who} stop {med}?", "treatment"],
+    ["Can {who} come off the {med}?", "treatment"],
+    ["Could {who} switch from {med} to something else?", "treatment"],
+    ["Is the {med} working?", "treatment"],
+    ["Take {who} off {med}?", "treatment"],
+    ["Why is {who} so dizzy?", "cause"],
+    ["Could {med} be the reason {who} is falling?", "cause"],
+    ["Is {who}'s dizziness from the {med}?", "cause"],
+    ["Did the {med} make {who} dizzy?", "cause"],
+    ["Will {who} fall again?", "prediction"],
+    ["Is {who} going to get worse?", "prediction"],
+    ["Does {who} have dementia?", "diagnosis"],
+    ["Is {who} getting Parkinson's?", "diagnosis"],
+    ["{who} is not breathing", "emergency"],
+    ["{who} collapsed and won't wake up", "emergency"],
+    ["{who} took 10 of {pos} {med} pills", "emergency"],
+    ["{who} swallowed a handful of the {med} tablets", "emergency"],
+    ["I gave {who} a double dose by mistake", "emergency"],
+    ["{who} may have taken too many pills", "emergency"],
+    ["{who} accidentally took {pos} {med} twice", "emergency"],
+    ["Is {med} why {who} fell?", "cause"],
+    ["Could the {med} be why {pos} ankles are swollen?", "cause"],
+    ["Does {med} explain why {who} fell?", "cause"],
+    // Overdose with the medicine named and no pill noun after it (integration review).
+    ["{who} took 8 {med}", "emergency"],
+    ["{who} took a handful of {med}", "emergency"],
+    ["{who} took too many {med}", "emergency"],
+    ["{who} took a whole bottle of {med}", "emergency"],
+    ["{who} took all of {pos} {med}", "emergency"],
+    ["{who} took 10 of {pos} {med}", "emergency"],
+    ["{who} took extra {med} last night", "emergency"],
+    ["Is {med} bad for {who}?", "safety"],
+    ["Is {med} right for {who}?", "treatment"],
+    ["Can {who} have another {med} tonight?", "treatment"],
+    ["Do we keep giving {pos} {med}?", "treatment"],
+    // Record questions that must keep being answered.
+    ["When did {who} start {med}?", "in"],
+    ["How many near-falls since {med} started?", "in"],
+    ["What dose of {med} is {who} on?", "in"],
+    ["What did {who} say about sleep this week?", "in"],
+    ["Why does {who} take {med}?", "in"],
+    // A listed dose and a date lookup: neither is an overdose nor a treatment change.
+    ["{who} took 2 caplets of {med} last night, is that on the list?", "in"],
+    ["Can I see the start date for {med}?", "in"],
+  ];
+  const fill = (q: string, p: (typeof PROFILES)[number]) => q.replace("{who}", p.who).replace("{pos}", p.pos).replace("{med}", p.med);
+  const cases = PROFILES.flatMap((p) => QUESTIONS.map(([q, want]) => [p.label, fill(q, p), want, p.opts] as const));
+  it.each(cases)("%s: %s → %s", (_label, q, want, opts) => {
+    const r = routeQuestion(q, opts);
+    if (want === "in") {
+      expect(r).toEqual({ inScope: true });
+      return;
+    }
+    expect(r.inScope).toBe(false);
+    if (!r.inScope) expect(r.category).toBe(want);
+  });
+
+  it("overdose questions get the emergency line with 911 and Poison Control", () => {
+    for (const q of ["Robert took 10 of his sleeping pills", "she took a handful of her pills", "I think he has taken five tablets", "Gave her a double dose by mistake"]) {
+      const r = routeQuestion(q);
+      expect(r.inScope, q).toBe(false);
+      if (r.inScope) continue;
+      expect(r.category, q).toBe("emergency");
+      expect(r.redirect).toBe(EMERGENCY_REDIRECT);
+    }
+    expect(EMERGENCY_REDIRECT).toContain("call 911");
+    expect(EMERGENCY_REDIRECT).toContain("Poison Control at 1-800-222-1222");
+  });
+
+  it("sends an accidental double dose to emergency however it is phrased", () => {
+    for (const q of ["She accidentally took her pills twice", "I think she took her lorazepam twice", "Robert accidentally took his pills twice", "He took his zolpidem twice last night", "she took too many of her lorazepam"]) {
+      const r = routeQuestion(q);
+      expect(r.inScope, q).toBe(false);
+      if (!r.inScope) expect(r.category, q).toBe("emergency");
+    }
+  });
+
+  it("sends overdoses that name the medicine to emergency, with 911 and Poison Control", () => {
+    const margaretOpts = { patientName: "Margaret", personNames: ["Margaret Rivera"], medNames: W.data.medications.map((m) => m.name) };
+    for (const q of ["She took a whole bottle of Tylenol PM", "he took 6 ambien", "She took too many Ativan", "Grandpa took too many zolpidem", "She swallowed 20 Ativan", "He took twice his dose"]) {
+      for (const opts of [{}, margaretOpts]) {
+        const r = routeQuestion(q, opts);
+        expect(r.inScope ? "in" : r.category, q).toBe("emergency");
+        if (!r.inScope) expect(r.redirect).toBe(EMERGENCY_REDIRECT);
+      }
+    }
+  });
+
+  it("answers record questions that only look like a diagnosis, a dose or a prediction", () => {
+    for (const q of [
+      "Does the Beers list have anything about kidney disease?",
+      "Does her list have any medicines for low blood pressure?",
+      "Does any medicine on her list have a warning for delirium?",
+      "Does the timeline have any notes about low blood pressure?",
+      "Do the notes have anything about an infection?",
+      "Is there going to be a summary?",
+      "She took another nap",
+      "She took two hours to fall asleep after lorazepam",
+    ]) {
+      expect(routeQuestion(q, { patientName: "Margaret", personNames: ["Margaret Rivera"], medNames: W.data.medications.map((m) => m.name) }), q).toEqual({ inScope: true });
+    }
+  });
+
+  it("does not raise an emergency for 'too many' falls, dizzy spells or naps, or a dose in milligrams", () => {
+    // A false 911 alarm about the demo's own symptom questions is not the accepted kind of safe failure.
+    for (const q of [
+      "Has she had too many falls this month?",
+      "Has she had too many dizzy spells?",
+      "She took too many naps, is that recorded?",
+      "She's had too many dizzy days, what does the timeline show?",
+      "Did she have too many near-falls last week?",
+      "She took 20 mg of her water pill this morning, is that recorded?",
+      "Does she take her furosemide twice a day?",
+    ]) {
+      const r = routeQuestion(q, { patientName: "Margaret", personNames: ["Margaret Rivera"], medNames: W.data.medications.map((m) => m.name) });
+      expect(r.inScope ? "in" : r.category, q).not.toBe("emergency");
+    }
+  });
+
+  it("keeps Beers questions about people with a condition in scope, but redirects a diagnosis of the patient", () => {
+    const margaretOpts = { patientName: "Margaret", personNames: ["Margaret Rivera"], medNames: W.data.medications.map((m) => m.name) };
+    for (const opts of [{}, margaretOpts]) {
+      for (const q of [
+        "Is lorazepam on the Beers list for people who have dementia?",
+        "Does lorazepam have a Beers warning for people with dementia?",
+        "Is Tylenol PM a problem for people who have dementia?",
+      ]) {
+        expect(routeQuestion(q, opts), q).toEqual({ inScope: true });
+      }
+      for (const q of ["Does grandpa have dementia?", "Is Robert getting Parkinson's?"]) {
+        const r = routeQuestion(q, opts);
+        expect(r.inScope ? "in" : r.category, q).toBe("diagnosis");
+      }
+    }
+  });
+
+  it("redirects 'is <medicine> why…' and '<medicine> explains…' for any name, but answers what a medicine is for", () => {
+    for (const q of ["Is lorazepam why she fell?", "Is zolpidem why John fell?", "Could the amlodipine be why her ankles are swollen?", "Might the Ambien explain the falls?", "Does zolpidem explain why he fell?"]) {
+      for (const opts of [{}, { patientName: "Margaret", personNames: ["Margaret Rivera"], medNames: W.data.medications.map((m) => m.name) }]) {
+        const r = routeQuestion(q, opts);
+        expect(r.inScope ? "in" : r.category, q).toBe("cause");
+      }
+    }
+    for (const q of ["Why does she take lorazepam?", "Can you tell me why she takes lorazepam?", "Can you explain the Beers list?"]) {
+      expect(routeQuestion(q), q).toEqual({ inScope: true });
+    }
+  });
+
+  it("does not read a placeholder name as a person's name in the redirect", () => {
+    expect(redirectText("Your relative")).toBe("That's a question for your relative's doctor or pharmacist. Want to add it to your visit questions?");
+  });
+});
+
+describe("retrieveForQuestion — wording fixes (code audit round 2)", () => {
+  it("says 'as needed' once when the frequency already says it (Tylenol PM)", () => {
+    const first = ask("What dose of Tylenol PM does she take?").deterministicAnswer[0].text;
+    expect(first).toBe("The list records Tylenol PM (OTC) as 2 caplets, at bedtime as needed.");
+    expect(first.match(/as needed/g)).toHaveLength(1);
+  });
+
+  it("phrases a single answered day without a '0 of 1 answered day' fraction", () => {
+    const r = ask("Was she dizzy yesterday?");
+    expect(r.deterministicAnswer[0].text).toBe("Dizziness was not recorded on Oct 9 (1 check-in that day).");
+    expect(ask("Did she fall on Oct 5?").deterministicAnswer[0].text).toBe("Falls were recorded on Oct 5 (1 check-in that day).");
+    expect(text(r)).not.toMatch(/of 1 answered day\b/);
+    expectGrounded(r);
+  });
+});
+
 describe("parseQuestion / parseRange", () => {
   const meds = W.data.medications;
   const lorazepam = meds.find((m) => m.id === "med-lorazepam")!;

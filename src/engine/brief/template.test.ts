@@ -6,6 +6,7 @@ import {
   LIMITATION_LINES,
   SAFETY_LINE,
   TEMPLATE_LIMITS,
+  briefSafetyLines,
   findingSourceShort,
   missingEvidenceIds,
   promptFindings,
@@ -15,6 +16,7 @@ import {
   toVisitBrief,
 } from "./template";
 import { verifyClaims, verifySentence } from "./verify";
+import { safetyNetLine } from "./safetyNet";
 import { BANNED_IN_TEMPLATE, FAKE_KB, FROM, TODAY, margaret } from "./test-fixtures";
 
 const W = margaret();
@@ -210,6 +212,28 @@ describe("templateBrief", () => {
     expect(content.reason[0].text).toMatch(/^Alex \(daughter\) would like to go over Margaret's 8 current medicines and what the diary recorded from Aug 27 through Oct 10\.$/);
     expect(content.noticed[0].evidenceIds[0]).toMatch(/^fact:count:/);
     expect(missingEvidenceIds(content, pkg)).toEqual([]);
+  });
+
+  it("words the plain reason for an emptied record: no '0 medicines', no capitalised placeholder mid-sentence", () => {
+    // "Delete everything" (store.ts emptyRecord) leaves the names empty and the medicine list empty.
+    const profile = { ...W.data.profile, displayName: "", preferredName: "", caregiverName: "", caregiverRelation: "", age: 0 };
+    const empty: StoreData = { ...W.data, profile, notes: [], medications: [], checkIns: [], savedQuestions: [] };
+    const none = { ...W.timeline, signals: [], perMed: [] };
+    const review = { ...W.review, findings: [], fallRiskMedIds: [], acb: { ...W.review.acb, total: 0, contributors: [] } };
+    expect(brief(empty, review, none).content.reason[0].text).toBe("The caregiver would like to go over what the diary recorded from Aug 27 through Oct 10.");
+    // A name is missing but there are medicines: "your relative's", in lower case mid-sentence.
+    const withMeds: StoreData = { ...empty, medications: W.data.medications };
+    expect(brief(withMeds, review, none).content.reason[0].text).toMatch(
+      /^The caregiver would like to go over your relative's \d+ current medicines and what the diary recorded from Aug 27 through Oct 10\.$/,
+    );
+    // An older empty record stored the placeholder "Your relative" as the name.
+    const legacy: StoreData = { ...withMeds, profile: { ...profile, displayName: "Your relative" } };
+    expect(brief(legacy, review, none).content.reason[0].text).toContain(" over your relative's ");
+  });
+
+  it("ends every brief with the safety line and the static safety-net line", () => {
+    expect(briefSafetyLines(W.data.profile)).toEqual([SAFETY_LINE, safetyNetLine("Margaret")]);
+    expect(briefSafetyLines({ ...W.data.profile, displayName: "", preferredName: "" })[1]).toContain("your relative's doctor or pharmacist");
   });
 
   it("contains no banned language anywhere", () => {

@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-10-17T23:18:30.951Z",
+  "generatedAt": "2026-10-18T06:10:30.868Z",
   "engine": "kinwise-nlp 2.0.0",
   "protocol": "Scoring per eval/ANNOTATION-GUIDE.md. Dev set used for development; held-out set written independently and never used for tuning (reported, not asserted).",
   "today": "2026-10-10",
   "dev": {
     "corpus": "dev",
     "engine": "kinwise-nlp 2.0.0",
-    "cases": 245,
+    "cases": 263,
     "perField": {
       "energy": {
         "tp": 37,
@@ -36,13 +36,13 @@
         "support": 29
       },
       "dizziness": {
-        "tp": 74,
+        "tp": 82,
         "fp": 0,
         "fn": 0,
         "precision": 1,
         "recall": 1,
         "f1": 1,
-        "support": 74
+        "support": 82
       },
       "dizzinessSeverity": {
         "tp": 13,
@@ -63,22 +63,22 @@
         "support": 24
       },
       "confusion": {
-        "tp": 23,
+        "tp": 24,
         "fp": 0,
         "fn": 0,
         "precision": 1,
         "recall": 1,
         "f1": 1,
-        "support": 23
+        "support": 24
       },
       "fall": {
-        "tp": 29,
+        "tp": 30,
         "fp": 0,
         "fn": 0,
         "precision": 1,
         "recall": 1,
         "f1": 1,
-        "support": 29
+        "support": 30
       },
       "nearFall": {
         "tp": 21,
@@ -100,13 +100,13 @@
       }
     },
     "micro": {
-      "tp": 324,
+      "tp": 334,
       "fp": 0,
       "fn": 1,
       "precision": 1,
-      "recall": 0.9969,
+      "recall": 0.997,
       "f1": 0.9985,
-      "support": 325
+      "support": 335
     },
     "macroF1": 0.9981,
     "within1": {
@@ -131,23 +131,23 @@
     },
     "other": {
       "micro": {
-        "tp": 48,
+        "tp": 52,
         "fp": 0,
         "fn": 0,
         "precision": 1,
         "recall": 1,
         "f1": 1,
-        "support": 48
+        "support": 52
       },
       "perConcept": {
         "urinary_problem": {
-          "tp": 4,
+          "tp": 7,
           "fp": 0,
           "fn": 0,
           "precision": 1,
           "recall": 1,
           "f1": 1,
-          "support": 4
+          "support": 7
         },
         "headache": {
           "tp": 7,
@@ -177,13 +177,13 @@
           "support": 3
         },
         "dry_mouth": {
-          "tp": 4,
+          "tp": 5,
           "fp": 0,
           "fn": 0,
           "precision": 1,
           "recall": 1,
           "f1": 1,
-          "support": 4
+          "support": 5
         },
         "pain": {
           "tp": 6,
@@ -291,19 +291,19 @@
         "fn": 0
       },
       "negation": {
-        "cases": 55,
+        "cases": 59,
         "errors": 0,
         "fp": 0,
         "fn": 0
       },
       "colloquial": {
-        "cases": 65,
+        "cases": 72,
         "errors": 1,
         "fp": 0,
         "fn": 1
       },
       "multi_symptom": {
-        "cases": 38,
+        "cases": 39,
         "errors": 0,
         "fp": 0,
         "fn": 0
@@ -333,13 +333,13 @@
         "fn": 0
       },
       "experiencer_other": {
-        "cases": 24,
+        "cases": 31,
         "errors": 0,
         "fp": 0,
         "fn": 0
       },
       "no_symptoms": {
-        "cases": 24,
+        "cases": 30,
         "errors": 0,
         "fp": 0,
         "fn": 0
@@ -375,25 +375,25 @@
         "fn": 0
       },
       "caregiver_voice": {
-        "cases": 18,
+        "cases": 20,
         "errors": 0,
         "fp": 0,
         "fn": 0
       }
     },
     "negation": {
-      "goldNegatives": 62,
-      "correct": 62,
+      "goldNegatives": 65,
+      "correct": 65,
       "accuracy": 1,
       "polarityFlips": 0
     },
-    "exactCases": 244,
-    "exactRate": 0.9959,
+    "exactCases": 262,
+    "exactRate": 0.9962,
     "conflictsSurfaced": 4,
     "latency": {
-      "meanMs": 0.482,
-      "p95Ms": 0.494,
-      "maxMs": 62.45
+      "meanMs": 0.478,
+      "p95Ms": 0.456,
+      "maxMs": 66.124
     },
     "errors": [
       {
@@ -410,15 +410,15 @@
     "baseline": {
       "engine": "lexicon-only baseline (same lexicon and field resolution, ConText switched off)",
       "micro": {
-        "tp": 260,
-        "fp": 96,
-        "fn": 65,
-        "precision": 0.7303,
-        "recall": 0.8,
-        "f1": 0.7636,
-        "support": 325
+        "tp": 267,
+        "fp": 101,
+        "fn": 68,
+        "precision": 0.7255,
+        "recall": 0.797,
+        "f1": 0.7596,
+        "support": 335
       },
-      "macroF1": 0.7973,
+      "macroF1": 0.7982,
       "subsets": {
         "explicit_rating": {
           "cases": 17,
@@ -433,19 +433,19 @@
           "fn": 8
         },
         "negation": {
-          "cases": 55,
-          "errors": 68,
-          "fp": 66,
-          "fn": 63
+          "cases": 59,
+          "errors": 71,
+          "fp": 69,
+          "fn": 66
         },
         "colloquial": {
-          "cases": 65,
-          "errors": 6,
-          "fp": 6,
-          "fn": 5
+          "cases": 72,
+          "errors": 7,
+          "fp": 7,
+          "fn": 6
         },
         "multi_symptom": {
-          "cases": 38,
+          "cases": 39,
           "errors": 14,
           "fp": 14,
           "fn": 14
@@ -475,15 +475,15 @@
           "fn": 3
         },
         "experiencer_other": {
-          "cases": 24,
-          "errors": 18,
-          "fp": 18,
+          "cases": 31,
+          "errors": 20,
+          "fp": 20,
           "fn": 5
         },
         "no_symptoms": {
-          "cases": 24,
-          "errors": 13,
-          "fp": 13,
+          "cases": 30,
+          "errors": 15,
+          "fp": 15,
           "fn": 0
         },
         "historical": {
@@ -517,19 +517,19 @@
           "fn": 2
         },
         "caregiver_voice": {
-          "cases": 18,
+          "cases": 20,
           "errors": 10,
           "fp": 10,
           "fn": 9
         }
       },
       "negation": {
-        "goldNegatives": 62,
+        "goldNegatives": 65,
         "correct": 0,
         "accuracy": 0,
-        "polarityFlips": 61
+        "polarityFlips": 64
       },
-      "exactCases": 161
+      "exactCases": 174
     },
     "ci95": {
       "f1": [
@@ -542,8 +542,8 @@
     },
     "baselineCi95": {
       "f1": [
-        0.7164,
-        0.8093
+        0.7158,
+        0.8012
       ],
       "resamples": 2000,
       "seed": 20261010,
@@ -551,26 +551,26 @@
     },
     "deltaCi95": {
       "f1": [
-        0.1887,
-        0.2825
+        0.1973,
+        0.2824
       ],
       "resamples": 2000,
       "seed": 20261010,
       "unit": "story",
-      "pointEstimate": 0.2349
+      "pointEstimate": 0.2389
     },
     "subsetDeltas": {
       "negation": {
-        "cases": 55,
+        "cases": 59,
         "engineErrors": 0,
-        "baselineErrors": 68,
-        "errorsAvoided": 68
+        "baselineErrors": 71,
+        "errorsAvoided": 71
       },
       "experiencer_other": {
-        "cases": 24,
+        "cases": 31,
         "engineErrors": 0,
-        "baselineErrors": 18,
-        "errorsAvoided": 18
+        "baselineErrors": 20,
+        "errorsAvoided": 20
       },
       "hypothetical": {
         "cases": 19,
@@ -986,9 +986,9 @@
     "exactRate": 0.8286,
     "conflictsSurfaced": 1,
     "latency": {
-      "meanMs": 0.307,
-      "p95Ms": 0.426,
-      "maxMs": 0.715
+      "meanMs": 0.325,
+      "p95Ms": 0.557,
+      "maxMs": 0.673
     },
     "errors": [
       {

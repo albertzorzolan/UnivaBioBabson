@@ -82,3 +82,90 @@ describe("respects context", () => {
     expect(fields).toContain("nearFall");
   });
 });
+
+describe("more unsteadiness wordings (judge probes): a please-check guess, never an explicit answer", () => {
+  it.each([
+    "Felt a bit wobbly on the stairs this morning.",
+    "Felt fine. Bit wobbly on my pins first thing though.",
+    "Bit wobbly first thing.",
+    "Wobbly on my feet this afternoon.",
+    "I've been so unsteady since the new pill, had to hold the wall.",
+    "Unsteady today.",
+    "Had to hold on to the furniture to get round the house.",
+    "Had to hold the rail all the way down the stairs.",
+    "Kept having to hold onto the wall in the hallway.",
+  ])("%s", (story) => {
+    const p = dizziness(story);
+    expect(p?.value).toBe(true);
+    expect(p?.certainty).toBe("inferred");
+    expect(p?.reason).toContain("please check");
+  });
+
+  it.each(["Bit wobbly on my pins", "Felt a bit wobbly on the stairs"])("the tantrum blocker leaves '%s' a guess", (story) => {
+    expect(dizziness(story)?.certainty).toBe("inferred");
+  });
+
+  it("a guess carries no severity ('a bit wobbly' says nothing about how dizzy)", () => {
+    expect(run("Felt a bit wobbly on the stairs.").proposals.find((p) => p.field === "dizzinessSeverity")).toBeUndefined();
+  });
+
+  it.each([
+    "Was not unsteady at all today.",
+    "Not wobbly at all today.",
+    "Never unsteady once today.",
+    "Didn't have to hold the wall today.",
+  ])("a denial never becomes a yes: %s", (story) => {
+    expect(dizziness(story)?.value).not.toBe(true);
+  });
+
+  it.each([
+    "The kitchen table is wobbly.",
+    "Got a wobbly tooth at the back.",
+    "The ladder was unsteady so I left it.",
+    "My hands were unsteady doing up buttons.",
+    "I'll hold the rail in case I'm wobbly.",
+    // British idiom: "throw / have a wobbly" is a tantrum or emotional outburst, not unsteadiness.
+    "She threw a wobbly at dinner.",
+    "Mum threw a wobbly when I took her keys.",
+    "Mum threw a wobbly this morning.",
+    "Typing for Mum: she threw a wobbly at lunch.",
+    "I threw a wobbly at the pharmacist.",
+    "Had a wobbly at the GP, burst into tears.",
+    "Bit wobbly emotionally after the funeral.",
+  ])("not her own unsteadiness today: %s", (story) => {
+    expect(dizziness(story)).toBeUndefined();
+  });
+
+  it("'lost my balance' stays a near-fall, not also a dizziness guess (no double count)", () => {
+    const r = run("Lost my balance in the hallway.");
+    expect(r.proposals.find((p) => p.field === "nearFall")?.value).toBe(true);
+    expect(r.proposals.find((p) => p.field === "dizziness")).toBeUndefined();
+  });
+
+  it("holding on to stop a fall is a near-fall, not also a dizziness guess", () => {
+    const r = run("Had to grab the counter to stop myself falling.");
+    expect(r.proposals.find((p) => p.field === "nearFall")?.value).toBe(true);
+    expect(r.proposals.find((p) => p.field === "dizziness")).toBeUndefined();
+  });
+});
+
+describe("a guess next to a near-fall or fall is part of that event", () => {
+  it.each([
+    "Nearly went over in the kitchen, had to grab the counter.",
+    "Nearly fell on the stairs, had to hold the rail.",
+    "Felt wobbly and nearly fell in the garden.",
+  ])("%s → near-fall only", (story) => {
+    const r = run(story);
+    expect(r.proposals.find((p) => p.field === "nearFall")?.value).toBe(true);
+    expect(r.proposals.find((p) => p.field === "dizziness")).toBeUndefined();
+  });
+
+  it("an explicit 'dizzy' in the same sentence is still a dizziness answer", () => {
+    const r = run("Very wobbly and dizzy after the new pill, nearly went down twice.");
+    expect(r.proposals.find((p) => p.field === "dizziness")?.certainty).toBe("explicit");
+  });
+});
+
+it("unsteady weather is not unsteadiness", () => {
+  expect(dizziness("Unsteady weather today, slept badly.")).toBeUndefined();
+});

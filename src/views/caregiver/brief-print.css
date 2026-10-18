@@ -261,6 +261,50 @@
     font-size: 6.5pt;
   }
 
+  /* ---- Added for the 30-second read: rules for the new elements only (the rules above are unchanged) ----
+   * The seed brief already filled the page (about 17px to spare on Letter), so on paper these are trimmed:
+   *   - At a glance prints one run-in line, its first: the recorded change (or, when the family removed that
+   *     sentence, the falls line). The other lines are the falls sentence and question 1 a few lines further
+   *     down, so nothing is lost; the screen shows all three.
+   *   - "In her words" runs on after its sentence, so it costs no line when the sentence ends short.
+   *   - The safety-net line is shown on screen (and in "Need help now?"), not printed: it speaks to the family,
+   *     and the printed copy goes to the clinician. SAFETY_LINE still prints. BriefDocument marks it ui-no-print
+   *     (hidden above), so the printed brief and the sample PDF do not carry it. Printing it would need a line
+   *     the page budget does not have (about 5px to spare), e.g. by dropping the printed glance line. */
+  .cg-vb-print-root .cg-vb-glance {
+    display: flex;
+    gap: 8pt;
+    align-items: baseline;
+    margin-top: 1pt;
+    padding: 1pt 6pt;
+    border: 0;
+    border-radius: 2pt;
+    break-inside: avoid;
+  }
+  .cg-vb-print-root .cg-vb-glance__title {
+    flex: none;
+    margin: 0;
+    font-size: 7pt;
+  }
+  .cg-vb-print-root .cg-vb-glance__row {
+    display: block;
+  }
+  .cg-vb-print-root .cg-vb-glance__row:not(:first-child),
+  .cg-vb-print-root .cg-vb-glance__row dt {
+    display: none;
+  }
+  .cg-vb-print-root .cg-vb-glance__row dd {
+    font-size: 7.5pt;
+  }
+  /* The glance sits between the header and section 1, which keeps its no-rule start (as after the header). */
+  .cg-vb-print-root .cg-vb-glance + .cg-vb-sec {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .cg-vb-print-root .cg-vb-quote {
+    display: inline;
+  }
+
   /* ---- Not reviewed yet notice ---- */
   .cg-vb-unreviewed {
     max-width: 5.5in;

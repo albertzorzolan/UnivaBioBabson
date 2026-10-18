@@ -1,6 +1,7 @@
 // Drives the real app (system Chrome) for the submission PDFs:
-//   - captureScreens: fresh screenshots for the one-pager (Overview "Before vs after" card; Margaret's check-in
-//                     "Here's what I heard"; reviewed Visit brief);
+//   - captureScreens: the one-pager's screenshot, one wide crop of the caregiver Overview's first "What Kinwise
+//                     noticed" card (the counts, the before/after bars, the caveat, the falls and the "Question for
+//                     the visit" box);
 //   - sampleBrief:    signs in as Alex (one-click), builds the visit brief with the standard template (no LLM),
 //                     marks it reviewed and prints it with the app's own print CSS via page.pdf().
 // Every run uses a fresh browser context, so the app starts from its seeded demo record (fictional data).
@@ -50,15 +51,6 @@ async function signInAsAlex(page, base) {
   await settle(page);
 }
 
-/** Welcome → "Try as Margaret" (the one-click patient demo button) → her check-in page. */
-async function signInAsMargaret(page, base) {
-  await page.goto(`${base}#/`);
-  await settle(page);
-  await page.getByRole("button", { name: /Try as Margaret/ }).click();
-  await page.waitForURL(/#\/p\/today/, { timeout: 15000 });
-  await settle(page);
-}
-
 /** Open the Visit brief through the sidebar, as a person would. */
 async function openBrief(page, base) {
   const nav = page.getByRole("link", { name: /^Visit brief/ }).first();
@@ -74,81 +66,62 @@ async function buildTemplateBrief(page) {
   await page.waitForTimeout(300);
 }
 
-/** Screenshot a locator's box grown by `pad` CSS px on each side (keeps edge glyphs from being clipped). */
-async function shotWithPad(page, locator, path, pad = 0) {
-  await locator.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(150);
-  const b = await locator.boundingBox();
-  if (!b) throw new Error(`capture: no box for ${path}`);
-  await page.screenshot({ path, clip: { x: Math.max(0, b.x - pad), y: Math.max(0, b.y - pad), width: b.width + 2 * pad, height: b.height + 2 * pad } });
-  return path;
+/** The union of several boxes ({ x, y, width, height }), grown by `pad` CSS px on each side. */
+export function unionBox(boxes, pad = 0) {
+  const left = Math.min(...boxes.map((b) => b.x)) - pad;
+  const top = Math.min(...boxes.map((b) => b.y)) - pad;
+  const right = Math.max(...boxes.map((b) => b.x + b.width)) + pad;
+  const bottom = Math.max(...boxes.map((b) => b.y + b.height)) + pad;
+  return { x: Math.max(0, left), y: Math.max(0, top), width: right - Math.max(0, left), height: bottom - Math.max(0, top) };
 }
 
-/** Viewport for the patient crop: narrow enough that her story wraps into a block that stays legible when scaled
- *  into the one-pager's middle column, wide enough to keep the desktop layout. */
-const HEARD_VIEWPORT = { width: 860, height: 900 };
+/**
+ * Viewport for the Overview crop. The app's content column stops growing at about 1,080 px, so at 1560 px the card
+ * reaches its widest, flattest layout (the lead fits on 3 lines), which keeps the crop about 3 : 1 and its text legible
+ * at the one-pager's full width. Scale 3 keeps it sharp when the PDF is zoomed.
+ */
+const CARD_VIEWPORT = { width: 1560, height: 1000, scale: 3 };
 
-/** Margaret's check-in after she taps the first example story ("A wobbly morning"): the highlighted story from
- *  "Here's what I heard" (data-tour="checkin-heard" .pt-story), i.e. what the on-device NLP took from her words. */
-async function captureHeard(browser, base, outDir) {
-  const { ctx, page, errors } = await newPage(browser, { ...HEARD_VIEWPORT, scale: 3 });
-  try {
-    await signInAsMargaret(page, base);
-    await page.getByRole("button", { name: "A wobbly morning" }).click();
-    const story = page.locator('[data-tour="checkin-heard"] .pt-story');
-    await story.waitFor({ timeout: 15000 });
-    await page.evaluate(() => document.fonts.ready);
-    const heardText = await story.innerText();
-    // The labels the one-pager caption describes: her dizziness and near-fall, and her granddaughter's fall skipped.
-    if (!/woozy[\s\S]*Dizzy/.test(heardText) || !/Near-fall/.test(heardText) || !/Someone else/.test(heardText)) {
-      throw new Error(`capture: unexpected "Here's what I heard" story: ${heardText}`);
-    }
-    // The patient tab bar is sticky; hide it so it cannot sit on top of the crop.
-    await page.addStyleTag({ content: ".pt-tabs, .ui-toasts { visibility: hidden !important; }" });
-    const heard = await shotWithPad(page, story, join(outDir, "screen-heard.png"), 4);
-    return { heard, heardText, errors };
-  } finally {
-    await ctx.close();
-  }
-}
-
-/** One-pager screenshots, whole cards only (no mid-sentence crops), at 3× so the PDF stays sharp when zoomed:
- *  - the caregiver Overview's "Before vs after" card for the lorazepam finding (all three bar pairs);
- *  - the patient check-in's "Here's what I heard" story (captureHeard);
- *  - the Visit brief after "I've reviewed this brief" is ticked: its header band (status badge) and the
- *    day-by-day strip from section 2.
- * At 1440 px the app lays the caregiver views out in their compact desktop form (card beside the finding, strip
- * beside the text). */
+/**
+ * One wide crop of the first "What Kinwise noticed" card on the caregiver Overview: the lead sentence with its counts,
+ * the "Before vs after" bars, the caveat ("Shows a change in what was recorded, not what caused it."), the falls box and
+ * the "Question for the visit". The crop is the union of those elements' boxes: one contiguous piece of the real screen
+ * with nothing hidden, so the card's two buttons, which sit beside the caveat, are in it too. The card title is above
+ * the crop; the one-pager's caption names the card instead.
+ */
 export async function captureScreens(browser, base, outDir) {
-  const patient = await captureHeard(browser, base, outDir);
-  const { ctx, page, errors } = await newPage(browser, { width: 1440, height: 900, scale: 3 });
-  errors.push(...patient.errors);
+  const { ctx, page, errors } = await newPage(browser, CARD_VIEWPORT);
   try {
     await signInAsAlex(page, base);
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(600); // let charts finish their (reduced-motion) render
     await page.screenshot({ path: join(outDir, "screen-overview-full.png") });
-    const aside = page.locator(".cg-ov-insight__aside").first();
-    const asideText = await aside.innerText();
-    if (!/Dizziness[\s\S]*\d+ of \d+ days[\s\S]*\d+ of \d+ days/.test(asideText)) throw new Error(`capture: unexpected Before vs after card: ${asideText}`);
-    const beforeAfter = await shotWithPad(page, aside, join(outDir, "screen-before-after.png"));
-
-    await openBrief(page, base);
-    await buildTemplateBrief(page);
-    const review = page.getByRole("checkbox", { name: /reviewed this brief/i });
-    if (!(await review.isChecked())) await review.check();
-    // Close the "Brief rebuilt" toast so it does not cover the document.
-    for (const b of await page.getByRole("button", { name: "Dismiss notification" }).all()) await b.click().catch(() => {});
-    await page.waitForTimeout(400);
-    const doc = page.locator('[data-tour="brief-doc"]');
-    const status = await doc.locator(".cg-vb-doc__status").innerText();
-    if (!/^Reviewed by/.test(status.trim())) throw new Error(`capture: brief not marked reviewed (status "${status}")`);
-    await assertReviewTime(doc);
-    const briefDoc = join(outDir, "screen-brief-doc.png");
-    await doc.screenshot({ path: briefDoc });
-    const briefBand = await shotWithPad(page, doc.locator(".cg-vb-doc__band").first(), join(outDir, "screen-brief-band.png"), 4);
-    const briefStrip = await shotWithPad(page, doc.locator(".cg-vb-strip").first(), join(outDir, "screen-brief-strip.png"), 6);
-    return { beforeAfter, heard: patient.heard, heardText: patient.heardText, briefBand, briefStrip, briefDoc, asideText, briefStatus: status.trim(), errors };
+    // The first insight is the featured one (question beside the evidence); fail loudly if the layout changed.
+    const card = page.locator(".cg-ov-insight").first();
+    const parts = {
+      lead: card.locator(".cg-ov-insight__lead"),
+      bars: card.locator(".cg-ov-insight__aside"),
+      caveat: card.locator(".cg-ov-insight__caveat"),
+      falls: card.locator(".cg-ov-falls"),
+      question: card.locator(".cg-ov-question"),
+    };
+    const boxes = {};
+    for (const [name, loc] of Object.entries(parts)) {
+      if ((await loc.count()) !== 1) throw new Error(`capture: the Overview card has ${await loc.count()} "${name}" elements, expected 1`);
+      boxes[name] = await loc.boundingBox();
+    }
+    const barsText = await parts.bars.innerText();
+    if (!/Dizziness[\s\S]*\d+ of \d+ days[\s\S]*\d+ of \d+ days/.test(barsText)) throw new Error(`capture: unexpected Before vs after bars: ${barsText}`);
+    const questionText = (await parts.question.innerText()).trim();
+    if (!/^Question for the visit/i.test(questionText)) throw new Error(`capture: unexpected question box: ${questionText}`);
+    // The question must sit beside the bars (featured layout); stacked, the crop would be a tall strip.
+    if (boxes.question.x < boxes.bars.x + boxes.bars.width) throw new Error("capture: the question is not beside the bars (viewport too narrow?)");
+    const clip = unionBox(Object.values(boxes), 8);
+    const visitCard = join(outDir, "screen-visit-card.png");
+    await page.screenshot({ path: visitCard, clip });
+    const text = async (loc) => (await loc.innerText()).replace(/\s+/g, " ").trim();
+    const visitCardText = [await text(parts.lead), await text(parts.bars), await text(parts.caveat), await text(parts.falls), questionText.replace(/\s+/g, " ")].join(" ");
+    return { visitCard, visitCardText, width: clip.width, height: clip.height, errors };
   } finally {
     await ctx.close();
   }

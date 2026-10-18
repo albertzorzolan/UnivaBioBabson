@@ -1,6 +1,6 @@
 // Unsaved check-in story kept across a page refresh (src/views/patient/storyDraft.ts).
 import { describe, expect, it } from "vitest";
-import { clearStoryDraft, DRAFT_PREFIX, readStoryDraft, writeStoryDraft } from "./storyDraft";
+import { clearAllStoryDrafts, clearStoryDraft, DRAFT_PREFIX, readStoryDraft, writeStoryDraft } from "./storyDraft";
 
 /** sessionStorage stand-in (the node test environment has no window). */
 function memory() {
@@ -56,5 +56,34 @@ describe("story draft", () => {
     expect(() => clearStoryDraft("2026-10-17", broken)).not.toThrow();
     expect(readStoryDraft("2026-10-17", null)).toBeNull();
     expect(() => writeStoryDraft("2026-10-17", "x", null)).not.toThrow();
+  });
+});
+
+describe("clearAllStoryDrafts (Delete everything)", () => {
+  /** sessionStorage stand-in that can also list its keys, like the real Storage. */
+  function listable() {
+    const s = memory();
+    return {
+      ...s,
+      get length() {
+        return s.map.size;
+      },
+      key: (i: number) => [...s.map.keys()][i] ?? null,
+    };
+  }
+
+  it("removes the draft of every day and leaves other keys alone", () => {
+    const s = listable();
+    writeStoryDraft("2026-10-17", "Felt woozy", s);
+    writeStoryDraft("2026-10-16", "Slept badly", s);
+    writeStoryDraft("2026-10-11", "Tired", s);
+    s.setItem("kinwise.v1.session", "patient");
+    clearAllStoryDrafts(s);
+    expect([...s.map.keys()]).toEqual(["kinwise.v1.session"]);
+  });
+
+  it("never throws when storage is blocked or missing", () => {
+    expect(() => clearAllStoryDrafts({ ...broken, length: 1, key: () => `${DRAFT_PREFIX}2026-10-17` })).not.toThrow();
+    expect(() => clearAllStoryDrafts(null)).not.toThrow();
   });
 });

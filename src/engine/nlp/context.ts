@@ -20,6 +20,11 @@
 //   - Experiencer is decided by the nearest preceding person referent (subject of the clause),
 //     ignoring observers ("my daughter says I seemed confused" → patient). Caregiver-voice stories
 //     ("Typing for Mum: she was confused") flip pronoun resolution so "she" is the patient.
+//     A person word only governs its own phrase: a possessive counts when its noun phrase is a clause subject
+//     ("my husband's ankles were swollen", "my husband's knee gave way, fell" → someone else). A possessive in an
+//     object phrase, a possessed thing ("my husband's car broke down") and object pronouns ("her", "him") never
+//     reach past their clause, so "called me by her sister's name" or "I visited her and felt dizzy" does not move
+//     the experiencer of the patient's clause.
 //   - Pseudo-triggers ("no better", "not only", "won't go away", "can't say I wasn't") suppress any
 //     trigger they overlap — this is how double negation is handled.
 //
@@ -453,6 +458,13 @@ export interface Referent {
   observer: boolean;
   /** A subject (or possessive) referent that can own a symptom. */
   qualified: boolean;
+  /**
+   * Object pronoun ("her", "him") or a possessive that is not a clause subject ("by her sister's name", "my husband's
+   * car"): it governs only its own noun phrase and clause, so "I visited her and felt dizzy" and "my husband's car broke
+   * down, felt dizzy" stay the patient's. A possessive subject ("my husband's legs were wobbly, nearly fell") is not
+   * clause-bound and still covers a following clause with no subject of its own.
+   */
+  clauseBound?: boolean;
   text: string;
 }
 
@@ -496,14 +508,53 @@ export function detectVoice(view: TextView, tokens: Token[], patientNames: strin
     if (!names.includes(who) && !NAME_STOPWORDS.has(who)) return { voice: "caregiver", signal: `signed by ${sig[1] ?? sig[2]}` };
   }
   // Third-person-only story ("She slept badly and wasn't dizzy") with no other person introduced.
-  const hasFirstSingular = tokens.some((t) => ["i", "i'm", "i've", "i'd", "i'll", "me", "my", "myself", "mine"].includes(t.norm));
+  // A story that opens with "she/he" and mentions the writer only as "me", the person spoken to or looked after
+  // ("She was muddled, called me by her sister's name", "He didn't recognise me"), is a caregiver writing too: the
+  // writer never says "I" or "my". That flip is skipped when "me" is the one affected (see meIsAffected).
+  const firstSingular = (t: Token) => ["i", "i'm", "i've", "i'd", "i'll", "me", "my", "myself", "mine"].includes(t.norm);
+  const hasFirstSingular = tokens.some(firstSingular);
+  const onlyObjectMe = tokens.every((t) => !firstSingular(t) || t.norm === "me");
   const firstThird = tokens.findIndex((t) => t.norm === "she" || t.norm === "he" || t.norm === "she's" || t.norm === "he's");
-  if (!hasFirstSingular && firstThird >= 0) {
+  const firstMe = tokens.findIndex((t) => t.norm === "me");
+  const objectMeVoice =
+    onlyObjectMe && firstThird >= 0 && firstThird < firstMe &&
+    !subjectRole(tokens, firstThird + 1)?.observer && // "She says the tablets make me dizzy": she only reports
+    !meIsAffected(view, tokens);
+  if (firstThird >= 0 && (!hasFirstSingular || objectMeVoice)) {
     const before = tokens.slice(0, firstThird);
     const otherIntroduced = before.some((t, k) => OTHER_PERSON_NOUNS.has(t.norm) || isProperName(view, before, k));
-    if (!otherIntroduced) return { voice: "caregiver", signal: "describes \"she/he\" without any \"I\"" };
+    if (!otherIntroduced) {
+      return {
+        voice: "caregiver",
+        signal: hasFirstSingular ? "describes \"she/he\" and says \"me\" only for the person writing" : "describes \"she/he\" without any \"I\"",
+      };
+    }
   }
   return { voice: "patient", signal: null };
+}
+
+/** Verbs that put the writer in the affected role: "made me dizzy", "gave me a fright", "they leave me drowsy". */
+const CAUSATIVE_BEFORE_ME = new Set([
+  "made", "make", "makes", "making", "left", "leave", "leaves", "leaving", "gave", "give", "gives", "giving", "got",
+  "get", "gets", "getting", "kept", "keep", "keeps", "keeping",
+]);
+/** Words allowed between "me" and the symptom it has ("me so dizzy", "me a bit woozy"). */
+const ME_INTENSIFIERS = new Set(["so", "very", "really", "quite", "too", "bit", "a", "little", "feel", "feeling", "all"]);
+
+/**
+ * Is the writer ("me") the person something happened to? True when "me" is the object of a causative verb ("she gave
+ * me a new pill", "they leave me drowsy", "gave me a fright") or comes right before a symptom ("me dizzy", "me so
+ * tired"). Then "me" is the patient writing about a prescriber, pharmacist or partner, and the story stays patient voice.
+ */
+function meIsAffected(view: TextView, tokens: Token[]): boolean {
+  const symptomStarts = new Set(matchLexicon(view.text).filter((m) => m.term.concept !== null).map((m) => m.start));
+  return tokens.some((t, i) => {
+    if (t.norm !== "me") return false;
+    if (CAUSATIVE_BEFORE_ME.has(tokens[i - 1]?.norm ?? "")) return true;
+    let k = i + 1;
+    while (k < tokens.length && k <= i + 2 && ME_INTENSIFIERS.has(tokens[k].norm)) k++;
+    return k < tokens.length && symptomStarts.has(tokens[k].start);
+  });
 }
 
 function isCapitalised(view: TextView, t: Token): boolean {
@@ -574,6 +625,39 @@ function isVerbish(w: string): boolean {
 const STRICT_VERB = VERBISH;
 
 /**
+ * Things a person owns that cannot have a symptom. Deliberately short and limited to objects: body parts ("legs",
+ * "knee") and people ("sister") are never listed, so "My husband's knee gave way, fell" stays someone else's fall.
+ * Pets are not listed either, so "my son's dog was sick" never becomes the patient's.
+ */
+const INANIMATE_POSSESSED = new Set([
+  "car", "van", "bike", "house", "flat", "phone", "laptop", "computer", "tv", "telly", "boiler", "fridge",
+  "garden", "shop", "office", "business", "wedding", "birthday", "party", "flight", "train", "bus",
+]);
+
+/**
+ * A possessive ("my husband's", "Bob's") names the owner of the noun phrase that follows it. That owner is the
+ * experiencer only when the phrase is a clause subject, i.e. a verb follows the possessed noun within a few words
+ * ("my husband's ankles were swollen", "Bob's left knee is sore"). A possessive in an object phrase at the end of a
+ * clause ("called me by her sister's name", "borrowed my husband's car and…") names a thing, not who had a symptom.
+ * (A symptom directly after the possessive, "Bob's dizziness", still counts through the adjacency rule.)
+ */
+function possessedIsSubject(toks: Token[], i: number): boolean {
+  if (toks[i + 1]?.kind !== "word") return false;
+  for (let k = i + 1; k < Math.min(toks.length, i + 5); k++) {
+    const w = toks[k];
+    // The subject is the thing, not its owner: "My husband's car broke down, felt dizzy" is the patient's dizziness.
+    if (INANIMATE_POSSESSED.has(w.norm)) return false;
+    if (k === i + 1) continue;
+    if (w.kind !== "word" || NON_SUBJECT_FOLLOWERS.has(w.norm) || PREPOSITIONS.has(w.norm) || DETERMINERS.has(w.norm)) return false;
+    if (isVerbish(w.norm) || POSSESSED_VERBS.has(w.norm)) return true;
+  }
+  return false;
+}
+
+/** Extra verbs that follow a body part as subject ("knee gave way", "back gives out", "legs ache"). */
+const POSSESSED_VERBS = new Set(["gave", "gives", "give", "ache", "aches", "swell", "swells", "buckle", "buckles", "throb", "throbs"]);
+
+/**
  * Find person referents in one sentence. Patient referents: I/me/my (patient voice) or the parent
  * kin word / patient name / she-he (caregiver voice). Other referents: kin and person nouns,
  * proper names and pronouns that refer to someone else.
@@ -590,16 +674,23 @@ export function findReferents(view: TextView, toks: Token[], voice: Voice, patie
 
     if (FIRST_PERSON.has(w)) {
       const role = FIRST_SUBJECT.has(w) ? subjectRole(toks, i + 1) : null;
+      // Caregiver voice: an object "me"/"us" after the patient has been named ("She kept asking me what day it was,
+      // very confused") is the person spoken to, not who had the symptom, so it only counts right before a symptom
+      // ("made me dizzy"). With no patient referent before it ("The pill gave me a headache") it still counts.
+      const objectAfterPatient = voice === "caregiver" && (w === "me" || w === "us") && out.some((r) => r.who === "patient");
       out.push({
         start: t.start, end: t.end, text: t.text, who: voice === "caregiver" ? "other" : "patient",
-        observer: !!role?.observer, qualified: true, pronounLike: true,
+        observer: !!role?.observer, qualified: !objectAfterPatient, pronounLike: true,
       });
       continue;
     }
     if (THIRD_SUBJECT.has(w) || THIRD_OTHER_FORMS.has(w)) {
       const role = THIRD_SUBJECT.has(w) ? subjectRole(toks, i + 1) : null;
       const who = voice === "caregiver" && !PLURAL_THIRD.has(w) ? "patient" : "other";
-      out.push({ start: t.start, end: t.end, text: t.text, who, observer: !!role?.observer, qualified: true, pronounLike: true });
+      out.push({
+        start: t.start, end: t.end, text: t.text, who, observer: !!role?.observer, qualified: true, pronounLike: true,
+        clauseBound: THIRD_OTHER_FORMS.has(w),
+      });
       continue;
     }
     if (names.includes(base)) {
@@ -621,18 +712,18 @@ export function findReferents(view: TextView, toks: Token[], voice: Voice, patie
         out.push({ start: s, end: t.end, text: view.text.slice(s, t.end), who: "patient", observer: !!role?.observer, qualified: true, pronounLike: possessive });
         continue;
       }
-      const role = possessive ? { observer: false, verbIndex: i } : subjectRole(toks, i + 1);
+      const role = possessive ? (possessedIsSubject(toks, i) ? { observer: false, verbIndex: i } : null) : subjectRole(toks, i + 1);
       const s = hasDet && toks[i - 1] ? toks[i - 1].start : t.start;
-      out.push({ start: s, end: t.end, text: view.text.slice(s, t.end), who: "other", observer: !!role?.observer, qualified: !!role, pronounLike: possessive });
+      out.push({ start: s, end: t.end, text: view.text.slice(s, t.end), who: "other", observer: !!role?.observer, qualified: !!role, pronounLike: possessive, clauseBound: possessive && !role });
       continue;
     }
     if (isProperName(view, toks, i)) {
       const first = startsUnit(toks, i);
-      const role = possessive ? { observer: false, verbIndex: i } : subjectRole(toks, i + 1);
+      const role = possessive ? (possessedIsSubject(toks, i) ? { observer: false, verbIndex: i } : null) : subjectRole(toks, i + 1);
       // Sentence-initial capitalised words are names only when followed by a verb ("Sofia fell").
-      if (first && !role) continue;
+      if (first && !role && !possessive) continue;
       if (first && role && !possessive && !STRICT_VERB.test(toks[role.verbIndex]?.norm ?? "")) continue;
-      out.push({ start: t.start, end: t.end, text: t.text, who: "other", observer: !!role?.observer, qualified: !!role, pronounLike: possessive });
+      out.push({ start: t.start, end: t.end, text: t.text, who: "other", observer: !!role?.observer, qualified: !!role, pronounLike: possessive, clauseBound: possessive && !role });
     }
   }
   return out;
@@ -883,6 +974,9 @@ export function analyzeInSentence(sc: SentenceContext, target: { start: number; 
       // Other-person nouns/names only count as subjects (or when directly before the symptom).
       const adjacent = /^\s*$/.test(viewText.slice(r.end, target.start));
       if (r.who === "other" && !r.qualified && !adjacent) continue;
+      // Object pronouns and non-subject possessives govern their own clause only: "My husband's car broke down, felt
+      // dizzy" → patient. A possessive subject ("My husband's knee gave way, fell") is not clause-bound.
+      if (r.who === "other" && r.clauseBound && r.end <= clauseStart) continue;
       chosen = r;
       break;
     }

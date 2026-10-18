@@ -8,8 +8,11 @@
 //   comparisonVerdict      — the label for a before/after row (falls are listed by date, never tested).
 //   STRENGTH_SIZE_LABEL    — neutral, size-based badge wording for a signal ("Large difference in what was recorded").
 //   strengthTone           — badge colour by strength only (direction never turns a change "good" green).
-//   STRENGTH_SIZE_WORD     — the short form for one before/after row ("Large difference").
-//   strengthCalibration    — one line on how often a difference that size appears by chance (from rules.ts).
+//   STRENGTH_SIZE_WORD     — the short form for one before/after row ("Large difference"), on Overview AND Timeline.
+//   CHANCE_NOTE            — the one plain, number-free line under a finding: differences can appear by chance.
+//   RELIABILITY_TITLE      — "How reliable is this?", the disclosure that holds the test, p-value and the measured
+//                            rates (rendered by caregiver-Reliability.tsx straight from engine/timeline/rules.ts).
+//   TEST_NAME              — the statistical test's name in words.
 import type { Finding, ISODate, MetricKey, Signal } from "../../model/types";
 import type { Tone } from "../../ui";
 import type { SentinelEvents } from "../../engine/timeline/sentinel";
@@ -104,16 +107,19 @@ export function isSentinelMetric(m: MetricKey): m is "fall" | "nearFall" {
   return m === "fall" || m === "nearFall";
 }
 
-/** Label for a before/after row that was compared but not flagged. */
+/**
+ * Label for a before/after row that was compared but not flagged. It reuses the size vocabulary ("Small
+ * difference") and never echoes a flagged label: a "no clear ..." label beside "Clear difference" read as a verdict.
+ */
 export function unflaggedVerdict(metric: MetricKey, strength: "strong" | "moderate" | "weak" | "none"): string {
   if (isSentinelMetric(metric)) return "Listed by date, too few events to test";
-  return strength === "weak" ? "Pattern strength: weak (not flagged)" : "No clear difference";
+  return strength === "weak" ? `${STRENGTH_SIZE_WORD.weak} (not flagged)` : "Not flagged";
 }
 
 /**
  * Caregiver-facing wording for a signal's strength. It names the SIZE of the recorded difference, not how sure we
  * are that a medicine did anything: "strong" next to a warning icon reads as "the medicine did it", which SPEC §3
- * forbids. The test name and p-value stay one click away ("How this comparison works") and on the Timeline.
+ * forbids. The test name and p-value stay one click away ("How reliable is this?") and beside each Timeline row.
  */
 export const STRENGTH_SIZE_LABEL: Record<Signal["strength"], string> = {
   strong: "Large difference in what was recorded",
@@ -122,13 +128,12 @@ export const STRENGTH_SIZE_LABEL: Record<Signal["strength"], string> = {
 };
 
 /**
- * Badge tone for a compared item, by strength alone: strong = caution, moderate = info, otherwise neutral. A change
- * in the "better" direction is not shown green, because a recorded improvement is not an endorsement either.
+ * Badge tone for a compared item, by strength alone: one hue, used once. A large difference is caution; everything
+ * else is neutral (tokens.css has no softer caution tone, and a second hue such as blue read as a different kind
+ * of finding). A change in the "better" direction is never green: a recorded improvement is not an endorsement.
  */
 export function strengthTone(strength: Signal["strength"] | "none"): Tone {
-  if (strength === "strong") return "caution";
-  if (strength === "moderate") return "info";
-  return "neutral";
+  return strength === "strong" ? "caution" : "neutral";
 }
 
 /** The short size word for a bar row on the Overview ("Large difference"); each badge label starts with it. */
@@ -139,19 +144,35 @@ export const STRENGTH_SIZE_WORD: Record<Signal["strength"], string> = {
 };
 
 /**
- * How often a difference of this strength showed up by chance, in one line. The rates are quoted from
- * MULTIPLE_COMPARISONS_NOTE in engine/timeline/rules.ts (measured by signals.null.test.ts on simulated diaries with
- * no real change): the independent-days figure, the frequent-symptom figure, and the clustered-days figure. The
- * clustered figure comes from one simulation with an assumed persistence (each answer repeats the previous day's
- * with probability 0.8, eval/results/timeline-null.json), not measured from real diaries; it shows how much
- * clustering can inflate chance signals. caregiver-insights.test.ts fails if that note stops
- * saying these numbers. Weak differences are never flagged, so they get no line.
+ * The one visible line under a before/after finding about chance. It deliberately carries no numbers: the measured
+ * rates (MULTIPLE_COMPARISONS_NOTE in engine/timeline/rules.ts, from signals.null.test.ts) sit in the "How reliable
+ * is this?" disclosure, so they have one source and a caregiver is not left reading two paragraphs of rates.
  */
-export function strengthCalibration(strength: Signal["strength"]): string | null {
-  const lead = "In simulated diaries with no real change, about";
-  if (strength === "strong")
-    return `${lead} 1 in 100 medicine changes showed a difference rated “large” (1 in 35 when symptoms were recorded often), and about 6 in 10 when symptoms came in runs of days.`;
-  if (strength === "moderate")
-    return `${lead} 1 in 10 medicine changes showed a difference rated “clear” or larger (nearly 1 in 5 when symptoms were recorded often), and about 9 in 10 when symptoms came in runs of days.`;
-  return null;
+export const CHANCE_NOTE =
+  "Differences like this can also appear by chance, especially when symptoms come in runs of days, so it is a question for the clinician, not an answer.";
+
+/**
+ * The key between the engine's words and this page's. The measured rates in rules.ts are written per engine strength
+ * ("a moderate signal", "a strong one"), while every caregiver badge says "Large difference" / "Clear difference".
+ * Without this line a caregiver could not tell which rate applies to the badge in front of them. "Moderate" in those
+ * rates counts moderate-OR-strong signals (signals.null.test.ts: "≥1 signal (moderate or strong)"), so the key says
+ * "or larger" for it. It is built from STRENGTH_SIZE_WORD so the two cannot drift, and carries no numbers (the rates
+ * stay in rules.ts only).
+ */
+export const SIGNAL_WORDS_KEY =
+  `In the notes below, a “strong” signal is what this page calls a “${STRENGTH_SIZE_WORD.strong}”, ` +
+  `and a “moderate” signal a “${STRENGTH_SIZE_WORD.moderate}” or larger.`;
+
+/** True when a text uses the engine's strength words, so the panel needs SIGNAL_WORDS_KEY before it. */
+export function usesEngineStrengthWords(text: string): boolean {
+  return /\b(strong|moderate)\b/i.test(text);
 }
+
+/** Title of the disclosure that holds the test, the p-value and the measured chance rates. */
+export const RELIABILITY_TITLE = "How reliable is this?";
+
+/** The statistical test behind a comparison, in words. */
+export const TEST_NAME: Record<Signal["test"], string> = {
+  fisher_exact: "Fisher's exact test",
+  mann_whitney: "Mann–Whitney U test",
+};

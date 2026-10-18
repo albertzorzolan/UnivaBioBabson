@@ -158,7 +158,7 @@ export const MAX_UNTRUSTED_CHARS = 1500;
  */
 export function sanitizeUntrusted(text: string, maxChars = MAX_UNTRUSTED_CHARS): string {
   let t = (text ?? "").normalize("NFC");
-  t = t.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F​-‏‪-‮⁦-⁩]/g, "");
+  t = t.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, "");
   t = t.replace(/<\|[^|>]{0,40}\|>/g, " "); // <|im_start|>, <|endoftext|> …
   t = t.replace(/<\/?\s*(?:data|evidence|think|system|user|assistant)\b[^>]*>/gi, " ");
   t = t.replace(/\s+/g, " ").trim();

@@ -33,10 +33,30 @@ export const TIMELINE_RULES = {
    * real change (9 items compared per change; 8,000 simulated changes per scenario): ≥1 weak-or-stronger
    * difference in ~51% of medicine changes (~66% when symptoms are frequent); ≥1 moderate-or-strong in ~11%
    * (~18–19% when frequent); ≥1 strong in ~0.8% (~2.7% when frequent).
-   * A Benjamini–Hochberg gate (FDR 10%) was evaluated and rejected: it cut false alarms to 2–5% but halved the
-   * chance of flagging a real single-symptom change (dizziness 15% → 45% of days: 41% → 20%).
+   * A Benjamini–Hochberg gate (FDR 10%) was evaluated earlier and rejected because it roughly halved the chance of
+   * flagging a real single-symptom change. That run's code is not in the repo, so its figures are not reproducible:
+   * it reported false alarms of 2–5% and dizziness rising from 15% to 45% of days flagged 41% → 20% of the time.
+   * The reproducible figure without any gate is 39.2% (eval/results/timeline-null.json, power[0].detectionRate).
    */
   signalStrengths: ["strong", "moderate"] as readonly Signal["strength"][],
+  /**
+   * Runs-aware check (blockPermutation.ts): shuffle whole runs of `blockDays` days instead of single days and see
+   * how often the shuffled diary shows a difference at least as large. 4 days because, in the strongest clustering
+   * simulated (each answer repeats the day before with probability 0.8), an answer is copied forward for
+   * 1 / (1 − 0.8) = 5 days on average, and the compared window (up to 21 + 21 = 42 days) still holds about 10 blocks, so the smallest p the
+   * test can give stays below 0.01 (the "strong" bar). 999 shuffles in the app, so p is never below 0.001.
+   * With `gate` on, a difference must also clear the strength's p bar in this check (strong 0.01, moderate 0.05);
+   * with it off, the check is computed and stored with every comparison but does not change any strength.
+   *
+   * Decision: gate OFF (report-only) for now. Measured in signals.null.test.ts (eval/results/timeline-null.json,
+   * n = 1,000 simulated changes per row, 199 shuffles each), the gate would cut chance signals from 85.8% to 57.2%
+   * of changes at stay 0.8 (strong 61.0% → 13.3%) and from 11.2% to 7.3% with independent days, for a power cost
+   * of 39.2% → 32.5% (independent days) and 37.6% → 23.3% (stay 0.8) on dizziness rising from 15% to 45% of days.
+   * On the demo diary it keeps every flagged item but makes the strong drowsiness signal moderate (runs-check
+   * p = 0.011), and after a neutral live check-in dizziness too, which src/model/seed.test.ts and
+   * src/engine/timeline/story.test.ts pin as "strong" so the demo cannot change under the presenter.
+   */
+  runsCheck: { blockDays: 4, permutations: 999, gate: false as boolean },
   /** Weekly comparison (patient view): answered days needed in each week, and the change treated as "same". */
   weekly: { minAnsweredDays: 3, booleanDiff: 0.15, scaleDiff: 0.5 },
 } as const;
@@ -48,17 +68,22 @@ export const SIGNAL_CAVEAT =
 /**
  * Honest note about multiple comparisons, for the signal detail view and the How-it-works page.
  * The figures are measured, not assumed: signals.null.test.ts simulates diaries with no real change and fails if
- * the rates drift from what this sentence says. The first figures assume independent days; the clustered-days
- * figure comes from the same test with each answer repeating the previous day's with probability 0.8
- * (eval/results/timeline-null.json), because real symptoms come in runs and the tests assume they do not.
+ * this sentence drifts from the rates it writes to eval/results/timeline-null.json (n = 1,000 per row). They are
+ * never rounded up: 0.858 is "more than 8 in 10". The first figures assume independent days (0.112 / 0.003; often:
+ * 0.192 / 0.036); the clustered-days figures come from the same test with each answer repeating the previous day's
+ * with probability 0.8 (0.858 / 0.61), because real symptoms come in runs and the tests assume they do not. The
+ * last figures are the same clustered simulation with the runs check required (0.572 / 0.133; not applied yet).
  */
 export const MULTIPLE_COMPARISONS_NOTE =
   "Kinwise compares 9 diary items around each medicine change, so some differences will appear by chance. " +
-  "In simulated diaries with no real change, about 1 in 10 medicine changes still showed a moderate signal and " +
-  "about 1 in 100 a strong one (nearly 1 in 5 and 1 in 35 when symptoms were recorded often). " +
+  "In simulated diaries with no real change, more than 1 in 10 medicine changes still showed a moderate signal and " +
+  "fewer than 1 in 100 a strong one (nearly 2 in 10 and more than 3 in 100 when symptoms were recorded often). " +
   "Those simulations treat each day separately. When symptoms come in runs of days (a bad week, a cold), chance " +
-  "signals are much more common: in a clustered-days simulation about 9 in 10 medicine changes showed a moderate " +
-  "signal and about 6 in 10 a strong one. " +
+  "signals are much more common: in a clustered-days simulation more than 8 in 10 medicine changes showed a " +
+  "moderate signal and more than 6 in 10 a strong one. " +
+  "Kinwise also runs a second check that shuffles whole runs of days instead of single days. It does not yet " +
+  "change which differences are flagged; in the same clustered-days simulation, requiring it would still have left " +
+  "more than 5 in 10 changes with a moderate signal and more than 1 in 10 with a strong one. " +
   "A signal is a prompt for a conversation, not a conclusion.";
 
 /** Plain-language method summary for the How-it-works page. */
@@ -68,9 +93,12 @@ export const TIMELINE_METHOD_SUMMARY =
   "day counts as \"after\", even when the first dose is taken that evening. Yes/no " +
   "items use Fisher's exact test; 1–5 ratings use the Mann–Whitney U test. A difference is flagged only when it is " +
   "sizeable and its p-value is below 0.05; smaller or less certain differences stay in the detail view. Because 9 " +
-  "items are compared each time, about 1 in 10 medicine changes with no real effect would still show a moderate " +
-  "signal (nearly 1 in 5 when symptoms are recorded often). Falls and near-falls are too rare to test this " +
-  "way, so each one recorded around a change is listed by date.";
+  "items are compared each time, more than 1 in 10 medicine changes with no real effect would still show a " +
+  "moderate signal (nearly 2 in 10 when symptoms are recorded often). Both tests treat each day separately, so " +
+  "Kinwise also compares each difference with the same diary cut into runs of 4 days and shuffled 999 times, " +
+  "which keeps short runs of bad days together; this check is worked out for every comparison but does not yet change which " +
+  "differences are flagged. Falls and near-falls are too rare to test this way, so each one recorded around a " +
+  "change is listed by date.";
 
 /** Wording for falls and near-falls, which are listed rather than tested. */
 export const SENTINEL_NOTE =

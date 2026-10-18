@@ -15,6 +15,7 @@ import { useShellAttribute } from "./useDocumentSettings";
 import { SafetyFooter, SkipLink } from "./ShellParts";
 import { DemoSwitch } from "./DemoSwitch";
 import { RecoveryNotice } from "./RecoveryNotice";
+import { helloLine } from "./greeting";
 import { DemoDataChip, ICONS, LogoMark } from "../../ui";
 
 export interface PatientShellProps {
@@ -73,7 +74,7 @@ export function PatientShell({ current, children }: PatientShellProps) {
               {data.isDemoData && <DemoDataChip align="start" />}
               <DemoSwitch to="caregiver" />
             </div>
-            <p className="pt-greeting__hello">Hello, {data.profile.preferredName}</p>
+            <p className="pt-greeting__hello">{helloLine(data.profile.preferredName)}</p>
           </div>
         </div>
       </header>

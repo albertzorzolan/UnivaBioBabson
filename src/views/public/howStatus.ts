@@ -64,16 +64,20 @@ export function statusGroups(coverage: { drugs?: number; beersRules?: number }):
   ];
 }
 
-/** The verifier gap seen in eval/results/ai-live.json (verdict), stated where judges read the limits. */
+/**
+ * The verifier gap seen in eval/results/ai-live.json, stated where judges read the limits. The canonical count
+ * (as in submission/DEVPOST.md) is the six live escapes of eval/verifier-redteam.json (live-01…06), which come
+ * from five AI outputs; RECORDED_RUN.flawed in modelRun.ts lists the same six and howStatus.test.ts ties them.
+ */
 export const VERIFIER_GAP_LIMITATION =
-  "In our recorded live run the code check let at least 3 flawed AI outputs through; AI text is always labelled, the template stays the default, and nothing reaches the brief without the caregiver’s review.";
+  "In our recorded live run the code check let at least 6 flawed AI sentences (from 5 outputs) through; AI text is always labelled, the template stays the default, and nothing reaches the brief without the caregiver’s review.";
 
 /** Most important first: How it works shows the first two (LIMITS_SHOWN in HowItWorks.tsx) and folds the rest. */
 export const LIMITATIONS: string[] = [
   "All people and records in this demo are fictional. Kinwise has not been tested with real patients, caregivers or clinicians.",
   VERIFIER_GAP_LIMITATION,
   "Before/after comparisons describe a change in what was recorded. They do not show that a medicine was responsible and are not adjusted for other changes (those are listed instead); short windows have little statistical power.",
-  "The benchmarks are small and written by the team (the held-out set by a separate author); they show the software follows its rules, not that it improves care.",
+  "The benchmarks are small, fictional and written by separate AI agents directed by the team; not clinician-reviewed (the held-out set had its own author). They show the software follows its rules, not that it improves care.",
   "The diary is self-reported. Unanswered days are left out of every rate, never counted as “no”.",
   "The language engine is rule-based and English-only; unusual phrasing can be missed, which is why every answer is confirmed.",
   "A medicine outside the knowledge base is “not reviewed”. That says nothing about the medicine; ask the pharmacist.",

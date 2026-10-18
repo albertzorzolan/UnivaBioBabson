@@ -13,6 +13,11 @@ vi.mock("./llm", () => ({
   },
 }));
 
+import { createSeed } from "../model/seed";
+import { analyzeTimeline } from "../engine/timeline/signals";
+import { reviewMedications } from "../engine/meds/review";
+import { knownEffect } from "../kb";
+import { composeTemplate, defaultComposeOptions } from "../views/caregiver/brief/compose";
 import { fallbackAnalyzeContext } from "./adapters";
 import { aliasEvidence, selectEvidence } from "./prompts";
 import { MARGARET_FINDINGS, MARGARET_MED_NAMES, MARGARET_PACKAGE, MARGARET_TEMPLATE, QA_CASES, REFINE_CASES } from "./fixtures";
@@ -29,6 +34,7 @@ import {
   completeCitations,
   isRelevant,
   openFieldsFor,
+  plainIssue,
   sharesTopic,
   softenQuestion,
   verifySection,
@@ -81,9 +87,18 @@ describe("assembleBrief", () => {
     const value = { ...GOOD_BRIEF, noticed: GOOD_BRIEF.noticed.slice(1) };
     expect(() => assembleBrief(value, MARGARET_PACKAGE, MARGARET_TEMPLATE, opts)).toThrow(AIValidationError);
   });
-  it("throws when fewer than 2 questions survive", () => {
+  it("keeps the AI observations and uses the template's questions when fewer than 2 questions survive", () => {
     const value = { ...GOOD_BRIEF, questions: [GOOD_BRIEF.questions[0], { evidenceIds: [SIG], text: "Dizziness was recorded on 9 of 14 days." }] };
-    expect(() => assembleBrief(value, MARGARET_PACKAGE, MARGARET_TEMPLATE, opts)).toThrow(/question/);
+    const r = assembleBrief(value, MARGARET_PACKAGE, MARGARET_TEMPLATE, opts);
+    expect(r.sections).toEqual({ reason: "ai", noticed: "ai", questions: "template" });
+    expect(r.content.noticed).toHaveLength(2);
+    expect(r.content.questions).toBe(MARGARET_TEMPLATE.questions);
+    expect(r.dropped.some((d) => d.section === "questions" && d.issues.some((i) => i.startsWith("form")))).toBe(true);
+  });
+  it("labels every section 'ai' when the whole draft passes, and the reason 'template' when only it fails", () => {
+    expect(assembleBrief(GOOD_BRIEF, MARGARET_PACKAGE, MARGARET_TEMPLATE, opts).sections).toEqual({ reason: "ai", noticed: "ai", questions: "ai" });
+    const value = { ...GOOD_BRIEF, reason: [{ evidenceIds: [CONCERN], text: "This is an emergency." }] };
+    expect(assembleBrief(value, MARGARET_PACKAGE, MARGARET_TEMPLATE, opts).sections.reason).toBe("template");
   });
   it("treats malformed items and duplicates as dropped", () => {
     const value = {
@@ -147,9 +162,14 @@ describe("aiDraftBrief", () => {
     await expect(aiDraftBrief(MARGARET_PACKAGE, MARGARET_TEMPLATE, opts)).rejects.toBeInstanceOf(AIValidationError);
     expect(llm.requests).toHaveLength(1);
   });
-  it("falls back when too few questions survive step 2", async () => {
+  it("returns a partial draft (AI observations, template questions) when too few questions survive step 2", async () => {
     llm.outputs.push({ reason: GOOD_BRIEF.reason, noticed: GOOD_BRIEF.noticed }, { questions: [GOOD_BRIEF.questions[2]] });
-    await expect(aiDraftBrief(MARGARET_PACKAGE, MARGARET_TEMPLATE, opts)).rejects.toThrow(/question/);
+    const r = (await aiDraftBrief(MARGARET_PACKAGE, MARGARET_TEMPLATE, opts))!;
+    expect(r.sections.questions).toBe("template");
+    expect(r.content.questions).toBe(MARGARET_TEMPLATE.questions);
+    // The removed sentences stay available for the "What the check removed" list.
+    expect(r.report.dropped.map((d) => d.text)).toContain(GOOD_BRIEF.questions[2].text);
+    expect(r.info.droppedSentences).toBe(r.report.dropped.length);
   });
 });
 
@@ -552,5 +572,172 @@ describe("checkRefinements — the quote must be about the proposed field (live 
   it("still accepts a sleep rating from the same quote that was wrong for dizziness", () => {
     const r = checkRefinements(story, empty, [{ field: "sleep", value: 5, quote: "Slept like a log last night" }], fallbackAnalyzeContext);
     expect(r.added.map((p) => p.field)).toEqual(["sleep"]);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// Replay on the app's real demo data (not only MARGARET_PACKAGE)
+//
+// Runtime audit, 2026-10-17 (tmp/judge-kit/runtime/r2/logs/ai-repeat-local.txt): with Qwen2.5-3B loaded, "Draft
+// with on-device AI" showed "Only 2 observation(s) and 1 question(s) passed the evidence check, so the template brief
+// is shown instead. (3 sentences removed by the check.)" in 4 of 4 runs, while the developer harness (fixture
+// package) passed. The in-app raw model output was not logged, so REPLAY_OUTPUT below is a representative output:
+// the questions copy the phrasing of the harness run (tmp/judge-kit/runtime/r2/harness-brief.json), adapted to the
+// evidence the app shows the model, and the reason copies the garbled "since urgent care the new sleeping pill"
+// wording the first runtime audit found. On the checks before this change it reproduces the exact in-app message.
+
+/** The evidence package, template and options exactly as VisitBrief.tsx builds them (30-day period, today fixed). */
+function demoBrief(today = "2026-10-17") {
+  const data = createSeed(today);
+  const timeline = analyzeTimeline({ checkIns: data.checkIns, meds: data.medications, today, isKnownEffect: (m, k) => knownEffect(m.ingredientIds, k) });
+  const review = reviewMedications({ meds: data.medications, profile: data.profile, checkIns: data.checkIns, today, signals: timeline.signals });
+  const inp = { data, review, timeline, today };
+  const built = composeTemplate(inp, defaultComposeOptions(inp));
+  const p = data.profile;
+  return {
+    ...built,
+    // aiDraftBrief verifies against the items the model was shown.
+    shown: selectEvidence(built.pkg.items),
+    opts: { medNames: data.medications.map((m) => m.name), patientNames: [p.preferredName, p.displayName, "Mom"].filter(Boolean) },
+  };
+}
+
+const D = {
+  concern: "concern:note-cg-concern",
+  dizzy: "sig:med-lorazepam:dizziness:started",
+  drowsy: "sig:med-lorazepam:drowsiness:started",
+  antihistamine: "find:pim-first-gen-antihistamine:med-tylenolpm",
+  tylenolFalls: "find:cond-falls:med-tylenolpm",
+};
+const REPLAY_OUTPUT = {
+  reason: [{ evidenceIds: [D.concern], text: "We are coming in because Mom seems foggier in the mornings since urgent care the new sleeping pill." }],
+  noticed: [
+    { evidenceIds: [D.dizzy], text: "Dizziness was recorded on 9 of 14 answered days from Oct 1, when Lorazepam (Ativan) was started, through Oct 17, compared with 2 of 19 answered days in the 21 days before." },
+    { evidenceIds: [D.drowsy], text: "Daytime drowsiness was recorded on 8 of 14 answered days from Oct 1, when Lorazepam (Ativan) was started, through Oct 17, compared with 2 of 20 answered days in the 21 days before." },
+  ],
+  questions: [
+    { evidenceIds: [D.dizzy], text: "Could the Lorazepam (Ativan) started on Oct 1 be contributing to the dizziness recorded since then?" },
+    // Harness run: dropped for the word "cause" although it asks the clinician about alternatives.
+    { evidenceIds: [D.antihistamine], text: "Is there an alternative to Tylenol PM (OTC) for sleep that is less likely to cause drowsiness or falls?" },
+    // Cites the lorazepam drowsiness chip next to a Tylenol PM chip: the off-topic chip, not the question, is the problem.
+    { evidenceIds: [D.drowsy, D.tylenolFalls], text: "Could the Tylenol PM (OTC) be contributing to the drowsiness or near-falls recorded in the diary?" },
+  ],
+};
+
+describe("assembleBrief — replay on the real seeded demo package (2026-10-17, 30 days)", () => {
+  const demo = demoBrief();
+
+  it("builds the package the view builds: the model sees no medicine items, only signals, findings and the concern", () => {
+    expect(demo.pkg.from).toBe("2026-09-18");
+    expect(demo.shown.map((i) => i.kind)).not.toContain("med");
+    for (const id of Object.values(D)) expect(demo.shown.some((i) => i.id === id), id).toBe(true);
+  });
+
+  it("now yields an AI brief: the two false rejects are kept, the garbled reason is still dropped", () => {
+    const r = assembleBrief(REPLAY_OUTPUT, demo.pkg, demo.content, { ...demo.opts, pool: demo.shown });
+    expect(r.sections).toEqual({ reason: "template", noticed: "ai", questions: "ai" });
+    expect(r.content.reason).toBe(demo.content.reason);
+    expect(r.content.noticed).toHaveLength(2);
+    expect(r.content.questions.map((q) => q.text)).toEqual([
+      REPLAY_OUTPUT.questions[0].text,
+      // Softened, then verified like any other question.
+      "Is there an alternative to Tylenol PM (OTC) for sleep that is less likely to be linked to drowsiness or falls?",
+      REPLAY_OUTPUT.questions[2].text,
+    ]);
+    // The off-topic lorazepam chip is removed from the Tylenol PM question; its own chip stays.
+    expect(r.content.questions[2].evidenceIds).toEqual([D.tylenolFalls]);
+    expect(r.dropped).toEqual([expect.objectContaining({ section: "reason", issues: [expect.stringMatching(/^garbled/)] })]);
+    expect(r.edits.map((e) => e.kind).sort()).toEqual(["citation_removed", "softened"]);
+  });
+
+  it("yields the labelled partial brief, never a silent full fallback, when the questions really fail", () => {
+    const value = {
+      ...REPLAY_OUTPUT,
+      questions: [
+        REPLAY_OUTPUT.questions[0],
+        { evidenceIds: [D.dizzy], text: "It makes sense to pause the lorazepam until the visit." },
+        { evidenceIds: [D.antihistamine], text: "Is the Tylenol PM causing her drowsiness, and should she stop taking it?" },
+      ],
+    };
+    const r = assembleBrief(value, demo.pkg, demo.content, { ...demo.opts, pool: demo.shown });
+    expect(r.sections).toEqual({ reason: "template", noticed: "ai", questions: "template" });
+    expect(r.content.noticed.map((s) => s.text)).toEqual(REPLAY_OUTPUT.noticed.map((s) => s.text));
+    expect(r.content.questions).toBe(demo.content.questions);
+    expect(r.dropped.filter((d) => d.section === "questions")).toHaveLength(2);
+  });
+
+  it("still falls back to the whole template when fewer than 2 observations pass", () => {
+    const value = { ...REPLAY_OUTPUT, noticed: [REPLAY_OUTPUT.noticed[0], { evidenceIds: [D.dizzy], text: "Lorazepam is causing her dizziness." }] };
+    expect(() => assembleBrief(value, demo.pkg, demo.content, { ...demo.opts, pool: demo.shown })).toThrow(/Only 1 observation/);
+  });
+});
+
+describe("brief questions — narrow fixes for the replayed false rejects", () => {
+  it("softens 'less likely to cause' only when a genuine question compares an alternative or option", () => {
+    expect(softenQuestion("Is there an alternative that is less likely to cause falls?")).toBe("Is there an alternative that is less likely to be linked to falls?");
+    expect(softenQuestion("Are there other options for sleep that are less likely to cause drowsiness?")).toBe(
+      "Are there other options for sleep that are less likely to be linked to drowsiness?",
+    );
+    for (const q of [
+      // "more likely to cause" is never rewritten: it asks what harmed her.
+      "Is the lorazepam more likely to cause her falls than the Tylenol PM?",
+      "Is there an alternative, or is the lorazepam more likely to cause falls?",
+      // No alternative or option: a comparison of what caused her falls.
+      "Is the lorazepam less likely to cause her falls than the Tylenol PM?",
+      // "Why" questions take their content as given; a statement before the question is a statement.
+      "Why is an alternative less likely to cause falls?",
+      "Since an alternative is less likely to cause falls, could it be discussed?",
+      // About her own symptom, not a comparison of options.
+      "Is there an alternative that is less likely to cause her falls?",
+      // Not a question at all.
+      "An alternative is less likely to cause falls.",
+    ]) {
+      expect(softenQuestion(q), q).toBe(q);
+    }
+  });
+  it("keeps the causal ban on comparisons that are not about an alternative (review of the first softening)", () => {
+    const run = (text: string, evidenceIds: string[]) => verifySection("questions", [{ text, evidenceIds }], MARGARET_PACKAGE, { ...opts, expect: "question", max: 5 });
+    const TYLENOL = "find:beers-pim-first-gen-antihistamine|med-tylenolpm";
+    for (const [text, ids] of [
+      ["Is the lorazepam more likely to cause her falls than the Tylenol PM?", [BENZO, TYLENOL]],
+      ["Is the lorazepam less likely to cause her falls than the Tylenol PM?", [BENZO, TYLENOL]],
+      ["Is the Tylenol PM (OTC) more likely to cause her falls than other sleep aids?", [TYLENOL]],
+      ["Why is the Tylenol PM (OTC) more likely to cause falls?", [TYLENOL]],
+      ["Since the Tylenol PM (OTC) is more likely to cause falls, could it be reviewed?", [TYLENOL]],
+    ] as [string, string[]][]) {
+      const r = run(text, ids);
+      expect(r.kept, text).toEqual([]);
+      expect(r.dropped[0].text, text).toBe(text);
+      expect(r.dropped[0].issues.some((i) => i.startsWith("banned: causal:")), `${text}: ${r.dropped[0].issues.join(" | ")}`).toBe(true);
+    }
+  });
+  it("removes an off-topic chip when an on-topic one remains, and still drops a question with none", () => {
+    const TYLENOL = "find:beers-pim-first-gen-antihistamine|med-tylenolpm";
+    const run = (ids: string[]) =>
+      verifySection("questions", [{ text: "Could the Tylenol PM (OTC) be contributing to the daytime drowsiness recorded in the diary?", evidenceIds: ids }], MARGARET_PACKAGE, {
+        medNames: MARGARET_MED_NAMES,
+        expect: "question",
+        max: 5,
+      });
+    expect(run([SIG, TYLENOL]).kept[0].evidenceIds).toEqual([TYLENOL]);
+    expect(run([SIG]).dropped[0].issues.join(" ")).toMatch(/evidence_topic/);
+  });
+  it("the medicine-action rule drops the pf2 escapes from an AI statement in the brief", () => {
+    const r = verifySection("noticed", [{ text: "It makes sense to pause the lorazepam until the visit.", evidenceIds: [SIG] }], MARGARET_PACKAGE, { ...opts, expect: "statement", max: 4 });
+    expect(r.kept).toEqual([]);
+    expect(r.dropped[0].issues).toContain('banned: advice: names a medicine together with an action word ("pause")');
+  });
+});
+
+describe("plainIssue — the check's reasons in plain words for the 'What the check removed' list", () => {
+  it.each([
+    ['banned: advice: names a medicine together with an action word ("pause")', 'blocked: names a medicine together with an action word ("pause")'],
+    ['banned: causal: names a cause of this person\'s symptom ("cause")', 'blocked: names a cause of this person\'s symptom ("cause")'],
+    ['garbled: leaves a word out of the cited "urgent care started the new"', 'leaves a word out of the records it copies ("urgent care started the new")'],
+    ["date_unsupported: date 10-01 does not appear in the cited evidence", "has a date that is not in the records it cites"],
+    ["evidence_topic: sig:x is about something other than what the question asks", "cites a record about something other than what it asks"],
+    ["duplicate: repeats an earlier sentence", "repeats an earlier sentence"],
+  ])("%s", (issue, plain) => {
+    expect(plainIssue(issue)).toBe(plain);
   });
 });

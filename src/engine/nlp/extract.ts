@@ -315,6 +315,13 @@ function classify(b: Built): void {
     if (it.concept !== "nearFall" || !it.precursor || it.skip || it.ctx.negated) continue;
     if (falls.some((f) => f.sentence === it.sentence)) it.skip = `Part of the fall described ("${contextQuote(b, it)}")`;
   }
+  // Unsteadiness guesses ("wobbly", "had to hold the rail") in a sentence that describes a near-fall or fall belong to
+  // that event, as the trip/slip cues above do: "Nearly fell on the stairs, had to hold the rail" is a near-fall only.
+  const events = b.items.filter((x) => (x.concept === "fall" || x.concept === "nearFall") && !x.skip && !x.ctx.negated);
+  for (const it of b.items) {
+    if (!it.guess || it.skip) continue;
+    if (events.some((e) => e.sentence === it.sentence)) it.skip = `Part of the near-fall or fall described ("${contextQuote(b, it)}")`;
+  }
 }
 
 // ---------------------------------------------------------------------------

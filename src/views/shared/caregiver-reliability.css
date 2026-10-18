@@ -1,0 +1,20 @@
+/* "How reliable is this?" disclosure body (src/views/shared/caregiver-Reliability.tsx). Prefix: cg-rel.
+   Spacing and measure come from the view's own body class (cg-ov-method, cg-tl-method). */
+.cg-rel__tests {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: var(--ink);
+}
+.cg-rel__tests li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+/* The key from the engine's "strong"/"moderate" to the badges' size words: ink, so it reads as the lead line. */
+.cg-rel__key {
+  color: var(--ink);
+}

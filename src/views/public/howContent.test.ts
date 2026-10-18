@@ -9,9 +9,10 @@ const statText = (value: string) => {
 };
 
 describe("problem section", () => {
-  it("quotes Gandhi 2003 as attributions, with counts", () => {
-    expect(statText("37%")).toMatch(/^37% \(19 of 51\) .*were attributed to the patient not telling the doctor about the symptom/);
-    expect(statText("63%")).toMatch(/^63% \(32 of 51\) to medication-related symptoms not being acted on/);
+  it("quotes Gandhi 2003 as attributions, in percentages only (the counts were never checked against the abstract)", () => {
+    expect(statText("37%")).toMatch(/^37% of medication side effects .*were attributed to the patient not telling the doctor about the symptom/);
+    expect(statText("63%")).toMatch(/^63% to medication-related symptoms not being acted on/);
+    expect(PROBLEM_STATS.map((s) => s.text).join(" ")).not.toMatch(/of 51/);
     expect(PROBLEM_STATS.map((s) => s.text).join(" ")).not.toMatch(/persisted because/);
   });
 

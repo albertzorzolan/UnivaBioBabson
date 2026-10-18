@@ -22,6 +22,7 @@ import {
 import type { ConditionTag, PatientProfile, Settings as SettingsData, StoreData } from "../../model/types";
 import { validateStore, DEFAULT_SETTINGS } from "../../model/store";
 import { useStore } from "../../app/StoreProvider";
+import { clearAllStoryDrafts } from "../patient/storyDraft";
 import { useDerived } from "../../app/useDerived";
 import { startTour } from "../../app/Tour";
 import { MODEL_OPTIONS, DEFAULT_MODEL_ID, LLMError, isModelCached, loadModel, probeWebGPU, removeModelCache, unloadModel, useLLM } from "../../ai";
@@ -561,37 +562,6 @@ function DisplayCard() {
 // ---------------------------------------------------------------------------------------------
 // Data
 
-/** A record with nothing in it (used by "Delete everything"). Keeps display settings. */
-function emptyRecord(prev: StoreData, now: string): StoreData {
-  return {
-    schemaVersion: 2,
-    datasetId: `empty-${now}`,
-    revision: prev.revision + 1,
-    isDemoData: false,
-    profile: {
-      displayName: "Your relative",
-      preferredName: "Your relative",
-      age: 0,
-      sex: null,
-      conditions: [],
-      crclMlMin: null,
-      caregiverName: "You",
-      caregiverRelation: "",
-    },
-    medications: [],
-    medEvents: [],
-    checkIns: [],
-    checkInHistory: [],
-    notes: [],
-    reviewDecisions: [],
-    briefs: [],
-    savedQuestions: [],
-    settings: { ...prev.settings },
-    createdAt: now,
-    updatedAt: now,
-  };
-}
-
 type Pending = { kind: "reset" } | { kind: "delete" } | { kind: "import"; data: StoreData; fileName: string } | null;
 
 function DataRow({ icon, title, children, action }: { icon: ReactNode; title: string; children: ReactNode; action: ReactNode }) {
@@ -610,7 +580,7 @@ function DataRow({ icon, title, children, action }: { icon: ReactNode; title: st
 }
 
 function DataCard() {
-  const { data, today, resetDemo, replaceAll } = useStore();
+  const { data, today, resetDemo, replaceAll, deleteEverything } = useStore();
   const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState<Pending>(null);
@@ -651,8 +621,9 @@ function DataCard() {
       resetDemo();
       toast.show({ title: "Demo record restored", description: "Margaret’s fictional record is back to its starting point.", tone: "success" });
     } else if (pending.kind === "delete") {
-      const now = new Date().toISOString();
-      const result = replaceAll(emptyRecord(data, now));
+      // The empty record (store.ts emptyRecord), the kept copies of unreadable data, and unsaved check-in words.
+      const result = deleteEverything();
+      if (result.ok) clearAllStoryDrafts();
       toast.show(result.ok ? { title: "Everything deleted", description: "This device now holds an empty record.", tone: "success" } : { title: "Nothing was deleted", description: result.error, tone: "attention" });
     } else {
       const result = replaceAll(pending.data);
@@ -669,7 +640,7 @@ function DataCard() {
     },
     delete: {
       title: "Delete everything on this device?",
-      body: `This removes the profile, medicines, check-ins, notes and briefs (${counts}). It can’t be undone — export a copy first if you might need it. Downloaded AI model files are kept.`,
+      body: `This removes the profile, medicines, check-ins, notes and briefs (${counts}), plus unsaved check-in words and backup copies kept in this browser. It can’t be undone — export a copy first if you might need it. Downloaded AI model files are kept.`,
       action: "Delete everything",
     },
     import: {
@@ -770,11 +741,11 @@ function DataCard() {
 
 export function Settings() {
   const { data } = useStore();
-  const name = data.profile.preferredName || data.profile.displayName;
+  const name = data.profile.preferredName.trim() || data.profile.displayName.trim();
   return (
     <div className="cg-set">
       <PageHeader
-        eyebrow={`${name} · Settings`}
+        eyebrow={name ? `${name} · Settings` : "Settings"}
         title="Settings"
         subtitle="The profile the review uses, the optional on-device AI, display and your data. Everything here stays in this browser."
       />

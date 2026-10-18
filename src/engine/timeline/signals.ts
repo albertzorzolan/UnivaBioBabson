@@ -4,7 +4,10 @@
 // What this engine does: for every medication start or stop in the last 180 days it compares how often each
 // diary item was recorded in the 21 days before the change with the days after it (windows: see windows.ts),
 // using answered days only. A difference becomes a SIGNAL only when it is both sizeable and has p < 0.05
-// (strength "moderate" or "strong"); smaller "weak" differences stay in the per-event detail. Falls and near-falls
+// (strength "moderate" or "strong"); smaller "weak" differences stay in the per-event detail. Every tested
+// difference also gets a runs-aware check (blockPermutation.ts) that shuffles whole runs of days, because the
+// Fisher and Mann–Whitney tests assume independent days; TIMELINE_RULES.runsCheck.gate says whether it can lower
+// a strength or is only reported. Falls and near-falls
 // are additionally listed by date, untested (sentinel.ts), because they are too rare for a test yet always worth
 // raising.
 //
@@ -22,6 +25,7 @@ import type {
   MedTimeline,
   Medication,
   MetricKey,
+  RunsCheck,
   Signal,
   TimelineAnalysis,
   WeeklyTrend,
@@ -39,6 +43,7 @@ import {
 } from "./metrics";
 import type { MetricDef } from "./metrics";
 import { EPS, SIGNAL_CAVEAT, STRENGTH_LABEL, TIMELINE_RULES } from "./rules";
+import { blockPermutationTest, stableHash } from "./blockPermutation";
 import { sentinelEvents } from "./sentinel";
 import type { SentinelEvents } from "./sentinel";
 import { fisherExact, formatPValue, mannWhitneyU } from "./stats";
@@ -78,6 +83,8 @@ export interface MetricComparison {
   direction: "worse" | "better" | "same";
   /** "weak" is shown in the detail view only; signals are "strong" or "moderate" (TIMELINE_RULES.signalStrengths). */
   strength: Signal["strength"] | "none";
+  /** Runs-aware check of the same difference; null when not tested. */
+  runsCheck: RunsCheck | null;
 }
 
 /** Full detail for one event: the MedTimeline contract plus windows, every metric comparison and falls. */
@@ -140,6 +147,15 @@ export function classifyStrength(kind: MetricDef["kind"], pValue: number, diff: 
   return "none";
 }
 
+/**
+ * Strength once the runs check is applied: the larger of the two p-values must clear the same bars (strong 0.01,
+ * moderate 0.05, weak 0.2) and the size bars are unchanged. So a strong difference needs both p < 0.01, and a
+ * moderate one needs both p < 0.05.
+ */
+export function gatedStrength(kind: MetricDef["kind"], pValue: number, runsP: number, diff: number): Signal["strength"] | "none" {
+  return classifyStrength(kind, Math.max(pValue, runsP), diff);
+}
+
 /** Whether a comparison of this strength is reported as a Signal (strong and moderate only). */
 export function isSignalStrength(strength: MetricComparison["strength"]): strength is Signal["strength"] {
   return strength !== "none" && TIMELINE_RULES.signalStrengths.includes(strength);
@@ -150,8 +166,34 @@ function directionOf(def: MetricDef, diff: number): MetricComparison["direction"
   return diff > 0 === def.higherIsWorse ? "worse" : "better";
 }
 
+/** Options for the runs check inside compareMetric (the app uses the defaults). */
+export interface CompareOptions {
+  /** Stable part of the runs check's seed, e.g. "med-lorazepam:started"; the metric key is added to it. */
+  eventKey?: string;
+  /** Number of shuffles (default TIMELINE_RULES.runsCheck.permutations); simulations may use fewer. */
+  permutations?: number;
+}
+
+/**
+ * The metric's value on every calendar day of both windows, in order (null = not answered or no check-in), and
+ * the number of before days. This is the input of the runs check, which needs to know where the runs of days are.
+ */
+function windowSeries(days: CheckIn[], metric: MetricKey, windows: EventWindows): { series: (number | null)[]; changeIndex: number } {
+  const byDate = new Map<ISODate, number | null>();
+  for (const c of days) byDate.set(c.date, metricValue(c, metric));
+  const beforeDates = dateRange(windows.before.from, windows.before.to);
+  const afterDates = dateRange(windows.after.from, windows.after.to);
+  const series = [...beforeDates, ...afterDates].map((d) => byDate.get(d) ?? null);
+  return { series, changeIndex: beforeDates.length };
+}
+
 /** Compare one metric across an event's windows. `days` must hold at most one check-in per date. */
-export function compareMetric(days: CheckIn[], metric: MetricKey, windows: EventWindows): MetricComparison {
+export function compareMetric(
+  days: CheckIn[],
+  metric: MetricKey,
+  windows: EventWindows,
+  options: CompareOptions = {},
+): MetricComparison {
   const def = getMetric(metric);
   const beforeValues = valuesInWindow(days, metric, windows.before.from, windows.before.to);
   const afterValues = valuesInWindow(days, metric, windows.after.from, windows.after.to);
@@ -160,13 +202,24 @@ export function compareMetric(days: CheckIn[], metric: MetricKey, windows: Event
   const test: Signal["test"] = def.kind === "boolean" ? "fisher_exact" : "mann_whitney";
   const tested = before.answered >= TIMELINE_RULES.minAnsweredDays && after.answered >= TIMELINE_RULES.minAnsweredDays;
   const diff = before.answered && after.answered ? after.value - before.value : 0;
-  if (!tested) return { metric, before, after, tested, diff, pValue: null, test, direction: "same", strength: "none" };
+  if (!tested) {
+    return { metric, before, after, tested, diff, pValue: null, test, direction: "same", strength: "none", runsCheck: null };
+  }
 
   const pValue =
     def.kind === "boolean"
       ? // Table [[afterPos, afterNeg], [beforePos, beforeNeg]]
         fisherExact(after.positive, after.answered - after.positive, before.positive, before.answered - before.positive)
       : mannWhitneyU(afterValues, beforeValues).p;
+  const plain = classifyStrength(def.kind, pValue, diff);
+
+  // Runs check: the same difference, judged against shuffles of whole runs of days (blockPermutation.ts).
+  const { blockDays, gate } = TIMELINE_RULES.runsCheck;
+  const permutations = options.permutations ?? TIMELINE_RULES.runsCheck.permutations;
+  const eventKey = options.eventKey ?? `${windows.before.from}:${windows.after.from}`;
+  const { series, changeIndex } = windowSeries(days, metric, windows);
+  const runs = blockPermutationTest(series, changeIndex, { blockDays, permutations, seed: stableHash(`${eventKey}:${metric}`) });
+  const gated = gatedStrength(def.kind, pValue, runs.p, diff);
   return {
     metric,
     before,
@@ -176,7 +229,8 @@ export function compareMetric(days: CheckIn[], metric: MetricKey, windows: Event
     pValue,
     test,
     direction: directionOf(def, diff),
-    strength: classifyStrength(def.kind, pValue, diff),
+    strength: gate ? gated : plain,
+    runsCheck: { p: runs.p, blockDays, permutations, passed: gated === plain },
   };
 }
 
@@ -308,6 +362,8 @@ export interface AnalyzeEventInput {
   today: ISODate;
   isKnownEffect?: (med: Medication, m: MetricKey) => boolean;
   medEvents?: MedEvent[];
+  /** Shuffles for the runs check (default TIMELINE_RULES.runsCheck.permutations); the null-study simulation uses fewer. */
+  runsCheckPermutations?: number;
 }
 
 /** Analyse one medication change in full detail (all metric comparisons, windows, status, signals and falls). */
@@ -346,7 +402,9 @@ export function analyzeEvent(input: AnalyzeEventInput): EventAnalysis {
   }
 
   const windows = eventWindows(med, change, today);
-  const comparisons = METRICS.map((m) => compareMetric(days, m.key, windows));
+  // The seed key leaves out dates, so the same diary gives the same runs check whatever day the app is opened.
+  const compareOptions = { eventKey: `${med.id}:${change.kind}`, permutations: input.runsCheckPermutations };
+  const comparisons = METRICS.map((m) => compareMetric(days, m.key, windows, compareOptions));
   const testedMetrics = comparisons.filter((c) => c.tested).map((c) => c.metric);
   if (testedMetrics.length === 0) {
     return {
@@ -379,6 +437,7 @@ export function analyzeEvent(input: AnalyzeEventInput): EventAnalysis {
       overlappingMedIds,
       knownEffect: isAdverseConsistent(change.kind, c.direction) && isKnownEffect(med, c.metric),
       text: signalSentence(med, change.kind, c.metric, c.before, c.after),
+      ...(c.runsCheck ? { runsCheck: c.runsCheck } : {}),
     });
   }
   signals.sort(compareSignals);

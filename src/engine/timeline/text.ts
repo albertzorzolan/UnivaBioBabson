@@ -15,8 +15,9 @@ export const MAX_MED_NAME_LENGTH = 60;
  * "this medicine".
  */
 export function medName(med: Medication | undefined): string {
-  // eslint-disable-next-line no-control-regex
-  const clean = (med?.name ?? "").replace(/[\s\u0000-\u001f\u007f-\u009f‪-‮⁦-⁩]+/g, " ").trim();
+  // The class matches control characters (C0, DEL, C1) and the bidi embedding/override (U+202A-U+202E) and
+  // isolate (U+2066-U+2069) marks on purpose: they are invisible and could reorder or hide words in a sentence.
+  const clean = (med?.name ?? "").replace(/[\s\u0000-\u001f\u007f-\u009f\u202A-\u202E\u2066-\u2069]+/g, " ").trim();
   if (!clean) return "this medicine";
   const chars = Array.from(clean); // code points, so a surrogate pair is never split
   if (chars.length <= MAX_MED_NAME_LENGTH) return clean;
