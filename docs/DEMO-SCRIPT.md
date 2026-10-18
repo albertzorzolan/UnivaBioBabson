@@ -15,7 +15,8 @@ check without recording.
   about 2:15 for the template-only cut (`PLAN=1`, macOS voice "Samantha" at 175 wpm). Page changes happen between
   shots, off the narration, and add about a second each; the model's Ask draft takes a varying time. So an AI
   render comes out about 10 s longer than planned: the test render of 2026-10-17 (`tmp/r2-video-test`, `blocked`
-  verify line) ran 2:39.6, with the medication review starting at 0:51.5.
+  verify line) ran 2:39.6, with the medication review starting at 0:51.5; the submitted render of 2026-10-18
+  (`submission/kinwise-demo.mp4`, also the `blocked` verify line) ran 2:39.4, with the medication review at 0:51.5.
   On-screen actions can only make a shot longer. Each render writes the real start, end and narration time of every
   shot to `timings.json` (see [Re-recording](#re-recording)), and prints a warning if the result is over 3:00.
 - **Order:** judges mostly watch the first minute, so the problem, the people, her check-in and what Alex sees come
