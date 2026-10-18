@@ -293,14 +293,16 @@ describe("toFhirBundle — review findings", () => {
       mutate: (d) => {
         d.reviewDecisions = [
           { findingKey: "beers-pim-ppi|med-omeprazole", status: "dismissed", note: "", updatedAt: "2026-10-09T10:00:00.000Z" },
-          { findingKey: "beers-pim-antimuscarinic|med-oxybutynin", status: "discussed", note: "", updatedAt: "2026-10-09T10:00:00.000Z" },
+          { findingKey: "ddi-anticholinergic-2:med-oxybutynin+med-tylenolpm", status: "discussed", note: "", updatedAt: "2026-10-09T10:00:00.000Z" },
         ];
       },
     });
     const issues = of(bundle, "DetectedIssue");
     expect(issues.some((i) => JSON.stringify(i.code).includes("Omeprazole"))).toBe(false);
-    const oxy = issues.find((i) => JSON.stringify(i.code).includes("Oxybutynin"))!;
-    expect(JSON.stringify(oxy.mitigation)).toContain("Discussed with the clinician");
+    const pair = issues.find((i) => JSON.stringify(i.code).includes("2 medicines with strong anticholinergic effects together"))!;
+    expect(JSON.stringify(pair.mitigation)).toContain("Discussed with the clinician");
+    // A Beers combination is coded as a drug-interaction alert, not as an age alert for one medicine.
+    expect((pair.code as { coding: unknown[] }).coding).toEqual([ISSUE_CODES.beers_interaction]);
   });
 });
 

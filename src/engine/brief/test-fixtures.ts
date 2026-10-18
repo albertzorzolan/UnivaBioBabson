@@ -89,14 +89,21 @@ export function margaretReview(): MedReview {
       question: "Is there another way to help with her sleep instead of Tylenol PM?",
       relatedSymptoms: ["drowsiness", "confusion"],
     }),
+    // Oxybutynin is not a Beers Table 2 "avoid" medicine; the KB reaches it through the combination of two strong
+    // anticholinergics (and the history-of-falls and ACB rules). Key, category and wording as the real engine
+    // renders this finding for the seed.
     finding({
-      key: "beers-pim-antimuscarinic|med-oxybutynin",
-      category: "beers_avoid",
-      title: "Oxybutynin is strongly anticholinergic",
-      medIds: ["med-oxybutynin"],
-      plain: "Oxybutynin is listed in the AGS Beers Criteria 2023 as a strongly anticholinergic medicine that older adults should generally avoid.",
-      clinician: "Strongly anticholinergic antimuscarinic for urinary incontinence: avoid.",
-      question: "Could her bladder treatment be reviewed, given her anticholinergic burden?",
+      key: "ddi-anticholinergic-2:med-oxybutynin+med-tylenolpm",
+      ruleId: "ddi-anticholinergic-2",
+      category: "beers_interaction",
+      title: "2 medicines with strong anticholinergic effects together",
+      medIds: ["med-oxybutynin", "med-tylenolpm"],
+      plain:
+        "AGS Beers 2023 lists taking 2 or more medicines with strong anticholinergic effects together as a combination older adults should generally avoid; Margaret takes 2: the diphenhydramine in Tylenol PM (OTC) and Oxybutynin. Each of these medicines blocks acetylcholine, and together the effects (confusion, constipation, dry mouth, falls) add up.",
+      clinician: "Avoid; minimize the number of anticholinergic drugs: increased risk of cognitive decline, delirium, falls and fractures.",
+      question: "Are all of these medicines with anticholinergic effects still needed together, and could any be replaced with one that has less anticholinergic effect?",
+      evidenceGrade: "AGS Beers Criteria® 2023 · strong recommendation · moderate-quality evidence",
+      relatedSymptoms: ["dizziness", "drowsiness", "confusion", "fall", "nearFall", "energy"],
     }),
     finding({
       key: "beers-pim-ppi|med-omeprazole",
@@ -131,12 +138,14 @@ export function margaretReview(): MedReview {
       relatedSymptoms: ["confusion"],
     }),
     finding({
-      key: "fall-risk|med-amlodipine+med-furosemide+med-lorazepam+med-tylenolpm",
+      // Same key, medicines and wording as the real engine renders for the seed (5 medicines, oxybutynin included).
+      key: "fall-risk:med-amlodipine+med-furosemide+med-lorazepam+med-oxybutynin+med-tylenolpm",
       category: "fall_risk",
-      title: "4 fall-risk-increasing medicines",
-      medIds: ["med-amlodipine", "med-furosemide", "med-lorazepam", "med-tylenolpm"],
-      plain: "Four medicines on the list are on published lists of fall-risk-increasing drugs.",
-      clinician: "FRIDs: lorazepam, diphenhydramine, furosemide, amlodipine (STOPPFall).",
+      title: "Medicines linked to falls, with falls or dizziness recorded (5)",
+      medIds: ["med-lorazepam", "med-furosemide", "med-amlodipine", "med-tylenolpm", "med-oxybutynin"],
+      plain:
+        "5 of Margaret's medicines are on published lists of medicines linked to falls in older adults (CDC STEADI-Rx and STOPPFall 2021): Lorazepam (Ativan), Furosemide (Lasix), Amlodipine, Tylenol PM (OTC) and Oxybutynin.",
+      clinician: "FRIDs: lorazepam, furosemide, amlodipine, diphenhydramine, oxybutynin (STEADI-Rx and STOPPFall 2021).",
       question: "With the fall on record, which of her medicines are worth reviewing for falls?",
       sourceIds: ["stoppfall2021"],
       relatedSymptoms: ["fall", "nearFall", "dizziness"],
@@ -165,7 +174,7 @@ export function margaretReview(): MedReview {
         { medId: "med-furosemide", ingredientId: "furosemide", score: 1 },
       ],
     },
-    fallRiskMedIds: ["med-amlodipine", "med-furosemide", "med-lorazepam", "med-tylenolpm"],
+    fallRiskMedIds: ["med-lorazepam", "med-furosemide", "med-amlodipine", "med-tylenolpm", "med-oxybutynin"],
     unmatchedMedIds: [],
     effectiveConditions: [
       { tag: "hypertension", from: "profile" },

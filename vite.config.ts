@@ -33,7 +33,9 @@ export default defineConfig({
   worker: { format: "es" },
   build: {
     target: "es2022",
-    // The WebLLM runtime (~6 MB) is its own chunk, fetched only when a user chooses to load the on-device AI.
+    // The WebLLM runtime (~6 MB, ~2 MB gzip) is its own chunk. It is fetched only when a user loads (or removes)
+    // an on-device model in Settings: opening Settings reads the model cache from IndexedDB without it, and
+    // without WebGPU nothing is read at all (src/ai/llm.ts isModelCached).
     chunkSizeWarningLimit: 6500,
     copyPublicDir: false,
     rollupOptions: { output: { manualChunks: (id) => (id.includes("@mlc-ai/web-llm") ? "webllm" : undefined) } },

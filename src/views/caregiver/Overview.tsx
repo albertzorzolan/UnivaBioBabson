@@ -1,8 +1,10 @@
 // Caregiver Overview (/c/overview, SPEC-UI "Overview"): the selected period (14/30/60 days) at a glance.
 //
 //   1. "What Kinwise noticed" — up to 3 insights that join timeline signals (before/after a medicine change,
-//      with counts, denominators and pattern strength), falls/near-falls listed by date, and the medication
-//      review findings for the same medicine. Each ends in a question for the visit.
+//      with counts, denominators and the size of the difference), falls/near-falls listed by date, and the medication
+//      review findings for the same medicine. Each ends in a question for the visit. The first card is laid out so a
+//      caregiver sees, without scrolling at 1366×860: headline → before/after bars → "not what caused it" → falls →
+//      the question. Test names, p-values and the Beers detail sit one click away in disclosures.
 //   2. Stats row — check-ins, dizziness days, falls & near-falls, anticholinergic burden, medicines; every number
 //      opens "Show the records".
 //   3. Symptom timeline chart (shared module), Today, review summary, pinned concerns.
@@ -16,6 +18,7 @@ import {
   ClipboardList,
   FileText,
   Footprints,
+  Info,
   LineChart as LineChartIcon,
   MessageSquareQuote,
   Pill,
@@ -33,6 +36,7 @@ import { newId } from "../../model/ids";
 import { formatShort } from "../../model/dates";
 import { getMetric, latestCheckInPerDate, windowStat } from "../../engine/timeline/metrics";
 import { formatPValue } from "../../engine/timeline/stats";
+import { MULTIPLE_COMPARISONS_NOTE, TIMELINE_RULES } from "../../engine/timeline/rules";
 import { CATEGORY_LABEL } from "../../engine/meds/labels";
 import { getSource } from "../../kb";
 import {
@@ -42,6 +46,7 @@ import {
   ButtonLink,
   Card,
   CardHeader,
+  Disclosure,
   Drawer,
   EmptyState,
   EvidenceLink,
@@ -57,7 +62,13 @@ import {
 } from "../../ui";
 import { TimelineChart, excerptText, periodStart } from "../shared/caregiver-TimelineChart";
 import { RecordsDrawer, latestFor, rangeText, type RecordGroup } from "../shared/caregiver-Records";
-import { fallsComparison, reviewPromptsSummary, triggerFirstSymptoms } from "../shared/caregiver-insights";
+import {
+  STRENGTH_SIZE_WORD,
+  fallsComparison,
+  reviewPromptsSummary,
+  strengthCalibration,
+  triggerFirstSymptoms,
+} from "../shared/caregiver-insights";
 import "./overview.css";
 
 const PERIODS = [14, 30, 60] as const;
@@ -65,8 +76,6 @@ type Period = (typeof PERIODS)[number];
 
 /** Spec wording for the caveat that travels with every before/after comparison. */
 const COMPARISON_CAVEAT = "Shows a change in what was recorded, not what caused it.";
-
-const STRENGTH_WORD: Record<Signal["strength"], string> = { strong: "strong", moderate: "moderate", weak: "weak" };
 
 /** Caption under the ACB meter: the published threshold the bands are read against (ACB scale; Boustani 2008). */
 const ACB_THRESHOLD_NOTE = "Published review threshold: a total of 3 or more (ACB scale).";
@@ -80,6 +89,11 @@ interface BarRow {
   kind: "boolean" | "scale";
   before: WindowStat;
   after: WindowStat;
+  /** This row's own signal strength: each row is labelled by its own size word, never by the headline's. */
+  strength: Signal["strength"];
+  /** The test behind this row and its p-value, shown in "How this comparison works". */
+  test: Signal["test"];
+  pValue: number;
 }
 
 interface Insight {
@@ -91,7 +105,8 @@ interface Insight {
   lead: string;
   bars: BarRow[];
   sentinel: SentinelReport | null;
-  strength: { label: string; detail: string } | null;
+  /** Strength of the headline signal (worded by size, never as a verdict), or null for non-signal insights. */
+  strength: Signal["strength"] | null;
   finding: Finding | null;
   moreFindings: number;
   symptomCounts: { metric: MetricKey; stat: WindowStat }[];
@@ -178,8 +193,16 @@ function buildInsights(input: {
     if (linked) usedFindings.add(linked.key);
     const bars = [...worse.filter((s) => getMetric(s.metric).kind === "boolean"), ...worse.filter((s) => getMetric(s.metric).kind === "scale")]
       .slice(0, 3)
-      .map((s) => ({ metric: s.metric, label: getMetric(s.metric).label, kind: getMetric(s.metric).kind, before: s.before, after: s.after }));
-    const testName = top.test === "fisher_exact" ? "Fisher's exact test" : "Mann–Whitney U test";
+      .map((s) => ({
+        metric: s.metric,
+        label: getMetric(s.metric).label,
+        kind: getMetric(s.metric).kind,
+        before: s.before,
+        after: s.after,
+        strength: s.strength,
+        test: s.test,
+        pValue: s.pValue,
+      }));
     out.push({
       key: `sig:${k}`,
       kind: "signal",
@@ -189,7 +212,7 @@ function buildInsights(input: {
       lead: top.text,
       bars,
       sentinel,
-      strength: { label: `Pattern strength: ${STRENGTH_WORD[top.strength]}`, detail: `${testName}, ${formatPValue(top.pValue)}` },
+      strength: top.strength,
       finding: linked,
       moreFindings: Math.max(0, medFindings.length - 1),
       symptomCounts: [],
@@ -279,21 +302,28 @@ function BeforeAfterBars({ row }: { row: BarRow }) {
     w.answered === 0 ? "no answered days" : scale ? `avg ${w.value.toFixed(1)} of 5 · ${w.answered} days` : `${w.positive} of ${w.answered} days`;
   return (
     <div className="cg-ov-bars">
-      <p className="cg-ov-bars__label">
+      <div className="cg-ov-bars__label">
         <TimelineDot metric={row.metric} size={10} label={row.label} />
-      </p>
-      {(["before", "after"] as const).map((side) => (
-        <div key={side} className={cx("cg-ov-bars__row", `is-${side}`)}>
-          <span className="cg-ov-bars__side">{side === "before" ? "Before" : "After"}</span>
-          <span className="cg-ov-bars__track" aria-hidden="true">
-            <span
-              className="cg-ov-bars__fill"
-              style={{ width: `${Math.max(pctOf(row[side]), row[side].positive > 0 ? 3 : 0)}%`, ...(side === "after" ? { background: SERIES_VAR[row.metric] } : {}) }}
-            />
-          </span>
-          <span className="cg-ov-bars__value ui-num">{text(row[side])}</span>
-        </div>
-      ))}
+        {/* Neutral size word for THIS row (dizziness may be "Large" while confusion is "Clear"); info icon, not a
+            warning, because it describes what was recorded, not a verdict. */}
+        <Badge size="sm" tone="neutral" icon={<Info size={12} aria-hidden="true" />} className="cg-ov-bars__size">
+          {STRENGTH_SIZE_WORD[row.strength]}
+        </Badge>
+      </div>
+      <div className="cg-ov-bars__rows">
+        {(["before", "after"] as const).map((side) => (
+          <div key={side} className={cx("cg-ov-bars__row", `is-${side}`)}>
+            <span className="cg-ov-bars__side">{side === "before" ? "Before" : "After"}</span>
+            <span className="cg-ov-bars__track" aria-hidden="true">
+              <span
+                className="cg-ov-bars__fill"
+                style={{ width: `${Math.max(pctOf(row[side]), row[side].positive > 0 ? 3 : 0)}%`, ...(side === "after" ? { background: SERIES_VAR[row.metric] } : {}) }}
+              />
+            </span>
+            <span className="cg-ov-bars__value ui-num">{text(row[side])}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -338,6 +368,61 @@ function FindingLine({ f, more }: { f: Finding; more: number }) {
   );
 }
 
+const TEST_NAME: Record<Signal["test"], string> = { fisher_exact: "Fisher's exact test", mann_whitney: "Mann–Whitney U test" };
+
+/** Strength order for the calibration lines: largest first. */
+const STRENGTH_ORDER: Signal["strength"][] = ["strong", "moderate", "weak"];
+
+/**
+ * Under the bars and caveat: for each size word that actually appears on a row (deduplicated, largest first), one line on how
+ * often a difference that size appeared by chance in simulated diaries (quoted from rules.ts; see
+ * strengthCalibration). A card with only "Large" rows shows only the "large" line, and so on.
+ */
+function StrengthNote({ bars }: { bars: BarRow[] }) {
+  const present = STRENGTH_ORDER.filter((st) => bars.some((b) => b.strength === st));
+  const lines = present
+    .map((st) => ({ st, text: strengthCalibration(st) }))
+    .filter((x): x is { st: Signal["strength"]; text: string } => x.text !== null);
+  if (lines.length === 0) return null;
+  return (
+    <ul className="cg-ov-strength" role="list" aria-label="How often a difference this size appears by chance">
+      {lines.map(({ st, text }) => (
+        <li key={st} data-strength={st}>
+          <Info size={13} aria-hidden="true" className="cg-ov-strength__icon" />
+          <span>{text}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** "How this comparison works": the test and p-value behind each bar, and the measured chance rates. */
+function MethodDisclosure({ bars }: { bars: BarRow[] }) {
+  return (
+    <Disclosure summary="How this comparison works" className="cg-ov-insight__disclosure">
+      <div className="cg-ov-method">
+        <ul className="cg-ov-method__tests" role="list" aria-label="Test behind each comparison">
+          {bars.map((b) => (
+            <li key={b.metric}>
+              <TimelineDot metric={b.metric} size={9} />
+              <span>
+                {b.label}: {TEST_NAME[b.test]}, <span className="ui-num">{formatPValue(b.pValue)}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p>
+          {/* The threshold is read from rules.ts so this line always matches the code ("moderate" is the lowest flagged strength). */}
+          Only days with an answer are counted. A difference is shown when it is sizeable and its p-value is below{" "}
+          {TIMELINE_RULES.thresholds.boolean.moderate.p}. “Large difference” is what the Timeline calls a strong pattern,
+          and “Clear difference” a moderate one.{" "}
+          {MULTIPLE_COMPARISONS_NOTE}
+        </p>
+      </div>
+    </Disclosure>
+  );
+}
+
 function InsightCard({
   ins,
   featured,
@@ -351,28 +436,47 @@ function InsightCard({
   onSave: (ins: Insight) => void;
   today: ISODate;
 }) {
+  // Reading order (and, on the featured card, the first screen): headline → before/after bars → caveat → falls →
+  // question. Supporting detail (Beers listing, test names, p-values) is collapsed below the bars. On the featured
+  // card the side column (falls, question) sits beside the bars; on narrow screens it follows them.
   return (
     <article className={cx("cg-ov-insight", featured && "is-featured", `is-${ins.kind}`)} aria-labelledby={`ins-${ins.key}`}>
-      <div className="cg-ov-insight__main">
-        <p className="cg-ov-insight__eyebrow">
-          {ins.eyebrow}
-          {ins.strength && (
-            <Badge size="sm" tone={ins.strength.label.endsWith("strong") ? "caution" : "info"} icon>
-              {ins.strength.label}
-            </Badge>
-          )}
-        </p>
+      <header className="cg-ov-insight__head">
+        {/* Signal titles already say which change they follow ("since Lorazepam started"); others name their kind
+            unless the title already starts with it ("Possible prescribing cascade: …"). */}
+        {ins.kind !== "signal" && !ins.title.toLowerCase().startsWith(ins.eyebrow.toLowerCase()) && (
+          <p className="cg-ov-insight__eyebrow">{ins.eyebrow}</p>
+        )}
         <h3 id={`ins-${ins.key}`} className="cg-ov-insight__title">
           {ins.title}
         </h3>
+      </header>
+
+      <div className="cg-ov-insight__main">
         <p className="cg-ov-insight__lead">{ins.lead}</p>
-        {ins.strength && (
-          <p className="cg-ov-insight__stats">
-            {ins.strength.detail} · {COMPARISON_CAVEAT}
+        {ins.bars.length > 0 && (
+          <div className="cg-ov-insight__aside" role="group" aria-label="Before and after, answered days only">
+            <p className="cg-ov-insight__aside-title">
+              Before vs after <span>· answered days only</span>
+            </p>
+            <div className="cg-ov-insight__bars">
+              {ins.bars.map((b) => (
+                <BeforeAfterBars key={b.metric} row={b} />
+              ))}
+            </div>
+          </div>
+        )}
+        {ins.kind === "signal" && (
+          <p className="cg-ov-insight__caveat">
+            <Info size={16} aria-hidden="true" />
+            <span>{COMPARISON_CAVEAT}</span>
           </p>
         )}
-        {ins.sentinel && <FallsLine s={ins.sentinel} today={today} />}
-        {ins.finding && ins.kind !== "finding" && <FindingLine f={ins.finding} more={ins.moreFindings} />}
+        {/* After the caveat, so "not what caused it" stays on the first screen: how often each size word shown on
+            the rows appeared by chance. */}
+        {ins.strength && ins.bars.length > 0 && <StrengthNote bars={ins.bars} />}
+        {/* Without bars (a falls-only card) the falls line is the evidence itself, so it stays in the main column. */}
+        {ins.sentinel && ins.bars.length === 0 && <FallsLine s={ins.sentinel} today={today} />}
         {ins.kind === "finding" && ins.finding && (
           <p className="cg-ov-insight__meta">
             {ins.finding.sourceIds
@@ -396,11 +500,25 @@ function InsightCard({
             ))}
           </ul>
         )}
+      </div>
+
+      <div className="cg-ov-insight__side">
+        {/* Beside the bars: falls and near-falls by date, then the question they lead to. */}
+        {ins.sentinel && ins.bars.length > 0 && <FallsLine s={ins.sentinel} today={today} />}
         <div className="cg-ov-question">
           <p className="cg-ov-question__label">Question for the visit</p>
           <p className="cg-ov-question__text">{ins.question}</p>
         </div>
         <div className="cg-ov-insight__actions">
+          {saved ? (
+            <Badge tone="success" icon className="cg-ov-saved">
+              Added to visit questions
+            </Badge>
+          ) : (
+            <Button size="sm" variant="primary" iconLeft={<Plus size={16} aria-hidden="true" />} onClick={() => onSave(ins)}>
+              Add to visit questions
+            </Button>
+          )}
           {ins.timelineMed ? (
             <ButtonLink
               href={href("/c/timeline", { med: ins.timelineMed })}
@@ -415,25 +533,18 @@ function InsightCard({
               See in review
             </ButtonLink>
           )}
-          {saved ? (
-            <Badge tone="success" icon className="cg-ov-saved">
-              Added to visit questions
-            </Badge>
-          ) : (
-            <Button size="sm" variant="primary" iconLeft={<Plus size={16} aria-hidden="true" />} onClick={() => onSave(ins)}>
-              Add to visit questions
-            </Button>
-          )}
         </div>
       </div>
-      {ins.bars.length > 0 && (
-        <div className="cg-ov-insight__aside" aria-label="Before and after, answered days only">
-          <p className="cg-ov-insight__aside-title">
-            Before vs after <span>· answered days only</span>
-          </p>
-          {ins.bars.map((b) => (
-            <BeforeAfterBars key={b.metric} row={b} />
-          ))}
+
+      {/* Detail one click away; after the question on narrow screens, under the bars on wide ones. */}
+      {((ins.finding && ins.kind !== "finding") || (ins.strength && ins.bars.length > 0)) && (
+        <div className="cg-ov-insight__more">
+          {ins.finding && ins.kind !== "finding" && (
+            <Disclosure summary="Why this medicine is on the list" className="cg-ov-insight__disclosure">
+              <FindingLine f={ins.finding} more={ins.moreFindings} />
+            </Disclosure>
+          )}
+          {ins.strength && ins.bars.length > 0 && <MethodDisclosure bars={ins.bars} />}
         </div>
       )}
     </article>
@@ -530,7 +641,8 @@ export function Overview() {
   // ---- Records drawers ----
   const groupFor = (metric: MetricKey | null): RecordGroup[] => {
     const rows = [...days].reverse().map((c) => {
-      if (!metric) return { date: c.date, value: "Checked in", counted: true };
+      // A plain check-in is not a recorded symptom, so it takes neutral ink (no attention colour or dot).
+      if (!metric) return { date: c.date, value: "Checked in", counted: false };
       const v = metric === "fall" ? c.answers.fall : metric === "nearFall" ? c.answers.nearFall : c.answers[metric as "dizziness"];
       return { date: c.date, value: v === true ? "Yes" : v === false ? "No" : "Not answered", counted: v === true };
     });
@@ -558,7 +670,7 @@ export function Overview() {
       <PageHeader
         eyebrow={`Caring for ${p.displayName || name} · ${rangeText(from, today)}`}
         title={`${possessive} last ${period} days at a glance`}
-        subtitle={`What changed in ${possessive} diary, what is worth asking about, and the records behind every number.`}
+        subtitle={`What changed in ${possessive} diary and what is worth asking about.`}
         actions={
           <div className="cg-ov-header-actions">
             <Segmented
@@ -587,8 +699,7 @@ export function Overview() {
               What Kinwise noticed
             </h2>
             <p className="cg-ov-noticed__subtitle">
-              From {possessive} own check-ins and a check of her medicines against published criteria. These describe what was
-              recorded — questions to bring to her doctor or pharmacist, not conclusions.
+              {`From ${possessive} own check-ins and published medicine criteria: questions for ${possessive} doctor or pharmacist, not conclusions.`}
             </p>
           </div>
         </header>

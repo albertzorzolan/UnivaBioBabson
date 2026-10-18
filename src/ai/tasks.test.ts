@@ -29,7 +29,9 @@ import {
   completeCitations,
   isRelevant,
   openFieldsFor,
+  sharesTopic,
   softenQuestion,
+  verifySection,
 } from "./tasks";
 
 const SIG = "sig:med-lorazepam:dizziness:started";
@@ -108,7 +110,7 @@ describe("aiDraftBrief", () => {
   it("returns verified content with provenance (two generations)", async () => {
     llm.outputs.push({ reason: GOOD_BRIEF.reason, noticed: GOOD_BRIEF.noticed }, { questions: GOOD_BRIEF.questions });
     const r = (await aiDraftBrief(MARGARET_PACKAGE, MARGARET_TEMPLATE, { ...opts, kbVersion: "kb-test" }))!;
-    expect(r.info).toMatchObject({ mode: "ai", model: "fake-model", promptVersion: PROMPT_VERSION, kbVersion: "kb-test", durationMs: 2468, droppedSentences: 2, evidenceHash: "fixture-margaret-v1" });
+    expect(r.info).toMatchObject({ mode: "ai", model: "fake-model", promptVersion: PROMPT_VERSION, kbVersion: "kb-test", durationMs: 2468, droppedSentences: 2, evidenceHash: "fixture-margaret-v2" });
     expect(llm.requests).toHaveLength(2);
     // Step 2 sees the verified observations, not the dropped causal one.
     expect(llm.requests[1].user).toContain("ALREADY IN THE BRIEF");
@@ -415,5 +417,140 @@ describe("answer post-processing", () => {
     expect(isRelevant("Has Mom been dizzier lately?", sig, MARGARET_PACKAGE)).toBe(true);
     expect(isRelevant("Has she been woozy?", sig, MARGARET_PACKAGE)).toBe(true);
     expect(isRelevant("What was her blood pressure?", sig, MARGARET_PACKAGE)).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// Regressions from the live WebGPU run (eval/results/ai-live.json) and the runtime audit of the AI brief
+// (tmp/judge-kit/runtime/local-ai-brief-text.txt). Each case below reached the screen before the fixes.
+
+/** The real engine finding the live explanation was written for (text as the app renders it on the seed). */
+const ANTICHOLINERGIC_PAIR = {
+  ...MARGARET_FINDINGS[1],
+  key: "ddi-anticholinergic-2:med-oxybutynin+med-tylenolpm",
+  ruleId: "ddi-anticholinergic-2",
+  category: "beers_interaction" as const,
+  title: "2 medicines with strong anticholinergic effects together",
+  medIds: ["med-oxybutynin", "med-tylenolpm"],
+  plain:
+    "AGS Beers 2023 lists taking 2 or more medicines with strong anticholinergic effects together as a combination older adults should generally avoid; Margaret takes 2: the diphenhydramine in Tylenol PM (OTC) and Oxybutynin. Each of these medicines blocks acetylcholine, and together the effects (confusion, constipation, dry mouth, falls) add up.",
+  clinician: "Avoid; minimize the number of anticholinergic drugs: increased risk of cognitive decline, delirium, falls and fractures.",
+  question: "Are all of these medicines with anticholinergic effects still needed together, and could any be replaced with one that has less anticholinergic effect?",
+  evidenceGrade: "AGS Beers Criteria® 2023 · strong recommendation · moderate-quality evidence",
+};
+const LORAZEPAM_FALLS = {
+  ...MARGARET_FINDINGS[0],
+  key: "cond-falls:med-lorazepam",
+  ruleId: "cond-falls",
+  category: "beers_condition" as const,
+  title: "Lorazepam (Ativan) with a history of falls",
+  plain:
+    "AGS Beers 2023 lists Lorazepam (Ativan) as best avoided in people with a history of falls (the diary recorded a fall, most recently on Oct 12). Medicines like this can affect balance, alertness or blood pressure, which makes another fall more likely.",
+  clinician:
+    "Avoid unless lower-risk alternatives are not available: associated with ataxia, impaired psychomotor function, syncope and additional falls.",
+  question: "For someone with a history of falls, is Lorazepam (Ativan) still the best choice, or is there an option that fits better?",
+  evidenceGrade: "AGS Beers Criteria® 2023 · strong recommendation · high-quality evidence",
+};
+
+describe("explanations — live escapes are now dropped", () => {
+  it("drops the live 'can cause … delirium' and 'replace … to reduce these risks' sentences (no patient names passed)", () => {
+    // Exact model output from eval/results/ai-live.json; the UI did not pass patient names.
+    const r = checkExplanation(
+      ANTICHOLINERGIC_PAIR,
+      [
+        "Margaret takes Tylenol PM and Oxybutynin, both of which block acetylcholine, and together they can cause confusion, constipation, dry mouth, falls, and delirium.",
+        "That makes it a good topic to raise with the doctor or pharmacist at the next visit to see if all these medicines are still needed together.",
+        "They might be able to replace some with medicines that have less anticholinergic effect to reduce these risks.",
+      ],
+      { medNames: ["Tylenol PM (OTC)", "Oxybutynin"] },
+    );
+    expect(r.kept).toEqual(["That makes it a good topic to raise with the doctor or pharmacist at the next visit to see if all these medicines are still needed together."]);
+    expect(r.dropped.map((d) => d.issues.join(" "))).toEqual([expect.stringMatching(/causal/), expect.stringMatching(/advice/)]);
+  });
+  it("drops the live 'which might lead to another fall' sentence and keeps the rest", () => {
+    const r = checkExplanation(LORAZEPAM_FALLS, [
+      "Lorazepam (Ativan) is listed in the AGS Beers Criteria as best avoided for people with a history of falls.",
+      "It can affect balance, alertness, or blood pressure, which might lead to another fall.",
+      "That makes it a good topic to discuss with the doctor or pharmacist at the next visit.",
+    ]);
+    expect(r.kept).toHaveLength(2);
+    expect(r.dropped[0].issues.join(" ")).toMatch(/risk: predicts a fall/);
+  });
+  it("passes patient names through so patient-scoped rules apply", () => {
+    const text = "This can cause Margaret to feel dizzy.";
+    expect(checkExplanation(LORAZEPAM_FALLS, [text]).kept).toEqual([text]);
+    expect(checkExplanation(LORAZEPAM_FALLS, [text], { patientNames: ["Margaret"] }).kept).toEqual([]);
+  });
+  it("drops a condition from the KB text applied to the person as a diagnosis (second review round)", () => {
+    // "delirium" is in this finding's clinician text, but only as a class-level risk.
+    const diagnosis = "Margaret's confusion could be early delirium.";
+    const classLevel = "This combination raises the chance of delirium and fractures.";
+    for (const o of [{}, { patientNames: ["Margaret"] }]) {
+      const r = checkExplanation(ANTICHOLINERGIC_PAIR, [diagnosis, classLevel], o);
+      expect(r.kept).toEqual([classLevel]);
+      expect(r.dropped[0].issues.join(" ")).toMatch(/diagnosis: applies delirium/);
+    }
+  });
+  it("aiExplainFinding forwards patient names to the check", async () => {
+    llm.outputs.push({
+      sentences: [
+        { text: "Lorazepam (Ativan) is listed in the AGS Beers Criteria as best avoided for people with a history of falls." },
+        { text: "This can cause Margaret to feel dizzy." },
+        { text: "That makes it a good topic to discuss with the doctor or pharmacist at the next visit." },
+      ],
+    });
+    const r = (await aiExplainFinding(LORAZEPAM_FALLS, { patientNames: ["Margaret"] }))!;
+    expect(r.sentences).toHaveLength(2);
+    expect(r.dropped).toBe(1);
+  });
+});
+
+describe("brief questions — evidence must match the question's topic", () => {
+  const TYLENOL = "find:beers-pim-first-gen-antihistamine|med-tylenolpm";
+  const DROWSY = "sig:med-lorazepam:drowsiness:started";
+  const q = (text: string, evidenceIds: string[]) =>
+    verifySection("questions", [{ text, evidenceIds }], MARGARET_PACKAGE, { medNames: MARGARET_MED_NAMES, expect: "question", max: 5 });
+
+  it("drops a question that cites another medicine's chip (runtime audit: every question cited 'Before vs after · dizziness')", () => {
+    const r = q("Could the Tylenol PM (OTC) be contributing to the daytime drowsiness recorded in the diary?", [SIG]);
+    expect(r.kept).toEqual([]);
+    expect(r.dropped[0].issues.join(" ")).toMatch(/evidence_topic/);
+  });
+  it("drops the runtime 'since then' question with no date or start", () => {
+    const r = q("Could the Tylenol PM (OTC) with the sedating antihistamine be contributing to the drowsiness recorded since then?", [SIG, TYLENOL]);
+    expect(r.kept).toEqual([]);
+    expect(r.dropped[0].issues.join(" ")).toMatch(/unresolved_reference/);
+  });
+  it("keeps the same question when its evidence is about the same medicine and the date is stated", () => {
+    expect(q("Could the Tylenol PM (OTC) be contributing to the daytime drowsiness recorded in the diary?", [TYLENOL]).kept).toHaveLength(1);
+    expect(q("Could the Lorazepam (Ativan) started on Sep 25 be contributing to the daytime drowsiness recorded since then?", [DROWSY]).kept).toHaveLength(1);
+  });
+  it("judges the topic by medicine first, then by diary symptom or shared word", () => {
+    const item = (id: string) => MARGARET_PACKAGE.items.find((i) => i.id === id)!;
+    expect(sharesTopic("Could the oxybutynin be reviewed?", item(SIG))).toBe(false);
+    expect(sharesTopic("Could Ativan be reviewed?", item(SIG))).toBe(true);
+    expect(sharesTopic("Could any of these medicines be contributing to the near-falls?", item(FALLS))).toBe(true);
+    expect(sharesTopic("With an anticholinergic burden score of 7, could the list be reviewed?", item(ACB))).toBe(true);
+    expect(sharesTopic("Could the list be reviewed?", item(FALLS))).toBe(false);
+  });
+});
+
+describe("checkRefinements — the quote must be about the proposed field (live escapes)", () => {
+  const story = "Slept like a log last night. A bit foggy and sleepy after lunch, didn't feel like eating. If I get dizzy again I'll ring Alex.";
+  const empty = { ...REFINE_CASES[0].base, proposals: [] };
+  it("rejects dizziness=yes quoted from 'Slept like a log last night'", () => {
+    const r = checkRefinements(story, empty, [{ field: "dizziness", value: true, quote: "Slept like a log last night" }], fallbackAnalyzeContext);
+    expect(r.added).toEqual([]);
+    expect(r.rejections[0].reason).toMatch(/do not mention dizziness/);
+  });
+  it("rejects a sleep rating quoted from 'Pretty tired today, no energy at all'", () => {
+    const s = "Pretty tired today, no energy at all. Not dizzy and no falls.";
+    const r = checkRefinements(s, empty, [{ field: "sleep", value: 1, quote: "Pretty tired today, no energy at all" }], fallbackAnalyzeContext);
+    expect(r.added).toEqual([]);
+    expect(r.rejections[0].reason).toMatch(/do not mention sleep/);
+  });
+  it("still accepts a sleep rating from the same quote that was wrong for dizziness", () => {
+    const r = checkRefinements(story, empty, [{ field: "sleep", value: 5, quote: "Slept like a log last night" }], fallbackAnalyzeContext);
+    expect(r.added.map((p) => p.field)).toEqual(["sleep"]);
   });
 });

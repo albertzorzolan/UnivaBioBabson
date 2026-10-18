@@ -200,12 +200,17 @@ B("pim-estrogen", PIM, {"classes": ["estrogen"]},
   "Avoid starting systemic estrogen; consider deprescribing", quality="high", strength="strong", rid="t2-estrogens",
   qualifier="as pills or patches (low-dose vaginal estrogen is not included)", excludeReasonKeywords=["vaginal"])
 
+# AGS 2023 avoids sulfonylureas as first- or second-line monotherapy or add-on therapy (unless there are substantial
+# barriers to other agents) and, if one is used, prefers short-acting glipizide. The qualifier carries the first half
+# so the plain lead does not read "generally avoid" and then "glipizide is preferred" (it must stay <= 90 chars, no
+# '.'/';', to be inlined by src/engine/meds/rules/beers.ts).
 B("pim-sulfonylurea", PIM, {"classes": ["sulfonylurea"]},
   "{med}: sulfonylurea diabetes medicine",
-  "Compared with other diabetes medicines, sulfonylureas bring more episodes of low blood sugar and are linked to more heart problems; if one is used, short-acting glipizide is preferred.",
+  "Compared with other diabetes medicines, sulfonylureas bring more episodes of low blood sugar and are linked to more heart problems; if a sulfonylurea is used, AGS prefers a short-acting one such as glipizide over glyburide or glimepiride.",
   "Avoid as first- or second-line monotherapy or add-on therapy unless there are substantial barriers to other agents: higher risk of hypoglycemia (high-quality evidence), cardiovascular events and overall mortality. Long-acting agents (glyburide, glimepiride) lead to more prolonged hypoglycemia than glipizide.",
   "Is {med} still the best diabetes medicine for {person}, and how often has blood sugar run low?",
-  "Avoid as first- or second-line therapy unless there are substantial barriers to other agents", quality="high", strength="strong", rid="t2-sulfonylureas")
+  "Avoid as first- or second-line monotherapy or add-on therapy unless there are substantial barriers to other agents", quality="high", strength="strong", rid="t2-sulfonylureas",
+  qualifier="as first- or second-line or add-on therapy unless other options face substantial barriers")
 
 B("pim-desiccated-thyroid", PIM, {"drugs": ["desiccated thyroid"]},
   "{med}: desiccated (animal) thyroid",
@@ -434,7 +439,7 @@ B("caution-prasugrel-ticagrelor", CAUTION, {"drugs": ["prasugrel", "ticagrelor"]
 
 B("caution-sodium", CAUTION,
   {"classes": ["ssri", "snri", "tca", "antipsychotic", "diuretic"], "drugs": ["mirtazapine", "carbamazepine", "oxcarbazepine", "tramadol"]},
-  "{med}: check sodium levels",
+  "{med}: can lower sodium levels",  # title as shipped in 375e1e0 beers.json (descriptive, not an instruction)
   "This medicine can lower the sodium level in the blood, which can lead to confusion, unsteadiness and falls, especially when it is started or the dose changes.",
   "Use with caution: may exacerbate or contribute to SIADH or hyponatremia; monitor sodium closely when starting or changing dosages.",
   "Has {person}'s sodium level been checked since {med} was started or the dose last changed?",
@@ -886,7 +891,7 @@ MONITORING = [
     dict(id="mon-hypoglycemia", appliesTo={"classes": ["sulfonylurea", "insulin"]},
          title="Low blood sugar: what to watch for",
          watchFor=["shakiness or trembling", "sweating", "sudden confusion or unusual behavior", "dizziness", "a fast heartbeat"],
-         relatedConcepts=["shakiness_or_sweating", "confusion", "dizziness"],
+         relatedConcepts=["shakiness_or_sweating", "tremor", "confusion", "dizziness"],  # "tremor": as shipped in 375e1e0 monitoring.json
          plain="{med} can lower blood sugar, and in older adults low blood sugar can show up as confusion, dizziness or a fall.",
          clinician="Insulins and oral hypoglycemics together were implicated in about a quarter of emergency hospitalizations for adverse drug events in adults 65 and older (Budnitz 2011). Hypoglycemia may present atypically (confusion, falls).",
          question="What blood sugar level should prompt a call, and what should we do if {person} feels shaky, sweaty or confused?",

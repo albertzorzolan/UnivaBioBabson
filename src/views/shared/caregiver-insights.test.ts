@@ -3,7 +3,17 @@ import type { Finding } from "../../model/types";
 import { createSeed } from "../../model/seed";
 import { analyzeTimeline } from "../../engine/timeline/signals";
 import { activeMeds, reviewMedications } from "../../engine/meds/review";
-import { fallsComparison, reviewPromptsSummary, triggerFirstSymptoms, unflaggedVerdict } from "./caregiver-insights";
+import { MULTIPLE_COMPARISONS_NOTE } from "../../engine/timeline/rules";
+import {
+  STRENGTH_SIZE_LABEL,
+  STRENGTH_SIZE_WORD,
+  strengthTone,
+  fallsComparison,
+  reviewPromptsSummary,
+  strengthCalibration,
+  triggerFirstSymptoms,
+  unflaggedVerdict,
+} from "./caregiver-insights";
 import { layoutMarkers, tickAlign } from "./caregiver-TimelineChart";
 
 const TODAY = "2026-10-11";
@@ -71,6 +81,47 @@ describe("review summary and finding symptoms", () => {
     expect(unflaggedVerdict("nearFall", "weak")).toBe("Listed by date, too few events to test");
     expect(unflaggedVerdict("dizziness", "none")).toBe("No clear difference");
     expect(unflaggedVerdict("sleep", "weak")).toBe("Pattern strength: weak (not flagged)");
+  });
+});
+
+describe("signal strength wording for caregivers", () => {
+  it("describes the size of the recorded difference, never a verdict or a cause", () => {
+    expect(STRENGTH_SIZE_LABEL.strong).toBe("Large difference in what was recorded");
+    expect(STRENGTH_SIZE_LABEL.moderate).toBe("Clear difference in what was recorded");
+    expect(STRENGTH_SIZE_LABEL.weak).toBe("Small difference");
+    for (const label of Object.values(STRENGTH_SIZE_LABEL)) expect(label).not.toMatch(/strong|caus|safe|danger|risk|warning/i);
+  });
+
+  it("quotes the chance rates measured in rules.ts, including the frequent-symptom and clustered-days figures", () => {
+    // The figures are copied from MULTIPLE_COMPARISONS_NOTE (measured in signals.null.test.ts); if that note changes,
+    // this test fails so the Overview line cannot drift from what the engine says.
+    expect(MULTIPLE_COMPARISONS_NOTE).toContain("about 1 in 10 medicine changes still showed a moderate signal");
+    expect(MULTIPLE_COMPARISONS_NOTE).toContain("about 1 in 100 a strong one");
+    expect(MULTIPLE_COMPARISONS_NOTE).toContain("nearly 1 in 5 and 1 in 35 when symptoms were recorded often");
+    expect(MULTIPLE_COMPARISONS_NOTE).toContain("about 9 in 10 medicine changes showed a moderate signal and about 6 in 10 a strong one");
+    expect(strengthCalibration("strong")).toBe(
+      "In simulated diaries with no real change, about 1 in 100 medicine changes showed a difference rated “large” " +
+        "(1 in 35 when symptoms were recorded often), and about 6 in 10 when symptoms came in runs of days.",
+    );
+    expect(strengthCalibration("moderate")).toBe(
+      "In simulated diaries with no real change, about 1 in 10 medicine changes showed a difference rated “clear” or larger " +
+        "(nearly 1 in 5 when symptoms were recorded often), and about 9 in 10 when symptoms came in runs of days.",
+    );
+    expect(strengthCalibration("weak")).toBeNull();
+  });
+
+  it("names a size word for each strength that matches its badge", () => {
+    expect(STRENGTH_SIZE_WORD.strong).toBe("Large difference");
+    expect(STRENGTH_SIZE_WORD.moderate).toBe("Clear difference");
+    expect(STRENGTH_SIZE_WORD.weak).toBe("Small difference");
+    for (const k of ["strong", "moderate", "weak"] as const) expect(STRENGTH_SIZE_LABEL[k].startsWith(STRENGTH_SIZE_WORD[k])).toBe(true);
+  });
+
+  it("colours a badge by strength only, never green for a recorded change in either direction", () => {
+    expect(strengthTone("strong")).toBe("caution");
+    expect(strengthTone("moderate")).toBe("info");
+    expect(strengthTone("weak")).toBe("neutral");
+    expect(strengthTone("none")).toBe("neutral");
   });
 });
 

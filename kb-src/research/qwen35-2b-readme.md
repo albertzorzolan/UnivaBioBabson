@@ -7,6 +7,8 @@ base_model:
 - Qwen/Qwen3.5-2B-Base
 ---
 
+> Reference copy of the third-party Qwen3.5-2B model card, kept because the model was evaluated as an alternative; not the default and not authored by the team.
+
 # Qwen3.5-2B
 
 <img width="400px" src="https://qianwen-res.oss-accelerate.aliyuncs.com/logo_qwen3.5.png">

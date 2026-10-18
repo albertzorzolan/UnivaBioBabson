@@ -11,6 +11,7 @@ import { useStore } from "../../../app/StoreProvider";
 import { Button, Drawer, TextInput, cx } from "../../../ui";
 import { DrugCombobox } from "./DrugCombobox";
 import { ReviewPreview } from "./ReviewPreview";
+import { previewName } from "./previewName";
 import { diffPrompts } from "./reviewRecords";
 import {
   addMedication,
@@ -250,6 +251,9 @@ function MedForm({ editing, onSaved }: MedEditorProps) {
   const [otcTouched, setOtcTouched] = useState(Boolean(editing));
   const [doseDate, setDoseDate] = useState<ISODate>(today);
   const [submitted, setSubmitted] = useState(false);
+  // The name a Save was attempted with while its "Did you mean …?" question was unanswered. The reminder to answer
+  // it only shows for that name, so typing a new name never greets the user with an error before they press Save.
+  const [unansweredAtSave, setUnansweredAtSave] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const prescriberListId = useId();
 
@@ -277,9 +281,14 @@ function MedForm({ editing, onSaved }: MedEditorProps) {
   const otc = otcTouched ? draft.otc : kbOtc;
   const full: MedDraft = { ...draft, ...resolved, otc };
   // While a suggestion awaits a yes/no, preview it as if confirmed (clearly labelled).
-  const previewDraft: MedDraft = fuzzyPending ? { ...full, ingredientIds: match.ingredientIds, match: "fuzzy_confirmed" } : full;
+  // Prompt titles use the reference-list name ("Tylenol PM", not the typed "tylenol pm"); an unchanged saved name stays as it is.
+  const previewDraft: MedDraft = {
+    ...(fuzzyPending ? { ...full, ingredientIds: match.ingredientIds, match: "fuzzy_confirmed" as const } : full),
+    name: stored ? draft.name : previewName(draft.name, match),
+  };
 
-  const errors: DraftErrors = submitted ? validateDraft(full, today, { fuzzyPending, person }) : {};
+  const askReminder = fuzzyPending && unansweredAtSave === draft.name;
+  const errors: DraftErrors = submitted ? validateDraft(full, today, { fuzzyPending: askReminder, person }) : {};
   const showDoseDate = editing !== null && doseChanged(editing, full);
 
   // Same ingredient already on the active list (another entry)?
@@ -302,6 +311,7 @@ function MedForm({ editing, onSaved }: MedEditorProps) {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+    setUnansweredAtSave(fuzzyPending ? draft.name : null);
     setSaveError(null);
     const errs = validateDraft(full, today, { fuzzyPending, person });
     if (showDoseDate && (doseDate > today || doseDate < full.startDate)) errs.dose = "Check the date the dose changed.";
@@ -338,7 +348,18 @@ function MedForm({ editing, onSaved }: MedEditorProps) {
   };
 
   return (
-    <form id="cg-med-form" className="cg-med-form" noValidate onSubmit={submit}>
+    <form
+      id="cg-med-form"
+      className="cg-med-form"
+      noValidate
+      onSubmit={submit}
+      onKeyDown={(e) => {
+        // Enter in the name box picks a suggestion (handled by the combobox) but never saves the whole form:
+        // people press Enter to "search", and an early Save attempt would show errors before they finished.
+        const t = e.target as HTMLElement;
+        if (e.key === "Enter" && !e.defaultPrevented && t.getAttribute("role") === "combobox") e.preventDefault();
+      }}
+    >
       <DrugCombobox
         label="Medicine name"
         hint="Brand, generic or combination product. Dose text like “0.5 mg” is fine — Kinwise ignores it when matching."

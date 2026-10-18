@@ -1,5 +1,11 @@
-import json, re
-R = "/private/tmp/claude-501/-Users-mb-pro-Desktop-UnivaBio-Hackathon/c6caa03c-8210-4b85-9270-2eab2bd171d9/scratchpad/research/"
+import json, re, os
+# Paths are relative to this script (originally an absolute path into a session scratch folder);
+# see kb-src/build/README.md. Helper modules and intermediate files are still read from the working
+# directory, so run this from kb-src/build.
+HERE = os.path.dirname(os.path.abspath(__file__))
+# Current helper: writes the committed research/symptom-adr-map.json in place (review the git diff after a rerun).
+# R ends with a separator because it is joined with +.
+R = os.path.join(HERE, "..", "research", "")  # kb-src/research/ (committed)
 tmp = json.load(open("sym_build_tmp2.json"))
 casc = json.load(open(R + "cascades.json")); frid = json.load(open(R + "frids.json"))
 beers = json.load(open(R + "beers-2023.json")); acb = json.load(open(R + "acb-scale.json"))

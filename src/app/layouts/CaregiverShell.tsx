@@ -3,6 +3,7 @@
 //           short heights or 200% zoom), patient card, nav, footer links.
 //  <1024px: sticky top bar (static on very short screens) + fixed bottom tab bar with five destinations
 //           and a "More" sheet for the rest.
+//  Both: "Demo: switch to Margaret's view" under the patient card, and the recovery notice above the page when needed.
 import { useState, type ReactNode } from "react";
 import { MoreHorizontal, PlayCircle } from "lucide-react";
 import { useStore } from "../StoreProvider";
@@ -13,6 +14,8 @@ import { startTour } from "../Tour";
 import { CAREGIVER_NAV, CAREGIVER_PRIMARY, type NavItem } from "./nav";
 import { useShellAttribute } from "./useDocumentSettings";
 import { SkipLink, SafetyFooter } from "./ShellParts";
+import { DemoSwitch } from "./DemoSwitch";
+import { RecoveryNotice } from "./RecoveryNotice";
 import { Avatar, DemoDataChip, Drawer, ICONS, Logo, cx } from "../../ui";
 
 export interface ShellProps {
@@ -93,6 +96,7 @@ export function CaregiverShell({ current, children }: ShellProps) {
           <div className="cg-sidebar__patient">
             <p className="cg-sidebar__label">Caring for</p>
             <PatientCard />
+            <DemoSwitch to="patient" />
           </div>
           <nav className="cg-nav" aria-label="Main">
             <ul role="list">
@@ -132,7 +136,10 @@ export function CaregiverShell({ current, children }: ShellProps) {
       {/* ---- Page ---- */}
       <div className="cg-main-wrap">
         <main id="main-content" className="cg-main" tabIndex={-1}>
-          <div className="cg-content">{children}</div>
+          <div className="cg-content">
+            <RecoveryNotice />
+            {children}
+          </div>
         </main>
         <SafetyFooter className="cg-footer" />
       </div>
@@ -174,6 +181,7 @@ export function CaregiverShell({ current, children }: ShellProps) {
       <Drawer open={moreOpen} onClose={() => setMoreOpen(false)} title="More" eyebrow="Kinwise">
         <div className="cg-more">
           <PatientCard compact />
+          <DemoSwitch to="patient" onSwitch={() => setMoreOpen(false)} />
           <ul role="list" className="cg-more__list">
             {secondary.map((item) => (
               <li key={item.path}>

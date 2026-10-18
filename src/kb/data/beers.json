@@ -492,12 +492,12 @@
     "sulfonylurea"
    ]
   },
-  "qualifier": null,
+  "qualifier": "as first- or second-line or add-on therapy unless other options face substantial barriers",
   "title": "{med}: sulfonylurea diabetes medicine",
-  "plain": "Compared with other diabetes medicines, sulfonylureas bring more episodes of low blood sugar and are linked to more heart problems; if one is used, short-acting glipizide is preferred.",
+  "plain": "Compared with other diabetes medicines, sulfonylureas bring more episodes of low blood sugar and are linked to more heart problems; if a sulfonylurea is used, AGS prefers a short-acting one such as glipizide over glyburide or glimepiride.",
   "clinician": "Avoid as first- or second-line monotherapy or add-on therapy unless there are substantial barriers to other agents: higher risk of hypoglycemia (high-quality evidence), cardiovascular events and overall mortality. Long-acting agents (glyburide, glimepiride) lead to more prolonged hypoglycemia than glipizide.",
   "question": "Is {med} still the best diabetes medicine for {person}, and how often has blood sugar run low?",
-  "recommendation": "Avoid as first- or second-line therapy unless there are substantial barriers to other agents",
+  "recommendation": "Avoid as first- or second-line monotherapy or add-on therapy unless there are substantial barriers to other agents",
   "quality": "high",
   "strength": "strong",
   "sourceId": "beers2023",

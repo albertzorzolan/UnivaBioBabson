@@ -200,8 +200,9 @@ and suggested they "might be able to replace some" of them "to reduce these risk
    accurate, readable and useful within a short visit. Outcome claims (fewer falls, fewer adverse drug events) would
    need a separate trial; the evidence base for the approach (for example EMPOWER, 27% vs 5% benzodiazepine
    discontinuation, and D-PRESCRIBE, 43% vs 12% discontinuation of potentially inappropriate medicines, after
-   patient-directed education) is a reason to study it, not proof that
-   Kinwise works.
+   education aimed at patients (EMPOWER; the booklet included a stepwise taper plan) or at patients plus a
+   pharmaceutical opinion sent to their physicians (D-PRESCRIBE)) is a reason to study it, not proof that Kinwise
+   works. Kinwise gives no taper plan; that stays with the clinician.
 3. **A regulatory assessment** by qualified counsel of each function against the current FDA guidance, the
    Digital Health Policy Navigator, and, if needed, a pre-submission discussion with FDA.
 4. **Privacy and security work** listed in §3.4, plus a threat model and a third-party security review.

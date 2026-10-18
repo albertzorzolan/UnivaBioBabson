@@ -11,6 +11,9 @@
 //   2. Otherwise WebLLM's prebuilt registry: weights from the official mlc-ai Hugging Face repos and
 //      the compiled model library from the mlc-ai/binary-mlc-llm-libs GitHub repo.
 // Either way the files are cached in IndexedDB, so the second load works offline.
+//
+// The local probe (1) runs only in development (or a build made with VITE_LOCAL_MODELS=1): the hosted demo
+// never ships model files, so probing there would only produce 404s. See localModelsEnabled().
 
 import type { ModelRecord } from "@mlc-ai/web-llm";
 
@@ -159,7 +162,7 @@ export interface ResolveOptions {
   /** WebLLM's prebuiltAppConfig.model_list (passed in so this module stays free of the 6 MB runtime). */
   prebuilt: ModelRecord[];
   fetchFn?: typeof fetch;
-  /** Skip the local probe (e.g. Settings → "always download from Hugging Face"). */
+  /** Skip the local probe. llm.ts sets it in production builds (see localModelsEnabled). */
   preferRemote?: boolean;
 }
 
@@ -235,4 +238,107 @@ export async function resolveModelSource(modelId: string, opts: ResolveOptions):
     throw new Error(`${modelId} is not available in this version of WebLLM and no local copy was found.`);
   }
   return { kind: "remote", origin: "huggingface.co", record: { ...prebuilt, overrides } };
+}
+
+/**
+ * Whether to look for a local model copy in public/models/resolve/. True in the Vite dev server (the demo
+ * recorder and scripts/llm-smoke.mjs load the local copy that way), false in production builds unless the
+ * build sets VITE_LOCAL_MODELS=1. Callers pass import.meta.env.
+ */
+export function localModelsEnabled(env: { DEV?: boolean; VITE_LOCAL_MODELS?: string }): boolean {
+  return Boolean(env.DEV) || env.VITE_LOCAL_MODELS === "1";
+}
+
+// ---------------------------------------------------------------------------
+// Browser-cache check without the WebLLM runtime
+//
+// Settings shows a "Downloaded" badge per model. WebLLM's own hasModelInCache() needs its ~6 MB runtime and a
+// resolved model record, so asking it on page load cost a 2 MB download (gzip) and, on the hosted demo, one 404
+// per model. Instead we read WebLLM's IndexedDB store directly. The layout below is WebLLM 0.2.85's
+// (node_modules/@mlc-ai/web-llm/lib/index.js: ArtifactIndexedDBCache, hasTensorInCache, cleanModelUrl); a
+// test pins the Hugging Face URLs to its prebuilt registry, so a WebLLM upgrade that changes them fails CI.
+
+/** IndexedDB database WebLLM stores model weights in (cacheBackend "indexeddb", scope "webllm/model"). */
+export const WEBLLM_MODEL_DB = "webllm/model";
+/** Its single object store: { url, data } rows keyed by the file URL. */
+const WEBLLM_STORE = "urls";
+
+/** The Hugging Face repo of a prebuilt model (identical to WebLLM's prebuiltAppConfig record.model). */
+export function remoteModelUrl(modelId: string): string {
+  return `https://huggingface.co/mlc-ai/${modelId}`;
+}
+
+/** The base URL WebLLM caches a model's files under (its cleanModelUrl: trailing slash, then "resolve/main/" if missing). */
+export function webllmModelBase(modelUrl: string): string {
+  let url = modelUrl.endsWith("/") ? modelUrl : `${modelUrl}/`;
+  if (!/.+\/resolve\/.+\//.test(url)) url += "resolve/main/";
+  return new URL(url).href;
+}
+
+/** Model URLs a cached copy can be stored under: the local folder (only when local models are on), then Hugging Face. */
+export function cachedModelUrls(option: Pick<ModelOption, "id" | "localFolder">, opts: { baseUrl: string; origin: string; local: boolean }): string[] {
+  return [...(opts.local ? [localModelUrl(option, opts.baseUrl, opts.origin)] : []), remoteModelUrl(option.id)];
+}
+
+/** Read access to WebLLM's cache rows (an in-memory stand-in in tests). */
+export interface CacheRows {
+  /** Every stored URL (keys only: the values are tens of MB each). */
+  keys(): Promise<Set<string>>;
+  /** The stored value of one small JSON row, or null. */
+  json(url: string): Promise<unknown>;
+}
+
+/** True when a model's manifest (tensor-cache.json) and every weight shard it lists are stored — WebLLM's own rule. */
+export async function isTensorCacheComplete(modelUrl: string, rows: CacheRows): Promise<boolean> {
+  const base = webllmModelBase(modelUrl);
+  const manifestUrl = new URL("tensor-cache.json", base).href;
+  const keys = await rows.keys();
+  if (!keys.has(manifestUrl)) return false;
+  const records = ((await rows.json(manifestUrl)) as { records?: { dataPath?: unknown }[] } | null)?.records;
+  if (!Array.isArray(records) || records.length === 0) return false;
+  return records.every((r) => typeof r.dataPath === "string" && keys.has(new URL(r.dataPath, base).href));
+}
+
+function settle<T>(req: IDBRequest<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/**
+ * Whether any of `modelUrls` is completely in WebLLM's IndexedDB cache. Never creates the database: if it does
+ * not exist yet, the open is aborted during its upgrade step. Rejects if IndexedDB is unavailable.
+ */
+export async function isModelInBrowserCache(modelUrls: string[], idb: IDBFactory = indexedDB): Promise<boolean> {
+  const db = await new Promise<IDBDatabase | null>((resolve, reject) => {
+    const req = idb.open(WEBLLM_MODEL_DB);
+    let created = false;
+    req.onupgradeneeded = () => {
+      // No database yet means nothing was ever downloaded; leave creating it to WebLLM.
+      created = true;
+      req.transaction?.abort();
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = (e) => {
+      e.preventDefault();
+      if (created) resolve(null);
+      else reject(req.error);
+    };
+  });
+  if (!db) return false;
+  try {
+    if (!db.objectStoreNames.contains(WEBLLM_STORE)) return false;
+    const store = () => db.transaction(WEBLLM_STORE, "readonly").objectStore(WEBLLM_STORE);
+    const rows: CacheRows = {
+      keys: async () => new Set((await settle(store().getAllKeys())).map(String)),
+      json: async (url) => ((await settle(store().get(url))) as { data?: unknown } | undefined)?.data ?? null,
+    };
+    for (const url of modelUrls) {
+      if (await isTensorCacheComplete(url, rows)) return true;
+    }
+    return false;
+  } finally {
+    db.close();
+  }
 }

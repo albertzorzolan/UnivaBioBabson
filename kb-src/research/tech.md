@@ -1,3 +1,5 @@
+> Historical research note (2026-10-10). Deadline later extended to Oct 20; shipped default model is Qwen2.5-3B (src/ai/models.ts).
+
 # MedWatch revamp: AI stack and deployment research
 
 Prepared 2026-10-10 for the UnivaBio hackathon revamp (deadline 2026-10-13, 11:45 PM EDT).
@@ -5,9 +7,9 @@ Scope: on-device LLM choice (WebLLM), public hosting, speech input, pill-label O
 
 How this was checked:
 - Package versions and dates come from the npm registry (`npm view <pkg> version time --json`), run on 2026-10-10.
-- The WebLLM model list was dumped from the installed `@mlc-ai/web-llm@0.2.85` bundle (`prebuiltAppConfig`). Raw dump: `research/webllm-0.2.85-models.jsonl`.
+- The WebLLM model list was dumped from the installed `@mlc-ai/web-llm@0.2.85` bundle (`prebuiltAppConfig`). Raw dump: `research/webllm-0.2.85-models.jsonl` (not committed).
 - Download sizes come from the Hugging Face tree API (`https://huggingface.co/api/models/mlc-ai/<id>/tree/main`), summed over files.
-- **We ran our own benchmark on the team's MacBook Pro** (Apple M1 Pro, 16 GB, Chrome 154 headless, WebGPU on Metal). It covers 5 candidate models × 3 prompt/case sets × 2 repeats. The harness and raw results are in `scratchpad/bench/` (`entry.js`, `run.mjs`, `results-*.json`, `summary.json`). The `profile/` folder there is a 7.8 GB model cache and can be deleted.
+- **We ran our own benchmark on the team's MacBook Pro** (Apple M1 Pro, 16 GB, Chrome 154 headless, WebGPU on Metal). It covers 5 candidate models × 3 prompt/case sets × 2 repeats. The harness and raw results were in `scratchpad/bench/` (`entry.js`, `run.mjs`, `results-*.json`, `summary.json`) (raw results not committed). The `profile/` folder there is a 7.8 GB model cache and can be deleted.
 - Anything marked **UNVERIFIED** could not be confirmed from a primary source or by our own test.
 
 ---

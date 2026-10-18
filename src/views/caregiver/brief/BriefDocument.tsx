@@ -1,7 +1,7 @@
 // The one-page visit brief (SPEC §6.6), styled like a clinical document. Rendered twice by the Visit brief view:
 // on screen ("screen": click-to-edit sentences, evidence chips, claim-checker notes) and into the print root
 // ("print": plain text only). Every number on the page is code-rendered from the record.
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { Check, PencilLine, RotateCcw, Sparkles, Trash2, TriangleAlert } from "lucide-react";
 import type { BriefSentence, EvidenceItem, EvidencePackage, VisitBrief } from "../../../model/types";
 import { formatLong, formatShort } from "../../../model/dates";
@@ -175,6 +175,28 @@ function Sentence({ s, section, index, screen, lookup, onEdit, onRestore, onRemo
   );
 }
 
+/**
+ * A table flag such as "Beers avoid + condition + combo". On screen it may wrap, but only between its parts, so a
+ * narrow table never scrolls sideways and never splits "Beers avoid". On paper the whole flag stays on one line.
+ */
+function FlagText({ text }: { text: string }) {
+  const parts = text.split(" + ");
+  return (
+    <>
+      {parts.map((part, i) => (
+        // The space between parts sits outside the no-wrap spans: that is where a line may break.
+        <Fragment key={i}>
+          {i > 0 && " "}
+          <span className="cg-vb-flag__part">
+            {i > 0 && "+ "}
+            {part}
+          </span>
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 const SECTION_TITLE: Record<EditableSection, string> = {
   reason: "Why we’re coming in",
   noticed: "What we’ve noticed",
@@ -242,7 +264,8 @@ export function BriefDocument(props: BriefDocumentProps) {
   const provenance =
     brief.generation.mode === "ai"
       ? `Drafted on this device by ${brief.generation.model ?? "the on-device model"} (prompt ${brief.generation.promptVersion ?? "n/a"}); every sentence checked against the records${brief.generation.droppedSentences ? `, ${brief.generation.droppedSentences} removed by the check` : ""}. Review prompts, medicine table and counts are rendered by code.`
-      : `Written by ${PRODUCT_NAME}'s standard template (deterministic, no AI) from ${pkg.items.length} evidence records.`;
+      : // Kept short so the footer stays on one printed line (the brief is one Letter page).
+        `Written by ${PRODUCT_NAME}'s template (no AI) from ${pkg.items.length} evidence records.`;
 
   return (
     <article
@@ -388,7 +411,7 @@ export function BriefDocument(props: BriefDocumentProps) {
                         <span className="cg-vb-flags">
                           {r.short.map((f) => (
                             <span key={f} className={cx("cg-vb-flag", /avoid|Fall risk/.test(f) && "cg-vb-flag--strong")}>
-                              {f}
+                              <FlagText text={f} />
                             </span>
                           ))}
                         </span>
@@ -403,8 +426,9 @@ export function BriefDocument(props: BriefDocumentProps) {
           </ScrollRegion>
         )}
         <p className="cg-vb-table-note">
+          {/* "No flag is not an all-clear" is said once, in the limitations below, so this note stays one printed line. */}
           Flags: AGS Beers Criteria® 2023 · ACB = anticholinergic burden (1–3) · fall-risk lists (STEADI-Rx, STOPPFall) · cascade = possible
-          prescribing cascade. No flag is not an all-clear. Allergies are not recorded.
+          prescribing cascade. Allergies are not recorded.
         </p>
       </section>
 

@@ -22,7 +22,16 @@ import type {
   ResponseFormat,
 } from "@mlc-ai/web-llm";
 import { parseModelJSON, LLMParseError } from "./guard";
-import { DEFAULT_MODEL_ID, getModelOption, resolveModelSource, type ModelSource } from "./models";
+import {
+  DEFAULT_MODEL_ID,
+  cachedModelUrls,
+  getModelOption,
+  isModelInBrowserCache,
+  localModelsEnabled,
+  resolveModelSource,
+  type ModelSource,
+} from "./models";
+import { LOAD_START, trackLoad, type LoadPhase, type LoadTracker } from "./progress";
 
 // SPEC §10 lists the model registry under llm.ts; it lives in models.ts and is re-exported here.
 export { MODEL_OPTIONS, DEFAULT_MODEL_ID, getModelOption, type ModelOption } from "./models";
@@ -35,8 +44,12 @@ export type LLMStatus = "unsupported" | "idle" | "loading" | "ready" | "generati
 
 export interface LLMState {
   status: LLMStatus;
-  /** 0–1 while loading. */
+  /** 0–1 while loading, across the whole load; never decreases (for short status text). */
   progress: number;
+  /** The labelled step of the load: downloading files, then preparing them on the graphics card. */
+  phase: LoadPhase | null;
+  /** 0–1 within `phase`; never decreases while the phase stays the same (for the Settings progress bar). */
+  phaseProgress: number;
   /** One human-readable status line (safe to show; never contains model output). */
   message: string;
   /** Loaded (or loading) model id. */
@@ -56,6 +69,8 @@ export interface LLMState {
 let state: LLMState = {
   status: "idle",
   progress: 0,
+  phase: null,
+  phaseProgress: 0,
   message: "On-device AI is off. Everything else works without it.",
   model: null,
   lastMs: null,
@@ -138,13 +153,28 @@ export async function probeWebGPU(): Promise<boolean> {
   }
   webgpuOk = reason === "";
   if (!webgpuOk && state.status === "idle") {
-    publish({ status: "unsupported", message: `${reason} Kinwise works fully without AI.` });
+    // Just the reason: Settings adds what still works, so the page says each thing once.
+    publish({ status: "unsupported", message: reason });
   }
   return webgpuOk;
 }
 
 // ---------------------------------------------------------------------------
 // Engine lifecycle
+
+/**
+ * Probe public/models/resolve/ for a local model copy only in the dev server (or a VITE_LOCAL_MODELS=1 build).
+ * The hosted demo has no model files, so probing there only produced one 404 per model.
+ */
+const LOCAL_MODELS = localModelsEnabled(import.meta.env);
+
+type WebLLMRuntime = typeof import("@mlc-ai/web-llm");
+/** The WebLLM runtime (~6 MB), imported only once the user chooses to load or remove a model. */
+let runtime: WebLLMRuntime | null = null;
+async function importRuntime(): Promise<WebLLMRuntime> {
+  runtime ??= await import("@mlc-ai/web-llm");
+  return runtime;
+}
 
 let engine: MLCEngineInterface | null = null;
 let worker: Worker | null = null;
@@ -163,15 +193,21 @@ function terminateWorker(): void {
   engine = null;
 }
 
-function describeProgress(r: InitProgressReport, source: ModelSource): string {
-  const pct = Math.round(r.progress * 100);
-  if (/cache/i.test(r.text) && /fetch/i.test(r.text)) {
-    return source.kind === "local"
-      ? `Loading model files from this computer… ${pct}%`
-      : `Downloading model files (one time only, no personal data is sent)… ${pct}%`;
-  }
-  if (/shader|gpu|compil/i.test(r.text)) return `Preparing the model on your graphics card… ${pct}%`;
-  return `Loading the on-device model… ${pct}%`;
+/** Label of a load phase, e.g. for the Settings progress bar ("Downloading model files"). */
+export function loadPhaseLabel(phase: LoadPhase, source: ModelSource["kind"] | null): string {
+  if (phase === "prepare") return "Preparing on your graphics card";
+  return source === "local" ? "Loading model files from this computer" : "Downloading model files";
+}
+
+/** Status line while loading: "Downloading model files — 42%", or the model's name before the first phase. */
+function describeProgress(t: LoadTracker, source: ModelSource, label: string): string {
+  if (!t.phase) return `Preparing ${label}…`;
+  return `${loadPhaseLabel(t.phase, source.kind)} — ${Math.round(t.phaseProgress * 100)}%`;
+}
+
+/** Thrown to a loadModel() caller whose load was replaced or cancelled (unloadModel, Settings → Cancel). */
+function cancelledLoad(): LLMError {
+  return new LLMError("cancelled", "Loading the on-device model was cancelled.");
 }
 
 /** No load progress for this long means the load has stalled. */
@@ -217,32 +253,41 @@ export async function loadModel(modelId: string = DEFAULT_MODEL_ID, opts: { pref
   const myEpoch = ++epoch;
   loadingModel = modelId;
   const label = getModelOption(modelId)?.label ?? modelId;
-  publish({ status: "loading", progress: 0, model: modelId, message: `Preparing ${label}…`, source: null });
+  publish({ status: "loading", progress: 0, phase: null, phaseProgress: 0, model: modelId, message: `Preparing ${label}…`, source: null });
   const started = performance.now();
 
   loading = (async () => {
     let watchdog: ReturnType<typeof setInterval> | null = null;
+    // This load's own worker. Kept outside the try so a cancelled load can always terminate it: once a newer
+    // load (or Cancel) has run, the global `worker` may already point elsewhere.
+    let w: Worker | null = null;
     try {
-      const webllm = await import("@mlc-ai/web-llm");
+      const webllm = await importRuntime();
       const source = await resolveModelSource(modelId, {
         baseUrl: import.meta.env.BASE_URL,
         origin: location.origin,
         prebuilt: webllm.prebuiltAppConfig.model_list,
-        preferRemote: opts.preferRemote,
+        preferRemote: opts.preferRemote ?? !LOCAL_MODELS,
       });
-      if (myEpoch !== epoch) return;
+      if (myEpoch !== epoch) throw cancelledLoad();
       publish({ source: source.kind });
       const appConfig = { model_list: [source.record], cacheBackend: "indexeddb" as const };
       await checkStorage(modelId, await webllm.hasModelInCache(modelId, appConfig).catch(() => false));
+      // Cancel may have been pressed during the awaits above. unloadModel() found no worker to stop then, so
+      // bail before creating one; nothing between this check and `worker = w` awaits.
+      if (myEpoch !== epoch) throw cancelledLoad();
 
-      const w = new Worker(new URL("./worker.ts", import.meta.url), { type: "module", name: "kinwise-llm" });
+      w = new Worker(new URL("./worker.ts", import.meta.url), { type: "module", name: "kinwise-llm" });
       worker = w;
       // Watchdog: if loading stops making progress (e.g. storage writes stall), fail clearly instead of
-      // leaving the UI on a frozen progress bar.
+      // leaving the UI on a frozen progress bar. It also ends a cancelled load: unloadModel() terminates the
+      // worker, after which WebLLM's promise would never settle.
       let lastProgressAt = performance.now();
+      let tracker: LoadTracker = LOAD_START;
       const stalled = new Promise<never>((_, reject) => {
         watchdog = setInterval(() => {
-          if (performance.now() - lastProgressAt > LOAD_STALL_MS) {
+          if (myEpoch !== epoch) reject(cancelledLoad());
+          else if (performance.now() - lastProgressAt > LOAD_STALL_MS) {
             reject(new LLMError("engine", "Loading stopped making progress. Check the connection and free disk space, avoid private/incognito windows, then try again."));
           }
         }, 2_000);
@@ -250,30 +295,44 @@ export async function loadModel(modelId: string = DEFAULT_MODEL_ID, opts: { pref
       const e = await Promise.race([
         webllm.CreateWebWorkerMLCEngine(w, modelId, {
           appConfig,
-          initProgressCallback: (r) => {
+          initProgressCallback: (r: InitProgressReport) => {
             lastProgressAt = performance.now();
-            if (myEpoch === epoch) publish({ progress: r.progress, message: describeProgress(r, source), detail: r.text });
+            if (myEpoch !== epoch) return;
+            tracker = trackLoad(tracker, r);
+            publish({
+              progress: tracker.overall,
+              phase: tracker.phase,
+              phaseProgress: tracker.phaseProgress,
+              message: describeProgress(tracker, source, label),
+              detail: r.text,
+            });
           },
         }),
         stalled,
       ]);
-      if (myEpoch !== epoch) {
-        w.terminate();
-        return;
-      }
+      if (myEpoch !== epoch) throw cancelledLoad(); // the catch below terminates w
       engine = e;
       const loadMs = Math.round(performance.now() - started);
       publish({
         status: "ready",
         progress: 1,
+        phase: null,
+        phaseProgress: 0,
         loadMs,
         message: `${label} is ready · runs on this device · loaded from ${source.origin}`,
       });
     } catch (err) {
-      if (myEpoch !== epoch) return;
+      // Replaced or cancelled: unloadModel() has already reset the state. Still terminate this load's own
+      // worker (unloadModel() may have run before it existed, or a newer load may own `worker` now), then
+      // tell the caller.
+      if (myEpoch !== epoch) {
+        w?.terminate();
+        if (worker === w) worker = null;
+        throw cancelledLoad();
+      }
       terminateWorker();
       const message = err instanceof Error ? err.message : String(err);
-      publish({ status: "error", progress: 0, message: `The on-device model could not load: ${message}` });
+      publish({ status: "error", progress: 0, phase: null, phaseProgress: 0, message: `The on-device model could not load: ${message}` });
       throw err instanceof LLMError ? err : new LLMError("engine", message);
     } finally {
       if (watchdog) clearInterval(watchdog);
@@ -298,7 +357,11 @@ export function attachEngineForTesting(e: MLCEngineInterface | null, modelId: st
   publish(e ? { status: "ready", model: modelId, message: "test engine attached", queued: 0 } : { status: "idle", model: null, queued: 0 });
 }
 
-/** Unload the model, cancel all requests and free GPU memory. */
+/**
+ * Unload the model, cancel all requests and free GPU memory. During a load this is "Cancel download": the
+ * epoch bump makes the pending load bail (its caller gets an LLMError "cancelled") and terminating the worker
+ * stops the download. Weight shards already saved stay cached, so a later load continues from them.
+ */
 export async function unloadModel(): Promise<void> {
   epoch++;
   cancel("The on-device model was turned off.");
@@ -313,6 +376,8 @@ export async function unloadModel(): Promise<void> {
   publish({
     status: webgpuOk === false ? "unsupported" : "idle",
     progress: 0,
+    phase: null,
+    phaseProgress: 0,
     model: null,
     source: null,
     queued: 0,
@@ -322,9 +387,10 @@ export async function unloadModel(): Promise<void> {
 
 /** Remove a model's downloaded files from the browser cache (Settings → "Remove downloaded model"). */
 export async function removeModelCache(modelId: string = DEFAULT_MODEL_ID): Promise<void> {
-  const webllm = await import("@mlc-ai/web-llm");
+  const webllm = await importRuntime();
   const sources: ModelSource[] = [];
-  for (const preferRemote of [false, true]) {
+  // Both copies in development; only the Hugging Face one in production (no local probe, so no 404s).
+  for (const preferRemote of LOCAL_MODELS ? [false, true] : [true]) {
     try {
       sources.push(
         await resolveModelSource(modelId, {
@@ -343,18 +409,32 @@ export async function removeModelCache(modelId: string = DEFAULT_MODEL_ID): Prom
   }
 }
 
-/** Whether a model's files are already in the browser cache (so loading needs no download). */
+/**
+ * Whether a model's files are already in the browser cache (so loading needs no download). Without WebGPU the
+ * answer is false and nothing is read. Otherwise WebLLM's IndexedDB store is read directly (models.ts), so
+ * opening Settings fetches neither the runtime nor any model URL. Only if IndexedDB cannot be read, and the
+ * user has already loaded the runtime, is WebLLM itself asked.
+ */
 export async function isModelCached(modelId: string = DEFAULT_MODEL_ID): Promise<boolean> {
+  if (typeof navigator === "undefined" || !("gpu" in navigator)) return false;
+  if (!(await probeWebGPU())) return false;
+  const option = getModelOption(modelId);
+  if (!option) return false;
   try {
-    const webllm = await import("@mlc-ai/web-llm");
-    const s = await resolveModelSource(modelId, {
-      baseUrl: import.meta.env.BASE_URL,
-      origin: location.origin,
-      prebuilt: webllm.prebuiltAppConfig.model_list,
-    });
-    return await webllm.hasModelInCache(modelId, { model_list: [s.record], cacheBackend: "indexeddb" });
+    return await isModelInBrowserCache(cachedModelUrls(option, { baseUrl: import.meta.env.BASE_URL, origin: location.origin, local: LOCAL_MODELS }));
   } catch {
-    return false;
+    if (!runtime) return false;
+    try {
+      const s = await resolveModelSource(modelId, {
+        baseUrl: import.meta.env.BASE_URL,
+        origin: location.origin,
+        prebuilt: runtime.prebuiltAppConfig.model_list,
+        preferRemote: !LOCAL_MODELS,
+      });
+      return await runtime.hasModelInCache(modelId, { model_list: [s.record], cacheBackend: "indexeddb" });
+    } catch {
+      return false;
+    }
   }
 }
 

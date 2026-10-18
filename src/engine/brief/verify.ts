@@ -15,6 +15,10 @@
 //      fair question for a clinician, while the same words as a statement are a causal claim.
 //   5. Hygiene: ≤280 characters, no URLs/HTML/markdown, no echoed evidence ids, no prompt-injection
 //      or assistant-meta text, quoted words must exist in the cited evidence.
+//   6. Grounding of meaning (added after the 2026-10 red-team, eval/VERIFIER-REDTEAM.md): a named
+//      condition ("delirium", "stroke") must appear in the cited text, "since then" needs a date or a
+//      medicine start in the same sentence, a near-copy of the evidence may not drop its verb, and
+//      "<medicine> for <reason>" must match how the records describe that medicine.
 //
 // Failing sentences are dropped by the caller (src/ai/tasks.ts) and counted in GenerationInfo.
 
@@ -44,6 +48,11 @@ export interface BannedPattern {
   allowInQuestion?: boolean;
   /** true = only applies when the sentence refers to the person (her/his/Margaret/Mom/…). */
   patientScoped?: boolean;
+  /**
+   * With patientScoped: also applies when the sentence names a medicine ("Lorazepam can cause …",
+   * "her medicines may cause …"), so the rule holds even when the caller passes no patient names.
+   */
+  medicineScoped?: boolean;
 }
 
 export type SentenceForm = "statement" | "question";
@@ -86,7 +95,10 @@ export interface VerifyIssue {
     | "quote_unsupported"
     | "unsafe_content"
     | "id_echo"
-    | "form";
+    | "form"
+    | "condition_unsupported"
+    | "unresolved_reference"
+    | "garbled";
   detail: string;
 }
 
@@ -97,11 +109,74 @@ export interface VerifyIssue {
 const MED_WORDS =
   "(?:medicines?|medications?|meds|pills?|tablets?|caplets?|capsules?|drugs?|prescriptions?|sleeping pills?|sleep aids?|water pills?|sedatives?|tranquili[sz]ers?)";
 
+/** Word stems for the diary symptoms ("dizzy", "drowsier", "near-falls", …), used to anchor causal phrasing. */
+const SYMPTOM_STEMS =
+  "(?:dizz|drows|sleep|confus|fall|fell|near[- ]?fall|unsteady|wobbl|fogg|tired|woozy|groggy|sick|weak|light-?headed|swell|spells?\\b|symptoms?\\b)";
+
+/** How a sentence can refer to the person, as an object ("making her …") or a subject ("the reason she …"). */
+const PERSON_OBJECT = "her|him|them|me|you|mom|mum|dad";
+const PERSON_SUBJECT = "she|he|they|mom|mum|dad|the patient";
+
+/**
+ * Causal, advice and risk phrasing that names the person. Built once with the pronouns above (part of
+ * BANNED_PATTERNS) and again per call with only the person's own names (verifyClaims), so "Lorazepam makes
+ * Margaret dizzy" is caught as well as "makes her dizzy", without reporting the pronoun forms twice.
+ * `names` is an escaped regex alternation ("Margaret|Mom").
+ */
+function personPatterns(names = ""): BannedPattern[] {
+  const obj = names || PERSON_OBJECT;
+  const subj = names || PERSON_SUBJECT;
+  return [
+    {
+      category: "causal",
+      reason: "asserts that a medicine is making the person feel a certain way",
+      pattern: new RegExp(
+        `\\b(?:is|are|was|were|be|been|being|it's)\\s+(?:\\w+\\s+)?making\\s+(?:${obj})\\b|\\b(?:made|makes|make)\\s+(?:${obj})\\s+(?:\\w+\\s+)?${SYMPTOM_STEMS}` +
+          // "has given Margaret dizzy spells" (not "gave Mom her sleeping pill", hence no "sleep" here).
+          `|\\b(?:gives?|gave|given|giving)\\s+(?:${obj})\\s+(?:\\w+\\s+)?(?:dizz|drows|confus|unsteady|wobbl|fogg|woozy|groggy|light-?headed)`,
+        "i",
+      ),
+    },
+    {
+      category: "causal",
+      reason: "names a medicine as the reason for a symptom",
+      // "the likely reason for her dizziness", "the reason Margaret is dizzy".
+      pattern: new RegExp(
+        `\\bthe\\s+(?:\\w+\\s+)?reasons?\\s+(?:for\\s+(?:(?:her|his|their|the|this|these|those)\\s+)?(?:\\w+\\s+)?${SYMPTOM_STEMS}|(?:that\\s+|why\\s+)?(?:${subj})\\b)`,
+        "i",
+      ),
+    },
+    {
+      category: "causal",
+      reason: "explains a symptom by the person starting a medicine",
+      // "dizzy because she began taking lorazepam". Not after "coming in" / "asking" (a reason for the visit).
+      pattern: new RegExp(
+        `(?<!\\b(?:in|here|visit|appointment|asking|ask|writing|worried|concerned)\\s)\\bbecause\\s+(?:${subj})\\s+(?:\\w+\\s+)?(?:began|begun|begins|started|starts|took|takes|is taking|has been taking|was put on|was given|got)\\b`,
+        "i",
+      ),
+      allowInQuestion: true,
+    },
+    {
+      category: "risk",
+      reason: "predicts this person's risk as a statement",
+      pattern: new RegExp(`\\bput(?:s|ting)?\\s+(?:${obj})\\s+at\\s+(?:\\w+\\s+)?risk\\b`, "i"),
+      allowInQuestion: true,
+    },
+    {
+      category: "advice",
+      reason: "proposes taking the person off a medicine",
+      pattern: new RegExp(`\\b(?:take|takes|taking|took|get|getting)\\s+(?:${obj})\\s+off\\b`, "i"),
+      allowInQuestion: true,
+    },
+  ];
+}
+
 /**
  * Static banned patterns. Each regex is case-insensitive and tested against normalised text
  * (curly quotes/dashes folded to ASCII). Order does not matter; all matches are reported.
+ * BANNED_PATTERNS (below) adds the person-referring patterns built with the default pronouns.
  */
-export const BANNED_PATTERNS: BannedPattern[] = [
+const STATIC_PATTERNS: BannedPattern[] = [
   // --- causal claims ------------------------------------------------------------------------------
   { category: "causal", reason: "asserts that something caused a symptom", pattern: /\bcaused\b/i },
   {
@@ -114,12 +189,10 @@ export const BANNED_PATTERNS: BannedPattern[] = [
     reason: "names a cause of this person's symptom",
     pattern: /\b(?:causes?|cause of|causing)\b/i,
     patientScoped: true,
+    // "Lorazepam can cause confusion" in an explanation, where the caller may not pass patient names.
+    medicineScoped: true,
   },
-  {
-    category: "causal",
-    reason: "asserts that a medicine is making the person feel a certain way",
-    pattern: /\b(?:is|are|was|were|be|been|it's)\s+(?:\w+\s+)?making\s+(?:her|him|them|me|you|mom|dad)\b|\b(?:made|makes)\s+(?:her|him|them|me|you|mom|dad)\s+(?:\w+\s+)?(?:dizz|drows|sleep|confus|fall|fell|unsteady|wobbl|fogg|tired|woozy|groggy|sick|weak)/i,
-  },
+  // ("making her dizzy" lives in personPatterns() above, so the person's own name is covered too.)
   {
     category: "causal",
     reason: "assigns blame or responsibility for a symptom",
@@ -143,7 +216,7 @@ export const BANNED_PATTERNS: BannedPattern[] = [
     category: "causal",
     reason: "links a symptom to a medicine as a statement",
     pattern: new RegExp(
-      `\\b(?:because of|due to|related to|linked to|attributable to|attributed to|associated with|explained by|from|on account of)\\s+(?:the\\s+|her\\s+|his\\s+|their\\s+|this\\s+|that\\s+|these\\s+|those\\s+)?(?:new\\s+)?${MED_WORDS}\\b`,
+      `\\b(?:because of|due to|related to|linked to|attributable to|attributed to|associated with|explained by|from|on account of|down to|owing to|thanks to|consequences? of|a product of)\\s+(?:the\\s+|her\\s+|his\\s+|their\\s+|this\\s+|that\\s+|these\\s+|those\\s+)?(?:new\\s+)?${MED_WORDS}\\b`,
       "i",
     ),
     allowInQuestion: true,
@@ -153,6 +226,54 @@ export const BANNED_PATTERNS: BannedPattern[] = [
     reason: "uses a medicine to explain a symptom as a statement",
     pattern: /\b(?:explains?|explained|explaining|accounts? for)\s+(?:her|his|the|this|these|those|their)\s+(?:\w+\s+)?(?:dizz|fall|near|drows|confus|fog|swell|symptom|tired|sleep|energy|unsteady)/i,
     allowInQuestion: true,
+  },
+  // Paraphrased causal claims found by the judge probes and the red-team set (eval/VERIFIER-REDTEAM.md).
+  {
+    category: "causal",
+    reason: "says a medicine is behind a symptom",
+    // "Lorazepam is behind Margaret's dizziness", "may be behind", "is likely behind".
+    pattern: /\b(?:is|are|was|were|be|been|seems? to be|appears? to be|likely|probably|possibly)\s+(?:\w+\s+)?behind\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "causal",
+    reason: "says a medicine is why a symptom happened",
+    // "Lorazepam is likely why Margaret has been dizzy"; only when a symptom follows, so "that is why it is
+    // worth asking the doctor" stays allowed.
+    pattern: new RegExp(
+      `\\b(?:is|are|was|were|be|been|seems? to be|appears? to be|explains?|explained)\\s+(?:\\w+\\s+)?why\\b(?=(?:\\s+[\\w'-]+){0,6}?\\s+${SYMPTOM_STEMS})`,
+      "i",
+    ),
+    allowInQuestion: true,
+  },
+  {
+    category: "causal",
+    reason: "says the records implicate a medicine",
+    pattern: /\bimplicat\w*/i,
+  },
+  {
+    category: "causal",
+    reason: "says a medicine triggers a symptom",
+    // Like "is causing", this is not softened into a fair question: "Could X be triggering …?" is blocked too.
+    pattern: /\btrigger(?:s|ed|ing)?\b/i,
+  },
+  {
+    category: "causal",
+    reason: "says a symptom happened as a result",
+    pattern: /\bas a (?:direct )?result\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "causal",
+    reason: "says a medicine brought on a symptom",
+    pattern: /\b(?:brought|brings?|bringing)\s+on\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "causal",
+    reason: "asserts that something is producing a symptom",
+    // Same strength as "is causing", so no question allowance either.
+    pattern: /\b(?:is|are|was|were|be|been|being|it's|they're)\s+(?:\w+\s+)?producing\b/i,
   },
 
   // --- advice to start / stop / change ------------------------------------------------------------
@@ -209,6 +330,55 @@ export const BANNED_PATTERNS: BannedPattern[] = [
     pattern: /\b(?:it is|it's|it would be|would be)\s+(?:best|better|wise|advisable|important|necessary|essential)\s+to\b(?!\s+(?:discuss|ask|talk|mention|bring|raise|share|tell|review|keep|write|note|check with))/i,
     allowInQuestion: true,
   },
+  // Advice paraphrases from the red-team set. All keep the question allowance: "Would switching from
+  // lorazepam be worth discussing?" and "Could any be replaced with one that has less anticholinergic
+  // effect?" (the KB's own question) are fair questions for the clinician.
+  {
+    category: "advice",
+    reason: "proposes switching off a medicine",
+    pattern: /\bswitch(?:ing|ed|es)?\s+(?:her\s+|him\s+|them\s+|you\s+|it\s+)?(?:off|from|away from|out of)\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "advice",
+    reason: "proposes replacing or swapping a medicine",
+    pattern: /\breplac(?:e|es|ed|ing)\b(?:\s+[\w'()-]+){0,5}?\s+(?:with|by)\b|\bswap(?:s|ped|ping)?\b|\bsubstitut\w*/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "advice",
+    reason: "proposes cutting down or halving a medicine",
+    pattern: /\bcut(?:s|ting)?\s+(?:down|back)\b|\bhalv(?:e|es|ed|ing)\b|\bhalf\s+(?:of\s+)?(?:her|his|their|the|a|its|your)\s+(?:\w+\s+)?(?:dose|dosage|tablet|pill|caplet|capsule)s?\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "advice",
+    reason: "says a change would reduce the risks",
+    pattern: /\b(?:reduce[sd]?|reducing|lower(?:s|ed|ing)?|lessen\w*|minimi[sz]\w*|decrease[sd]?|decreasing)\s+(?:these|the|her|his|their|this|that|those|its|any)\s+(?:\w+\s+)?risks?\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "advice",
+    reason: "says what should be done with a medicine",
+    // Any subject: "Margaret should hold her lorazepam", "The doctor should switch …".
+    pattern: /\b(?:should|must|ought to|needs? to|has to|have to)\s+(?:probably\s+|really\s+|perhaps\s+|maybe\s+|also\s+|now\s+)?(?:stop|hold|pause|skip|quit|halve|taper|wean|switch|swap|replace|cut|reduce|lower|discontinue|increase|double)\b|\b(?:should|must|needs? to|ought to)\s+be\s+(?:held|withheld|paused|skipped|swapped|weaned|cut)\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "advice",
+    reason: "says a medicine should not be taken or is not needed",
+    // "She shouldn't be on lorazepam", "Margaret no longer needs Tylenol PM", "Lorazepam is not needed anymore".
+    // The app's own "Is … still needed …?" questions keep the question allowance.
+    pattern: /\b(?:shouldn't|should not|mustn't|must not|oughtn't|ought not to)\s+be\s+(?:on|taking|given)\b|\b(?:no longer|not|isn't|is not|aren't|are not|doesn't|does not|don't|do not)\s+(?:really\s+)?(?:needs?|needed|necessary|required)\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "advice",
+    reason: "says a medicine can be skipped or dropped",
+    // "Margaret can skip the Tylenol PM tonight", "The lorazepam has to go", "better off without lorazepam".
+    pattern: /\b(?:can|could|may|might)\s+(?:\w+\s+)?(?:skip|stop|drop|leave out)\b|\bhas to go\b|\bbetter off without\b/i,
+    allowInQuestion: true,
+  },
 
   // --- urgency / alarm ----------------------------------------------------------------------------
   {
@@ -235,6 +405,17 @@ export const BANNED_PATTERNS: BannedPattern[] = [
     reason: "offers reassurance",
     pattern: /\b(?:nothing to worry|no need to|not to worry|don't worry|do not worry|harmless|nothing serious|not serious|no cause for concern|nothing to be concerned|normal (?:for|at) (?:her|his|their) age|just (?:old age|aging|ageing)|benign(?!\s+prostatic)|no (?:real )?risk|risk[- ]free|without risk|(?:fine|okay|ok|alright) to (?:take|continue|keep|use))\b/i,
   },
+  {
+    category: "reassurance",
+    reason: "offers reassurance",
+    // Red-team paraphrases: "well tolerated", "reassuring", "no reason for concern", "fine for Margaret to keep taking".
+    pattern: /\breassur\w*|\bwell[- ]tolerated\b|\bno (?:real )?(?:reason|grounds) for (?:concern|worry|alarm)\b|\b(?:fine|okay|ok|alright|acceptable)\s+for\s+(?:\w+\s+){1,2}to\s+(?:keep\s+|continue\s+)?(?:take|taking|use|using|continue|keep)\b/i,
+  },
+  {
+    category: "reassurance",
+    reason: "says the medicines look fine",
+    pattern: new RegExp(`\\b${MED_WORDS}\\s+(?:look|looks|seem|seems|are|is)\\s+(?:\\w+\\s+)?(?:fine|okay|ok|alright|good|appropriate)\\b`, "i"),
+  },
 
   // --- diagnosis ----------------------------------------------------------------------------------
   { category: "diagnosis", reason: "talks about diagnosis", pattern: /\bdiagnos\w*/i },
@@ -254,6 +435,20 @@ export const BANNED_PATTERNS: BannedPattern[] = [
     category: "risk",
     reason: "predicts what will happen to this person",
     pattern: /\b(?:she|he|they|margaret|mom|mum|dad|the patient)\s+(?:might|may|could|will|would|is likely to|are likely to|is going to|can)\s+(?:\w+\s+)?(?:experience|develop|get|suffer|fall|become|end up|have (?:a|another|more))\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "risk",
+    reason: "predicts a fall or an injury",
+    // Any subject: "…, which might lead to another fall" (live explanation), "could lead to a fracture".
+    // The reviewed KB wording "which makes another fall more likely" describes the criterion and stays allowed.
+    pattern: /\b(?:might|could|may|will|would|is going to|are going to)\s+(?:\w+\s+)?(?:lead to|result in|cause|bring on|end in)\s+(?:another\s+|a\s+|an\s+|more\s+|further\s+|repeat\s+)?(?:falls?|fractures?|broken (?:bones?|hips?)|injur(?:y|ies)|hospital\w*)\b/i,
+    allowInQuestion: true,
+  },
+  {
+    category: "risk",
+    reason: "predicts a fall or an injury",
+    pattern: /\b(?:another|a|more|further)\s+(?:falls?|fractures?)\s+(?:is|are|seems?|looks?)\s+(?:\w+\s+)?(?:likely|expected|probable|inevitable|bound to)\b/i,
     allowInQuestion: true,
   },
 
@@ -284,6 +479,146 @@ export const BANNED_PATTERNS: BannedPattern[] = [
     pattern: /\b(?:she|he|margaret|mom|mum|dad|the patient|they)\s+(?:is|are|was)\s+(?:now\s+)?(?:at\s+)?(?:a\s+)?(?:very\s+)?(?:high|higher|low|lower|increased|elevated|great|significant|serious)[- ]risk\b|\bhigh[- ]risk (?:patient|person|woman|man)\b/i,
   },
 ];
+
+/** Every banned pattern with the default pronouns. verifyClaims adds the person's own names per call. */
+export const BANNED_PATTERNS: BannedPattern[] = [...STATIC_PATTERNS, ...personPatterns()];
+
+/** "her medicines", "these pills", "both of which": a sentence about medicines without naming one. */
+const MED_REF = new RegExp(`\\b(?:her|his|their|these|those|this|both|such|my|mom's|dad's)\\s+(?:\\w+\\s+)?${MED_WORDS}\\b|\\bboth of which\\b`, "i");
+
+/**
+ * Wording with a named medicine as its subject or object ("Lorazepam leads to …", "is a lorazepam effect",
+ * "Lorazepam is fine"). Built per detected drug name `d` (already lowercase); `D` also allows the
+ * parenthetical brand that follows a generic in the app's own text ("Lorazepam (Ativan) makes …").
+ * Questions are exempt (the caller only passes the statement part), like the "due to <drug>" check.
+ */
+function drugPatterns(d: string): { pattern: RegExp; detail: string }[] {
+  const name = escapeRegExp(d);
+  const D = `\\b${name}\\b(?:\\s*\\([^)]*\\))?`;
+  return [
+    {
+      detail: `causal: links a symptom to ${d} as a statement`,
+      pattern: new RegExp(
+        `\\b(?:because of|due to|related to|linked to|attributable to|attributed to|explained by|from|on account of|reaction to|down to|owing to|thanks to|(?:a |the )?consequences? of|(?:a |the )?result of|a product of)\\s+(?:the\\s+|her\\s+|his\\s+|their\\s+|this\\s+|that\\s+)?(?:new\\s+)?${name}`,
+        "i",
+      ),
+    },
+    {
+      detail: `causal: says ${d} leads to a symptom`,
+      // "Starting lorazepam led to more dizziness", "Lorazepam can lead to falls".
+      pattern: new RegExp(`${D}\\s+(?:(?:can|may|might|could|will|would|has|have|had|is|was|probably|likely|also|then|often|really)\\s+){0,2}(?:leads?|led|leading)\\s+to\\b`, "i"),
+    },
+    {
+      detail: `causal: says ${d} makes someone feel a certain way`,
+      pattern: new RegExp(`${D}\\s+(?:\\w+\\s+){0,2}?(?:makes?|made|making)\\s+(?:\\w+\\s+){0,3}?${SYMPTOM_STEMS}`, "i"),
+    },
+    {
+      detail: `causal: says ${d} is the reason`,
+      pattern: new RegExp(`${D}\\s+(?:\\w+\\s+){0,3}?the\\s+(?:\\w+\\s+)?reasons?\\b`, "i"),
+    },
+    {
+      detail: `causal: calls the recorded symptom a side effect of ${d}`,
+      // "The dizziness is a (known) side effect of lorazepam": "the/this dizziness" is the one in the diary.
+      // The class-level "Dizziness is a known possible effect of lorazepam" (no determiner) stays allowed.
+      pattern: new RegExp(
+        `\\b(?:the|this|that|these|those)\\s+(?:\\w+\\s+)?${SYMPTOM_STEMS}\\w*\\s+(?:is|are|was|were|seems?|looks?)\\s+(?:\\w+\\s+){0,2}?(?:a|an|the)?\\s*(?:\\w+\\s+)?side[- ]effects?\\s+of\\s+(?:the\\s+|her\\s+|his\\s+)?${name}`,
+        "i",
+      ),
+    },
+    {
+      detail: `causal: calls a symptom a ${d} effect`,
+      pattern: new RegExp(`\\b(?:is|are|was|were|seems?|looks?)\\s+(?:a|an|the)\\s+(?:\\w+\\s+)?${name}\\s+(?:side[- ])?(?:effects?|reactions?)\\b`, "i"),
+    },
+    {
+      detail: `reassurance: says ${d} is fine`,
+      pattern: new RegExp(`${D}\\s+(?:is|are|seems?|looks?|appears?)\\s+(?:to be\\s+)?(?:\\w+\\s+)?(?:fine|okay|ok|alright|appropriate|reasonable|acceptable|well[- ]tolerated)\\b`, "i"),
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// Grounding of meaning (see header, rule 6)
+
+/**
+ * Named conditions a sentence may mention only when its cited text does. Synonyms share an entry, so the
+ * KB's "broken bones" supports "fractures". Symptoms the diary records (dizziness, falls, confusion) are not
+ * listed: their counts are checked by the number rules instead. `organ` entries name a body part that is also
+ * monitored ("kidney function"), so they are not treated as a diagnosis below.
+ */
+const CONDITIONS: { label: string; pattern: RegExp; organ?: boolean }[] = [
+  { label: "delirium", pattern: /\bdelirium\b|\bdelirious\b/i },
+  { label: "dementia", pattern: /\bdementia\b|\bdemented\b/i },
+  { label: "Alzheimer's disease", pattern: /\balzheimer\w*/i },
+  { label: "Parkinson's disease", pattern: /\bparkinson\w*/i },
+  { label: "stroke", pattern: /\bstrokes?\b|\bmini-strokes?\b|\btias?\b/i },
+  { label: "heart attack", pattern: /\bheart attacks?\b|\bmyocardial infarction\b/i },
+  { label: "heart failure", pattern: /\bheart failure\b/i },
+  { label: "a heart-rhythm problem", pattern: /\barrhythmi\w*|\bqt prolong\w*/i },
+  { label: "seizures", pattern: /\bseizures?\b|\bepilep\w*|\bconvulsions?\b/i },
+  { label: "fractures", pattern: /\bfractur\w*|\bbroken (?:bones?|hips?|wrists?)\b/i },
+  { label: "bone loss", pattern: /\bosteopor\w*|\bbone loss\b/i },
+  { label: "pneumonia", pattern: /\bpneumonia\b/i },
+  { label: "an infection", pattern: /\binfections?\b|\bsepsis\b|\butis?\b/i },
+  { label: "kidney problems", pattern: /\bkidneys?\b|\brenal\b/i, organ: true },
+  { label: "liver problems", pattern: /\bliver\b|\bhepat\w*/i, organ: true },
+  { label: "bleeding", pattern: /\bbleed\w*|\bha?emorrhag\w*/i },
+  { label: "addiction", pattern: /\baddict\w*|\bdependen(?:ce|cy)\b|\bhabit-forming\b/i },
+  { label: "cancer", pattern: /\bcancers?\b|\btumou?rs?\b/i },
+  { label: "depression", pattern: /\bdepress(?:ion|ed)\b/i },
+  { label: "cognitive decline", pattern: /\bcognitive (?:decline|impairment)\b/i },
+  { label: "low blood pressure", pattern: /\bhypotension\b|\blow blood pressure\b/i },
+];
+
+/**
+ * A listed condition applied to the person ("Margaret's confusion could be early delirium") is a diagnosis
+ * even when the cited text names it: the KB only ever uses these words for a class-level risk. Fires when a
+ * hedge or copula leads into the condition and the sentence refers to the person (patientRe or a possessive
+ * symptom such as "her foggy mornings"). "The combination is linked to delirium" has no such lead.
+ */
+const DIAGNOSIS_LEAD =
+  "(?:(?:could|may|might|must|would|can)\\s+be|is|are|was|were|looks?\\s+like|sounds?\\s+like|seems?\\s+(?:like|to be)|points?\\s+to(?:wards?)?|suggests?|signs?\\s+of|symptoms?\\s+of|probably|possibly|likely|early)";
+const DIAGNOSIS_FILL = "(?:(?:a|an|the|early|mild|possible|probable|beginning|developing|onset of|some|signs? of|the start of|a case of)\\s+){0,3}";
+const POSSESSIVE_SYMPTOM = new RegExp(`\\b(?:her|his|their|[a-z]+'s)\\s+(?:\\w+\\s+)?${SYMPTOM_STEMS}`, "i");
+
+/** "since then", "after that": fine only when the same sentence says what "then" was. */
+const UNRESOLVED_REF = /\bsince then\b|\bsince that\b|\bafter that\b|\bfrom then on\b|\bever since\s*(?:[,.?!]|$)/i;
+const MED_START = /\b(?:started|starting|began|begun|beginning|was put on|was added|was prescribed)\b/i;
+
+/** Past-tense verbs and determiners for the dropped-verb check ("since urgent care [started] the new pill"). */
+const VERB_LIKE = /^(?:[a-z]{3,}ed|began|begun|took|taken|gave|given|got|put|made|brought|left|went|came|told|said|wrote)$/;
+const DETERMINER = /^(?:the|a|an|her|his|their|this|that|these|those|my|our|its|some|another)$/;
+
+function words(text: string): string[] {
+  return foldText(text).toLowerCase().match(/[a-z0-9']+/g) ?? [];
+}
+
+/**
+ * A sentence that copies four words of the evidence around a past-tense verb but leaves the verb out
+ * ("since urgent care the new sleeping pill" for "since urgent care started the new sleeping pill").
+ * Only fires when the dropped word is verb-like and is followed by a determiner, so ordinary shortening
+ * ("9 of 14 days" for "9 of 14 answered days") is not affected. Returns the evidence phrase or null.
+ */
+function droppedVerb(sentence: string, supportTexts: string[]): string | null {
+  const gaps = new Map<string, string>();
+  for (const s of supportTexts) {
+    const w = words(s);
+    for (let i = 2; i + 2 < w.length; i++) {
+      if (VERB_LIKE.test(w[i]) && DETERMINER.test(w[i + 1])) gaps.set(`${w[i - 2]} ${w[i - 1]} ${w[i + 1]} ${w[i + 2]}`, `${w[i - 2]} ${w[i - 1]} ${w[i]} ${w[i + 1]} ${w[i + 2]}`);
+    }
+  }
+  if (!gaps.size) return null;
+  const w = words(sentence);
+  for (let j = 0; j + 3 < w.length; j++) {
+    const hit = gaps.get(`${w[j]} ${w[j + 1]} ${w[j + 2]} ${w[j + 3]}`);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+/** Words after "<medicine> for" that are not a reason ("for her", "for older adults", "for 8 weeks"). */
+const NOT_A_REASON = new Set(
+  "her his their the a an someone people older adults margaret mom mum dad more less longer now over at this that these those both each all any some years months weeks days a while".split(" "),
+);
 
 /** Assistant-meta, prompt-injection and formatting debris that must never reach a brief. */
 const UNSAFE_CONTENT: { pattern: RegExp; reason: string }[] = [
@@ -684,9 +1019,15 @@ export function verifyClaims(
 
   // Language rules, sentence by sentence (a question may follow a banned statement).
   const patientNames = (opts.patientNames ?? []).filter((n) => n.trim().length > 1);
-  const patientRe = patientNames.length
-    ? new RegExp(`${PATIENT_REF.source}|\\b(?:${patientNames.map(escapeRegExp).join("|")})\\b`, "i")
-    : PATIENT_REF;
+  const namesAlt = patientNames.map(escapeRegExp).join("|");
+  const patientRe = patientNames.length ? new RegExp(`${PATIENT_REF.source}|\\b(?:${namesAlt})\\b`, "i") : PATIENT_REF;
+  // "Lorazepam makes Margaret dizzy": the person-referring patterns again, with the person's own names.
+  const namePatterns = patientNames.length ? personPatterns(namesAlt) : [];
+  const medTokens = (opts.medNames ?? []).flatMap(nameTokens).filter((x) => x.length >= 4);
+  const namesMedicine = (s: string) =>
+    MED_REF.test(s) ||
+    detectDrugNames(s, opts.knownDrugNames).length > 0 ||
+    medTokens.some((x) => new RegExp(`\\b${escapeRegExp(x)}\\b`, "i").test(s));
   const sentences = splitSentences(t);
   const expect = opts.expect ?? "any";
   for (const sentence of sentences) {
@@ -695,23 +1036,55 @@ export function verifyClaims(
     const statementPart = asStatement ? sentence : shape.preamble;
     const questionPart = asStatement ? "" : shape.clause;
     const mentionsPatient = patientRe.test(sentence);
-    for (const b of BANNED_PATTERNS) {
-      if (b.patientScoped && !mentionsPatient) continue;
+    const mentionsMedicine = namesMedicine(sentence);
+    const checkPattern = (b: BannedPattern) => {
+      if (b.patientScoped && !mentionsPatient && !(b.medicineScoped && mentionsMedicine)) return;
       const scope = b.allowInQuestion && !shape.presupposing ? statementPart : `${statementPart} ${questionPart}`;
       const m = b.pattern.exec(scope);
       if (m) issues.push({ code: "banned", detail: `${b.category}: ${b.reason} ("${m[0].trim()}")` });
-    }
-    // Medicine-linked causal phrasing with a named drug ("dizzy from the lorazepam", "due to Ativan").
+    };
+    for (const b of BANNED_PATTERNS) checkPattern(b);
+    for (const b of namePatterns) checkPattern(b);
+    // Phrasing built around a named drug ("dizzy from the lorazepam", "Lorazepam leads to …", "Ativan is fine").
     const drugsHere = detectDrugNames(statementPart, opts.knownDrugNames);
     for (const d of drugsHere) {
-      const re = new RegExp(
-        `\\b(?:because of|due to|related to|linked to|attributable to|attributed to|explained by|from|on account of|reaction to)\\s+(?:the\\s+|her\\s+|his\\s+|their\\s+|this\\s+|that\\s+)?(?:new\\s+)?${escapeRegExp(d)}`,
-        "i",
-      );
-      const m = re.exec(statementPart);
-      if (m) issues.push({ code: "banned", detail: `causal: links a symptom to ${d} as a statement ("${m[0]}")` });
+      for (const p of drugPatterns(d)) {
+        const m = p.pattern.exec(statementPart);
+        if (m) issues.push({ code: "banned", detail: `${p.detail} ("${m[0].trim()}")` });
+      }
+    }
+
+    // A listed condition applied to this person is a diagnosis, whatever the cited text says. Like the other
+    // diagnosis rules this has no question allowance ("Could her confusion be delirium?" is blocked too).
+    if (mentionsPatient || POSSESSIVE_SYMPTOM.test(sentence)) {
+      for (const c of CONDITIONS) {
+        if (c.organ) continue;
+        const m = new RegExp(`\\b${DIAGNOSIS_LEAD}\\s+${DIAGNOSIS_FILL}(?:${c.pattern.source})`, "i").exec(sentence);
+        if (m) issues.push({ code: "banned", detail: `diagnosis: applies ${c.label} to this person ("${m[0].trim()}")` });
+      }
+    }
+
+    // "since then" must say what "then" was: a date or a medicine start in the same sentence.
+    const ref = UNRESOLVED_REF.exec(sentence);
+    if (ref) {
+      const f = extractNumericFacts(sentence);
+      if (!f.dates.length && !f.weekdays.length && !MED_START.test(sentence)) {
+        issues.push({ code: "unresolved_reference", detail: `"${ref[0].replace(/[,.?!]$/, "").trim()}" has no date or medicine start in the same sentence` });
+      }
     }
   }
+
+  // Named conditions must be in the cited text ("delirium", "stroke", "fractures"; synonyms count).
+  for (const c of CONDITIONS) {
+    const m = c.pattern.exec(t);
+    if (m && !c.pattern.test(supportJoined)) {
+      issues.push({ code: "condition_unsupported", detail: `mentions ${c.label} ("${m[0]}"), which the cited text does not` });
+    }
+  }
+
+  // A near-copy of the evidence that silently drops its verb reads as a different (garbled) claim.
+  const dropped = droppedVerb(t, supportTexts);
+  if (dropped) issues.push({ code: "garbled", detail: `leaves a word out of the cited "${dropped}"` });
 
   // Sentence form required by the slot.
   if (expect === "question") {
@@ -777,6 +1150,22 @@ export function verifyClaims(
   for (const d of detectDrugNames(t, opts.knownDrugNames)) {
     const ok = allowed.has(d) || nameTokens(d).every((x) => allowed.has(x)) || new RegExp(`\\b${escapeRegExp(d)}\\b`).test(contextLower);
     if (!ok) issues.push({ code: "med_unknown", detail: `"${d}" is not on the medication list or in the evidence` });
+  }
+
+  // "<medicine> for <reason>" is a claim about why it is taken: some text that names the same medicine
+  // must state that reason (word stem), so "Lorazepam for nighttime drowsiness" is caught when the
+  // records say "for anxiety / sleep".
+  for (const d of detectDrugNames(t, opts.knownDrugNames)) {
+    const re = new RegExp(`\\b${escapeRegExp(d)}\\b(?:\\s*\\([^)]*\\))*\\s+for\\s+([a-z][a-z'-]*(?:\\s+[a-z][a-z'-]*)?)`, "gi");
+    for (const m of t.matchAll(re)) {
+      const first = m[1].toLowerCase().split(/\s+/)[0];
+      if (first.length < 4 || NOT_A_REASON.has(first)) continue;
+      const stem = first.slice(0, 5);
+      const named = new RegExp(`\\b${escapeRegExp(d)}\\b`, "i");
+      if (!contextTexts.some((x) => named.test(x) && x.toLowerCase().includes(stem))) {
+        issues.push({ code: "binding_unsupported", detail: `says ${d} is for "${m[1]}", which is not how the records describe it` });
+      }
+    }
   }
 
   // Drug bindings in parentheses ("diphenhydramine (in Tylenol PM)", "Tylenol PM (acetaminophen +

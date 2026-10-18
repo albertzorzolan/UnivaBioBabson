@@ -1,5 +1,11 @@
-import json, sys
-R = "/private/tmp/claude-501/-Users-mb-pro-Desktop-UnivaBio-Hackathon/c6caa03c-8210-4b85-9270-2eab2bd171d9/scratchpad/research/"
+import json, sys, os
+# Paths are relative to this script (originally an absolute path into a session scratch folder);
+# see kb-src/build/README.md. Helper modules and intermediate files are still read from the working
+# directory, so run this from kb-src/build.
+HERE = os.path.dirname(os.path.abspath(__file__))
+# SUPERSEDED by finalize_sym2.py (kept for provenance). R ends with a separator because it is joined with +.
+# WARNING: a rerun overwrites the current research/symptom-adr-map.json (produced by finalize_sym2.py) with the v1 output; do not run except to reproduce history.
+R = os.path.join(HERE, "..", "research", "")  # kb-src/research/ (committed)
 tmp = json.load(open("sym_build_tmp.json"))
 casc = json.load(open(R + "cascades.json")); frid = json.load(open(R + "frids.json"))
 syms = tmp["_tmp"]

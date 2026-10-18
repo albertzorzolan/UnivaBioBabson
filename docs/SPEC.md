@@ -3,8 +3,11 @@
 > **Note (Oct 11 2026):** this is the original build contract, written under the working name "MedWatch". The product is
 > now **Kinwise** (see §13 of SPEC.md); the app's user-facing text says Kinwise, and "MedWatch" there refers only to
 > FDA's adverse-event reporting program. Kinwise is not affiliated with the FDA.
+>
+> **Note (Oct 17 2026):** the UnivaBio deadline below was later extended to **Oct 20 2026, 11:45 PM EDT**. The module
+> layout in §4 is the original plan; [ARCHITECTURE.md](ARCHITECTURE.md) describes the modules as built.
 
-Status: authoritative contract for the v2 build (branch `medwatch-v2`). Deadline: UnivaBio, Oct 13 2026 11:45 PM EDT.
+Status: authoritative contract for the v2 build (branch `medwatch-v2`). Deadline at the time of writing: UnivaBio, Oct 13 2026 11:45 PM EDT (since extended to Oct 20 2026, 11:45 PM EDT).
 All implementation agents MUST follow this document and the TypeScript contracts in `src/model/types.ts` and `src/kb/types.ts`.
 
 ## 1. Product in one paragraph
@@ -72,6 +75,11 @@ medicine older adults should generally avoid because…", "worth asking about". 
 
 React 19 + TypeScript (strict) + Vite 7, hash router, CSS design system (no Tailwind), Recharts, lucide-react, vitest,
 Playwright. Static SPA; deployable to GitHub Pages (base `/UnivaBioBabson/` when `GITHUB_PAGES=1`). No backend.
+
+Original planned layout (Oct 10). Some planned files were never created or were merged: for example, the medication
+rules live in `src/engine/meds/rules/` (`acb.ts`, `beers.ts`, `cascades.ts`, `falls.ts`, `duplicates.ts`,
+`monitoring.ts`), and there is no `frids.ts`, `ddi.ts` or top-level `acb.ts`; Beers Table 5 interactions are in
+`beers.ts`. See [ARCHITECTURE.md](ARCHITECTURE.md) for the actual modules.
 
 ```
 src/

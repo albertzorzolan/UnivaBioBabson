@@ -310,10 +310,9 @@ const METRIC_WORDS: [MetricKey, RegExp][] = [
   ["swelling", /\bswell\w*|\bswollen\b|\bpuffy\b|\bo?edema\b|\bankles?\b/g],
   ["sleep", /\bsleep\b|\bsleeping\b(?! pills?| tablets?| aids?)|\bslept\b|\binsomnia\b|\bnights?\b|\bbedtime\b/g],
   ["energy", /\benergy\b|\btired\w*|\bfatigue\w*|\bexhaust\w*|\bworn out\b|\bwiped out\b/g],
-  ["appetite", /\bappetite\b|\beat(?:ing|s|en)?\b|\bate\b|\bhungry\b|\bmeals?\b/g] as unknown as [MetricKey, RegExp],
+  // "appetite" questions are answered with the appetiteWorse metric (days with a poor appetite).
+  ["appetiteWorse", /\bappetite\b|\beat(?:ing|s|en)?\b|\bate\b|\bhungry\b|\bmeals?\b/g],
 ];
-// "appetite" questions are answered with the appetiteWorse metric (days with a poor appetite).
-METRIC_WORDS[METRIC_WORDS.length - 1][0] = "appetiteWorse";
 
 /** Words that count as "talking about" a diary item inside her own story (broader than the question words). */
 const STORY_WORDS: Record<MetricKey, RegExp> = {

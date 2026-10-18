@@ -1,6 +1,10 @@
-import re, json, sys
+import re, json, sys, os
 import xml.etree.ElementTree as ET
-BASE = "/private/tmp/claude-501/-Users-mb-pro-Desktop-UnivaBio-Hackathon/c6caa03c-8210-4b85-9270-2eab2bd171d9/scratchpad/cascwork/"
+# Input was a one-off download not committed; see kb-src/build/README.md. BASE named the session scratch folder
+# holding pipc.xml (PMC XML of the PIPC paper, PMC12712104) and bmj_t3.md / bmj_t4.md (BMJ 2026;394:e100499
+# Tables 3 and 4). Their parsed outputs ARE committed next to this script: pipc_rows.json, bmj_t3.json, bmj_t4.json.
+# To rerun, place those three downloads in kb-src/build/cascwork/ (not committed).
+BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cascwork", "")
 t = ET.parse(BASE + "pipc.xml").getroot()
 L = lambda e: e.tag.split('}')[-1]
 txt = lambda e: re.sub(r'\s+', ' ', ''.join(e.itertext())).strip()

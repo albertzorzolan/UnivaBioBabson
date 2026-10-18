@@ -325,7 +325,7 @@ describe("retrieveForQuestion — other intents", () => {
       ["What should I ask the doctor?", /\?/],
       ["How many check-ins this month?", /Check-ins were recorded on \d+ of \d+ days/],
       ["How is she doing?", /Check-ins were recorded/],
-      ["Which medicines are linked to falls?", /4 of Margaret's medicines are on published lists of medicines linked to falls/],
+      ["Which medicines are linked to falls?", /5 of Margaret's medicines are on published lists of medicines linked to falls/],
       ["What did the medication review find?", /The medication review lists \d+ prompts/],
     ];
     for (const [q, re] of cases) {

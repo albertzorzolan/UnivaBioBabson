@@ -1,9 +1,15 @@
-import sys, json
+import sys, json, os
 sys.path.insert(0, '.')
 import apis
 from acb_data import ACB, REVIEWED_NOT_ADDED, BEERS2023_STRONG
 from brandcheck import brand_check
-OUT = "/private/tmp/claude-501/-Users-mb-pro-Desktop-UnivaBio-Hackathon/c6caa03c-8210-4b85-9270-2eab2bd171d9/scratchpad/research/acb-scale.json"
+# Paths are relative to this script (originally an absolute path into a session scratch folder);
+# see kb-src/build/README.md. Helper modules and intermediate files are still read from the working
+# directory, so run this from kb-src/build.
+HERE = os.path.dirname(os.path.abspath(__file__))
+RES = os.path.join(HERE, "..", "research")  # kb-src/research (committed)
+# Writes the committed research file in place: review `git diff kb-src/research/acb-scale.json` after a rerun.
+OUT = os.path.join(RES, "acb-scale.json")
 RX_NAME = {"isosorbide": "isosorbide dinitrate", "belladonna": "belladonna alkaloids", "alimemazine": "trimeprazine", "methotrimeprazine": "methotrimeprazine"}
 from concurrent.futures import ThreadPoolExecutor
 pairs = [(g, b) for g, s, card, extra, *_ in ACB for b in card + extra if not b.startswith("(")]

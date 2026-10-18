@@ -1,9 +1,16 @@
-import sys, json
+import sys, json, os
 sys.path.insert(0, '.')
 import apis, labels
 from sym_data import SYMPTOMS, PAIRS
 from concurrent.futures import ThreadPoolExecutor
-OUT = "/private/tmp/claude-501/-Users-mb-pro-Desktop-UnivaBio-Hackathon/c6caa03c-8210-4b85-9270-2eab2bd171d9/scratchpad/research/symptom-adr-map.json"
+# Paths are relative to this script (originally an absolute path into a session scratch folder);
+# see kb-src/build/README.md. Helper modules and intermediate files are still read from the working
+# directory, so run this from kb-src/build.
+HERE = os.path.dirname(os.path.abspath(__file__))
+RES = os.path.join(HERE, "..", "research")  # kb-src/research (committed)
+# SUPERSEDED by build_sym2.py. OUT is not written here: this script writes sym_build_tmp.json and
+# finalize_sym.py then wrote the research file. The ../snomed/ lookup cache it reads was not committed.
+OUT = os.path.join(RES, "symptom-adr-map.json")
 SNO = {}
 for f in ["../snomed/snomed_extra.jsonl", "../snomed/snomed_extra2.jsonl"]:
     for l in open(f): d = json.loads(l); SNO[d["code"]] = d

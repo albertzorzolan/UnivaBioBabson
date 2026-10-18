@@ -151,6 +151,23 @@ describe("seed acceptance: Margaret's medication review (SPEC §2)", () => {
     expect(p.acbAfter).toBe(p.acbBefore); // same ingredient counted once
     expect(p.added.some((f) => f.category === "duplicate_class" && f.medIds.includes("new-benadryl"))).toBe(true);
   });
+
+  it("previews adding glipizide with the AGS qualifier, so 'avoid' and 'glipizide is preferred' do not contradict", () => {
+    // AGS Beers 2023 Table 2 (t2-sulfonylureas): avoid as first- or second-line monotherapy or add-on therapy unless
+    // there are substantial barriers; if a sulfonylurea is used, prefer short-acting glipizide over glyburide/glimepiride.
+    const p = previewAddition(
+      { meds: data.medications, profile: data.profile, checkIns: data.checkIns, today: TODAY },
+      { id: "new-glipizide", name: "Glipizide 5 mg", ingredientIds: ["glipizide"], match: "exact" },
+    );
+    const [f] = p.added.filter((x) => x.ruleId === "pim-sulfonylurea");
+    expect(f).toBeDefined();
+    expect(f.plain).toMatch(
+      /^AGS Beers 2023 lists Glipizide 5 mg as a medicine older adults should generally avoid as first- or second-line or add-on therapy unless other options face substantial barriers\. /,
+    );
+    expect(f.plain).toContain("if a sulfonylurea is used, AGS prefers a short-acting one such as glipizide over glyburide or glimepiride");
+    expect(f.plain).not.toMatch(/generally avoid[.;]/);
+    expect(f.question.trim().endsWith("?")).toBe(true);
+  });
 });
 
 describe("seed acceptance: counts carry denominators (SPEC §3)", () => {

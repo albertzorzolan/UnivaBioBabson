@@ -16,6 +16,15 @@ export const HELDOUT_F1_PCT = Math.round(heldout.micro.f1 * 100);
 export const HELDOUT_CASES = heldout.cases;
 export const MED_CASES_PASSED = medSummary.casesPassed;
 export const MED_CASES = medSummary.cases;
+/**
+ * Held-out micro-F1 of the lexicon-only baseline (same word list, ConText switched off), when the committed
+ * results include it (npm run eval:nlp writes heldout.baseline). Read defensively: older results files have no
+ * baseline, and then How it works simply leaves the comparison out.
+ */
+export const HELDOUT_BASELINE_F1: number | null = (() => {
+  const f1 = (heldout as { baseline?: { micro?: { f1?: unknown } } }).baseline?.micro?.f1;
+  return typeof f1 === "number" ? f1 : null;
+})();
 
 export const PROOF_POINTS: ProofPoint[] = [
   {
@@ -33,7 +42,7 @@ export const PROOF_POINTS: ProofPoint[] = [
   {
     key: "device",
     figure: "On-device",
-    label: "Runs on this device; nothing is sent anywhere",
+    label: "Your records never leave this device.",
     section: "how-trust",
   },
 ];

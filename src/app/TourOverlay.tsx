@@ -48,7 +48,8 @@ interface TourStep {
 export const TOUR_EXAMPLE_STORY =
   "Felt woozy getting up this morning and nearly went over in the kitchen. Slept badly. No headache. My granddaughter Sofia fell off her bike but she is fine.";
 
-const STEPS: TourStep[] = [
+/** Exported for tourSteps.test.ts (copy and targets); the overlay itself only reads it through `index`. */
+export const TOUR_STEPS: TourStep[] = [
   {
     role: "caregiver",
     route: "/c/overview",
@@ -60,8 +61,10 @@ const STEPS: TourStep[] = [
         <p>
           {c.name}
           {c.age > 0 ? `, ${c.age},` : ""} takes {c.medCount} {c.medCount === 1 ? "medicine" : "medicines"}
-          {c.prescribers > 1 ? ` from ${c.prescribers} prescribers` : ""}. In primary care, over a third of fixable
-          medication side effects persisted because the patient never told the doctor (Gandhi, NEJM 2003).
+          {c.prescribers > 1 ? ` from ${c.prescribers} prescribers` : ""}. In one primary-care study, 37% (19 of 51) of
+          medication side effects whose harm could have been reduced were attributed to the patient not telling the
+          doctor about the symptom
+          (Gandhi, NEJM 2003).
         </p>
         <p>This tour follows one week of her story — from her own words to a one-page brief for the visit.</p>
       </>
@@ -70,7 +73,10 @@ const STEPS: TourStep[] = [
   {
     role: "patient",
     route: "/p/today",
-    targets: ["checkin-heard", "checkin-story", "checkin-saved"],
+    // The highlighted story first: the whole "Here's what I heard" panel is taller than most screens, so the
+    // card would cover the very highlights it describes. The panel, the empty story box (which the tour fills)
+    // and the saved state remain as fallbacks.
+    targets: ['css:[data-tour="checkin-heard"] .pt-story', "checkin-heard", "checkin-story", "checkin-saved"],
     fillCheckIn: true,
     eyebrow: "Margaret’s view · daily check-in",
     title: "She tells it in her own words",
@@ -262,7 +268,7 @@ function samePlacement(a: Placement | null, b: Placement): boolean {
 }
 
 export function TourOverlay({ step: index }: { step: number }) {
-  const step = STEPS[Math.min(index, STEPS.length - 1)];
+  const step = TOUR_STEPS[Math.min(index, TOUR_STEPS.length - 1)];
   const { data, update } = useStore();
   const { active, review, timeline } = useDerived();
   const role = useSession();
@@ -294,7 +300,7 @@ export function TourOverlay({ step: index }: { step: number }) {
     };
   }, [data.profile, active, review, timeline]);
 
-  const isLast = index >= STEPS.length - 1;
+  const isLast = index >= TOUR_STEPS.length - 1;
 
   // Finishing or skipping both mark the tour as seen (settings.tourCompleted), so it is not offered again.
   const finish = useCallback(() => {
@@ -498,7 +504,7 @@ export function TourOverlay({ step: index }: { step: number }) {
             </span>
           </p>
           <ol className="tour-dots" aria-hidden="true">
-            {STEPS.map((_, i) => (
+            {TOUR_STEPS.map((_, i) => (
               <li key={i} className={cx("tour-dot", i === index && "is-current", i < index && "is-done")} />
             ))}
           </ol>

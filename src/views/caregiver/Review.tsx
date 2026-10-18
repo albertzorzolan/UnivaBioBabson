@@ -14,6 +14,7 @@ import { href, navigate, useRoute } from "../../app/router";
 import { Badge, ButtonLink, Callout, Card, CardHeader, Chip, EmptyState, PageHeader, SourceCitation, useToast } from "../../ui";
 import { RecordsDrawer, rangeText, type RecordGroup } from "../shared/caregiver-Records";
 import { FindingCard } from "./meds/FindingCard";
+import { diaryItemCount, repeatedDiaryBlocks } from "./meds/diaryRepeats";
 import { AcbCard, BeersCard, FallsCard } from "./meds/ReviewCards";
 import {
   CATEGORY_CHIP,
@@ -49,6 +50,8 @@ export function Review() {
   const person = data.profile.preferredName || "they";
   const Person = data.profile.preferredName || "They";
   const whose = data.profile.preferredName ? `${data.profile.preferredName}’s` : "their";
+  // Same names the visit brief and Ask Kinwise pass to the AI check (patient-scoped language rules).
+  const patientNames = [data.profile.preferredName, data.profile.displayName, "Mom"].filter((n): n is string => Boolean(n));
 
   const [filter, setFilter] = useState<Filter>("all");
   const [records, setRecords] = useState<{ title: string; groups: RecordGroup[] } | null>(null);
@@ -71,6 +74,13 @@ export function Review() {
   const visible = effectiveFilter === "all" ? scoped : scoped.filter((f) => f.category === effectiveFilter);
   const groups = groupByCategory(visible);
   const topKey = visible[0]?.key;
+  // A card's diary block starts collapsed to one line when every diary item it cites is already shown in full on an
+  // earlier, visible card (in the order shown). Set-aside cards show no block, so they never count as "above".
+  const hasSignal = (id: string) => signals.has(id);
+  const repeats = repeatedDiaryBlocks(
+    groups.flatMap((g) => g.findings),
+    { hasSignal, isHidden: (key) => decisions.get(key)?.status === "dismissed" },
+  );
 
   const statusCounts = useMemo(() => {
     const c: Record<ReviewStatus, number> = { open: 0, to_discuss: 0, discussed: 0, dismissed: 0 };
@@ -290,8 +300,10 @@ export function Review() {
                     decision={decisions.get(f.key)}
                     saved={Boolean(savedQuestionFor(data, f))}
                     person={person}
+                    patientNames={patientNames}
                     highlight={focusKey === f.key}
                     tourId={f.key === topKey ? "review-finding" : undefined}
+                    diaryRepeat={repeats.has(f.key) ? { items: diaryItemCount(f, hasSignal) } : undefined}
                     onDecision={(status, note) => onDecision(f.key, status, note)}
                     onToggleQuestion={() => onToggleQuestion(f.key)}
                     onShowRecords={showMetricRecords}
