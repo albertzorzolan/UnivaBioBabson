@@ -6,6 +6,7 @@ import { EMERGENCY_REDIRECT, NOT_FOUND_TEXT, parseQuestion, parseRange, redirect
 import type { QaResult, RouteOptions } from "./qa";
 import { SUGGESTED_QUESTIONS } from "./index";
 import { verifySentence } from "./verify";
+import { SAFETY_LINE } from "./template";
 import { BANNED_IN_TEMPLATE, FAKE_KB, FROM, TODAY, isKnownEffect, margaret } from "./test-fixtures";
 
 const W = margaret();
@@ -1097,5 +1098,358 @@ describe("retrieveForQuestion — any person's name, not only the demo's", () =>
     expect(r.status).toBe("answered");
     expect(r.dropped).toBe(0);
     expect(r.deterministicAnswer[0].text).toMatch(re);
+  });
+});
+
+describe("routeQuestion — final critic probes (round 4)", () => {
+  // The options Ask.tsx passes for the demo profile (src/views/caregiver/Ask.tsx › ask).
+  const ASK_OPTS: RouteOptions = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name), possessive: "her" };
+  // Another person and medicine, and a placeholder name with a medicine the reference set may not know.
+  const ROBERT_OPTS: RouteOptions = { patientName: "Robert", personNames: ["Robert Diaz", "Robert"], medNames: ["Zolpidem (Ambien)", "Lisinopril"], possessive: "his" };
+  const RELATIVE_OPTS: RouteOptions = { patientName: "Your relative", personNames: ["Your relative"], medNames: ["Valerian root"], possessive: "his" };
+  const routed = (q: string, opts: RouteOptions = ASK_OPTS) => {
+    const r = routeQuestion(q, opts);
+    return r.inScope ? "in" : r.category;
+  };
+
+  it.each([
+    // (a) The most she can have: a dose limit is the prescriber's or pharmacist's to give, never a records answer.
+    "what's the max tylenol pm she can have",
+    "what's the most ativan she can take",
+    "is there a limit on her tylenol",
+    "whats the maximum oxybutinin mom can take",
+    "most lorazepam my mother should have in a day?",
+    "Is there a daily limit for her furosemide?",
+    "how many tylenol pm is she allowed",
+    "how much tylenol pm is ok for grandma",
+    "What's the max amount of Lasix she could take?",
+    "max gabapentin for nana?",
+    // A preposition between "max" and the medicine, the medicine after the modal, and "more than" an amount.
+    "Is there a maximum for her Ativan?",
+    "is there a max on her tylenol",
+    "whats the max for tylenol pm",
+    "is there a max on her water pill",
+    "whats the most she can take of the lorazepam",
+    "what's the highest she can go on lasix",
+    "can she have more than 2 tylenol pm",
+    "can my wife have more than one xanax",
+  ])("sends the dose-limit question '%s' to the dose redirect", (q) => {
+    expect(routed(q), q).toBe("dose");
+    const r = routeQuestion(q, ASK_OPTS);
+    if (!r.inScope) expect(r.redirect).toBe(redirectText("Margaret"));
+  });
+
+  it.each([
+    ["What's the most {med} {who} can take?", ROBERT_OPTS, "zolpidem", "Robert"],
+    ["Is there a limit on {med} for {who}?", RELATIVE_OPTS, "valerian root", "grandpa"],
+  ])("sends '%s' to the dose redirect for another person and medicine", (q, opts, med, who) => {
+    expect(routed(q.replace("{med}", med).replace("{who}", who), opts)).toBe("dose");
+  });
+
+  it.each([
+    // (b) "Is X okay for her?": whether a medicine suits her is a judgment, for any medicine and any name.
+    ["is lorazepam okay for her", ASK_OPTS],
+    ["is ativan fine for mom", ASK_OPTS],
+    ["Is furosemide alright for her?", ASK_OPTS],
+    ["is the oxybutynin ok for my mom", ASK_OPTS],
+    ["is lorazapam okay for her", ASK_OPTS],
+    ["is amlodipine all right for grandma", ASK_OPTS],
+    ["Is Tylenol PM good for Margaret?", ASK_OPTS],
+    ["is zolpidem good for him", ASK_OPTS],
+    ["Is zolpidem fine for Robert?", ROBERT_OPTS],
+    // A name the person slot doesn't know, with a medicine from the reference set.
+    ["Is zolpidem fine for Robert?", {}],
+    ["Is valerian root okay for grandpa?", RELATIVE_OPTS],
+    ["Is the lisinopril alright for my dad?", ROBERT_OPTS],
+    // "a good idea", and a typed question that starts with the medicine (no "is").
+    ["is lorazepam a good idea for her", ASK_OPTS],
+    ["ativan ok for mom?", ASK_OPTS],
+    ["zolpidem fine for my grandad?", ROBERT_OPTS],
+  ] as [string, RouteOptions][])("sends '%s' to the safety redirect", (q, opts) => {
+    expect(routed(q, opts), q).toBe("safety");
+  });
+
+  it.each([
+    // (c) Choosing which medicine to leave out is a prescriber decision.
+    "which pill to drop",
+    "which med to cut",
+    "Which med to stop?",
+    "which medicine to skip tonight",
+    "what pill can i drop",
+    "which of her meds should we drop",
+    "Which one of her pills could we cut?",
+    // Whether a medicine is working, with the person in the phrase.
+    "is the ativan doing her any good",
+  ])("sends '%s' to the treatment redirect", (q) => {
+    expect(routed(q), q).toBe("treatment");
+  });
+
+  it.each([
+    // (d) Confusion that came on suddenly, or since earlier today, gets the 911 line (both word orders).
+    "Mom is suddenly very confused today",
+    "all of a sudden she's disoriented",
+    "confused since this morning",
+    "she's been really confused since this morning",
+    "Dad is disoriented all of a sudden",
+    "suddenly confused and cant find her words",
+    "grandma became confused out of nowhere this afternoon",
+    "She's been disoriented since she woke up",
+    "Is she suddenly confused?",
+    "Was she suddenly confused this morning?",
+    // Common misspellings of "suddenly" (a missed emergency is worse than a false alarm).
+    "sudenly confused today",
+    "suddently very confused",
+    "she is all of a suden confused",
+    "she's sudenly confused",
+    // Other words for confused, waking up confused, and a clock time or hours ago.
+    "grandad's suddenly really muddled",
+    "she woke up very confused this morning",
+    "she became confused an hour ago",
+    "confused since 2pm",
+    // Stroke signs: one-sided weakness, or suddenly unable to stand.
+    "mom is suddenly very dizzy and weak on one side",
+    "she suddenly can't stand up",
+  ])("sends the sudden confusion '%s' to the emergency line", (q) => {
+    for (const opts of [ASK_OPTS, {}] as RouteOptions[]) {
+      const r = routeQuestion(q, opts);
+      expect(r.inScope ? "in" : r.category, q).toBe("emergency");
+      if (!r.inScope) {
+        expect(r.redirect).toBe(EMERGENCY_REDIRECT);
+        expect(r.offerVisitQuestion).toBe(false);
+      }
+    }
+  });
+
+  it.each([
+    // (e) A medicine stopped or run out of, said as a statement: the treatment redirect with the safety line.
+    "She stopped taking the lorazepam yesterday",
+    "she ran out of her water pill",
+    "Mom quit taking her Ativan",
+    "I think dad stopped his metformin on his own",
+    "she's out of tylenol pm",
+    "She has run out of oxybutynin",
+    "she stopped her zolpidem last week",
+    // The caregiver as the giver, "no longer" / "anymore", and "outta".
+    "we stopped giving her the tylenol pm",
+    "I stopped giving mom her lorazepam",
+    "she's no longer taking the ativan",
+    "she doesn't take the ativan anymore",
+    "mum ran outta her tablets",
+  ])("sends the statement '%s' to the treatment redirect with the don't-stop line", (q) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    expect(r.inScope ? "in" : r.category, q).toBe("treatment");
+    if (!r.inScope) {
+      expect(r.reason, q).toContain("Don't stop or change any medicine without talking to the prescriber.");
+      expect(r.redirect).toBe(redirectText("Margaret"));
+      expect(r.offerVisitQuestion).toBe(true);
+    }
+  });
+
+  it("keeps the usual treatment reason when nothing was stopped", () => {
+    const r = routeQuestion("Should she stop taking lorazepam?", ASK_OPTS);
+    expect(r.inScope ? "in" : r.category).toBe("treatment");
+    if (!r.inScope) expect(r.reason).toBe("Starting, stopping or changing a medicine is a decision for her prescriber.");
+  });
+
+  it.each([
+    // (f) A question about which listed medicines carry a published fall-risk flag is answered from the criteria.
+    "Which of her meds are risky for falls?",
+    "what are her fall-risk medicines",
+    "are any of her medications risky for falling",
+    "Which medicines are risky for falls?",
+  ])("answers the fall-risk reference question '%s' from the published criteria", (q) => {
+    expect(routeQuestion(q, ASK_OPTS), q).toEqual({ inScope: true });
+    const r = ask(q);
+    expect(r.intent, q).toBe("fall_risk");
+    expect(r.status, q).toBe("answered");
+    expectGrounded(r);
+  });
+
+  it.each([
+    // Judgement questions about one medicine and her stay redirected.
+    "is lorazepam risky for her",
+    "Is Ativan risky for Margaret?",
+    "Is lorazepam risky for her falls?",
+    "Is the oxybutynin too risky for mom?",
+  ])("keeps the judgement question '%s' on the safety redirect", (q) => {
+    expect(routed(q), q).toBe("safety");
+  });
+
+  it.each([
+    // Records questions near the new forms: they keep being answered from the records.
+    "How often was confusion recorded?",
+    "was she confused after lorazepam started",
+    "Has she been confused since lorazepam started?",
+    "When did the confusion start?",
+    "Was she confused this morning?",
+    "When did she stop lorazepam?",
+    "Can you tell me if she stopped the lorazepam?",
+    "She stopped going on her walks",
+    "she ran out of energy by noon",
+    "Did she stop the Tylenol PM?",
+    "how much tylenol pm is she taking",
+    "What's the most recent fall?",
+    "What is the dose of her lorazepam?",
+    "how many falls since she started the ativan",
+    "Which medicines were stopped this month?",
+    "Which day was she most dizzy?",
+    "What did she say about her sleep this week?",
+    "Which medicine did she start most recently?",
+    "When was she most confused?",
+    "Is her diary good for the visit?",
+    // Near the dose-limit forms.
+    "What's the max number of falls in a week?",
+    "what is the maximum number of falls in a week",
+    "whats the most ativan she's ever had",
+    "which day was she most confused",
+    "how many days could she not walk far",
+    // Near the "is it okay for her" form.
+    "is the brief good for her appointment",
+    // What a medicine is for, not which one to drop.
+    "which medicine does she take to stop the swelling",
+    "what pill does she take to stop her bladder leaking",
+    // Past-tense records questions about the confusion (no "today" / "now").
+    "Did the confusion start suddenly after lorazepam?",
+    "was the confusion sudden or gradual in the records?",
+    "how often was she disoriented in the morning",
+    "how many days was she confused since the morning walk started",
+    "was she more confused after the ativan was added",
+    // Near the "stopped" statement form.
+    "she stopped drinking coffee",
+    "she stopped her walks",
+    "she ran out of steam on her walk",
+    "how many falls since she ran out of ativan",
+  ])("keeps the records question '%s' in scope", (q) => {
+    expect(routeQuestion(q, ASK_OPTS), q).toEqual({ inScope: true });
+  });
+
+  it("names the rule that redirected a question, so the routing can be walked through", () => {
+    const names = [
+      "what's the most ativan she can take",
+      "is lorazepam okay for her",
+      "which pill to drop",
+      "Mom is suddenly very confused today",
+      "She stopped taking the lorazepam yesterday",
+    ].map((q) => {
+      const r = routeQuestion(q, ASK_OPTS);
+      return r.inScope ? "" : r.rule;
+    });
+    for (const n of names) expect(n).toMatch(/\S/);
+    expect(new Set(names).size).toBe(names.length);
+  });
+});
+
+describe("routeQuestion — integration review probes (round 4 fixes)", () => {
+  const ASK_OPTS: RouteOptions = { patientName: "Margaret", personNames: ["Margaret Rivera", "Margaret"], medNames: W.data.medications.map((m) => m.name), possessive: "her" };
+  const routed = (q: string) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    return r.inScope ? "in" : r.category;
+  };
+
+  it.each([
+    // New or acute confusion described as happening now, in either word order, and other acute signs.
+    "she suddnly got very confused",
+    "mom has been very confused since lunch",
+    "confusion since this morning?",
+    "since this morning she's been disoriented",
+    "since lunch she has been really confused",
+    "she got confused this morning",
+    "she became confused this afternoon",
+    "she's confused this morning, worse than usual",
+    "she suddenly started talking gibberish",
+    "she suddenly started talking nonsense",
+    "she's hallucinating right now",
+    "grandma is seeing things that aren't there tonight",
+    // Hard to rouse (oversedation).
+    "she's suddenly very drowsy and hard to wake",
+    "she's barely rousable",
+  ])("sends '%s' to the emergency line", (q) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    expect(r.inScope, q).toBe(false);
+    if (!r.inScope) {
+      expect(r.category, q).toBe("emergency");
+      expect(r.redirect).toBe(EMERGENCY_REDIRECT);
+    }
+  });
+
+  it("over-redirects a look-back at being hard to wake (the emergency words have no look-back guard; the safe side)", () => {
+    expect(routed("how often was she hard to wake in the morning last month")).toBe("emergency");
+  });
+
+  it.each([
+    // Look-backs at the records near the confusion forms.
+    "was she more confused since breakfast on the days she took tylenol pm",
+    "how confused was she since lunch yesterday",
+    "confused since she started lorazepam?",
+    "has she been confused since the ativan",
+    "was she more confused than usual last week",
+    "how often did she get confused",
+    "how many days did she report seeing things",
+    "was the confusion sudden or gradual in the records?",
+    // A clinician stopped the medicine: a records question, not a family's change.
+    "the doctor stopped her lorazepam last week, have the falls gone down?",
+    "her doctor stopped the ativan, how many falls since then?",
+    // Near the dose-limit shapes with no medicine.
+    "the most falls she can have",
+    "what's the most she can walk in a day",
+    "most days can she walk without help?",
+    "what's the max dizziness she had",
+    "what's the highest dose of lorazepam on her list",
+    // Near the "not taking it" statements.
+    "she's been off her feet all day",
+    "she's off her feet more",
+    "she hasn't had a fall since tuesday",
+    "she's been skipping meals",
+    "she refuses to take a walk",
+    "did she skip her lorazepam this week",
+  ])("keeps the records question '%s' in scope", (q) => {
+    expect(routeQuestion(q, ASK_OPTS), q).toEqual({ inScope: true });
+  });
+
+  it.each([
+    "what's the most she can take?",
+    "whats the maximum she can have",
+    "how many is she allowed to take",
+    "how many mg of furosemide is the limit",
+  ])("sends the dose-limit question '%s' to the dose redirect", (q) => {
+    expect(routed(q), q).toBe("dose");
+  });
+
+  it.each(["is lorazepam okay to give her", "is ativan fine to take at night", "is amlodipine a good fit for her"])(
+    "sends '%s' to the safety redirect",
+    (q) => {
+      expect(routed(q), q).toBe("safety");
+    },
+  );
+
+  it.each([
+    "she stopped the lorazepam two weeks ago, did her dizziness get better?",
+    "she's been off the lorazepam for 3 days",
+    "she's been skipping her lorazepam",
+    "she hasn't taken her lorazepam in 3 days",
+    "she hasn't had her water pill since tuesday",
+    "she refuses to take her lorazepam now",
+    "she's off her lorazepam now",
+  ])("answers the statement '%s' with the treatment redirect and the do-not-stop line", (q) => {
+    const r = routeQuestion(q, ASK_OPTS);
+    expect(r.inScope, q).toBe(false);
+    if (!r.inScope) {
+      expect(r.category, q).toBe("treatment");
+      expect(r.reason).toContain(SAFETY_LINE);
+    }
+  });
+
+  it.each(["which medicines increase her risk of falling", "what meds put her at risk for falls"])(
+    "answers the fall-risk reference question '%s' from the published criteria",
+    (q) => {
+      expect(routeQuestion(q, ASK_OPTS), q).toEqual({ inScope: true });
+      const r = ask(q);
+      expect(r.intent, q).toBe("fall_risk");
+      expectGrounded(r);
+    },
+  );
+
+  it("keeps a risk question about one medicine redirected", () => {
+    expect(routed("is lorazepam raising her risk of falls")).not.toBe("in");
   });
 });

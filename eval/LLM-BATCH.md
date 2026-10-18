@@ -13,7 +13,7 @@ small, but it is a fixed set that anyone with the model files can run again.
 
 **Setup.** Apple M1 Pro, 16 GB, headless system Chrome with WebGPU (adapter `apple` / `metal-3`), driven by Playwright.
 Model `Qwen2.5-3B-Instruct-q4f16_1-MLC` (the app's default), loaded from the local copy in
-`public/models/resolve/` in 5.7 s; `@mlc-ai/web-llm` 0.2.85 at the app's fixed settings (temperature 0, top_p 1,
+`public/models/resolve/` in 7.4 s; `@mlc-ai/web-llm` 0.2.85 at the app's fixed settings (temperature 0, top_p 1,
 grammar-constrained JSON). Every request that would have left the local server was blocked; the list of blocked
 requests in the file is empty, so nothing was downloaded and nothing was sent anywhere. Run on 2026-10-18; 40 prompts
 in 385 s.
@@ -59,9 +59,9 @@ and with the outputs in view. The escape rate is flawed / labelled, with a Wilso
 
 | Task | Prompts | Sentences written | Blocked | Shown | Passed, not shown | Median time | 95th percentile |
 |---|---|---|---|---|---|---|---|
-| Ask | 30 | 38 | 3 (7.9%) | 15 (39.5%) | 20 | 4.9 s | 8.8 s |
-| Brief | 5 | 24 | 10 (41.7%) | 12 (50.0%) | 2 | 45.9 s | 50.4 s |
-| Explain | 5 | 14 | 8 (57.1%) | 3 (21.4%) | 3 | 7.0 s | 7.3 s |
+| Ask | 30 | 38 | 3 (7.9%) | 15 (39.5%) | 20 | 5.0 s | 8.8 s |
+| Brief | 5 | 24 | 10 (41.7%) | 12 (50.0%) | 2 | 45.9 s | 50.3 s |
+| Explain | 5 | 14 | 8 (57.1%) | 3 (21.4%) | 3 | 6.9 s | 7.4 s |
 | **All** | **40** | **76** | **21 (27.6%)** | **30 (39.5%)** | **25** | | |
 
 What the family would have seen:
@@ -102,10 +102,12 @@ not answer "When did she last fall?". Conversely, a correct answer to "What did 
 hidden by the same relevance test.
 
 **Repeatability (not evidenced by a committed file).** The committed file is a later run on this machine on
-2026-10-18, repeated after the round-3 integration changes to the claim checker (`verify.ts`), the Ask routing
-(`qa.ts`) and one reason line in `tasks.ts`. Earlier runs used earlier versions of the code and their result files were
-not kept. In the repeat, all 76 sentences and their verdicts were identical to the run before it, so the audit labels
-were carried over by sentence id and text (no sentence was relabelled; only the latencies differ slightly). That
+2026-10-18, repeated after the round-4 integration changes to the claim checker (`verify.ts`: rule 9 and the verdict
+pattern) and the Ask routing (`qa.ts`); an earlier repeat on the same day followed the round-3 changes to both files
+and one reason line in `tasks.ts`. Earlier runs used earlier versions of the code and their result files were not
+kept. In each repeat, all 76 sentences, their verdicts, the checker's reasons and the cited records were identical to
+the run before it, so the audit labels were carried over by sentence id and text (no sentence was relabelled; only the
+latencies and the model load time differ slightly). That
 comparison cannot be reproduced from the repo, so no material cites it. The committed file's `code` block records the commit, that the working tree had uncommitted changes, and a
 hash of each file the numbers depend on (prompts, tasks, schemas, claim checker, retrieval);
 `scripts/submission/llm-batch.test.mjs` (part of `npm run test:submission`) fails if any of those files has changed
@@ -125,7 +127,7 @@ since, meaning the run and the audit should be repeated.
 - **The prompts were written by the people who built the checker** (an AI agent working for the team), with knowledge
   of the app. They are ordinary record questions, not adversarial ones; the red-team sets (eval/VERIFIER-REDTEAM.md)
   test the checker against harmful wording.
-- **Latency** includes the checks but not loading the model (5.7 s from the local copy here; the public demo first
+- **Latency** includes the checks but not loading the model (7.4 s from the local copy here; the public demo first
   downloads it once).
 
 ## Reproduce

@@ -55,8 +55,9 @@ export const MODEL_OPTIONS: ModelOption[] = [
     localFolder: "Qwen2.5-3B-Instruct-q4f16_1-MLC",
     license: "Qwen Research License",
     // Default: best rule-adherence in eval/results/llm-smoke.json (brief 9/9 sentences verified,
-    // record Q&A 4/4, no forbidden extraction proposals) at ~45–60 s per brief on an M1 Pro.
-    note: "Best results in our on-device tests: every brief sentence and record answer passed verification.",
+    // record Q&A 4/4, no forbidden extraction proposals) at ~45–60 s per brief on an M1 Pro. The larger 40-prompt
+    // run (eval/results/llm-batch.json) still had the code check block 21 of 76 sentences, so the note says so.
+    note: "Best rule-following in our on-device tests; the code check still removes some sentences (see How it works).",
   },
   {
     id: "Qwen3.5-2B-q4f16_1-MLC",

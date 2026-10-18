@@ -426,7 +426,7 @@
 .cg-finding__signal-meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start; /* the size word may carry a second line ("maybe a bad stretch") */
   gap: var(--space-2);
 }
 .cg-finding__link {

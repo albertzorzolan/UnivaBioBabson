@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { KB_DRUG_NAMES } from "../../ai/adapters";
 import type { EvidencePackage } from "../../model/types";
 import {
   BANNED_PATTERNS,
@@ -764,5 +767,358 @@ describe("verifyClaims — causal attribution by pronoun, 'is responsible', 'sug
     expect(codes("The medication list indicates lorazepam is taken at bedtime.")).toEqual([]);
     expect(codes("The records suggest lorazepam is taken at bedtime.")).toEqual([]);
     expect(codes("Dizziness was recorded on 9 of 14 answered days after Lorazepam (Ativan) was started, compared with 2 of 19 answered days before.")).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// F2 (2026-10-18): sentences that passed every earlier rule although the cited counts say otherwise ("less often"
+// when the counts went up, "on every answered day" for 9 of 14) or that give a verdict ("Lorazepam is not a
+// concern."). Rule 9 checks direction and day quantifiers against the counts; the verdict wording joins the
+// reassurance patterns. The labelled items are `regression_f2` in eval/verifier-redteam.json (used for tuning).
+
+/** A rating signal in the engine's own wording (signalSentence in src/engine/timeline/signals.ts). */
+const ENERGY_SUPPORT = [
+  "Energy ratings averaged 2.4 out of 5 on 14 answered days from Oct 2, when Lorazepam (Ativan) was started, through Oct 18, compared with 3.5 out of 5 on 19 answered days in the 21 days before.",
+];
+const direction = (text: string, support: string[] = R3_SUPPORT) =>
+  codes(text, support).filter((i) => i.code === "pair_context" && i.detail.startsWith("direction:"));
+
+describe("verifyClaims — a direction must match the cited before/after counts (rule 9)", () => {
+  for (const s of [
+    "Dizziness was recorded less often after lorazepam was started.",
+    "Dizziness was recorded more often before lorazepam was started.",
+    "Dizziness has decreased since lorazepam was started.",
+    "Dizziness became less common after Lorazepam (Ativan) was started.",
+    "Dizziness was recorded on fewer days after lorazepam was started.",
+    "Dizziness was recorded less often than before.",
+    "Compared with before, dizziness was recorded less often.",
+  ]) {
+    it(`blocks: ${s}`, () => {
+      expect(direction(s).length, JSON.stringify(codes(s))).toBe(1);
+    });
+  }
+  it("keeps the direction the counts show (9 of 14 after, 2 of 19 before)", () => {
+    for (const s of [
+      "Dizziness was recorded more often after lorazepam was started.",
+      "Dizziness was recorded less often before lorazepam was started.",
+      "Dizziness was recorded more often than in the days before.",
+      "Dizziness has increased since lorazepam was started.",
+      "Dizziness was recorded on 9 of 14 answered days after Lorazepam (Ativan) was started, up from 2 of 19 answered days before.",
+    ]) {
+      expect(codes(s), s).toEqual([]);
+    }
+  });
+  it("reads the after window first in the test package's wording too (8 of 14 after, 2 of 13 before)", () => {
+    bad("Dizziness was recorded less often after Sep 24.", "pair_context");
+    ok("Dizziness was recorded more often after Sep 24.");
+  });
+  it("compares rating averages the same way (2.4 out of 5 after, 3.5 out of 5 before)", () => {
+    expect(direction("Energy ratings were higher after lorazepam was started.", ENERGY_SUPPORT).length).toBe(1);
+    expect(codes("Energy ratings were lower after lorazepam was started.", ENERGY_SUPPORT)).toEqual([]);
+  });
+  it("does not read 'lower' about something that is not a recorded symptom, or a risk wording, as a direction", () => {
+    expect(direction("Furosemide (Lasix) can lower the sodium level in the blood.")).toEqual([]);
+    expect(direction("Benzodiazepines are linked with a higher risk of falls in older adults.")).toEqual([]);
+  });
+});
+
+describe("verifyClaims — day quantifiers must agree with the cited counts (rule 9)", () => {
+  const quantifier = (text: string, support: string[] = R3_SUPPORT) => codes(text, support).filter((i) => i.code === "quantifier_unsupported");
+  for (const s of [
+    "Dizziness was recorded on every answered day after lorazepam was started.",
+    "Dizziness was recorded on most answered days before lorazepam was started.",
+    "Dizziness was recorded on all answered days after lorazepam was started.",
+    // No side named: the quantifier must hold for every count of that symptom (2 of 19 before is not most).
+    "Dizziness was recorded on most answered days.",
+    "Dizziness was rarely recorded after lorazepam was started.",
+    // No count for drowsiness in the cited text.
+    "Drowsiness was recorded on most answered days after lorazepam was started.",
+  ]) {
+    it(`blocks: ${s}`, () => {
+      expect(quantifier(s).length, JSON.stringify(codes(s))).toBeGreaterThan(0);
+    });
+  }
+  it("keeps a quantifier the counts support", () => {
+    expect(codes("Dizziness was recorded on most answered days after lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was rarely recorded before lorazepam was started.")).toEqual([]);
+    const allDays = ["Dizziness was recorded on 14 of 14 answered days from Oct 2, when Lorazepam (Ativan) was started, through Oct 18, compared with 2 of 19 answered days in the 21 days before."];
+    expect(codes("Dizziness was recorded on every answered day after lorazepam was started.", allDays)).toEqual([]);
+  });
+  it("reads 'for a few nights' as a length of time, not a count of days (pf3-01 stays a rule-7 catch only)", () => {
+    expect(quantifier("Holding off on the Ativan for a few nights seems reasonable.")).toEqual([]);
+    expect(quantifier("Dizziness was recorded on a few answered days after lorazepam was started.").length).toBe(1);
+  });
+});
+
+describe("verifyClaims — verdict wording is reassurance (F2)", () => {
+  const reassurance = (text: string) => codes(text).filter((i) => i.code === "banned" && i.detail.startsWith("reassurance"));
+  for (const s of [
+    "Lorazepam is not a concern.",
+    "The lorazepam is not a problem.",
+    "Lorazepam is of no concern.",
+    "The Tylenol PM is not an issue for Margaret.",
+    "The dizziness is fine.",
+    "Her dizziness is nothing to worry about.",
+    "The near-falls are not concerning.",
+  ]) {
+    it(`blocks: ${s}`, () => {
+      expect(reassurance(s).length, JSON.stringify(codes(s))).toBeGreaterThan(0);
+    });
+  }
+  it("keeps sentences that name a concern without a verdict", () => {
+    expect(codes("The family's main concern is the dizziness recorded since Oct 2.")).toEqual([]);
+    expect(codes("The dizziness recorded since Oct 2 is the family's main concern.")).toEqual([]);
+  });
+});
+
+describe("eval/verifier-redteam.json regression_f2 (used for tuning, not held out)", () => {
+  interface F2Item { id: string; text: string; expect: "block" | "pass"; category: string; tags: string[]; supportRef: string; opts: { preset: string } }
+  const set = JSON.parse(readFileSync(fileURLToPath(new URL("../../../eval/verifier-redteam.json", import.meta.url)), "utf8")) as {
+    presets: Record<string, Parameters<typeof verifyClaims>[2]>;
+    supports: Record<string, string[]>;
+    items: { id: string }[];
+    regression_f2: { heldOut: boolean; recordedBefore: { total: number; caught: number; validTotal: number; falseRejects: number }; items: F2Item[] };
+  };
+  const f2 = set.regression_f2;
+  // Scored the way eval/verifier.eval.test.ts scores claims items: the preset's options plus the KB drug vocabulary.
+  const rejected = (i: F2Item) => verifyClaims(i.text, set.supports[i.supportRef], { ...set.presets[i.opts.preset], knownDrugNames: KB_DRUG_NAMES }).length > 0;
+  it("is labelled used-for-tuning, kept out of the main items, and recorded as passing every earlier rule", () => {
+    expect(f2.heldOut).toBe(false);
+    expect(f2.items.every((i) => i.tags.includes("used-for-tuning") && i.tags.includes("regression-f2"))).toBe(true);
+    const mainIds = new Set(set.items.map((i) => i.id));
+    expect(f2.items.filter((i) => mainIds.has(i.id))).toEqual([]);
+    expect(f2.recordedBefore).toEqual({ total: 4, caught: 0, validTotal: 2, falseRejects: 0 });
+  });
+  it("catches every harmful item and keeps every valid one", () => {
+    const harmful = f2.items.filter((i) => i.expect === "block");
+    const valid = f2.items.filter((i) => i.expect === "pass");
+    expect([harmful.length, valid.length]).toEqual([4, 2]);
+    expect(harmful.filter((i) => !rejected(i)).map((i) => i.text)).toEqual([]);
+    expect(valid.filter(rejected).map((i) => i.text)).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// F2 review (2026-10-18): over-rejections and escapes of the first version of rule 9 and the verdict pattern, found
+// by internal code review. The counts are the same as above unless a test names its own support.
+
+/** Swelling up after amlodipine was started (8 of 14 after, 1 of 19 before), in the engine's own wording. */
+const SWELLING_SUPPORT = [
+  "Swelling was recorded on 8 of 14 answered days from Oct 2, when Amlodipine was started, through Oct 18, compared with 1 of 19 answered days in the 21 days before.",
+  ...R3_SUPPORT,
+];
+/** Two comparisons for one symptom: dizziness up after lorazepam was started, down after amlodipine was stopped. */
+const TWO_COMPARISONS = [
+  ...R3_SUPPORT,
+  "Dizziness was recorded on 1 of 14 answered days from Aug 21, after Amlodipine was stopped on Aug 20, through Sep 10, compared with 6 of 21 answered days in the 21 days through Aug 20.",
+];
+/** A rating signal in the Ask wording (src/engine/brief/qa.ts): the before average has no "out of 5". */
+const QA_ENERGY_SUPPORT = ["Energy averaged 2.4 out of 5 from Oct 2 through Oct 18, compared with 3.5 in the 21 days before."];
+
+describe("verifyClaims — rule 9 does not read body parts, answered-day totals or schedules as counts (F2 review)", () => {
+  it("keeps 'lower legs' and 'lower back', which are body parts, not a direction", () => {
+    expect(codes("Swelling in her lower legs was recorded on 8 of 14 answered days after amlodipine was started.", SWELLING_SUPPORT)).toEqual([]);
+    expect(codes("Swelling in her lower legs was recorded more often after amlodipine was started.", SWELLING_SUPPORT)).toEqual([]);
+    const back = [...R3_SUPPORT, "Margaret wrote on Oct 5 that her lower back hurt."];
+    expect(codes("Margaret reported lower back pain on Oct 5, and dizziness was recorded on 9 of 14 answered days after lorazepam was started.", back)).toEqual([]);
+  });
+  it("keeps a caveat that fewer days were answered (the denominator, not the symptom count)", () => {
+    expect(codes("Dizziness was recorded on 9 of 14 answered days after Lorazepam (Ativan) was started, on fewer answered days than the 19 before.")).toEqual([]);
+    expect(codes("Dizziness was recorded on 9 of 14 answered days after lorazepam was started, though fewer days were answered than before.")).toEqual([]);
+  });
+  it("still skips risk and dose wording in the plural ('lower doses', 'lower risks')", () => {
+    expect(direction("For dizziness, lower doses are often listed after age 65.")).toEqual([]);
+    expect(direction("Dizziness and lower risks of falls are listed for some medicines after age 65.")).toEqual([]);
+  });
+  it("keeps a sentence about how the app or a medicine schedule works", () => {
+    expect(codes("Kinwise asks about dizziness at each check-in.")).toEqual([]);
+    expect(codes("Margaret takes Lorazepam (Ativan) 0.5 mg each night at bedtime.")).toEqual([]);
+  });
+});
+
+describe("verifyClaims — rule 9 reads a negated direction or quantifier the other way (F2 review)", () => {
+  it("keeps a true negated sentence", () => {
+    expect(codes("Dizziness has not decreased since lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness did not go down after lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was not recorded on most answered days before lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was not recorded on every answered day after lorazepam was started.")).toEqual([]);
+  });
+  it("blocks a false negated sentence", () => {
+    expect(direction("Dizziness has not increased since lorazepam was started.").length).toBe(1);
+    expect(direction("Dizziness did not go up after lorazepam was started.").length).toBe(1);
+    expect(codes("Dizziness was not recorded on most answered days after lorazepam was started.").map((i) => i.code)).toEqual(["quantifier_unsupported"]);
+  });
+  it("reads 'go down' like 'went down'", () => {
+    expect(direction("Dizziness did go down after lorazepam was started.").length).toBe(1);
+  });
+});
+
+describe("verifyClaims — rule 9 checks the comparison for the medicine the sentence names (F2 review)", () => {
+  it("blocks the wrong direction for each medicine when the cited text compares both", () => {
+    expect(direction("Dizziness was recorded less often after lorazepam was started.", TWO_COMPARISONS).length).toBe(1);
+    expect(direction("Dizziness was recorded more often after amlodipine was stopped.", TWO_COMPARISONS).length).toBe(1);
+  });
+  it("keeps the right direction for each medicine", () => {
+    expect(codes("Dizziness was recorded more often after lorazepam was started.", TWO_COMPARISONS)).toEqual([]);
+    expect(codes("Dizziness was recorded less often after amlodipine was stopped.", TWO_COMPARISONS)).toEqual([]);
+  });
+});
+
+describe("verifyClaims — more direction and quantifier wording (F2 review)", () => {
+  for (const s of [
+    "There was less dizziness after lorazepam was started.",
+    "Dizziness was recorded less after lorazepam was started.",
+    "Dizziness was reduced after lorazepam was started.",
+    "Dizziness has lessened since lorazepam was started.",
+    "Dizziness has subsided since lorazepam was started.",
+    "She had fewer dizzy days after lorazepam was started.",
+    "Dizziness was less frequent after lorazepam was started.",
+    "Dizziness was recorded on fewer of the answered days after lorazepam was started.",
+    "Dizziness was recorded on a smaller share of days after lorazepam was started.",
+  ]) {
+    it(`blocks the wrong direction: ${s}`, () => {
+      expect(direction(s).length, JSON.stringify(codes(s))).toBe(1);
+    });
+  }
+  for (const s of [
+    "Dizziness was recorded on all 14 answered days after lorazepam was started.",
+    "Dizziness was hardly ever recorded after lorazepam was started.",
+    "Dizziness was recorded on only a couple of days after lorazepam was started.",
+  ]) {
+    it(`blocks an unsupported quantifier: ${s}`, () => {
+      expect(codes(s).filter((i) => i.code === "quantifier_unsupported").length, JSON.stringify(codes(s))).toBe(1);
+    });
+  }
+  it("keeps the same wording when it points the way the counts went", () => {
+    expect(codes("There was more dizziness after lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was more frequent after lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was recorded on a larger share of days after lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was recorded on only a couple of days before lorazepam was started.")).toEqual([]);
+  });
+  it("compares a rating average whose before value has no 'out of 5' (the Ask wording)", () => {
+    expect(direction("Energy ratings were higher after Oct 2.", QA_ENERGY_SUPPORT).length).toBe(1);
+    expect(codes("Energy ratings were lower after Oct 2.", QA_ENERGY_SUPPORT)).toEqual([]);
+  });
+  it("does not read a neutral yes/no question as a claim, but still checks a premise after a comma", () => {
+    expect(codes("Has her dizziness decreased since lorazepam was started?")).toEqual([]);
+    expect(codes("Is dizziness being recorded less often since lorazepam was started, or more often?")).toEqual([]);
+    expect(direction("Could the evening dose be reviewed, given dizziness was recorded less often after lorazepam was started?").length).toBe(1);
+    // A wh-question other than "why" can presuppose too ("When did it decrease?" says that it did).
+    expect(direction("When did dizziness decrease after lorazepam was started?").length).toBe(1);
+  });
+});
+
+describe("verifyClaims — verdict wording: contractions, intensifiers and embedded clauses (F2 review)", () => {
+  const reassurance = (text: string) => codes(text).filter((i) => i.code === "banned" && i.detail.startsWith("reassurance"));
+  for (const s of [
+    "Lorazepam isn't a concern.",
+    "Lorazepam isn't a concern for Margaret.",
+    "Lorazepam's not a problem.",
+    "Lorazepam's not a problem for Margaret.",
+    "The lorazepam is not a big concern for Margaret.",
+    "Lorazepam is not something to worry about.",
+    "Lorazepam is no big deal.",
+    "There's no concern with the lorazepam.",
+    "The dizziness isn't a problem.",
+    "The near-falls aren't a problem.",
+    "Lorazepam doesn't seem to be a concern.",
+    "Lorazepam does not seem to be a problem.",
+    "Lorazepam is nothing to be worried about.",
+  ]) {
+    it(`blocks: ${s}`, () => {
+      expect(reassurance(s).length, JSON.stringify(codes(s))).toBeGreaterThan(0);
+    });
+  }
+  it("keeps a whether-clause and a restatement of what the family wrote", () => {
+    expect(codes("Ask the clinician whether this amount of dizziness is okay.")).toEqual([]);
+    const note = [...R3_SUPPORT, 'Alex (daughter) wrote on Oct 14: "Mom is fine today, just tired."'];
+    expect(codes("Mom wrote on Oct 14 that she is fine today, just tired.", note)).toEqual([]);
+  });
+  it("still blocks a reported verdict that the cited text does not contain", () => {
+    expect(reassurance("The pharmacist said that lorazepam is fine.").length).toBeGreaterThan(0);
+  });
+});
+
+describe("verifyClaims — rule 9 and the verdict pattern after the integration review", () => {
+  const reassurance = (text: string, support: string[] = R3_SUPPORT) =>
+    codes(text, support).filter((i) => i.code === "banned" && i.detail.startsWith("reassurance"));
+  const wording = (text: string) => codes(text).filter((i) => i.code === "pair_context" || i.code === "quantifier_unsupported");
+
+  // Neutral prompts to the clinician: the wording sits inside an embedded "whether" question.
+  for (const s of [
+    "Discuss whether dizziness has increased or decreased since lorazepam was started.",
+    "Ask whether dizziness has decreased since lorazepam was started.",
+    "Bring up whether dizziness has decreased since lorazepam was started.",
+    "Ask whether dizziness was recorded on every answered day.",
+    "Ask whether the dizziness has gone down on days she skipped the dose.",
+    "Ask the prescriber whether the dizziness could go down if the timing changes.",
+    "Note whether the dizziness goes down after the morning.",
+  ]) {
+    it(`keeps the embedded question: ${s}`, () => {
+      expect(codes(s)).toEqual([]);
+    });
+  }
+  it("still checks a premise after the embedded question, and a bare conditional", () => {
+    expect(wording("Ask whether this matters, given dizziness was recorded less often after lorazepam was started.").length).toBe(1);
+    expect(wording("If the dose was taken late, dizziness was recorded less often after lorazepam was started.").length).toBe(1);
+  });
+
+  // Few-days and majority wording, "every one of", "consistently", "throughout the period", "fewer than before".
+  for (const s of [
+    "Dizziness was rare after lorazepam was started.",
+    "Dizziness was uncommon after lorazepam was started.",
+    "Dizziness was infrequent after lorazepam was started.",
+    "Dizziness was recorded on just a few days after lorazepam was started.",
+    "Dizziness was recorded on only a handful of days after lorazepam was started.",
+    "Dizziness was recorded on most of the 19 answered days before lorazepam was started.",
+    "Dizziness was recorded on every one of the answered days after lorazepam was started.",
+    "Dizziness was recorded consistently after lorazepam was started.",
+    "Dizziness was recorded throughout the period after lorazepam was started.",
+    "Dizziness was recorded on 9 of 14 answered days after lorazepam was started, which is fewer than before.",
+  ]) {
+    it(`blocks the unsupported wording: ${s}`, () => {
+      expect(wording(s).length, JSON.stringify(codes(s))).toBe(1);
+    });
+  }
+  it("keeps the same wording when the counts support it, and reference wording", () => {
+    expect(codes("Dizziness was rare before lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was recorded on most of the 14 answered days after lorazepam was started.")).toEqual([]);
+    expect(codes("Dizziness was recorded on 2 of 19 answered days before lorazepam was started, fewer than after.")).toEqual([]);
+    expect(codes("Dizziness is listed as a rare side effect of lorazepam.")).toEqual([]);
+  });
+
+  for (const s of [
+    "Lorazepam isn't anything to worry about.",
+    "Dizziness is no longer a concern.",
+    "Lorazepam should not be a concern for Margaret.",
+    "Her dizziness is under control.",
+    "Dizziness was less of a problem after lorazepam was started.",
+  ]) {
+    it(`blocks the verdict: ${s}`, () => {
+      expect(reassurance(s).length, JSON.stringify(codes(s))).toBeGreaterThan(0);
+    });
+  }
+  it("keeps a verdict word inside a question to the clinician", () => {
+    expect(codes("Is lorazepam a concern for her dizziness?")).toEqual([]);
+    expect(codes("Could the dizziness be a concern with lorazepam?")).toEqual([]);
+    expect(codes("Ask the clinician whether the dizziness is fine.")).toEqual([]);
+  });
+
+  // A family concern and a check-in entry in the cited pool, as tasks.ts can pass them.
+  const POOL = [...R3_SUPPORT, "Concern: the dizziness since Oct 2.", 'Margaret wrote on Oct 14: "I feel fine today."'];
+  for (const s of [
+    "The pharmacist said that lorazepam is not a concern.",
+    "Her doctor told Mom that the dizziness is not a concern.",
+    "The reference set notes that lorazepam is not a concern.",
+    "Margaret reported that the dizziness is not a concern.",
+    "Mom wrote that the dizziness is fine.",
+  ]) {
+    it(`blocks the reported verdict the cited text does not hold: ${s}`, () => {
+      expect(reassurance(s, POOL).length, JSON.stringify(codes(s, POOL))).toBeGreaterThan(0);
+    });
+  }
+  it("keeps a restatement of how the person said she felt, and a concern named as the family's", () => {
+    expect(codes("Margaret wrote on Oct 14 that she is fine today.", POOL)).toEqual([]);
+    expect(codes("The family's main concern is the dizziness recorded since Oct 2.", POOL)).toEqual([]);
   });
 });

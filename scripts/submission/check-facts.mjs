@@ -11,7 +11,8 @@
 // Advisory files (reported, never fail the run): the PDF generators that still carry their own copy.
 // Paste region (the DEVPOST files): the text under "## About the project" up to "## Built with" is what the team pastes
 //   into Devpost, so it must hold no HTML comment or TODO (team notes live in the comment block at the top), and its
-//   Status table must carry the canonical Partial wording (PARTIAL_KB). Its word count is reported, never failed.
+//   Status table must carry the canonical Partial wording (PARTIAL_KB). Its word count is reported against
+//   PASTE_WORDS (a WARN when outside; submission.test.mjs fails on it), never failed here.
 // Demo figures: the runs-check p in docs/EVALUATION.md must equal the one pinned in seed.timeline.test.ts.
 // Test record (reported, never fails the run): the dated counts in docs/EVALUATION.md §7 vs the last local reports.
 // Release gate (reported, never fails the run): evidence from this working tree that is absent at REPO_BRANCH.
@@ -71,6 +72,14 @@ export const STALE = [
  */
 export const PARTIAL_KB =
   "Knowledge base: not clinician-reviewed, no dose or allergy checks; interactions limited to the AGS Beers 2023 combination table (not a full drug-interaction checker). Timeline runs check: computed for every comparison, not yet gating.";
+
+/**
+ * Word bounds for each DEVPOST paste region, as rendered (renderedWordCount). Judges asked for an About of about
+ * 700 words with the problem, what it does, the demo link and an honest status line on the first screen, and the
+ * evaluation table moved to the README. The text is written to `target` (650–800 words); `max` adds about 30–45
+ * words for the one-line-per-teammate notes the team writes under "Team" (TODO(team) in each file's top block).
+ */
+export const PASTE_WORDS = { min: 650, target: 800, max: 830 };
 
 /**
  * The part of a DEVPOST file that is pasted into Devpost's "About the project" field: from the line after the
@@ -289,7 +298,14 @@ async function main() {
     if (rel.startsWith("submission/DEVPOST")) {
       for (const p of pasteRegionProblems(text)) lines.push({ ok: false, msg: `${p.msg} (line ${p.line})` });
       const region = pasteRegion(text);
-      if (region) notes.push(`${rel}: paste region ${renderedWordCount(region.text).toLocaleString("en-US")} words as rendered`);
+      if (region) {
+        const words = renderedWordCount(region.text);
+        const inBounds = words >= PASTE_WORDS.min && words <= PASTE_WORDS.max;
+        notes.push(
+          `${inBounds ? "" : "WARN "}${rel}: paste region ${words.toLocaleString("en-US")} words as rendered ` +
+            `(written to ${PASTE_WORDS.min}–${PASTE_WORDS.target}; allowed up to ${PASTE_WORDS.max} with the teammate lines)`,
+        );
+      }
     }
     if (!advisory && !wordingOnly) {
       for (const c of checks) {

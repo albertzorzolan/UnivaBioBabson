@@ -3,10 +3,12 @@
 //   1. "What Kinwise noticed" — up to 3 insights that join timeline signals (before/after a medicine change,
 //      with counts, denominators and the size of the difference), falls/near-falls listed by date, and the medication
 //      review findings for the same medicine. Each ends in a question for the doctor or pharmacist. The first card is
-//      laid out so a caregiver sees, without scrolling at 1366×860: headline → before/after bars → ONE caveat ("not
-//      what caused it") → falls → the first sentence of the question. The engine's full sentence with dates, the plain
-//      line on chance, test names, p-values, the measured chance rates and the Beers detail sit one click away ("How
-//      reliable is this?", "Why this medicine is on the list"): moved there, never deleted.
+//      laid out so a caregiver sees, without scrolling at 1366×860: headline → before/after bars with their size words
+//      → ONE caveat line ("not what caused it" plus one short chance sentence) → falls → the first sentence of the
+//      question. The engine's full sentence with dates, the longer note on chance, test names, p-values, the runs
+//      check's p, the measured chance rates and the Beers detail sit one click away ("How reliable is this?", "Why this
+//      medicine is on the list"): moved there, never deleted. A size word the runs check does not back reads
+//      "maybe a bad stretch" under it (SizeWord).
 //   2. Stats row — check-ins, dizziness days, falls & near-falls, anticholinergic burden, medicines; every number
 //      opens "Show the records".
 //   3. Symptom timeline chart (shared module), Today, review summary, pinned concerns.
@@ -66,12 +68,14 @@ import { TimelineChart, excerptText, periodStart } from "../shared/caregiver-Tim
 import { RecordsDrawer, latestFor, rangeText, type RecordGroup } from "../shared/caregiver-Records";
 import {
   CHANCE_NOTE,
-  STRENGTH_SIZE_WORD,
+  CHANCE_SHORT,
+  RUNS_QUALIFIER_NOTE,
   fallsComparison,
   reviewPromptsSummary,
   triggerFirstSymptoms,
 } from "../shared/caregiver-insights";
 import { ReliabilityDisclosure } from "../shared/caregiver-Reliability";
+import { SizeWord } from "../shared/caregiver-SizeWord";
 import { personWords } from "../shared/personWords";
 import "./overview.css";
 
@@ -96,6 +100,15 @@ export function promptCountText(n: number): string {
   return `${n} ${n === 1 ? "prompt" : "prompts"}`;
 }
 
+/**
+ * True when a card's title already starts with its kind label, ignoring the label's bracketed source: "Anticholinergic
+ * burden (ACB scale)" above "Anticholinergic burden score (ACB): 7" says the same words twice, so the label is left out.
+ */
+export function titleRepeatsEyebrow(title: string, eyebrow: string): boolean {
+  const label = eyebrow.replace(/\s*\([^)]*\)\s*/g, " ").trim().toLowerCase();
+  return label.length > 0 && title.toLowerCase().startsWith(label);
+}
+
 /** The question's first sentence (up to the first "?"), shown on the card; the whole question is one click away. */
 function firstSentence(q: string): string {
   const i = q.indexOf("?");
@@ -116,6 +129,8 @@ interface BarRow {
   /** The test behind this row and its p-value, shown in "How reliable is this?". */
   test: Signal["test"];
   pValue: number;
+  /** The runs check for this row (absent in older saved analyses); a size word it does not back is qualified. */
+  runsCheck?: Signal["runsCheck"];
 }
 
 interface Insight {
@@ -226,6 +241,7 @@ export function buildInsights(input: {
         strength: s.strength,
         test: s.test,
         pValue: s.pValue,
+        runsCheck: s.runsCheck,
       }));
     out.push({
       key: `sig:${k}`,
@@ -329,10 +345,14 @@ function BeforeAfterBars({ row }: { row: BarRow }) {
       <div className="cg-ov-bars__label">
         <TimelineDot metric={row.metric} size={10} label={row.label} />
         {/* Neutral size word for THIS row (dizziness may be "Large" while confusion is "Clear"); info icon, not a
-            warning, because it describes what was recorded, not a verdict. */}
-        <Badge size="sm" tone="neutral" icon={<Info size={12} aria-hidden="true" />} className="cg-ov-bars__size">
-          {STRENGTH_SIZE_WORD[row.strength]}
-        </Badge>
+            warning, because it describes what was recorded, not a verdict. Qualified when the runs check does not
+            back it ("maybe a bad stretch"). */}
+        <SizeWord
+          strength={row.strength}
+          runsCheck={row.runsCheck}
+          icon={<Info size={12} aria-hidden="true" />}
+          className="cg-ov-bars__size"
+        />
       </div>
       <div className="cg-ov-bars__rows">
         {(["before", "after"] as const).map((side) => (
@@ -393,18 +413,28 @@ function FindingLine({ f, more }: { f: Finding; more: number }) {
 }
 
 /**
- * "How reliable is this?": the test and p-value behind each bar; then the engine's full sentence with its dates and
- * windows (the bars show the same counts), the plain line on chance, and the flagging rule (read from rules.ts so it
- * always matches the code; "moderate" is the lowest flagged strength); then the measured chance rates and the
- * caveat, rendered verbatim from rules.ts by the shared disclosure. The shared disclosure wraps `method` in one <p>,
- * so the three lines are block spans inside it.
+ * "How reliable is this?": the test, p-value and runs-check p behind each bar (and what "maybe a bad stretch"
+ * means, when a bar says it); then the engine's full sentence with its dates and windows (the bars show the same
+ * counts), the longer line on chance, and the flagging rule (read from rules.ts so it always matches the code;
+ * "moderate" is the lowest flagged strength); then the measured chance rates and the caveat, rendered verbatim from
+ * rules.ts by the shared disclosure. The shared disclosure wraps `method` in one <p>, so the three lines are block
+ * spans inside it.
  */
 function MethodDisclosure({ bars, lead }: { bars: BarRow[]; lead: string }) {
+  const qualified = bars.some((b) => b.runsCheck && !b.runsCheck.passed);
   return (
     <ReliabilityDisclosure
       className="cg-ov-insight__disclosure"
       bodyClassName="cg-ov-method"
-      tests={bars.map((b) => ({ key: b.metric, metric: b.metric, label: b.label, test: b.test, pValue: b.pValue }))}
+      tests={bars.map((b) => ({
+        key: b.metric,
+        metric: b.metric,
+        label: b.label,
+        test: b.test,
+        pValue: b.pValue,
+        ...(b.runsCheck ? { runsP: b.runsCheck.p } : {}),
+      }))}
+      notes={qualified ? <p>{RUNS_QUALIFIER_NOTE}</p> : undefined}
       method={
         <>
           <span className="cg-ov-method__line">{lead}</span>
@@ -469,7 +499,7 @@ export function InsightCard({
       <header className="cg-ov-insight__head">
         {/* Signal titles already say which change they follow ("since Lorazepam started"); others name their kind
             unless the title already starts with it ("Possible prescribing cascade: …"). */}
-        {ins.kind !== "signal" && !ins.title.toLowerCase().startsWith(ins.eyebrow.toLowerCase()) && (
+        {ins.kind !== "signal" && !titleRepeatsEyebrow(ins.title, ins.eyebrow) && (
           <p className="cg-ov-insight__eyebrow">{ins.eyebrow}</p>
         )}
         <h3 id={`ins-${ins.key}`} className="cg-ov-insight__title">
@@ -478,9 +508,11 @@ export function InsightCard({
       </header>
 
       <div className="cg-ov-insight__main">
-        {/* A signal's lead repeats the bars' counts with dates; it opens in "How reliable is this?". Falls and finding
-            cards keep theirs: it is their evidence. */}
-        {ins.kind !== "signal" && <p className="cg-ov-insight__lead">{ins.lead}</p>}
+        {/* A signal's lead repeats the bars' counts with dates; it opens in "How reliable is this?". A finding's lead
+            (the review's plain explanation) opens in "Why this is on the list", under the question, so the card reads
+            headline → source → diary counts → question; the Review page shows it in full. A falls card keeps its lead:
+            it is the evidence. */}
+        {ins.kind === "falls" && <p className="cg-ov-insight__lead">{ins.lead}</p>}
         {ins.bars.length > 0 && (
           <div className="cg-ov-insight__aside" role="group" aria-label="Before and after, answered days only">
             <p className="cg-ov-insight__aside-title">
@@ -493,12 +525,15 @@ export function InsightCard({
             </div>
           </div>
         )}
-        {/* The one caveat on the card. The plain line on chance and the measured rates are in "How reliable is
-            this?" below the question, so the question and its button come first on a phone. */}
+        {/* The one caveat line on the card: what the comparison is not, and ONE short sentence on chance. The longer
+            chance note and the measured rates are in "How reliable is this?" below the question, so the question and
+            its button come first on a phone. */}
         {ins.kind === "signal" && (
           <div className="cg-ov-insight__caveat">
             <Info size={16} aria-hidden="true" />
-            <p className="cg-ov-insight__caveat-main">{COMPARISON_CAVEAT}</p>
+            <p className="cg-ov-insight__caveat-main">
+              {COMPARISON_CAVEAT} {CHANCE_SHORT}
+            </p>
           </div>
         )}
         {/* Without bars (a falls-only card) the falls line is the evidence itself, so it stays in the main column. */}
@@ -561,11 +596,16 @@ export function InsightCard({
       </div>
 
       {/* Detail one click away; after the question on narrow screens, under the bars on wide ones. */}
-      {((ins.finding && ins.kind !== "finding") || (ins.strength && ins.bars.length > 0)) && (
+      {(ins.finding || (ins.strength && ins.bars.length > 0)) && (
         <div className="cg-ov-insight__more">
           {ins.finding && ins.kind !== "finding" && (
             <Disclosure summary="Why this medicine is on the list" className="cg-ov-insight__disclosure">
               <FindingLine f={ins.finding} more={ins.moreFindings} />
+            </Disclosure>
+          )}
+          {ins.kind === "finding" && (
+            <Disclosure summary="Why this is on the list" className="cg-ov-insight__disclosure">
+              <p className="cg-ov-insight__lead">{ins.lead}</p>
             </Disclosure>
           )}
           {ins.strength && ins.bars.length > 0 && <MethodDisclosure bars={ins.bars} lead={ins.lead} />}
@@ -798,7 +838,7 @@ export function Overview() {
           ) : (
             <p className="cg-ov-muted">None of the active medicines is listed on the ACB scale.</p>
           )}
-          <p className="cg-ov-acb__note">Each medicine on the published ACB scale scores 1 to 3; the total adds them up.</p>
+          {/* "Each medicine scores 1 to 3; the total adds them up" is the "Show the medicines" drawer's description. */}
           <p className="cg-ov-acb__note cg-ov-acb__threshold">{ACB_THRESHOLD_NOTE}</p>
           {acbMeds.length > 0 && <EvidenceLink className="ui-stat__evidence" label="Show the medicines" onClick={() => setDrawer("acb")} />}
         </div>

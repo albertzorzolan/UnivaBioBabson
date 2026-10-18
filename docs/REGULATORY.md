@@ -195,7 +195,7 @@ and suggested they "might be able to replace some" of them "to reduce these risk
 
 1. **Clinician review of the knowledge base** by geriatric pharmacists and physicians, with a documented update
    process when the Beers Criteria, labels or cascade evidence change.
-2. **A validation pilot (planned, not started; mirrored in submission/DEVPOST.md "What's next").** Kinwise has not
+2. **A validation pilot (planned, not started; listed as "a validation pilot" in the Planned row of submission/DEVPOST.md's Status table).** Kinwise has not
    been tested with real patients, caregivers or clinicians. The design below would be pre-registered (sample size,
    analysis plan and endpoints) before enrolment, with consent and ethics review:
    - **Step 1, accuracy and usefulness:** pharmacists rate the accuracy and usefulness of briefs built from

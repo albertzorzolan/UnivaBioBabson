@@ -1020,11 +1020,12 @@ function Regulatory() {
       </li>
       <li>
         <strong>Records and communication:</strong> keeping a medication list and symptom diary and sharing it with a
-        clinician match FDA’s examples of software that is not a medical device (Appendix A, #12–13). <RefLink r={REFS.fdaMma} />
+        clinician are designed to fit FDA’s examples of software that is not a medical device (Appendix A, #12–13). <RefLink r={REFS.fdaMma} />
       </li>
       <li>
         <strong>Caregiver medication report:</strong> information about interactions and side effects based on age,
-        conditions and current medicines is FDA’s Appendix B example #18 (enforcement discretion).
+        conditions and current medicines sits closest to FDA’s Appendix B example #18 (enforcement discretion, not an
+        exemption).
       </li>
       <li>
         <strong>Clinician brief:</strong> shows its basis — rule, source and version, inputs and missing data — as the

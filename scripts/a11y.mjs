@@ -154,7 +154,8 @@ function scenarios() {
       role: "caregiver",
       route: "/c/timeline",
       prepare: async (page) => {
-        await page.getByRole("button", { name: "How this comparison works" }).click();
+        // The Timeline's disclosure is "How reliable is this?" (RELIABILITY_TITLE in src/views/shared/caregiver-insights.ts).
+        await page.locator('[data-tour="timeline-compare"]').getByRole("button", { name: "How reliable is this?" }).click();
         await page.waitForTimeout(200);
       },
     },

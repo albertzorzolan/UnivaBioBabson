@@ -1459,21 +1459,27 @@ const ACTIONS = {
 
   async timeline({ page, shot }) {
     // ENTER.timeline has opened Symptoms & timeline, and CHOOSE.timeline has already checked the dizziness row, the
-    // "of 9 compared diary items" lead and (for `runs`) the runs check. The row is found by its numbers and test
-    // name, not by its size words, which other work may rename.
+    // "of 9 compared diary items" lead and (for `runs`) the runs check. The row is found by its numbers, not by its
+    // size words, which other work may rename. The test, p-value and runs check sit in "How reliable is this?"
+    // (closed by default), so the shot opens it on camera as the test is named.
     const cmp = page.locator('[data-tour="timeline-compare"]');
     await scrollTo(page, cmp, 16);
     await sleep(200);
-    const row = await rowOf(cmp.getByText(/Fisher.s exact test, p = 0\.0023/).first());
+    const row = await rowOf(cmp.getByText("9 of 14 days").first());
     await moveTo(page, cmp.getByText("9 of 14 days").first(), { steps: 20, scroll: false });
     await ring(page, row, 6);
-    // Zoom the row (before/after bars and the test) while the test and p-value are spoken.
-    await atPhrase(shot, "Fisher's exact test", 0.6);
-    await punch(page, row, { scale: 1.35, hold: 1500, maxHeight: 200 });
+    // "Fisher's exact test": open the disclosure and zoom the dizziness test line while the test and p-value are spoken.
+    await atPhrase(shot, "Fisher's exact test", 0.9);
+    const { trigger, panel } = reliabilityParts(cmp);
+    await clickOn(page, trigger, { steps: 16 });
+    const test = await rowOf(panel.getByText(/Fisher.s exact test, p = 0\.0023/).first());
+    await moveTo(page, test, { steps: 16 });
+    await ring(page, test, 6);
+    await punch(page, test, { scale: 1.35, hold: 1500, maxHeight: 120 });
     if (shot.variant === "runs" && shot.runsOnScreen) {
-      // The runs check is on the row itself: ring it as it is named.
+      // The runs check is on the same test line: ring it as it is named.
       await atPhrase(shot, "it still holds", 0.3);
-      const runs = row.getByText(/runs check/i).first();
+      const runs = test.getByText(/runs check/i).first();
       await moveTo(page, runs, { steps: 16, scroll: false });
       await ring(page, runs, 5);
     }
@@ -1481,6 +1487,7 @@ const ACTIONS = {
     // ends with the card's caveat, ringed and zoomed while the chance rate and "it stays a question" are said.
     await atPhrase(shot, "With nine items compared", 0.4);
     const lead = cmp.locator(".cg-tl-compare__lead").first();
+    await scrollTo(page, lead, 16);
     await moveTo(page, lead, { steps: 18, scroll: false });
     await ring(page, lead, 6);
     await atPhrase(shot, "more than one in ten", 0.3);
@@ -1900,6 +1907,17 @@ export function honestyVariant(working, partial) {
  * engine's gate uses (src/engine/timeline/signals.ts gatedStrength: strong 0.01 = "Large difference", moderate 0.05 =
  * "Clear difference"). Anything it cannot read counts as not holding. Exported for the tests.
  */
+/**
+ * The Timeline card's "How reliable is this?" disclosure (src/views/shared/caregiver-Reliability.tsx): its trigger
+ * button and its list of test lines ("Dizziness: Fisher's exact test, p = 0.0023 · runs check p = 0.007").
+ */
+function reliabilityParts(cmp) {
+  return {
+    trigger: cmp.getByRole("button", { name: /How reliable is this\?/ }).first(),
+    panel: cmp.locator(".cg-rel__tests").first(),
+  };
+}
+
 export function runsCheckVerdict(text) {
   const t = String(text ?? "").replace(/\s+/g, " ");
   if (!/runs check/i.test(t)) return { onScreen: false, holds: false };
@@ -1990,11 +2008,20 @@ const CHOOSE = {
     const cmp = page.locator('[data-tour="timeline-compare"]');
     await cmp.waitFor();
     await expectText(cmp, /2 of 19 days.*9 of 14 days/, "timeline dizziness row");
-    await expectText(cmp, /Fisher.s exact test, p = 0\.0023/, "Fisher's exact test, p = 0.0023");
     await expectText(cmp.locator(".cg-tl-compare__lead").first(), /\bof 9 compared diary items\b/, "nine items compared");
-    const row = await rowOf(cmp.getByText(/Fisher.s exact test, p = 0\.0023/).first());
-    await expectText(row, /2 of 19 days.*9 of 14 days/, "p-value row is the dizziness row");
-    const rowText = (await row.innerText()).replace(/\s+/g, " ");
+    const row = await rowOf(cmp.getByText("9 of 14 days").first());
+    await expectText(row, /2 of 19 days.*9 of 14 days/, "the dizziness row");
+    // The test, p-value and runs check are in "How reliable is this?" (closed by default): open it to read the
+    // dizziness test line, then close it again so the shot opens it on camera.
+    const { trigger, panel } = reliabilityParts(cmp);
+    if ((await trigger.getAttribute("aria-expanded")) !== "true") await trigger.click();
+    await panel.waitFor();
+    await expectText(panel, /Fisher.s exact test, p = 0\.0023/, "Fisher's exact test, p = 0.0023");
+    const test = await rowOf(panel.getByText(/Fisher.s exact test, p = 0\.0023/).first());
+    await expectText(test, /^Dizziness\b/, "p-value line is the dizziness line");
+    // The size word comes from the row, the runs-check p from the test line.
+    const rowText = `${await row.innerText()} ${await test.innerText()}`.replace(/\s+/g, " ");
+    await trigger.click();
     const verdict = runsCheckVerdict(rowText);
     shot.runsCheck = verdict;
     if (verdict.onScreen) {
