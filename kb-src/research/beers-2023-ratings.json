@@ -1,0 +1,3292 @@
+{
+ "_note": "Ratings-only subset of the AGS Beers Criteria 2023 used by build_kb.py: rule ids, quality of evidence, strength of recommendation, the drug names each row covers, and the strong-anticholinergic list. No AGS recommendation or rationale wording. The full research extraction (beers-2023.json) is kept locally and not distributed.",
+ "source": {
+  "citation": "By the 2023 American Geriatrics Society Beers Criteria(R) Update Expert Panel. American Geriatrics Society 2023 updated AGS Beers Criteria(R) for potentially inappropriate medication use in older adults. J Am Geriatr Soc. 2023;71(7):2052-2081.",
+  "doi": "10.1111/jgs.18372",
+  "url": "https://doi.org/10.1111/jgs.18372",
+  "pubmed": "https://pubmed.ncbi.nlm.nih.gov/37139824/",
+  "pmcid": "PMC12478568"
+ },
+ "pims": [
+  {
+   "id": "t2-first-gen-antihistamines",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "brompheniramine"
+    },
+    {
+     "generic": "chlorpheniramine"
+    },
+    {
+     "generic": "cyproheptadine"
+    },
+    {
+     "generic": "dimenhydrinate"
+    },
+    {
+     "generic": "diphenhydramine"
+    },
+    {
+     "generic": "doxylamine"
+    },
+    {
+     "generic": "hydroxyzine"
+    },
+    {
+     "generic": "meclizine"
+    },
+    {
+     "generic": "promethazine"
+    },
+    {
+     "generic": "triprolidine"
+    }
+   ]
+  },
+  {
+   "id": "t2-nitrofurantoin",
+   "qualityOfEvidence": "Low",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "nitrofurantoin"
+    }
+   ]
+  },
+  {
+   "id": "t2-aspirin-primary-prevention",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "aspirin"
+    }
+   ]
+  },
+  {
+   "id": "t2-warfarin",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "warfarin"
+    }
+   ]
+  },
+  {
+   "id": "t2-rivaroxaban",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "rivaroxaban"
+    }
+   ]
+  },
+  {
+   "id": "t2-dipyridamole-short-acting",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "dipyridamole"
+    }
+   ]
+  },
+  {
+   "id": "t2-alpha1-blockers-hypertension",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "doxazosin"
+    },
+    {
+     "generic": "prazosin"
+    },
+    {
+     "generic": "terazosin"
+    }
+   ]
+  },
+  {
+   "id": "t2-central-alpha-agonists-hypertension",
+   "qualityOfEvidence": "Low",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "clonidine"
+    },
+    {
+     "generic": "guanfacine"
+    }
+   ]
+  },
+  {
+   "id": "t2-nifedipine-ir",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "nifedipine"
+    }
+   ]
+  },
+  {
+   "id": "t2-amiodarone",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "amiodarone"
+    }
+   ]
+  },
+  {
+   "id": "t2-dronedarone",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "dronedarone"
+    }
+   ]
+  },
+  {
+   "id": "t2-digoxin",
+   "qualityOfEvidence": "Mixed",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "digoxin"
+    }
+   ]
+  },
+  {
+   "id": "t2-antidepressants-strong-anticholinergic",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "paroxetine"
+    }
+   ]
+  },
+  {
+   "id": "t2-antiparkinsonian-anticholinergic",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "benztropine"
+    },
+    {
+     "generic": "trihexyphenidyl"
+    }
+   ]
+  },
+  {
+   "id": "t2-antipsychotics",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "aripiprazole"
+    },
+    {
+     "generic": "brexpiprazole"
+    },
+    {
+     "generic": "cariprazine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "fluphenazine"
+    },
+    {
+     "generic": "haloperidol"
+    },
+    {
+     "generic": "lurasidone"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "paliperidone"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "pimavanserin"
+    },
+    {
+     "generic": "quetiapine"
+    },
+    {
+     "generic": "risperidone"
+    },
+    {
+     "generic": "ziprasidone"
+    }
+   ]
+  },
+  {
+   "id": "t2-barbiturates",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "butalbital"
+    },
+    {
+     "generic": "phenobarbital"
+    },
+    {
+     "generic": "primidone"
+    }
+   ]
+  },
+  {
+   "id": "t2-benzodiazepines",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "alprazolam"
+    },
+    {
+     "generic": "chlordiazepoxide"
+    },
+    {
+     "generic": "clobazam"
+    },
+    {
+     "generic": "clonazepam"
+    },
+    {
+     "generic": "clorazepate"
+    },
+    {
+     "generic": "diazepam"
+    },
+    {
+     "generic": "estazolam"
+    },
+    {
+     "generic": "lorazepam"
+    },
+    {
+     "generic": "midazolam"
+    },
+    {
+     "generic": "oxazepam"
+    },
+    {
+     "generic": "temazepam"
+    },
+    {
+     "generic": "triazolam"
+    }
+   ]
+  },
+  {
+   "id": "t2-z-drugs",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "eszopiclone"
+    },
+    {
+     "generic": "zaleplon"
+    },
+    {
+     "generic": "zolpidem"
+    }
+   ]
+  },
+  {
+   "id": "t2-meprobamate",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "meprobamate"
+    }
+   ]
+  },
+  {
+   "id": "t2-ergoloid-mesylates",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "ergoloid mesylates, USP"
+    }
+   ]
+  },
+  {
+   "id": "t2-androgens",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Weak",
+   "drugNames": [
+    {
+     "generic": "methyltestosterone"
+    },
+    {
+     "generic": "testosterone"
+    }
+   ]
+  },
+  {
+   "id": "t2-estrogens",
+   "qualityOfEvidence": "Mixed",
+   "strengthOfRecommendation": "Mixed",
+   "drugNames": [
+    {
+     "generic": "estradiol"
+    },
+    {
+     "generic": "estrogens, conjugated (USP)"
+    },
+    {
+     "generic": "estrogens, esterified (USP)"
+    },
+    {
+     "generic": "estropipate"
+    }
+   ]
+  },
+  {
+   "id": "t2-insulin-sliding-scale",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "insulin aspart"
+    },
+    {
+     "generic": "insulin glulisine"
+    },
+    {
+     "generic": "insulin lispro"
+    },
+    {
+     "generic": "insulin, regular, human"
+    }
+   ]
+  },
+  {
+   "id": "t2-sulfonylureas",
+   "qualityOfEvidence": "Mixed",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "gliclazide"
+    },
+    {
+     "generic": "glimepiride"
+    },
+    {
+     "generic": "glipizide"
+    },
+    {
+     "generic": "glyburide"
+    }
+   ]
+  },
+  {
+   "id": "t2-desiccated-thyroid",
+   "qualityOfEvidence": "Low",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "thyroid (USP)"
+    }
+   ]
+  },
+  {
+   "id": "t2-megestrol",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "megestrol"
+    }
+   ]
+  },
+  {
+   "id": "t2-growth-hormone",
+   "qualityOfEvidence": "High",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "somatropin"
+    }
+   ]
+  },
+  {
+   "id": "t2-ppis",
+   "qualityOfEvidence": "Mixed",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "dexlansoprazole"
+    },
+    {
+     "generic": "esomeprazole"
+    },
+    {
+     "generic": "lansoprazole"
+    },
+    {
+     "generic": "omeprazole"
+    },
+    {
+     "generic": "pantoprazole"
+    },
+    {
+     "generic": "rabeprazole"
+    }
+   ]
+  },
+  {
+   "id": "t2-metoclopramide",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "metoclopramide"
+    }
+   ]
+  },
+  {
+   "id": "t2-gi-antispasmodics",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "atropine"
+    },
+    {
+     "generic": "clidinium"
+    },
+    {
+     "generic": "dicyclomine"
+    },
+    {
+     "generic": "hyoscyamine"
+    },
+    {
+     "generic": "scopolamine"
+    }
+   ]
+  },
+  {
+   "id": "t2-mineral-oil-oral",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "mineral oil"
+    }
+   ]
+  },
+  {
+   "id": "t2-desmopressin-nocturia",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "desmopressin"
+    }
+   ]
+  },
+  {
+   "id": "t2-nsaids-oral-non-cox2",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "aspirin"
+    },
+    {
+     "generic": "diclofenac"
+    },
+    {
+     "generic": "diflunisal"
+    },
+    {
+     "generic": "etodolac"
+    },
+    {
+     "generic": "flurbiprofen"
+    },
+    {
+     "generic": "ibuprofen"
+    },
+    {
+     "generic": "indomethacin"
+    },
+    {
+     "generic": "ketorolac"
+    },
+    {
+     "generic": "meloxicam"
+    },
+    {
+     "generic": "nabumetone"
+    },
+    {
+     "generic": "naproxen"
+    },
+    {
+     "generic": "oxaprozin"
+    },
+    {
+     "generic": "piroxicam"
+    },
+    {
+     "generic": "sulindac"
+    }
+   ]
+  },
+  {
+   "id": "t2-indomethacin-ketorolac",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "indomethacin"
+    },
+    {
+     "generic": "ketorolac"
+    }
+   ]
+  },
+  {
+   "id": "t2-meperidine",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "meperidine"
+    }
+   ]
+  },
+  {
+   "id": "t2-skeletal-muscle-relaxants",
+   "qualityOfEvidence": "Moderate",
+   "strengthOfRecommendation": "Strong",
+   "drugNames": [
+    {
+     "generic": "carisoprodol"
+    },
+    {
+     "generic": "chlorzoxazone"
+    },
+    {
+     "generic": "cyclobenzaprine"
+    },
+    {
+     "generic": "metaxalone"
+    },
+    {
+     "generic": "methocarbamol"
+    },
+    {
+     "generic": "orphenadrine"
+    }
+   ]
+  }
+ ],
+ "drugDiseaseInteractions": [
+  {
+   "id": "t3-heart-failure-avoid",
+   "quality": "Low",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "cilostazol"
+    },
+    {
+     "generic": "dextromethorphan"
+    },
+    {
+     "generic": "quinidine"
+    }
+   ]
+  },
+  {
+   "id": "t3-heart-failure-hfref-avoid",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "diltiazem"
+    },
+    {
+     "generic": "verapamil"
+    }
+   ]
+  },
+  {
+   "id": "t3-heart-failure-caution",
+   "quality": "Mixed",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "celecoxib"
+    },
+    {
+     "generic": "diclofenac"
+    },
+    {
+     "generic": "diflunisal"
+    },
+    {
+     "generic": "dronedarone"
+    },
+    {
+     "generic": "etodolac"
+    },
+    {
+     "generic": "flurbiprofen"
+    },
+    {
+     "generic": "ibuprofen"
+    },
+    {
+     "generic": "indomethacin"
+    },
+    {
+     "generic": "ketorolac"
+    },
+    {
+     "generic": "meloxicam"
+    },
+    {
+     "generic": "nabumetone"
+    },
+    {
+     "generic": "naproxen"
+    },
+    {
+     "generic": "oxaprozin"
+    },
+    {
+     "generic": "pioglitazone"
+    },
+    {
+     "generic": "piroxicam"
+    },
+    {
+     "generic": "sulindac"
+    }
+   ]
+  },
+  {
+   "id": "t3-syncope",
+   "quality": "High",
+   "strength": "Mixed",
+   "drugNames": [
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "donepezil"
+    },
+    {
+     "generic": "doxazosin"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "galantamine"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "prazosin"
+    },
+    {
+     "generic": "rivastigmine"
+    },
+    {
+     "generic": "terazosin"
+    }
+   ]
+  },
+  {
+   "id": "t3-delirium",
+   "quality": "Mixed",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "alprazolam"
+    },
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "aripiprazole"
+    },
+    {
+     "generic": "atropine"
+    },
+    {
+     "generic": "benztropine"
+    },
+    {
+     "generic": "brexpiprazole"
+    },
+    {
+     "generic": "brompheniramine"
+    },
+    {
+     "generic": "buprenorphine"
+    },
+    {
+     "generic": "cariprazine"
+    },
+    {
+     "generic": "chlordiazepoxide"
+    },
+    {
+     "generic": "chlorpheniramine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "cimetidine"
+    },
+    {
+     "generic": "clidinium"
+    },
+    {
+     "generic": "clobazam"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "clonazepam"
+    },
+    {
+     "generic": "clorazepate"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "codeine"
+    },
+    {
+     "generic": "cyclobenzaprine"
+    },
+    {
+     "generic": "cyproheptadine"
+    },
+    {
+     "generic": "darifenacin"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "dexamethasone"
+    },
+    {
+     "generic": "diazepam"
+    },
+    {
+     "generic": "dicyclomine"
+    },
+    {
+     "generic": "dimenhydrinate"
+    },
+    {
+     "generic": "diphenhydramine"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "doxylamine"
+    },
+    {
+     "generic": "estazolam"
+    },
+    {
+     "generic": "eszopiclone"
+    },
+    {
+     "generic": "famotidine"
+    },
+    {
+     "generic": "fentanyl"
+    },
+    {
+     "generic": "fesoterodine"
+    },
+    {
+     "generic": "flavoxate"
+    },
+    {
+     "generic": "fluphenazine"
+    },
+    {
+     "generic": "haloperidol"
+    },
+    {
+     "generic": "homatropine"
+    },
+    {
+     "generic": "hydrocodone"
+    },
+    {
+     "generic": "hydrocortisone"
+    },
+    {
+     "generic": "hydromorphone"
+    },
+    {
+     "generic": "hydroxyzine"
+    },
+    {
+     "generic": "hyoscyamine"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "lorazepam"
+    },
+    {
+     "generic": "lurasidone"
+    },
+    {
+     "generic": "meclizine"
+    },
+    {
+     "generic": "meperidine"
+    },
+    {
+     "generic": "methadone"
+    },
+    {
+     "generic": "methylprednisolone"
+    },
+    {
+     "generic": "midazolam"
+    },
+    {
+     "generic": "morphine"
+    },
+    {
+     "generic": "nizatidine"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "orphenadrine"
+    },
+    {
+     "generic": "oxazepam"
+    },
+    {
+     "generic": "oxybutynin"
+    },
+    {
+     "generic": "oxycodone"
+    },
+    {
+     "generic": "oxymorphone"
+    },
+    {
+     "generic": "paliperidone"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "pimavanserin"
+    },
+    {
+     "generic": "prednisolone"
+    },
+    {
+     "generic": "prednisone"
+    },
+    {
+     "generic": "prochlorperazine"
+    },
+    {
+     "generic": "promethazine"
+    },
+    {
+     "generic": "quetiapine"
+    },
+    {
+     "generic": "risperidone"
+    },
+    {
+     "generic": "scopolamine"
+    },
+    {
+     "generic": "solifenacin"
+    },
+    {
+     "generic": "tapentadol"
+    },
+    {
+     "generic": "temazepam"
+    },
+    {
+     "generic": "tolterodine"
+    },
+    {
+     "generic": "tramadol"
+    },
+    {
+     "generic": "triazolam"
+    },
+    {
+     "generic": "trihexyphenidyl"
+    },
+    {
+     "generic": "triprolidine"
+    },
+    {
+     "generic": "trospium"
+    },
+    {
+     "generic": "zaleplon"
+    },
+    {
+     "generic": "ziprasidone"
+    },
+    {
+     "generic": "zolpidem"
+    }
+   ]
+  },
+  {
+   "id": "t3-dementia",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "alprazolam"
+    },
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "aripiprazole"
+    },
+    {
+     "generic": "atropine"
+    },
+    {
+     "generic": "benztropine"
+    },
+    {
+     "generic": "brexpiprazole"
+    },
+    {
+     "generic": "brompheniramine"
+    },
+    {
+     "generic": "cariprazine"
+    },
+    {
+     "generic": "chlordiazepoxide"
+    },
+    {
+     "generic": "chlorpheniramine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "clidinium"
+    },
+    {
+     "generic": "clobazam"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "clonazepam"
+    },
+    {
+     "generic": "clorazepate"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "cyclobenzaprine"
+    },
+    {
+     "generic": "cyproheptadine"
+    },
+    {
+     "generic": "darifenacin"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "diazepam"
+    },
+    {
+     "generic": "dicyclomine"
+    },
+    {
+     "generic": "dimenhydrinate"
+    },
+    {
+     "generic": "diphenhydramine"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "doxylamine"
+    },
+    {
+     "generic": "estazolam"
+    },
+    {
+     "generic": "eszopiclone"
+    },
+    {
+     "generic": "fesoterodine"
+    },
+    {
+     "generic": "flavoxate"
+    },
+    {
+     "generic": "fluphenazine"
+    },
+    {
+     "generic": "haloperidol"
+    },
+    {
+     "generic": "homatropine"
+    },
+    {
+     "generic": "hydroxyzine"
+    },
+    {
+     "generic": "hyoscyamine"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "lorazepam"
+    },
+    {
+     "generic": "lurasidone"
+    },
+    {
+     "generic": "meclizine"
+    },
+    {
+     "generic": "midazolam"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "orphenadrine"
+    },
+    {
+     "generic": "oxazepam"
+    },
+    {
+     "generic": "oxybutynin"
+    },
+    {
+     "generic": "paliperidone"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "pimavanserin"
+    },
+    {
+     "generic": "prochlorperazine"
+    },
+    {
+     "generic": "promethazine"
+    },
+    {
+     "generic": "quetiapine"
+    },
+    {
+     "generic": "risperidone"
+    },
+    {
+     "generic": "scopolamine"
+    },
+    {
+     "generic": "solifenacin"
+    },
+    {
+     "generic": "temazepam"
+    },
+    {
+     "generic": "tolterodine"
+    },
+    {
+     "generic": "triazolam"
+    },
+    {
+     "generic": "trihexyphenidyl"
+    },
+    {
+     "generic": "triprolidine"
+    },
+    {
+     "generic": "trospium"
+    },
+    {
+     "generic": "zaleplon"
+    },
+    {
+     "generic": "ziprasidone"
+    },
+    {
+     "generic": "zolpidem"
+    }
+   ]
+  },
+  {
+   "id": "t3-falls-fractures",
+   "quality": "Mixed",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "alprazolam"
+    },
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "aripiprazole"
+    },
+    {
+     "generic": "atropine"
+    },
+    {
+     "generic": "benztropine"
+    },
+    {
+     "generic": "brexpiprazole"
+    },
+    {
+     "generic": "brompheniramine"
+    },
+    {
+     "generic": "buprenorphine"
+    },
+    {
+     "generic": "carbamazepine"
+    },
+    {
+     "generic": "cariprazine"
+    },
+    {
+     "generic": "chlordiazepoxide"
+    },
+    {
+     "generic": "chlorpheniramine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "citalopram"
+    },
+    {
+     "generic": "clidinium"
+    },
+    {
+     "generic": "clobazam"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "clonazepam"
+    },
+    {
+     "generic": "clorazepate"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "codeine"
+    },
+    {
+     "generic": "cyclobenzaprine"
+    },
+    {
+     "generic": "cyproheptadine"
+    },
+    {
+     "generic": "darifenacin"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "desvenlafaxine"
+    },
+    {
+     "generic": "diazepam"
+    },
+    {
+     "generic": "dicyclomine"
+    },
+    {
+     "generic": "dimenhydrinate"
+    },
+    {
+     "generic": "diphenhydramine"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "doxylamine"
+    },
+    {
+     "generic": "duloxetine"
+    },
+    {
+     "generic": "escitalopram"
+    },
+    {
+     "generic": "estazolam"
+    },
+    {
+     "generic": "eszopiclone"
+    },
+    {
+     "generic": "fentanyl"
+    },
+    {
+     "generic": "fesoterodine"
+    },
+    {
+     "generic": "flavoxate"
+    },
+    {
+     "generic": "fluoxetine"
+    },
+    {
+     "generic": "fluphenazine"
+    },
+    {
+     "generic": "fluvoxamine"
+    },
+    {
+     "generic": "gabapentin"
+    },
+    {
+     "generic": "gabapentin enacarbil"
+    },
+    {
+     "generic": "haloperidol"
+    },
+    {
+     "generic": "homatropine"
+    },
+    {
+     "generic": "hydrocodone"
+    },
+    {
+     "generic": "hydromorphone"
+    },
+    {
+     "generic": "hydroxyzine"
+    },
+    {
+     "generic": "hyoscyamine"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "lacosamide"
+    },
+    {
+     "generic": "lamotrigine"
+    },
+    {
+     "generic": "levetiracetam"
+    },
+    {
+     "generic": "levomilnacipran"
+    },
+    {
+     "generic": "lorazepam"
+    },
+    {
+     "generic": "lurasidone"
+    },
+    {
+     "generic": "meclizine"
+    },
+    {
+     "generic": "meperidine"
+    },
+    {
+     "generic": "methadone"
+    },
+    {
+     "generic": "midazolam"
+    },
+    {
+     "generic": "milnacipran"
+    },
+    {
+     "generic": "morphine"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "orphenadrine"
+    },
+    {
+     "generic": "oxazepam"
+    },
+    {
+     "generic": "oxcarbazepine"
+    },
+    {
+     "generic": "oxybutynin"
+    },
+    {
+     "generic": "oxycodone"
+    },
+    {
+     "generic": "oxymorphone"
+    },
+    {
+     "generic": "paliperidone"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "phenobarbital"
+    },
+    {
+     "generic": "phenytoin"
+    },
+    {
+     "generic": "pimavanserin"
+    },
+    {
+     "generic": "pregabalin"
+    },
+    {
+     "generic": "primidone"
+    },
+    {
+     "generic": "prochlorperazine"
+    },
+    {
+     "generic": "promethazine"
+    },
+    {
+     "generic": "quetiapine"
+    },
+    {
+     "generic": "risperidone"
+    },
+    {
+     "generic": "scopolamine"
+    },
+    {
+     "generic": "sertraline"
+    },
+    {
+     "generic": "solifenacin"
+    },
+    {
+     "generic": "tapentadol"
+    },
+    {
+     "generic": "temazepam"
+    },
+    {
+     "generic": "tolterodine"
+    },
+    {
+     "generic": "topiramate"
+    },
+    {
+     "generic": "tramadol"
+    },
+    {
+     "generic": "triazolam"
+    },
+    {
+     "generic": "trihexyphenidyl"
+    },
+    {
+     "generic": "triprolidine"
+    },
+    {
+     "generic": "trospium"
+    },
+    {
+     "generic": "valproate"
+    },
+    {
+     "generic": "venlafaxine"
+    },
+    {
+     "generic": "zaleplon"
+    },
+    {
+     "generic": "ziprasidone"
+    },
+    {
+     "generic": "zolpidem"
+    },
+    {
+     "generic": "zonisamide"
+    }
+   ]
+  },
+  {
+   "id": "t3-parkinson-disease",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "aripiprazole"
+    },
+    {
+     "generic": "brexpiprazole"
+    },
+    {
+     "generic": "cariprazine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "fluphenazine"
+    },
+    {
+     "generic": "haloperidol"
+    },
+    {
+     "generic": "lurasidone"
+    },
+    {
+     "generic": "metoclopramide"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "paliperidone"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "prochlorperazine"
+    },
+    {
+     "generic": "promethazine"
+    },
+    {
+     "generic": "risperidone"
+    },
+    {
+     "generic": "ziprasidone"
+    }
+   ]
+  },
+  {
+   "id": "t3-gastric-duodenal-ulcers",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "aspirin"
+    },
+    {
+     "generic": "diclofenac"
+    },
+    {
+     "generic": "diflunisal"
+    },
+    {
+     "generic": "etodolac"
+    },
+    {
+     "generic": "flurbiprofen"
+    },
+    {
+     "generic": "ibuprofen"
+    },
+    {
+     "generic": "indomethacin"
+    },
+    {
+     "generic": "ketorolac"
+    },
+    {
+     "generic": "meloxicam"
+    },
+    {
+     "generic": "nabumetone"
+    },
+    {
+     "generic": "naproxen"
+    },
+    {
+     "generic": "oxaprozin"
+    },
+    {
+     "generic": "piroxicam"
+    },
+    {
+     "generic": "sulindac"
+    }
+   ]
+  },
+  {
+   "id": "t3-urinary-incontinence-women",
+   "quality": "Mixed",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "doxazosin"
+    },
+    {
+     "generic": "estradiol"
+    },
+    {
+     "generic": "estrogens, conjugated (USP)"
+    },
+    {
+     "generic": "estrogens, esterified (USP)"
+    },
+    {
+     "generic": "estropipate"
+    },
+    {
+     "generic": "prazosin"
+    },
+    {
+     "generic": "terazosin"
+    }
+   ]
+  },
+  {
+   "id": "t3-luts-bph",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "atropine"
+    },
+    {
+     "generic": "benztropine"
+    },
+    {
+     "generic": "brompheniramine"
+    },
+    {
+     "generic": "chlorpheniramine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "clidinium"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "cyclobenzaprine"
+    },
+    {
+     "generic": "cyproheptadine"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "dicyclomine"
+    },
+    {
+     "generic": "dimenhydrinate"
+    },
+    {
+     "generic": "diphenhydramine"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "doxylamine"
+    },
+    {
+     "generic": "homatropine"
+    },
+    {
+     "generic": "hydroxyzine"
+    },
+    {
+     "generic": "hyoscyamine"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "meclizine"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "orphenadrine"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "prochlorperazine"
+    },
+    {
+     "generic": "promethazine"
+    },
+    {
+     "generic": "scopolamine"
+    },
+    {
+     "generic": "trihexyphenidyl"
+    },
+    {
+     "generic": "triprolidine"
+    }
+   ]
+  },
+  {
+   "id": "t3-derived-ckd-nsaids",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "celecoxib"
+    },
+    {
+     "generic": "diclofenac"
+    },
+    {
+     "generic": "diflunisal"
+    },
+    {
+     "generic": "etodolac"
+    },
+    {
+     "generic": "flurbiprofen"
+    },
+    {
+     "generic": "ibuprofen"
+    },
+    {
+     "generic": "indomethacin"
+    },
+    {
+     "generic": "ketorolac"
+    },
+    {
+     "generic": "magnesium salicylate"
+    },
+    {
+     "generic": "meloxicam"
+    },
+    {
+     "generic": "nabumetone"
+    },
+    {
+     "generic": "naproxen"
+    },
+    {
+     "generic": "oxaprozin"
+    },
+    {
+     "generic": "piroxicam"
+    },
+    {
+     "generic": "sulindac"
+    }
+   ]
+  }
+ ],
+ "useWithCaution": [
+  {
+   "id": "t4-dabigatran",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "dabigatran"
+    }
+   ]
+  },
+  {
+   "id": "t4-prasugrel-ticagrelor",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "prasugrel"
+    },
+    {
+     "generic": "ticagrelor"
+    }
+   ]
+  },
+  {
+   "id": "t4-siadh-hyponatremia",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "amiloride"
+    },
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "aripiprazole"
+    },
+    {
+     "generic": "brexpiprazole"
+    },
+    {
+     "generic": "bumetanide"
+    },
+    {
+     "generic": "carbamazepine"
+    },
+    {
+     "generic": "cariprazine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "chlorthalidone"
+    },
+    {
+     "generic": "citalopram"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "desvenlafaxine"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "duloxetine"
+    },
+    {
+     "generic": "eplerenone"
+    },
+    {
+     "generic": "escitalopram"
+    },
+    {
+     "generic": "ethacrynic acid"
+    },
+    {
+     "generic": "fluoxetine"
+    },
+    {
+     "generic": "fluphenazine"
+    },
+    {
+     "generic": "fluvoxamine"
+    },
+    {
+     "generic": "furosemide"
+    },
+    {
+     "generic": "haloperidol"
+    },
+    {
+     "generic": "hydrochlorothiazide"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "indapamide"
+    },
+    {
+     "generic": "levomilnacipran"
+    },
+    {
+     "generic": "lurasidone"
+    },
+    {
+     "generic": "metolazone"
+    },
+    {
+     "generic": "milnacipran"
+    },
+    {
+     "generic": "mirtazapine"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "oxcarbazepine"
+    },
+    {
+     "generic": "paliperidone"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "pimavanserin"
+    },
+    {
+     "generic": "quetiapine"
+    },
+    {
+     "generic": "risperidone"
+    },
+    {
+     "generic": "sertraline"
+    },
+    {
+     "generic": "spironolactone"
+    },
+    {
+     "generic": "torsemide"
+    },
+    {
+     "generic": "tramadol"
+    },
+    {
+     "generic": "triamterene"
+    },
+    {
+     "generic": "venlafaxine"
+    },
+    {
+     "generic": "ziprasidone"
+    }
+   ]
+  },
+  {
+   "id": "t4-dextromethorphan-quinidine",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "dextromethorphan"
+    },
+    {
+     "generic": "quinidine"
+    }
+   ]
+  },
+  {
+   "id": "t4-tmp-smx",
+   "quality": "Low",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "sulfamethoxazole"
+    },
+    {
+     "generic": "trimethoprim"
+    }
+   ]
+  },
+  {
+   "id": "t4-sglt2-inhibitors",
+   "quality": "Moderate",
+   "strength": "Weak",
+   "drugNames": [
+    {
+     "generic": "canagliflozin"
+    },
+    {
+     "generic": "dapagliflozin"
+    },
+    {
+     "generic": "empagliflozin"
+    },
+    {
+     "generic": "ertugliflozin"
+    }
+   ]
+  }
+ ],
+ "drugDrugInteractions": [
+  {
+   "id": "t5-ras-ras-or-k-sparing",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "aliskiren"
+    },
+    {
+     "generic": "amiloride"
+    },
+    {
+     "generic": "azilsartan"
+    },
+    {
+     "generic": "benazepril"
+    },
+    {
+     "generic": "candesartan"
+    },
+    {
+     "generic": "captopril"
+    },
+    {
+     "generic": "enalapril"
+    },
+    {
+     "generic": "fosinopril"
+    },
+    {
+     "generic": "irbesartan"
+    },
+    {
+     "generic": "lisinopril"
+    },
+    {
+     "generic": "losartan"
+    },
+    {
+     "generic": "moexipril"
+    },
+    {
+     "generic": "olmesartan"
+    },
+    {
+     "generic": "perindopril"
+    },
+    {
+     "generic": "quinapril"
+    },
+    {
+     "generic": "ramipril"
+    },
+    {
+     "generic": "sacubitril"
+    },
+    {
+     "generic": "telmisartan"
+    },
+    {
+     "generic": "trandolapril"
+    },
+    {
+     "generic": "triamterene"
+    },
+    {
+     "generic": "valsartan"
+    }
+   ]
+  },
+  {
+   "id": "t5-opioids-benzodiazepines",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "alprazolam"
+    },
+    {
+     "generic": "buprenorphine"
+    },
+    {
+     "generic": "chlordiazepoxide"
+    },
+    {
+     "generic": "clobazam"
+    },
+    {
+     "generic": "clonazepam"
+    },
+    {
+     "generic": "clorazepate"
+    },
+    {
+     "generic": "codeine"
+    },
+    {
+     "generic": "diazepam"
+    },
+    {
+     "generic": "estazolam"
+    },
+    {
+     "generic": "fentanyl"
+    },
+    {
+     "generic": "hydrocodone"
+    },
+    {
+     "generic": "hydromorphone"
+    },
+    {
+     "generic": "lorazepam"
+    },
+    {
+     "generic": "meperidine"
+    },
+    {
+     "generic": "methadone"
+    },
+    {
+     "generic": "midazolam"
+    },
+    {
+     "generic": "morphine"
+    },
+    {
+     "generic": "oxazepam"
+    },
+    {
+     "generic": "oxycodone"
+    },
+    {
+     "generic": "oxymorphone"
+    },
+    {
+     "generic": "tapentadol"
+    },
+    {
+     "generic": "temazepam"
+    },
+    {
+     "generic": "tramadol"
+    },
+    {
+     "generic": "triazolam"
+    }
+   ]
+  },
+  {
+   "id": "t5-opioids-gabapentinoids",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "buprenorphine"
+    },
+    {
+     "generic": "codeine"
+    },
+    {
+     "generic": "fentanyl"
+    },
+    {
+     "generic": "gabapentin"
+    },
+    {
+     "generic": "hydrocodone"
+    },
+    {
+     "generic": "hydromorphone"
+    },
+    {
+     "generic": "meperidine"
+    },
+    {
+     "generic": "methadone"
+    },
+    {
+     "generic": "morphine"
+    },
+    {
+     "generic": "oxycodone"
+    },
+    {
+     "generic": "oxymorphone"
+    },
+    {
+     "generic": "pregabalin"
+    },
+    {
+     "generic": "tapentadol"
+    },
+    {
+     "generic": "tramadol"
+    }
+   ]
+  },
+  {
+   "id": "t5-anticholinergic-anticholinergic",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "atropine"
+    },
+    {
+     "generic": "benztropine"
+    },
+    {
+     "generic": "brompheniramine"
+    },
+    {
+     "generic": "chlorpheniramine"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "clidinium"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "cyclobenzaprine"
+    },
+    {
+     "generic": "cyproheptadine"
+    },
+    {
+     "generic": "darifenacin"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "dicyclomine"
+    },
+    {
+     "generic": "dimenhydrinate"
+    },
+    {
+     "generic": "diphenhydramine"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "doxylamine"
+    },
+    {
+     "generic": "fesoterodine"
+    },
+    {
+     "generic": "flavoxate"
+    },
+    {
+     "generic": "homatropine"
+    },
+    {
+     "generic": "hydroxyzine"
+    },
+    {
+     "generic": "hyoscyamine"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "meclizine"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "orphenadrine"
+    },
+    {
+     "generic": "oxybutynin"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "prochlorperazine"
+    },
+    {
+     "generic": "promethazine"
+    },
+    {
+     "generic": "scopolamine"
+    },
+    {
+     "generic": "solifenacin"
+    },
+    {
+     "generic": "tolterodine"
+    },
+    {
+     "generic": "trihexyphenidyl"
+    },
+    {
+     "generic": "triprolidine"
+    },
+    {
+     "generic": "trospium"
+    }
+   ]
+  },
+  {
+   "id": "t5-cns-3-or-more",
+   "quality": "High",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": " "
+    },
+    {
+     "generic": "C"
+    },
+    {
+     "generic": "D"
+    },
+    {
+     "generic": "O"
+    },
+    {
+     "generic": "a"
+    },
+    {
+     "generic": "alprazolam"
+    },
+    {
+     "generic": "amitriptyline"
+    },
+    {
+     "generic": "amoxapine"
+    },
+    {
+     "generic": "aripiprazole"
+    },
+    {
+     "generic": "b"
+    },
+    {
+     "generic": "brexpiprazole"
+    },
+    {
+     "generic": "buprenorphine"
+    },
+    {
+     "generic": "c"
+    },
+    {
+     "generic": "carbamazepine"
+    },
+    {
+     "generic": "cariprazine"
+    },
+    {
+     "generic": "carisoprodol"
+    },
+    {
+     "generic": "chlordiazepoxide"
+    },
+    {
+     "generic": "chlorpromazine"
+    },
+    {
+     "generic": "chlorzoxazone"
+    },
+    {
+     "generic": "citalopram"
+    },
+    {
+     "generic": "clobazam"
+    },
+    {
+     "generic": "clomipramine"
+    },
+    {
+     "generic": "clonazepam"
+    },
+    {
+     "generic": "clorazepate"
+    },
+    {
+     "generic": "clozapine"
+    },
+    {
+     "generic": "codeine"
+    },
+    {
+     "generic": "cyclobenzaprine"
+    },
+    {
+     "generic": "desipramine"
+    },
+    {
+     "generic": "desvenlafaxine"
+    },
+    {
+     "generic": "diazepam"
+    },
+    {
+     "generic": "doxepin"
+    },
+    {
+     "generic": "duloxetine"
+    },
+    {
+     "generic": "e"
+    },
+    {
+     "generic": "escitalopram"
+    },
+    {
+     "generic": "estazolam"
+    },
+    {
+     "generic": "eszopiclone"
+    },
+    {
+     "generic": "fentanyl"
+    },
+    {
+     "generic": "fluoxetine"
+    },
+    {
+     "generic": "fluphenazine"
+    },
+    {
+     "generic": "fluvoxamine"
+    },
+    {
+     "generic": "g"
+    },
+    {
+     "generic": "gabapentin"
+    },
+    {
+     "generic": "gabapentin enacarbil"
+    },
+    {
+     "generic": "haloperidol"
+    },
+    {
+     "generic": "hydrocodone"
+    },
+    {
+     "generic": "hydromorphone"
+    },
+    {
+     "generic": "imipramine"
+    },
+    {
+     "generic": "j"
+    },
+    {
+     "generic": "l"
+    },
+    {
+     "generic": "lacosamide"
+    },
+    {
+     "generic": "lamotrigine"
+    },
+    {
+     "generic": "levetiracetam"
+    },
+    {
+     "generic": "levomilnacipran"
+    },
+    {
+     "generic": "lorazepam"
+    },
+    {
+     "generic": "lurasidone"
+    },
+    {
+     "generic": "m"
+    },
+    {
+     "generic": "meperidine"
+    },
+    {
+     "generic": "metaxalone"
+    },
+    {
+     "generic": "methadone"
+    },
+    {
+     "generic": "methocarbamol"
+    },
+    {
+     "generic": "midazolam"
+    },
+    {
+     "generic": "milnacipran"
+    },
+    {
+     "generic": "morphine"
+    },
+    {
+     "generic": "nortriptyline"
+    },
+    {
+     "generic": "o"
+    },
+    {
+     "generic": "olanzapine"
+    },
+    {
+     "generic": "orphenadrine"
+    },
+    {
+     "generic": "oxazepam"
+    },
+    {
+     "generic": "oxcarbazepine"
+    },
+    {
+     "generic": "oxycodone"
+    },
+    {
+     "generic": "oxymorphone"
+    },
+    {
+     "generic": "paliperidone"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "perphenazine"
+    },
+    {
+     "generic": "phenobarbital"
+    },
+    {
+     "generic": "phenytoin"
+    },
+    {
+     "generic": "pimavanserin"
+    },
+    {
+     "generic": "pregabalin"
+    },
+    {
+     "generic": "primidone"
+    },
+    {
+     "generic": "quetiapine"
+    },
+    {
+     "generic": "r"
+    },
+    {
+     "generic": "risperidone"
+    },
+    {
+     "generic": "s"
+    },
+    {
+     "generic": "sertraline"
+    },
+    {
+     "generic": "t"
+    },
+    {
+     "generic": "tapentadol"
+    },
+    {
+     "generic": "temazepam"
+    },
+    {
+     "generic": "topiramate"
+    },
+    {
+     "generic": "tramadol"
+    },
+    {
+     "generic": "triazolam"
+    },
+    {
+     "generic": "u"
+    },
+    {
+     "generic": "valproate"
+    },
+    {
+     "generic": "venlafaxine"
+    },
+    {
+     "generic": "zaleplon"
+    },
+    {
+     "generic": "ziprasidone"
+    },
+    {
+     "generic": "zolpidem"
+    },
+    {
+     "generic": "zonisamide"
+    }
+   ]
+  },
+  {
+   "id": "t5-lithium-raas",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "azilsartan"
+    },
+    {
+     "generic": "benazepril"
+    },
+    {
+     "generic": "candesartan"
+    },
+    {
+     "generic": "captopril"
+    },
+    {
+     "generic": "enalapril"
+    },
+    {
+     "generic": "fosinopril"
+    },
+    {
+     "generic": "irbesartan"
+    },
+    {
+     "generic": "lisinopril"
+    },
+    {
+     "generic": "lithium"
+    },
+    {
+     "generic": "losartan"
+    },
+    {
+     "generic": "moexipril"
+    },
+    {
+     "generic": "olmesartan"
+    },
+    {
+     "generic": "perindopril"
+    },
+    {
+     "generic": "quinapril"
+    },
+    {
+     "generic": "ramipril"
+    },
+    {
+     "generic": "sacubitril"
+    },
+    {
+     "generic": "telmisartan"
+    },
+    {
+     "generic": "trandolapril"
+    },
+    {
+     "generic": "valsartan"
+    }
+   ]
+  },
+  {
+   "id": "t5-lithium-loop-diuretics",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "bumetanide"
+    },
+    {
+     "generic": "ethacrynic acid"
+    },
+    {
+     "generic": "furosemide"
+    },
+    {
+     "generic": "lithium"
+    },
+    {
+     "generic": "torsemide"
+    }
+   ]
+  },
+  {
+   "id": "t5-alpha1-loop-diuretics",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "bumetanide"
+    },
+    {
+     "generic": "doxazosin"
+    },
+    {
+     "generic": "ethacrynic acid"
+    },
+    {
+     "generic": "furosemide"
+    },
+    {
+     "generic": "prazosin"
+    },
+    {
+     "generic": "terazosin"
+    },
+    {
+     "generic": "torsemide"
+    }
+   ]
+  },
+  {
+   "id": "t5-phenytoin-tmp-smx",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "phenytoin"
+    },
+    {
+     "generic": "sulfamethoxazole"
+    },
+    {
+     "generic": "trimethoprim"
+    }
+   ]
+  },
+  {
+   "id": "t5-theophylline-cimetidine",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "cimetidine"
+    },
+    {
+     "generic": "theophylline"
+    }
+   ]
+  },
+  {
+   "id": "t5-theophylline-ciprofloxacin",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "ciprofloxacin"
+    },
+    {
+     "generic": "theophylline"
+    }
+   ]
+  },
+  {
+   "id": "t5-warfarin-interactions",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "amiodarone"
+    },
+    {
+     "generic": "ciprofloxacin"
+    },
+    {
+     "generic": "citalopram"
+    },
+    {
+     "generic": "clarithromycin"
+    },
+    {
+     "generic": "erythromycin"
+    },
+    {
+     "generic": "escitalopram"
+    },
+    {
+     "generic": "fluoxetine"
+    },
+    {
+     "generic": "fluvoxamine"
+    },
+    {
+     "generic": "paroxetine"
+    },
+    {
+     "generic": "sertraline"
+    },
+    {
+     "generic": "sulfamethoxazole"
+    },
+    {
+     "generic": "trimethoprim"
+    },
+    {
+     "generic": "warfarin"
+    }
+   ]
+  }
+ ],
+ "renalDoseAdjust": [
+  {
+   "id": "t6-ciprofloxacin",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "ciprofloxacin"
+    }
+   ]
+  },
+  {
+   "id": "t6-nitrofurantoin",
+   "quality": "Low",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "nitrofurantoin"
+    }
+   ]
+  },
+  {
+   "id": "t6-tmp-smx",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "sulfamethoxazole"
+    },
+    {
+     "generic": "trimethoprim"
+    }
+   ]
+  },
+  {
+   "id": "t6-amiloride",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "amiloride"
+    }
+   ]
+  },
+  {
+   "id": "t6-dabigatran",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "dabigatran"
+    }
+   ]
+  },
+  {
+   "id": "t6-dofetilide",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "dofetilide"
+    }
+   ]
+  },
+  {
+   "id": "t6-edoxaban",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "edoxaban"
+    }
+   ]
+  },
+  {
+   "id": "t6-enoxaparin",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "enoxaparin"
+    }
+   ]
+  },
+  {
+   "id": "t6-fondaparinux",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "fondaparinux"
+    }
+   ]
+  },
+  {
+   "id": "t6-rivaroxaban",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "rivaroxaban"
+    }
+   ]
+  },
+  {
+   "id": "t6-spironolactone",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "spironolactone"
+    }
+   ]
+  },
+  {
+   "id": "t6-triamterene",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "triamterene"
+    }
+   ]
+  },
+  {
+   "id": "t6-baclofen",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "baclofen"
+    }
+   ]
+  },
+  {
+   "id": "t6-duloxetine",
+   "quality": "Moderate",
+   "strength": "Weak",
+   "drugNames": [
+    {
+     "generic": "duloxetine"
+    }
+   ]
+  },
+  {
+   "id": "t6-gabapentin",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "gabapentin"
+    }
+   ]
+  },
+  {
+   "id": "t6-levetiracetam",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "levetiracetam"
+    }
+   ]
+  },
+  {
+   "id": "t6-nsaids",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "celecoxib"
+    },
+    {
+     "generic": "diclofenac"
+    },
+    {
+     "generic": "diflunisal"
+    },
+    {
+     "generic": "etodolac"
+    },
+    {
+     "generic": "flurbiprofen"
+    },
+    {
+     "generic": "ibuprofen"
+    },
+    {
+     "generic": "indomethacin"
+    },
+    {
+     "generic": "ketorolac"
+    },
+    {
+     "generic": "magnesium salicylate"
+    },
+    {
+     "generic": "meloxicam"
+    },
+    {
+     "generic": "nabumetone"
+    },
+    {
+     "generic": "naproxen"
+    },
+    {
+     "generic": "oxaprozin"
+    },
+    {
+     "generic": "piroxicam"
+    },
+    {
+     "generic": "sulindac"
+    }
+   ]
+  },
+  {
+   "id": "t6-pregabalin",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "pregabalin"
+    }
+   ]
+  },
+  {
+   "id": "t6-tramadol",
+   "quality": "Low",
+   "strength": "Weak",
+   "drugNames": [
+    {
+     "generic": "tramadol"
+    }
+   ]
+  },
+  {
+   "id": "t6-cimetidine",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "cimetidine"
+    }
+   ]
+  },
+  {
+   "id": "t6-famotidine",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "famotidine"
+    }
+   ]
+  },
+  {
+   "id": "t6-nizatidine",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "nizatidine"
+    }
+   ]
+  },
+  {
+   "id": "t6-colchicine",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "colchicine"
+    }
+   ]
+  },
+  {
+   "id": "t6-probenecid",
+   "quality": "Moderate",
+   "strength": "Strong",
+   "drugNames": [
+    {
+     "generic": "probenecid"
+    }
+   ]
+  }
+ ],
+ "strongAnticholinergics": [
+  {
+   "generic": "amitriptyline"
+  },
+  {
+   "generic": "amoxapine"
+  },
+  {
+   "generic": "clomipramine"
+  },
+  {
+   "generic": "desipramine"
+  },
+  {
+   "generic": "doxepin"
+  },
+  {
+   "generic": "imipramine"
+  },
+  {
+   "generic": "nortriptyline"
+  },
+  {
+   "generic": "paroxetine"
+  },
+  {
+   "generic": "prochlorperazine"
+  },
+  {
+   "generic": "promethazine"
+  },
+  {
+   "generic": "brompheniramine"
+  },
+  {
+   "generic": "chlorpheniramine"
+  },
+  {
+   "generic": "cyproheptadine"
+  },
+  {
+   "generic": "dimenhydrinate"
+  },
+  {
+   "generic": "diphenhydramine"
+  },
+  {
+   "generic": "doxylamine"
+  },
+  {
+   "generic": "hydroxyzine"
+  },
+  {
+   "generic": "meclizine"
+  },
+  {
+   "generic": "triprolidine"
+  },
+  {
+   "generic": "darifenacin"
+  },
+  {
+   "generic": "fesoterodine"
+  },
+  {
+   "generic": "flavoxate"
+  },
+  {
+   "generic": "oxybutynin"
+  },
+  {
+   "generic": "solifenacin"
+  },
+  {
+   "generic": "tolterodine"
+  },
+  {
+   "generic": "trospium"
+  },
+  {
+   "generic": "benztropine"
+  },
+  {
+   "generic": "trihexyphenidyl"
+  },
+  {
+   "generic": "chlorpromazine"
+  },
+  {
+   "generic": "clozapine"
+  },
+  {
+   "generic": "olanzapine"
+  },
+  {
+   "generic": "perphenazine"
+  },
+  {
+   "generic": "atropine"
+  },
+  {
+   "generic": "clidinium"
+  },
+  {
+   "generic": "dicyclomine"
+  },
+  {
+   "generic": "homatropine"
+  },
+  {
+   "generic": "hyoscyamine"
+  },
+  {
+   "generic": "scopolamine"
+  },
+  {
+   "generic": "cyclobenzaprine"
+  },
+  {
+   "generic": "orphenadrine"
+  }
+ ]
+}

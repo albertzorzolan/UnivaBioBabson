@@ -12,7 +12,7 @@ Inputs (all in kb-src/):
   kb/rules_src.py                     Beers rules, cascades, FRIDs, monitoring, sources (Kinwise wording)
   kb/brand_report.json                brand -> ingredient verification (RxNorm / DailyMed) from the earlier KB run
   kb/rx_cache_known.json, kb/rx_missing.json, kb/rx_extra_cache.json   RxNorm ingredient RxCUIs
-  research/beers-2023.json            AGS Beers 2023 (ratings, Table 7 list) - cross-check source
+  research/beers-2023-ratings.json    AGS Beers 2023 ratings + Table 7 list (no AGS wording) - cross-check source
   research/acb-scale.json             ACB 2012 card scores
   research/symptom-adr-map.json       label evidence behind EFFECTS_BY_CLASS (documented, not parsed)
 The build is deterministic: same inputs, byte-identical output.
@@ -198,7 +198,7 @@ def build():
     problems = Problems()
     warnings = []
     src = exec_sources("classes_src.py", "drugs_src.py", "drugs_extra_src.py", "combos_src.py", "rules_src.py")
-    beers_res = load(os.path.join(RES, "beers-2023.json"))
+    beers_res = load(os.path.join(RES, "beers-2023-ratings.json"))  # ratings-only subset; full extraction is local-only
     acb_res = load(os.path.join(RES, "acb-scale.json"))
     brand_report = load(os.path.join(KBS, "brand_report.json"))
     rx_known = load(os.path.join(KBS, "rx_cache_known.json"))
