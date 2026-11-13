@@ -11,3 +11,6 @@ public/models/
 test-results/
 tmp/
 *.tsbuildinfo
+
+# AGS Beers 2023 extraction: near-verbatim AGS wording, kept locally for build_kb.py only, not distributed
+kb-src/research/beers-2023.json
